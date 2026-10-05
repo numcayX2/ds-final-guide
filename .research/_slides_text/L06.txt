@@ -1,0 +1,254 @@
+
+===== PAGE 1 =====
+10301351
+Data Science:
+คาบ บรรยายที่ 6
+Modeling 
+in Data Science Framework
+1
+
+
+===== PAGE 2 =====
+2
+
+
+===== PAGE 3 =====
+3
+
+
+===== PAGE 4 =====
+4
+
+
+===== PAGE 5 =====
+5
+
+
+===== PAGE 6 =====
+6
+
+
+===== PAGE 7 =====
+7
+
+
+===== PAGE 8 =====
+8
+
+
+===== PAGE 9 =====
+เทคนิคของการสร้างตัวแบบวิเคราะห์ส าหรับวิทยาข้อมูล แบ่งเป็น 2 ประเภทหลัก
+•
+แบบจ ำลองในกำรบรรยำย (Descriptive/ Unsupervised Modeling) ในที่นี้ อำจเป็นกำรหำควำมสัมพันธ์ต่ำงๆ (Association) หรือหำกำรจัด
+กลุ่มข้อมูล (Clustering) ซึ่งไม่ได้มีจุดมุ่งหมำยเพื่อกำรท ำนำย 
+1.
+การพรรณนา (Description) (ในเชิงสถิติ)
+2.
+การหาความสัมพันธ์ (Association)
+3.
+การจัดกลุ่ม (Clustering)
+•
+แบบจ ำลองในกำรท ำนำย (Predictive/ Supervised Modeling) เป็นผลลัพธ์ที่สร้ำงจำกกำรอนุมำน (Inference) ชุดข้อมูลปัจจุบัน เพื่อใช้ใน
+กำรท ำนำยประเภทตัวอย่ำงในอนำคต
+4.
+การจำแนกหมวดหมู่ (Classification)
+5.
+การประเมินค่า (Estimation)
+6.
+การทำนายล่วงหน้า (Prediction)
+9
+“ไม่มีเทคนิคหรือเครื่องมือเพียงชนิดเดียวของกระบวนการวิทยาการข้อมูลที่เหมาะสมกับงานทุกชนิด งานในแต่ละชนิดก็
+จะมีเทคนิคที่เหมาะสมที่แตกต่างกันออกไป”
+Modeling Techniques
+
+
+===== PAGE 10 =====
+Modeling Techniques
+10
+1. Description
+DS Techniques
+Descriptive 
+or Unsupervised Modeling
+Predictive 
+or Supervised Modeling
+3. Clustering
+2. Associations
+4. Classification
+6.Prediction
+5. Estimation/ Regression
+
+
+===== PAGE 11 =====
+11
+
+
+===== PAGE 12 =====
+12
+Conceptual Overview: What actually happens during training?
+
+
+===== PAGE 13 =====
+13
+
+
+===== PAGE 14 =====
+14
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 15 =====
+15
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 16 =====
+16
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 17 =====
+17
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 18 =====
+18
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 19 =====
+19
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 20 =====
+20
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 21 =====
+21
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+construct to code
+IF-else
+(Write your If-Else rules here)
+if shape == "circle" and color == "green": 
+return "lime“
+
+
+===== PAGE 22 =====
+22
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+construct to code
+Function label
+(Define Function predict(features))
+
+
+===== PAGE 23 =====
+23
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 24 =====
+24
+ที่มา
+Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+
+===== PAGE 25 =====
+ตัวอย่าง:
+Pseudo code
+25
+Function label
+
+
+===== PAGE 26 =====
+26
+
+
+===== PAGE 27 =====
+27
+
+
+===== PAGE 28 =====
+28
+
+
+===== PAGE 29 =====
+29
+
+
+===== PAGE 30 =====
+30
+
+
+===== PAGE 31 =====
+31
+
+
+===== PAGE 32 =====
+32
+
+
+===== PAGE 33 =====
+33
+
+
+===== PAGE 34 =====
+34
+จาก Logic ของDecision Tree (หน้า 25) และ กระบวนการ Build ML (หน้า 28)
+“Logic ของ ML มาจากข้อมูล ไม่ใช่จากProgrammer”
+อย่างไรก็ตาม
+"เพราะ Logic ทั้งหมดมาจากข้อมูล ดังนั้น ถ้าข้อมูลมีปัญหา มี Data Leakage หรือคัดเลือก Features มาไม่ดี
+Model ที่ได้ก็จะพังทันที”
+
+
+===== PAGE 35 =====
+35
+
+
+===== PAGE 36 =====
+36
+
+
+===== PAGE 37 =====
+37
+
+
+===== PAGE 38 =====
+38
+
+
+===== PAGE 39 =====
+39
+
+
+===== PAGE 40 =====
+40
+Recap: From Algorithm to Trained Model Candidate
+
+
+===== PAGE 41 =====
+41
+
+
+===== PAGE 42 =====
+42
+
+
+===== PAGE 43 =====
+43
+
+
+===== PAGE 44 =====
+44
