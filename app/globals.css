@@ -74,7 +74,12 @@
 
 * { border-color: var(--rule); }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* The sticky header must not cover a focused control when the keyboard
+     scrolls it into view. */
+  scroll-padding-top: 96px;
+}
 
 body {
   background: var(--bg);
@@ -85,7 +90,32 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+}
+
+/* The header is the widest flex row on the page. Without this it pushes the
+   document wider than the viewport at narrow widths, and the theme toggle
+   ends up off-screen. */
+.site-header__row {
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+@media (max-width: 560px) {
+  .site-header__row {
+    row-gap: 0.5rem;
+  }
+  .site-header__nav {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-header__nav {
+    gap: 0.25rem 0.5rem;
+  }
 }
 
 /* ---------- Typography primitives ---------- */
@@ -94,22 +124,40 @@ body {
   Tracking rule: Inter Tight's -0.03em comes from Bhagas, but negative
   tracking collides Thai vowel/tone marks. Latin keeps the tight setting,
   Thai resets to 0.
+
+  These two rules MUST stay below .display and .index. They carry the same
+  specificity, so on an element that has both classes the later rule wins —
+  if the reset sits above .display it is silently dead.
 */
-.tracking-display { letter-spacing: -0.03em; }
-:lang(th), .tracking-reset { letter-spacing: 0; }
+/*
+  The document is <html lang="th">, so :lang(th) matches EVERY element by
+  inheritance — including Latin headings. A blanket Thai reset would strip
+  -0.03em from Latin display type too. So the rule is inverted: default to
+  zero, and restore the tight tracking only where a heading is explicitly
+  marked lang="en".
+*/
+:lang(th),
+.tracking-reset {
+  letter-spacing: 0;
+}
+
+:lang(en) .display,
+.display:lang(en),
+:lang(en) .index,
+.index:lang(en) {
+  letter-spacing: -0.03em;
+}
 
 .display {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(64px, 9vw, 140px);
   line-height: 0.85;
-  letter-spacing: -0.03em;
 }
 
 .index {
   font-family: var(--font-display);
   font-weight: 300;
-  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 

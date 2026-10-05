@@ -39,7 +39,7 @@ export default function ChaptersPage() {
               <span className="index text-4xl text-accent-ink">{ch.index}</span>
             </div>
             <div className="col-span-12 lg:col-span-6 mt-4 lg:mt-0">
-              <h2 className="text-4xl lg:text-5xl tracking-reset">{ch.title}</h2>
+              <h2 lang="en" className="text-4xl lg:text-5xl">{ch.title}</h2>
               <p className="mt-3 text-xl text-ink-muted">{ch.titleTh}</p>
             </div>
             <div className="col-span-12 lg:col-span-4 mt-6 lg:mt-0 lg:col-start-9">

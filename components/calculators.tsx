@@ -25,6 +25,10 @@ export function TukeyCalculator() {
     q3: "",
     max: "",
   });
+  // An untouched empty field is not an error. Rendering "required" alerts on
+  // page load makes a screen reader announce eight problems before the student
+  // has done anything, so a message only appears once the field has been left.
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const parsed = useMemo(() => {
     const out: Record<string, number> = {};
@@ -89,7 +93,7 @@ export function TukeyCalculator() {
         <div className="mt-sp-1 space-y-6">
           {FIELDS.map((f) => {
             const id = `${uid}-${f.key}`;
-            const err = parsed.errors[f.key];
+            const err = touched[f.key] ? parsed.errors[f.key] : undefined;
             const hintId = `${id}-hint`;
             const errId = `${id}-err`;
             return (
@@ -105,7 +109,11 @@ export function TukeyCalculator() {
                   type="number"
                   inputMode="decimal"
                   value={raw[f.key]}
-                  onChange={(e) => setRaw((s) => ({ ...s, [f.key]: e.target.value }))}
+                  onChange={(e) => {
+                    setRaw((s) => ({ ...s, [f.key]: e.target.value }));
+                    setTouched((t) => ({ ...t, [f.key]: true }));
+                  }}
+                  onBlur={() => setTouched((t) => ({ ...t, [f.key]: true }))}
                   aria-describedby={err ? `${hintId} ${errId}` : hintId}
                   aria-invalid={err ? true : undefined}
                   className="tap mt-2 w-full tnum bg-bg border border-rule px-4 py-3 focus:border-accent outline-none"
@@ -201,6 +209,7 @@ const CELLS: Array<{ key: "tp" | "fp" | "fn" | "tn"; label: string; hint: string
 export function MetricCalculator() {
   const uid = useId();
   const [raw, setRaw] = useState<Record<string, string>>({ tp: "", fp: "", fn: "", tn: "" });
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const cells = useMemo(() => {
     const out: Record<string, number> = {};
@@ -277,7 +286,7 @@ export function MetricCalculator() {
         <div className="mt-sp-1 space-y-6">
           {CELLS.map((c) => {
             const id = `${uid}-${c.key}`;
-            const err = cells.errors[c.key];
+            const err = touched[c.key] ? cells.errors[c.key] : undefined;
             const hintId = `${id}-hint`;
             const errId = `${id}-err`;
             return (
@@ -295,7 +304,11 @@ export function MetricCalculator() {
                   min={0}
                   step={1}
                   value={raw[c.key]}
-                  onChange={(e) => setRaw((s) => ({ ...s, [c.key]: e.target.value }))}
+                  onChange={(e) => {
+                    setRaw((s) => ({ ...s, [c.key]: e.target.value }));
+                    setTouched((t) => ({ ...t, [c.key]: true }));
+                  }}
+                  onBlur={() => setTouched((t) => ({ ...t, [c.key]: true }))}
                   aria-describedby={err ? `${hintId} ${errId}` : hintId}
                   aria-invalid={err ? true : undefined}
                   className="tap mt-2 w-full tnum bg-bg border border-rule px-4 py-3 focus:border-accent outline-none"

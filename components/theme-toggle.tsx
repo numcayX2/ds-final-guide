@@ -33,9 +33,13 @@ export function ThemeToggle() {
       onClick={toggle}
       className="tap inline-flex items-center gap-3 text-left text-ink hover:text-accent-ink transition-colors duration-200"
       aria-pressed={theme === "dark"}
-      aria-label={theme === "dark" ? "สลับเป็นธีมสว่าง" : "สลับเป็นธีมมืด"}
     >
-      <span className="meta-label tracking-display">{ready ? (theme === "dark" ? "Light" : "Dark") : "Dark"}</span>
+      {/* The visible label is part of the accessible name. Overriding it with
+          aria-label would hide "Dark"/"Light" from assistive tech while it stays
+          visible on screen, so state is carried by aria-pressed instead. */}
+      <span className="meta-label tracking-display">
+        {ready ? (theme === "dark" ? "Light" : "Dark") : "Dark"}
+      </span>
       {/* Decorative: the button already carries an accessible label */}
       <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false" fill="none">
         <circle cx="7" cy="7" r="6.25" stroke="currentColor" strokeWidth="1.25" />

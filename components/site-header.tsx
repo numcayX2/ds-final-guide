@@ -12,7 +12,7 @@ const NAV = [
 export function SiteHeader() {
   return (
     <header className="shell sticky top-0 z-50 border-b border-rule bg-bg">
-      <div className="flex items-center justify-between py-5">
+      <div className="site-header__row flex items-center justify-between py-5">
         <Link
           href="/"
           className="tap inline-flex items-baseline gap-3 hover:text-accent-ink transition-colors duration-200"
@@ -23,7 +23,10 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav aria-label="หน้าหลัก" className="flex items-center gap-6 sm:gap-8">
+        <nav
+          aria-label="หน้าหลัก"
+          className="site-header__nav flex items-center gap-4 sm:gap-6"
+        >
           {NAV.map((item) => (
             <Link
               key={item.href}

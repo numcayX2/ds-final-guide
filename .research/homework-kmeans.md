@@ -285,14 +285,23 @@ So there are **two** legal stopping conditions, and they are different tests:
    the practical stopping rule in most implementations, because membership often
    settles before the floating-point centroid is bit-identical.
 
-Important: the algorithm is guaranteed to stop. Each pass cannot increase the
-within-cluster scatter, because after the means are recomputed every point is at
-least as close to its own cluster's mean as it was to the previous centroid
-(plain algebra, no data needed). Since there are only finitely many ways to
-partition 8 points into 3 labelled groups — 3⁸ = 6561 — membership must
-eventually repeat. The slide does not claim the result is the global optimum; it
-says the algorithm "often terminates at a local optimum", which is the honest
-statement.
+Important: the algorithm terminates, and the standard argument is worth having ready.
+Each pass cannot increase the within-cluster scatter, because after the means are
+recomputed every point sits at least as close to its own cluster's new mean as it
+did to the centroid that assigned it. Since there are only finitely many ways to
+partition 8 points into 3 labelled groups — 3⁸ = 6561 — membership must eventually
+repeat, and the algorithm stops. The slide does not claim the result is the global
+optimum; it says the algorithm "often terminates at a local optimum", which is the
+honest statement.
+
+> One honest caveat if a sharp examiner asks. The scatter-decrease argument above is
+> a property of **squared** Euclidean, which is why WCSS/Inertia use it. The mean
+> does not minimise Manhattan scatter — it minimises squared scatter, while L1 is
+> minimised at the median. So the monotonicity proof is not literally available for
+> a table computed with Manhattan, and the same reason makes a hand-run Manhattan
+> table not formally guaranteed to stop. In practice it stops immediately on data
+> like this. What is unconditionally true is the slide's own test, and that is the
+> answer to give: "the means stop changing, or no member changes cluster."
 
 ---
 
@@ -531,20 +540,30 @@ identical coordinates.
 ### Pitfall 5 — swapping the coordinates of a point
 
 A3 is (8, **4**), not (4, 8). A4 is (5, **8**). These two are the easiest to
-transpose because the digits 4 and 8 recur across the set. Transposing A3 to (4, 8)
-gives distances 0 / 2 / 9 to C1 / C2 / C3 — and the point would then land in
-cluster 1, changing the whole answer. Copy the point table into your answer
-first; do not work from memory.
+transpose because the digits 4 and 8 recur across the set, and transposing A3 is
+especially tempting because (4, 8) is a real point — it is A4. Worked through: the
+transposed A3 (4, 8) gives
+
+| to C1 (2, 10) | to C2 (5, 8) | to C3 (1, 2) | assigned |
+|---|---|---|---|
+| \|4−2\| + \|8−10\| = 2 + 2 = 4 | \|4−5\| + \|8−8\| = 1 + 0 = **1** | \|4−1\| + \|8−2\| = 3 + 6 = 9 | C2 |
+
+So the label survives, but the distance collapses from 7 to 1 and the cluster 2
+mean becomes wrong: (4+5+7+6+4)/5 = 26/5 = 5.2 and (8+8+5+4+9)/5 = 34/5 = 6.8,
+giving (5.2, 6.8) instead of the correct (6, 6). A half-right table and a wrong
+final answer — the worst possible outcome in an exam. Copy the point table into
+your answer first; do not work from memory.
 
 ### Pitfall 6 — using Euclidean in the assignment table
 
 The required metric is Manhattan. Every number in the table changes if you use
 sqrt instead: A1 → C3 becomes √65, not 9. You will lose the marks for the table
 even if the final cluster labels happen to come out unchanged. (Checking all eight
-points under Euclidean: the *labels* do come out the same on this first pass —
-which makes the mistake easy to miss on a quick read-through — but 21 of the 24
-cells hold a wrong number. Only the three zeros survive, because a distance from a
-point to itself is 0 under any metric.)
+points under Euclidean: the *labels* do come out the same on this first pass — C1,
+C3, C2, C2, C2, C2, C3, C2 — which makes the mistake easy to miss on a quick
+read-through. But 20 of the 24 cells hold a different number. The only cells that
+survive are the four where a coordinate already matches exactly, so the metric
+cannot matter: A1 → C1 = 0, A4 → C2 = 0, A7 → C3 = 0, and A2 → C1 = 5.)
 
 ### Pitfall 7 — reporting the objective backwards
 

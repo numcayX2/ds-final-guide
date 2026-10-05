@@ -31,7 +31,10 @@ export default function Home() {
               </p>
             </Reveal>
             <Reveal delay={80}>
-              <h1 className="display tracking-reset">
+              {/* Latin only — no tracking-reset. The Latin display keeps
+                  Inter Tight's -0.03em from Bhagas; Thai headings reset to 0
+                  via :lang(th) in globals.css. */}
+              <h1 lang="en" className="display">
                 Final Exam
                 <br />
                 Guide
