@@ -1,0 +1,51 @@
+# PROMPT FOR ANTIGRAVITY — copy everything below this line
+
+Read a Thai-language university lecture slide deck and transcribe it verbatim.
+
+## Target file
+C:\Users\Acer\Downloads\10301351 DS 1-69 Lect09 Responsible Data Science.pdf
+
+It is 28 slides. There are two decks you will also need, listed at the end.
+
+## What to produce
+
+For EACH slide, output a block in exactly this format and nothing else:
+
+```
+### SLIDE <number>
+<every word and number on the slide, Thai transcribed exactly as printed, English technical terms kept as-is>
+```
+
+If a slide is a section divider or contains only a title, still emit its block with just the title.
+
+## Rules — these matter more than completeness
+
+1. NEVER guess, infer, or reconstruct a number. If a digit or character is unclear, write it as `[?]` and add a line `UNCLEAR: what you could not read`.
+2. If you cannot open or render the PDF, say exactly `PDF NOT READABLE` and stop. Do not substitute plausible content.
+3. Work slide by slide and emit each block as soon as you finish it. Do not batch everything and write at the end.
+4. Copy Thai text verbatim. Do not translate it, summarise it, or "clean it up". A mis-transcribed formula is worse than a missing one.
+5. If a slide contains a diagram, describe the diagram's labels and the numbers attached to it in plain text after the verbatim transcription, prefixed `DIAGRAM:`.
+6. Preserve the lecturer's own numbers exactly, including percentages like 68% or 31%.
+
+## Priority — these specific slides matter most
+
+I need these answered with particular care because they are exam material:
+
+- **Any slide containing "SHAP"** — I need the base value figure and, critically, whether the lecturer says a SHAP contribution is measured in PERCENTAGE POINTS or in PERCENT relative change. Quote the exact sentence.
+- **Any slide containing "Global" vs "Local"** explainability.
+- **Any slide containing "Model-Agnostic" or "Model-Specific"**.
+- **Any slide containing "Proxy", "Purpose Limitation", or "Data Minimisation"** — copy every concrete example given.
+- **Any slide containing "Drift"** — quote the definition verbatim.
+
+## Other decks (do these in separate runs, same format)
+
+C:\Users\Acer\Downloads\10301351 DS 1-69 Lect05 Exploratory Data Analysis (EDA).pdf
+  → priority slides: any containing a boxplot, fence, quartile or IQR number. I need concrete values, not concepts.
+
+C:\Users\Acer\Downloads\10301351 DS 1-69 Lect07 Decision Tree and Classifier Evaluation.pdf
+  → priority: slide 26 (a Customer Churn dataset table — transcribe EVERY row and cell) and slide 30 (a worked metrics example).
+  → also any slide with weighted Gini or Gini Gain numbers.
+
+## Output format for pasting back
+
+Plain markdown. No code fences around the whole answer. Keep each `### SLIDE n` header on its own line so the blocks stay separable.

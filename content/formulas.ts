@@ -226,4 +226,44 @@ export const formulas: Formula[] = [
     output: "รูปทั่วไปของระยะห่างทั้งสองแบบ",
     lectures: ["Lect 08"],
   },
+
+  /* ---------------- Lect 09 - Responsible Data Science ---------------- */
+  {
+    id: "shap-prediction",
+    verification: VERIFIED,
+    name: "SHAP Prediction",
+    expression: "Prediction = Base Value + SUM(SHAP values)",
+    symbols: [
+      { symbol: "Base Value", meaning: "ความน่าจะเป็นเฉลี่ยที่โมเดลให้กับข้อมูลทั่วไป" },
+      { symbol: "SHAP value", meaning: "จุดเปอร์เซ็นต์ที่ Feature นั้นผลักค่าความน่าจะเป็น" },
+    ],
+    output: "ความน่าจะเป็นที่อธิบายได้ของรายนั้น",
+    example: {
+      given: "Base Value = 32%, ไม่ซื้อนาน +29, อายุสมาชิกสั้น +12, ยอดใช้จ่ายสูง -8 (Lect 09 p.9)",
+      steps: ["Prediction = 32% + 29 + 12 - 8", "= 32% + 33", "= 65%"],
+      result: "65%",
+    },
+    pitfall:
+      "ค่า SHAP วัดเป็นจุดเปอร์เซ็นต์ ไม่ใช่เปอร์เซ็นต์เชิงสัมพัทธ์ ถ้าคูณ 1.29 จะได้ 41.3% ซึ่งไม่ใช่คำตอบ",
+    lectures: ["Lect 09"],
+  },
+  {
+    id: "positive-class-cost",
+    verification: VERIFIED,
+    name: "Choosing a Metric by Error Cost",
+    expression: "FP แพง -> Precision สูงกว่า Recall  |  FN วิกฤต -> Recall สูงกว่า Precision",
+    symbols: [],
+    output: "ตัวเลือกมาตรวัดที่ตรงกับต้นทุนของงาน",
+    example: {
+      given: "สไลด์ให้เปรียบเทียบ Accuracy 84% กับ Recall ลูกค้ากลุ่มใหม่ 54% (Lect 09 p.4)",
+      steps: [
+        "Accuracy รวม 84% ดูดี แต่ Recall ลูกค้ากลุ่มใหม่มีเพียง 54%",
+        "คะแนนรวมเป็นเพียงหลักฐานหนึ่งในแฟ้มตัดสินใจ ไม่ใช่คำตอบว่าโมเดลพร้อมใช้",
+      ],
+      result: "ต้องดูทั้งสองด้ายก่อนตัดสินใจ",
+    },
+    pitfall:
+      "อย่าใช้ Accuracy เป็นตัวเดียวที่ตัดสิน เพราะคะแนนรวมสามารถซ่อนกลุ่มที่ทำได้แย่ได้ทั้งก้อน",
+    lectures: ["Lect 07", "Lect 09"],
+  },
 ];
