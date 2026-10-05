@@ -13,6 +13,7 @@ import type { Formula } from "./types";
  *   Lect 08 p15 distance metric notation
  */
 
+const VERIFIED_BY_PRINCIPLE = "verified-by-principle" as const;
 const VERIFIED = "verified-by-principle" as const;
 const NEEDS_CHECK = "needs-slide-check" as const;
 
@@ -20,7 +21,11 @@ export const formulas: Formula[] = [
   /* ---------------- Lect 05 — EDA ---------------- */
   {
     id: "iqr",
-    verification: VERIFIED,
+    // Standard Tukey definition. Lecture 05 teaches the concept and defines
+    // IQR as "the middle 50% of the data" on slide 7, but prints no formula and
+    // works no numeric example anywhere in the deck, so this is principled
+    // rather than slide-sourced.
+    verification: VERIFIED_BY_PRINCIPLE,
     name: "IQR",
     expression: "Q3 - Q1",
     symbols: [
@@ -33,12 +38,16 @@ export const formulas: Formula[] = [
       steps: ["IQR = Q3 - Q1", "IQR = 35 - 20", "IQR = 15"],
       result: "15",
     },
-    pitfall: "IQR วัดความกระจายของข้อมูลครึ่งหนึ่งกลางๆ ไม่ใช่ความกระจายทั้งหมด จุดที่อยู่ไกลจากกลุ่มอาจไม่ทำให้ IQR ใหญ่เลย",
+    pitfall: "สไลด์นิยาม IQR ว่าเป็นช่วงของข้อมูลกึ่งกลาง 50% แต่ไม่ได้พิมพ์สูตรและไม่มีตัวอย่างเลขในทั้งเล่ม จุดที่อยู่ไกลจากกลุ่มจะไม่ทำให้ IQR ใหญ่ขึ้นเลย",
     lectures: ["Lect 05"],
   },
   {
     id: "lower-fence",
-    verification: VERIFIED,
+    // Standard Tukey definition. Lecture 05 teaches the concept and defines
+    // IQR as "the middle 50% of the data" on slide 7, but prints no formula and
+    // works no numeric example anywhere in the deck, so this is principled
+    // rather than slide-sourced.
+    verification: VERIFIED_BY_PRINCIPLE,
     name: "Lower Fence",
     expression: "Q1 - 1.5 x IQR",
     symbols: [
@@ -56,7 +65,11 @@ export const formulas: Formula[] = [
   },
   {
     id: "upper-fence",
-    verification: VERIFIED,
+    // Standard Tukey definition. Lecture 05 teaches the concept and defines
+    // IQR as "the middle 50% of the data" on slide 7, but prints no formula and
+    // works no numeric example anywhere in the deck, so this is principled
+    // rather than slide-sourced.
+    verification: VERIFIED_BY_PRINCIPLE,
     name: "Upper Fence",
     expression: "Q3 + 1.5 x IQR",
     symbols: [
