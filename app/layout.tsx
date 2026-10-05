@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter_Tight, Prompt } from "next/font/google";
 import "./globals.css";
+import { SiteHeader } from "@/components/site-header";
 
 /* Inter Tight Variable - the single family Bhagas uses, for Latin + numerals */
 const interTight = Inter_Tight({
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
       </head>
       <body className="min-h-full flex flex-col bg-bg text-ink">
+        <SiteHeader />
         {children}
       </body>
     </html>

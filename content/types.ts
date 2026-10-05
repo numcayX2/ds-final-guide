@@ -61,6 +61,8 @@ export interface Chapter {
 
 export interface Formula {
   id: string;
+  /** Whether this was checked against the lecture slides. See `Verification`. */
+  verification: Verification;
   name: string;
   /** The expression exactly as the slides write it, in plain text. */
   expression: string;
@@ -68,8 +70,13 @@ export interface Formula {
   symbols: Array<{ symbol: string; meaning: string }>;
   /** What the formula returns, in one line. */
   output: string;
-  /** A numeric example using real slide numbers. */
-  example: { given: string; steps: string[]; result: string };
+  /**
+   * A numeric example using real slide numbers.
+   * Optional: a formula that generalises rather than computes (Minkowski, the
+   * weighted split Gini) has nothing to drill, and forcing a made-up one would
+   * put invented figures into the content layer.
+   */
+  example?: { given: string; steps: string[]; result: string };
   /** The trap a student falls into. */
   pitfall?: string;
   lectures: LectureRef[];
@@ -98,6 +105,12 @@ export type EpisodeVisual =
 export interface EpisodeStep {
   /** 1-based position. */
   n: number;
+  /**
+   * Whether the numbers shown at this step were checked against the slides.
+   * A step may render fine but still teach an unverified figure, so this
+   * travels with the step rather than only with the episode.
+   */
+  verification: Verification;
   /** Under ~8 words — SplitText animates this and long headlines break it. */
   headline: string;
   /** 2-3 sentences, teaching voice, Thai. */
