@@ -5,6 +5,7 @@ const NAV = [
   { href: "/", label: "หน้าแรก", labelEn: "Index" },
   { href: "/chapters", label: "บทเรียน", labelEn: "Chapters" },
   { href: "/formulas", label: "คลังสูตร", labelEn: "Formulas" },
+  { href: "/player", label: "Thinking Player", labelEn: "Player" },
   { href: "/tools", label: "เครื่องคิดเลข", labelEn: "Tools" },
 ];
 
