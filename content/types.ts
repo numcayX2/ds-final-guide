@@ -189,6 +189,12 @@ export interface Question {
   explanation: string;
   /** The trap, and why a student would fall into it. */
   distractor?: string;
+  /**
+   * Where to look to check this question. Optional, but when present it must
+   * point at the page actually verified in this deck version — a stale page
+   * number is worse than none, because it sends a student to the wrong slide.
+   */
+  slideRef?: string;
   verification: Verification;
 }
 
