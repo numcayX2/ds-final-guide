@@ -192,7 +192,22 @@ body {
 
 /* ---------- Layout ---------- */
 
-/* 12-column asymmetric grid, full-bleed. No max-width. */
+.page-container {
+  width: 100%;
+  max-width: 1360px;
+  margin-inline: auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1360px) {
+  .page-container {
+    border-inline: 1px solid var(--rule);
+  }
+}
+
+/* 12-column asymmetric grid */
 .grid-12 {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -200,7 +215,10 @@ body {
 }
 @media (max-width: 768px) { .grid-12 { --grid-gap: 16px; } }
 
-.shell { padding-inline: 48px; }
+.shell {
+  width: 100%;
+  padding-inline: 48px;
+}
 @media (max-width: 768px) { .shell { padding-inline: 20px; } }
 
 /* ---------- Motion ---------- */

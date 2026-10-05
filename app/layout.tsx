@@ -47,8 +47,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="skip-link">
           ข้ามไปยังเนื้อหาหลัก
         </a>
-        <SiteHeader />
-        {children}
+        <div className="page-container">
+          <SiteHeader />
+          {children}
+        </div>
       </body>
     </html>
   );
