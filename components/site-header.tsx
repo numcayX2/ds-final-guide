@@ -3,6 +3,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 const NAV = [
   { href: "/", label: "หน้าแรก", labelEn: "Index" },
+  { href: "/chapters", label: "บทเรียน", labelEn: "Chapters" },
   { href: "/formulas", label: "คลังสูตร", labelEn: "Formulas" },
 ];
 
