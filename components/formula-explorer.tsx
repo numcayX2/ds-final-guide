@@ -44,7 +44,7 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
   return (
     <div>
       {/* Controls Bar */}
-      <div className="shell py-6 border-b border-rule bg-bg sticky top-[69px] z-40">
+      <div className="shell py-5 border-b border-rule bg-bg/85 backdrop-blur-md sticky top-[65px] z-40">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Lecture Filter Pills */}
           <div className="flex flex-wrap items-center gap-2">
@@ -59,13 +59,13 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
                   key={tab.id}
                   type="button"
                   onClick={() => setSelectedLect(tab.id)}
-                  className={`tap px-3 py-1.5 text-xs font-medium border transition-colors ${
+                  className={`tap px-3 py-1.5 text-xs font-mono font-medium border transition-all duration-200 ${
                     active
-                      ? "border-accent bg-accent text-white"
+                      ? "border-accent bg-accent text-white cyber-glow font-bold"
                       : "border-rule-strong hover:border-accent hover:text-accent-ink"
                   }`}
                 >
-                  {tab.label} ({count})
+                  {tab.label} [{count}]
                 </button>
               );
             })}
@@ -75,27 +75,27 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
           <div className="relative w-full md:w-72">
             <input
               type="search"
-              placeholder="ค้นหาชื่อสูตร สัญลักษณ์ ตัวแปร..."
+              placeholder="SEARCH // ค้นหาชื่อสูตร สัญลักษณ์..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="tap w-full text-xs px-3 py-2 bg-bg border border-rule-strong focus:border-accent outline-none"
+              className="tap w-full text-xs font-mono px-3.5 py-2 bg-bg/90 border border-rule-strong focus:border-accent outline-none"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-ink-muted hover:text-ink"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-ink-muted hover:text-accent-ink"
               >
-                ล้าง
+                CLEAR
               </button>
             )}
           </div>
         </div>
 
         {/* Status text */}
-        <p className="mt-3 text-xs text-ink-subtle">
-          แสดง {filtered.length} จาก {formulas.length} สูตร
-          {searchQuery && ` (ผลการค้นหา "${searchQuery}")`}
+        <p className="mt-2.5 text-[11px] font-mono text-ink-subtle">
+          INDEX_COUNT: {filtered.length} / {formulas.length} FORMULAS
+          {searchQuery && ` (FILTER: "${searchQuery}")`}
         </p>
       </div>
 
@@ -105,7 +105,7 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
           <Reveal as="li" key={f.id} delay={Math.min(i * 30, 200)}>
             <article id={f.id} className="grid-12 py-sp-1 border-t border-rule items-start scroll-mt-36">
               <div className="col-span-12 lg:col-span-1">
-                <span className="index text-2xl text-ink-subtle">
+                <span className="index text-2xl font-mono text-ink-subtle">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
@@ -115,8 +115,8 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
                   {f.name}
                 </h2>
                 <p className="mt-2 text-ink-muted">{f.output}</p>
-                <div className="mt-4 p-3 bg-accent-wash/60 border-l-2 border-accent">
-                  <p className="meta-label tracking-display text-ink tnum text-base font-semibold">
+                <div className="mt-4 p-4 bg-accent-wash/60 border border-rule-strong/40 hud-bracket">
+                  <p className="meta-label tracking-display text-accent-ink tnum text-lg font-mono font-bold">
                     {f.expression}
                   </p>
                 </div>

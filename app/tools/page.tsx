@@ -36,34 +36,68 @@ const TOOLS = [
 export default function ToolsPage() {
   return (
     <main id="main" tabIndex={-1} className="flex-1">
-      <section className="shell pt-sp-2 pb-sp-1">
+      <section className="shell pt-sp-2 pb-sp-1 cyber-grid relative">
         <div className="grid-12 items-end">
           <div className="col-span-12 lg:col-span-7">
             <Reveal>
-              <p className="meta-label text-ink-subtle mb-8">
-                เครื่องคิดเลข &middot; Calculators &amp; Labs
-              </p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 text-xs font-mono border border-rule-strong/50 bg-accent-wash/50 text-accent-ink mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent cyber-beacon" />
+                <span>LABS // INTERACTIVE_CALCULATORS</span>
+                <span className="text-ink-subtle">|</span>
+                <span className="text-ink-muted">4 TOOLS OPERATIONAL</span>
+              </div>
             </Reveal>
             <Reveal delay={80}>
               <h1 className="display tracking-reset">
                 ลองคำนวณ
                 <br />
-                ด้วยตัวเอง
+                <span className="text-accent-ink cyber-text-glow">ด้วยตัวเอง</span>
               </h1>
             </Reveal>
+
+            {/* Quick Tool Jump Pills */}
+            <Reveal delay={120}>
+              <div className="flex flex-wrap gap-2 mt-8">
+                {TOOLS.map((t, idx) => (
+                  <a
+                    key={t.id}
+                    href={`#${t.id}`}
+                    className="tap px-3 py-1.5 text-xs font-mono border border-rule-strong/70 hover:border-accent hover:text-accent-ink transition-all bg-bg/80 hover:bg-accent-wash/40"
+                  >
+                    [0{idx + 1}] // {t.id.replace("-", "_").toUpperCase()}
+                  </a>
+                ))}
+              </div>
+            </Reveal>
           </div>
-          <div className="col-span-12 lg:col-span-3 lg:col-start-10 mt-sp-1 lg:mt-0">
+
+          <div className="col-span-12 lg:col-span-4 lg:col-start-9 mt-sp-1 lg:mt-0">
             <Reveal delay={160}>
-              <dl className="space-y-6">
-                <div>
-                  <dt className="meta-label tracking-display text-ink-subtle">Tools</dt>
-                  <dd className="meta-value mt-2 tnum text-3xl">{TOOLS.length}</dd>
+              <div className="hud-bracket border border-rule p-5 bg-bg/80 backdrop-blur-sm">
+                <div className="flex items-center justify-between border-b border-rule pb-2 mb-4">
+                  <span className="text-[10px] font-mono tracking-widest text-ink-subtle uppercase flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent cyber-beacon" />
+                    CALCULATOR_CORE
+                  </span>
+                  <span className="text-[10px] font-mono text-accent-ink font-semibold">
+                    READY
+                  </span>
                 </div>
-                <div>
-                  <dt className="meta-label tracking-display text-ink-subtle">Based on</dt>
-                  <dd className="meta-value mt-2">สูตรและชุดข้อมูลจากสไลด์จริง</dd>
-                </div>
-              </dl>
+                <dl className="space-y-3 font-mono text-xs">
+                  <div className="flex justify-between items-baseline border-b border-rule/50 pb-2">
+                    <dt className="text-ink-subtle">AVAILABLE_TOOLS</dt>
+                    <dd className="font-semibold text-accent-ink">{TOOLS.length} APPS</dd>
+                  </div>
+                  <div className="flex justify-between items-baseline border-b border-rule/50 pb-2">
+                    <dt className="text-ink-subtle">MATHEMATICS</dt>
+                    <dd className="text-ink">IQR / GINI / MATRIX / K-MEANS</dd>
+                  </div>
+                  <div className="flex justify-between items-baseline">
+                    <dt className="text-ink-subtle">ZERO_DIV_GUARD</dt>
+                    <dd className="text-accent-ink font-semibold">ACTIVE (หารไม่ได้)</dd>
+                  </div>
+                </dl>
+              </div>
             </Reveal>
           </div>
         </div>

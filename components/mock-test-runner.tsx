@@ -297,32 +297,37 @@ export function MockTestRunner({ test: initialTest, tests }: MockTestRunnerProps
       )}
 
       {/* status bar */}
-      <div className="sticky top-20 z-40 -mx-4 sm:mx-0 border-y border-rule bg-bg px-4 sm:px-0 py-4">
+      <div className="sticky top-20 z-40 border border-rule bg-bg/90 backdrop-blur-md p-4 sm:p-5 hud-bracket cyber-glow mt-4">
         <div className="grid-12 items-center gap-4">
           <div className="col-span-6 lg:col-span-3">
-            <p className="meta-label tracking-display text-ink-subtle">เวลาที่เหลือ</p>
+            <p className="text-[11px] font-mono tracking-widest text-ink-subtle uppercase flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent cyber-beacon" />
+              TIME_REMAINING
+            </p>
             {/* Ticking clock is deliberately silent; warnings use the polite region */}
-            <p role="timer" aria-live="off" className="tnum text-2xl mt-1">
+            <p role="timer" aria-live="off" className="tnum font-mono text-3xl font-bold text-accent-ink mt-1 cyber-text-glow">
               {fmt(remaining)}
             </p>
           </div>
           <div className="col-span-6 lg:col-span-3 lg:text-right">
-            <p className="meta-label tracking-display text-ink-subtle">ตอบแล้ว</p>
-            <p className="tnum text-2xl mt-1">
+            <p className="text-[11px] font-mono tracking-widest text-ink-subtle uppercase">
+              COMPLETED_ITEMS
+            </p>
+            <p className="tnum font-mono text-3xl font-bold mt-1">
               {answered}
-              <span className="text-ink-subtle text-base">/{total}</span>
+              <span className="text-ink-subtle text-base font-normal">/{total}</span>
             </p>
           </div>
-          <div className="col-span-12 lg:col-span-6 lg:text-right">
-            <div aria-live="polite" className="meta-label tracking-display text-accent-ink">
-              {minutesLeft <= 3 ? `เหลืออีก ${minutesLeft} นาที` : ""}
+          <div className="col-span-12 lg:col-span-6 lg:text-right flex items-center justify-between lg:justify-end gap-4">
+            <div aria-live="polite" className="text-xs font-mono text-accent-ink font-semibold">
+              {minutesLeft <= 3 ? `[ WARNING: ${minutesLeft} MIN REMAINING ]` : ""}
             </div>
             <button
               type="button"
               onClick={submit}
-              className="tap mt-1 px-5 py-2 border border-rule hover:border-accent"
+              className="tap px-5 py-2.5 text-xs font-mono font-semibold border-2 border-accent bg-accent text-white hover:bg-accent-ink transition-colors cyber-glow"
             >
-              <span className="meta-label tracking-display">ส่งคำตอบ</span>
+              SUBMIT_EXAM // ส่งข้อสอบ
             </button>
           </div>
         </div>
@@ -339,15 +344,15 @@ export function MockTestRunner({ test: initialTest, tests }: MockTestRunnerProps
               type="button"
               onClick={() => go(i)}
               aria-current={on ? "true" : undefined}
-              className={`tap w-11 text-sm border transition-colors duration-200 ${
+              className={`tap w-11 h-11 text-xs font-mono border transition-all duration-200 ${
                 on
-                  ? "border-accent text-accent-ink"
+                  ? "border-accent bg-accent text-white font-bold shadow-[0_0_15px_rgba(255,77,0,0.4)]"
                   : done
-                    ? "border-rule-strong text-ink"
-                    : "border-rule text-ink-subtle"
+                    ? "border-rule-strong bg-accent-wash/40 text-accent-ink font-semibold"
+                    : "border-rule text-ink-subtle hover:border-accent/60"
               }`}
             >
-              <span className="tnum">{item.n}</span>
+              <span className="tnum">{String(item.n).padStart(2, "0")}</span>
             </button>
           );
         })}

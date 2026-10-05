@@ -133,7 +133,7 @@ export function TukeyCalculator() {
       <div className="col-span-12 lg:col-span-6 lg:col-start-7">
         <div
           aria-live="polite"
-          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24"
+          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24 hud-bracket p-4 bg-bg/70"
         >
           {!ready ? (
             <p className="meta-label tracking-display text-ink-subtle">
@@ -327,7 +327,7 @@ export function MetricCalculator() {
       <div className="col-span-12 lg:col-span-6 lg:col-start-7">
         <div
           aria-live="polite"
-          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24"
+          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24 hud-bracket p-4 bg-bg/70"
         >
           {!ready ? (
             <p className="meta-label tracking-display text-ink-subtle">
@@ -626,7 +626,7 @@ export function GiniCalculator() {
       <div className="col-span-12 lg:col-span-6 lg:col-start-7">
         <div
           aria-live="polite"
-          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24"
+          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24 hud-bracket p-4 bg-bg/70"
         >
           {!parsed ? (
             <p className="meta-label tracking-display text-ink-subtle">
