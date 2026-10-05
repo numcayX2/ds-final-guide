@@ -33,8 +33,10 @@
   --ink: #161616;
   --ink-muted: #5c5c5c;
   --ink-subtle: #757575;
-  --rule: #e0e0e0;
-  --rule-strong: #c9c9c9;
+  /* 3.23:1 on white — WCAG 1.4.11 minimum for control/boundary edges.
+     --rule-strong must stay darker than --rule, not lighter. */
+  --rule: #8f8f8f;
+  --rule-strong: #6b6b6b;
   --accent: #ff4d00;
   /* 4.51:1 on white - passes AA for normal text */
   --accent-ink: #d93f00;
@@ -48,8 +50,9 @@
   --ink: #f7f7f7;
   --ink-muted: #9a9a9f;
   --ink-subtle: #83838a;
-  --rule: #26262a;
-  --rule-strong: #3a3a3f;
+  /* 3.45:1 on #0a0a0a — WCAG 1.4.11 minimum for control/boundary edges. */
+  --rule: #666666;
+  --rule-strong: #8a8a90;
   --accent: #ff4d00;
   /* 5.96:1 on #0A0A0A */
   --accent-ink: #ff6a2b;
@@ -63,8 +66,9 @@
     --ink: #f7f7f7;
     --ink-muted: #9a9a9f;
     --ink-subtle: #83838a;
-    --rule: #26262a;
-    --rule-strong: #3a3a3f;
+    /* 3.45:1 on #0a0a0a — WCAG 1.4.11 minimum for control/boundary edges. */
+    --rule: #666666;
+    --rule-strong: #8a8a90;
     --accent: #ff4d00;
     --accent-ink: #ff6a2b;
     --accent-wash: #1a0d06;
@@ -230,6 +234,47 @@ body {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ---------- Skip link ---------- */
+
+/* First focusable element in <body>. Collapsed to a 1px clip rect so it
+   occupies no layout space and cannot widen the document, then becomes a
+   real, high-contrast target the moment it takes focus. */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link:focus-visible,
+.skip-link:focus {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  background: var(--bg);
+  color: var(--ink);
+  border: 2px solid var(--accent);
+  font-family: var(--font-thai);
+  font-size: 16px;
+  line-height: 1.2;
+  text-decoration: none;
+  border-radius: 2px;
 }
 
 /* ---------- Focus ---------- */

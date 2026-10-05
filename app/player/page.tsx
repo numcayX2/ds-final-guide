@@ -4,7 +4,7 @@ import { Reveal } from "@/components/reveal";
 
 export default function PlayerPage() {
   return (
-    <>
+    <main id="main" tabIndex={-1} className="flex-1">
       <section className="shell pt-sp-2 pb-sp-1">
         <div className="grid-12 items-end">
           <div className="col-span-12 lg:col-span-7">
@@ -33,6 +33,11 @@ export default function PlayerPage() {
       </section>
 
       <section className="shell py-sp-1 border-t border-rule">
+        {/* h2 sits between the page h1 and the player component's h3 step
+            headlines, so the heading levels descend one at a time. */}
+        <h2 className="index text-sm text-ink-subtle mb-sp-1">
+          Thinking Player &mdash; ทีละขั้น
+        </h2>
         <EpisodePlayer episodes={episodes} />
       </section>
 
@@ -42,6 +47,6 @@ export default function PlayerPage() {
           รออ่านภาพสไลด์ก่อนจึงจะทำ
         </p>
       </footer>
-    </>
+    </main>
   );
 }

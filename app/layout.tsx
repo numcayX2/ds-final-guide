@@ -41,6 +41,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
       </head>
       <body className="min-h-full flex flex-col bg-bg text-ink">
+        {/* First focusable element in the document: lets a keyboard user jump
+            straight past the nav to the page content. Every page renders
+            exactly one <main id="main">. */}
+        <a href="#main" className="skip-link">
+          ข้ามไปยังเนื้อหาหลัก
+        </a>
         <SiteHeader />
         {children}
       </body>

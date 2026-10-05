@@ -20,7 +20,7 @@ const formulas = [
 
 export default function Home() {
   return (
-    <main className="flex-1">
+    <main id="main" tabIndex={-1} className="flex-1">
       {/* ---------- Hero: giant display, asymmetric ---------- */}
       <section className="shell pt-sp-3 pb-sp-2">
         <div className="grid-12 items-end">

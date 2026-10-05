@@ -4,7 +4,9 @@ import { Reveal } from "@/components/reveal";
 
 export default function ChaptersPage() {
   return (
-    <>
+    /* tabIndex -1 so the skip link actually moves focus into main, not just the
+           scroll position. It stays out of the tab order. */
+    <main id="main" tabIndex={-1} className="flex-1">
       <section className="shell pt-sp-2 pb-sp-1">
         <div className="grid-12 items-end">
           <div className="col-span-12 lg:col-span-7">
@@ -68,6 +70,6 @@ export default function ChaptersPage() {
           {chapters.length} บทเรียนที่ยืนยันแล้ว &mdash; Ch01 และ Ch02 รออ่านภาพสไลด์
         </p>
       </footer>
-    </>
+    </main>
   );
 }

@@ -7,7 +7,7 @@ export default function FormulasPage() {
   const unverified = formulas.filter((f) => f.verification === UNVERIFIED).length;
 
   return (
-    <>
+    <main id="main" tabIndex={-1} className="flex-1">
       <section className="shell pt-sp-2 pb-sp-1">
         <div className="grid-12 items-end">
           <div className="col-span-12 lg:col-span-7">
@@ -130,6 +130,6 @@ export default function FormulasPage() {
           {formulas.length - unverified} จาก {formulas.length} สูตรยืนยันกับสไลด์แล้ว &mdash; ที่เหลือรออ่านภาพสไลด์
         </p>
       </footer>
-    </>
+    </main>
   );
 }
