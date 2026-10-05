@@ -3,34 +3,52 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { MockTest, Question } from "@/content/types";
 
-const OPT = ["a", "b", "c", "d"] as const;
-
 function fmt(sec: number) {
   const m = Math.floor(Math.max(0, sec) / 60);
   const s = Math.max(0, sec) % 60;
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
+const KIND_LABELS: Record<string, string> = {
+  numeric: "คำนวณตัวเลข",
+  interpretation: "ตีความ / แนวคิด",
+  scenario: "โจทย์สถานการณ์",
+  "true-false": "ถูก / ผิด",
+  essay: "อธิบายหลักการ",
+};
+
+interface MockTestRunnerProps {
+  test?: MockTest;
+  tests?: MockTest[];
+}
+
 /**
- * Mock test runner.
+ * Mock test runner supporting single or multi-paper mode.
  *
- * Accessibility notes that shaped this:
+ * Accessibility notes:
  * - The ticking clock is `role="timer"` with `aria-live="off"`, so a screen
- *   reader is not interrupted every second. Warnings go to a separate polite
- *   region, and only at the minute marks that matter.
+ *   reader is not interrupted every second. Warnings go to a polite region.
  * - Each question is a real radio group, so arrow keys work natively and the
  *   announced label includes the question text.
- * - Moving between questions moves focus to that question's heading, otherwise
- *   keyboard focus stays behind on the previous question.
+ * - Moving between questions moves focus to that question's heading.
  */
-export function MockTestRunner({ test }: { test: MockTest }) {
+export function MockTestRunner({ test: initialTest, tests }: MockTestRunnerProps) {
+  const testList = useMemo(() => {
+    if (tests && tests.length > 0) return tests;
+    if (initialTest) return [initialTest];
+    return [];
+  }, [tests, initialTest]);
+
+  const [activeTestIndex, setActiveTestIndex] = useState(0);
+  const activeTest = testList[activeTestIndex] || testList[0];
+
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [idx, setIdx] = useState(0);
-  const [remaining, setRemaining] = useState(test.timeLimitSeconds);
+  const [remaining, setRemaining] = useState(activeTest ? activeTest.timeLimitSeconds : 0);
   const [finished, setFinished] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  const q: Question = test.questions[idx];
+  const q: Question | undefined = activeTest?.questions[idx];
 
   const submit = useCallback(() => {
     setFinished(true);
@@ -56,26 +74,26 @@ export function MockTestRunner({ test }: { test: MockTest }) {
 
   // Auto-submit when the clock reaches zero.
   useEffect(() => {
-    if (remaining === 0 && !finished && Object.keys(answers).length >= 0 && test.timeLimitSeconds > 0) {
+    if (remaining === 0 && !finished && Object.keys(answers).length >= 0 && (activeTest?.timeLimitSeconds ?? 0) > 0) {
       submit();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [remaining, finished]);
+  }, [remaining, finished, activeTest]);
 
-  const score = useMemo(
-    () =>
-      test.questions.reduce((n, item) => {
-        const chosen = answers[item.n];
-        const right = item.options?.find((o) => o.correct)?.label;
-        return chosen && right && chosen === right ? n + 1 : n;
-      }, 0),
-    [answers, test.questions],
-  );
+  const score = useMemo(() => {
+    if (!activeTest) return 0;
+    return activeTest.questions.reduce((n, item) => {
+      const chosen = answers[item.n];
+      const right = item.options?.find((o) => o.correct)?.label;
+      return chosen && right && chosen === right ? n + 1 : n;
+    }, 0);
+  }, [answers, activeTest]);
 
   const answered = Object.keys(answers).length;
-  const total = test.questions.length;
+  const total = activeTest ? activeTest.questions.length : 0;
 
   function choose(label: string) {
+    if (!q) return;
     setAnswers((a) => ({ ...a, [q.n]: label }));
   }
 
@@ -84,30 +102,74 @@ export function MockTestRunner({ test }: { test: MockTest }) {
     window.requestAnimationFrame(() => headingRef.current?.focus());
   }
 
+  function switchTest(newIndex: number) {
+    if (newIndex === activeTestIndex) return;
+    const nextTest = testList[newIndex];
+    if (!nextTest) return;
+    setActiveTestIndex(newIndex);
+    setAnswers({});
+    setIdx(0);
+    setFinished(false);
+    setRemaining(nextTest.timeLimitSeconds);
+    window.requestAnimationFrame(() => headingRef.current?.focus());
+  }
+
+  if (!activeTest || !q) {
+    return <div className="py-8 text-ink-subtle">ไม่พบชุดข้อสอบ</div>;
+  }
+
   /* ---------------- results ---------------- */
   if (finished) {
-    const pct = Math.round((score / total) * 100);
+    const pct = total > 0 ? Math.round((score / total) * 100) : 0;
     return (
       <div>
+        {testList.length > 1 && (
+          <div className="mb-8 border-b border-rule pb-4">
+            <p className="meta-label tracking-display text-ink-subtle mb-3">ชุดข้อสอบ</p>
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="เลือกชุดข้อสอบ">
+              {testList.map((t, ti) => (
+                <button
+                  key={t.id || t.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={ti === activeTestIndex}
+                  onClick={() => switchTest(ti)}
+                  className={`tap px-4 py-2 border text-sm transition-colors duration-200 ${
+                    ti === activeTestIndex
+                      ? "border-accent text-accent-ink font-medium"
+                      : "border-rule hover:border-rule-strong text-ink"
+                  }`}
+                >
+                  <span className="meta-label tracking-display">{t.titleTh}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="border-t-2 border-accent pt-6">
-          <p className="meta-label tracking-display text-ink-subtle">ผลคะแนน</p>
+          <p className="meta-label tracking-display text-ink-subtle">
+            ผลคะแนน &middot; {activeTest.titleTh}
+          </p>
           <p className="tnum mt-4 text-6xl lg:text-7xl font-medium">
             {score}
             <span className="text-ink-subtle text-3xl">/{total}</span>
           </p>
           <p className="mt-2 tnum text-lg text-ink-muted">{pct}%</p>
-          <button
-            type="button"
-            onClick={() => {
-              setAnswers({});
-              setIdx(0);
-              setFinished(false);
-              setRemaining(test.timeLimitSeconds);
-            }}
-            className="tap mt-8 px-6 py-3 border border-rule hover:border-accent"
-          >
-            <span className="meta-label tracking-display">ทำอีกครั้ง</span>
-          </button>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setAnswers({});
+                setIdx(0);
+                setFinished(false);
+                setRemaining(activeTest.timeLimitSeconds);
+              }}
+              className="tap px-6 py-3 border border-rule hover:border-accent"
+            >
+              <span className="meta-label tracking-display">ทำชุดนี้อีกครั้ง</span>
+            </button>
+          </div>
         </div>
 
         <h2
@@ -115,17 +177,17 @@ export function MockTestRunner({ test }: { test: MockTest }) {
           tabIndex={-1}
           className="mt-sp-2 text-3xl tracking-reset border-b border-rule pb-6 outline-none"
         >
-          เฉลยทั้งหมด
+          เฉลยและวิธีคิดทั้งหมด
         </h2>
 
         <ol className="mt-sp-1 space-y-sp-1">
-          {test.questions.map((item, i) => {
+          {activeTest.questions.map((item, i) => {
             const right = item.options?.find((o) => o.correct)?.label;
             const mine = answers[item.n];
             const ok = mine && right && mine === right;
             const unanswered = !mine;
             return (
-              <li key={item.n} className="grid-12 items-start">
+              <li key={item.n} className="grid-12 items-start border-t border-rule pt-6 first:border-0 first:pt-0">
                 <div className="col-span-12 lg:col-span-1">
                   <span
                     className={`index text-2xl ${
@@ -136,22 +198,54 @@ export function MockTestRunner({ test }: { test: MockTest }) {
                   </span>
                 </div>
                 <div className="col-span-12 lg:col-span-10 mt-2 lg:mt-0">
-                  <p className="text-lg">{item.prompt}</p>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    {item.lectures.map((l) => (
+                      <span
+                        key={l}
+                        className="meta-label tracking-display text-xs border border-rule px-2 py-0.5 text-ink-subtle"
+                      >
+                        {l}
+                      </span>
+                    ))}
+                    {KIND_LABELS[item.kind] && (
+                      <span className="meta-label tracking-display text-xs text-ink-subtle">
+                        {KIND_LABELS[item.kind]}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-lg text-ink font-normal">{item.prompt}</p>
+
                   <p className="mt-3 text-sm">
                     <span className="text-ink-subtle">คำตอบที่ถูก: </span>
-                    <span className="tnum text-accent-ink font-medium">{right?.toUpperCase()}</span>
+                    <span className="tnum text-accent-ink font-medium">
+                      {right?.toUpperCase()}
+                    </span>
                     {!ok ? (
                       <>
-                        <span className="text-ink-subtle"> · คุณเลือก: </span>
+                        <span className="text-ink-subtle"> &middot; คุณเลือก: </span>
                         <span className="tnum">
                           {unanswered ? "ไม่ได้ตอบ" : mine?.toUpperCase()}
                         </span>
                       </>
                     ) : null}
                   </p>
-                  <p className="mt-4 text-ink-muted">{item.explanation}</p>
+
+                  <div className="mt-4 text-ink-muted whitespace-pre-line text-sm lg:text-base">
+                    {item.explanation}
+                  </div>
+
+                  {item.distractor && (
+                    <div className="mt-4 border-l-2 border-rule-strong pl-3 py-1">
+                      <p className="meta-label tracking-display text-xs text-ink-subtle">
+                        จุดที่มักตอบผิด &middot; Trap
+                      </p>
+                      <p className="mt-1 text-xs text-ink-muted">{item.distractor}</p>
+                    </div>
+                  )}
+
                   {item.slideRef ? (
-                    <p className="mt-3 meta-label tracking-display text-ink-subtle">
+                    <p className="mt-3 meta-label tracking-display text-ink-subtle text-xs">
                       ตรวจได้ที่ {item.slideRef}
                     </p>
                   ) : null}
@@ -169,13 +263,45 @@ export function MockTestRunner({ test }: { test: MockTest }) {
 
   return (
     <div>
+      {/* Paper selection bar (if multiple papers available) */}
+      {testList.length > 1 && (
+        <div className="mb-6 pb-4 border-b border-rule">
+          <p className="meta-label tracking-display text-ink-subtle mb-3">
+            เลือกชุดข้อสอบ &middot; Select Paper
+          </p>
+          <div className="flex flex-wrap gap-2" role="tablist" aria-label="เลือกชุดข้อสอบ">
+            {testList.map((t, ti) => {
+              const isSelected = ti === activeTestIndex;
+              return (
+                <button
+                  key={t.id || t.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  onClick={() => switchTest(ti)}
+                  className={`tap px-4 py-2 border text-sm transition-colors duration-200 ${
+                    isSelected
+                      ? "border-accent text-accent-ink font-medium"
+                      : "border-rule hover:border-rule-strong text-ink"
+                  }`}
+                >
+                  <span className="meta-label tracking-display">{t.titleTh}</span>
+                </button>
+              );
+            })}
+          </div>
+          {activeTest.description && (
+            <p className="mt-2 text-sm text-ink-subtle">{activeTest.description}</p>
+          )}
+        </div>
+      )}
+
       {/* status bar */}
       <div className="sticky top-20 z-40 -mx-4 sm:mx-0 border-y border-rule bg-bg px-4 sm:px-0 py-4">
         <div className="grid-12 items-center gap-4">
           <div className="col-span-6 lg:col-span-3">
             <p className="meta-label tracking-display text-ink-subtle">เวลาที่เหลือ</p>
-            {/* Ticking clock is deliberately silent; warnings use the polite
-                region below so the reader is not interrupted every second. */}
+            {/* Ticking clock is deliberately silent; warnings use the polite region */}
             <p role="timer" aria-live="off" className="tnum text-2xl mt-1">
               {fmt(remaining)}
             </p>
@@ -204,7 +330,7 @@ export function MockTestRunner({ test }: { test: MockTest }) {
 
       {/* progress rail */}
       <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="เลือกข้อ">
-        {test.questions.map((item, i) => {
+        {activeTest.questions.map((item, i) => {
           const on = i === idx;
           const done = Boolean(answers[item.n]);
           return (
@@ -229,6 +355,22 @@ export function MockTestRunner({ test }: { test: MockTest }) {
 
       {/* question */}
       <section className="mt-sp-1">
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          {q.lectures.map((l) => (
+            <span
+              key={l}
+              className="meta-label tracking-display text-xs border border-rule px-2.5 py-1 text-ink-subtle"
+            >
+              {l}
+            </span>
+          ))}
+          {KIND_LABELS[q.kind] && (
+            <span className="meta-label tracking-display text-xs text-ink-subtle">
+              {KIND_LABELS[q.kind]}
+            </span>
+          )}
+        </div>
+
         <h2
           ref={headingRef}
           tabIndex={-1}
@@ -265,7 +407,9 @@ export function MockTestRunner({ test }: { test: MockTest }) {
                     onChange={() => choose(o.label)}
                     className="mt-1 w-4 h-4 accent-[var(--accent)] shrink-0"
                   />
-                  <span className="tnum text-ink-subtle">{o.label.toUpperCase()}.</span>
+                  <span className="tnum text-ink-subtle font-medium">
+                    {o.label.toUpperCase()}.
+                  </span>
                   <span>{o.text}</span>
                 </label>
               );

@@ -199,8 +199,10 @@ export interface Question {
 }
 
 export interface MockTest {
+  id?: string;
   title: string;
   titleTh: string;
+  description?: string;
   /** Suggested seconds for the whole paper. */
   timeLimitSeconds: number;
   questions: Question[];

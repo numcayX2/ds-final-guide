@@ -15,6 +15,107 @@ import type { Episode, EpisodeStep } from "./types";
 const VERIFIED = "verified-by-principle" as const;
 
 export const episodes: Episode[] = [
+  /* ============================ EP01 ============================ */
+  {
+    id: "ep01",
+    index: "01",
+    title: "Boxplot & Tukey Outliers",
+    titleTh: "แผนภาพกล่อง และการตรวจ Outlier",
+    lectures: ["Lect 05"],
+    steps: [
+      {
+        n: 1,
+        verification: VERIFIED,
+        headline: "สถิติวัดตำแหน่ง 5 ตัว",
+        body: "เริ่มต้นจากค่าต่ำสุด Q1 มัธยฐาน Q3 และค่าสูงสุด ตัวอย่างข้อมูลสถิติ: Q1=20, Median=28, Q3=35 ครอบคลุมการกระจายตัวของข้อมูล 50% หลัก",
+        visual: {
+          kind: "boxplot",
+          min: 10,
+          q1: 20,
+          median: 28,
+          q3: 35,
+          max: 50,
+          lowerFence: -2.5,
+          upperFence: 57.5,
+          outliers: [],
+        },
+        numbers: ["Q1 = 20", "Median = 28", "Q3 = 35"],
+      },
+      {
+        n: 2,
+        verification: VERIFIED,
+        headline: "คำนวณความกว้าง IQR",
+        body: "Interquartile Range (IQR) คือความกว้างของกล่องสี่เหลี่ยมตรงกลาง ซึ่งครอบคลุมข้อมูล 50% หลัก คำนวณจาก Q3 ลบด้วย Q1",
+        visual: {
+          kind: "boxplot",
+          min: 10,
+          q1: 20,
+          median: 28,
+          q3: 35,
+          max: 50,
+          lowerFence: -2.5,
+          upperFence: 57.5,
+          outliers: [],
+        },
+        numbers: ["IQR = 35 - 20 = 15"],
+      },
+      {
+        n: 3,
+        verification: VERIFIED,
+        headline: "สร้างรั้วเกณฑ์ตัดสิน (Fences)",
+        body: "รั้วล่าง = Q1 - 1.5×IQR = 20 - 22.5 = -2.5 และรั้วบน = Q3 + 1.5×IQR = 35 + 22.5 = 57.5 รั้วเป็นเส้นสมมติที่คำนวณขึ้นเพื่อใช้เป็นเกณฑ์ตัดสิน",
+        visual: {
+          kind: "boxplot",
+          min: 10,
+          q1: 20,
+          median: 28,
+          q3: 35,
+          max: 50,
+          lowerFence: -2.5,
+          upperFence: 57.5,
+          outliers: [],
+        },
+        numbers: ["Lower Fence = -2.5", "Upper Fence = 57.5"],
+      },
+      {
+        n: 4,
+        verification: VERIFIED,
+        headline: "Whisker จบที่ค่าจริงในรั้ว",
+        body: "ตามสไลด์ Lect 05 หน้า 17 เส้น Whisker ไม่ได้ลากไปถึง Fence เสมอไป แต่สิ้นสุดที่ค่าจริงสุดท้ายที่ยังอยู่ภายใน Fence (ในที่นี้คือ 50)",
+        visual: {
+          kind: "boxplot",
+          min: 10,
+          q1: 20,
+          median: 28,
+          q3: 35,
+          max: 50,
+          lowerFence: -2.5,
+          upperFence: 57.5,
+          outliers: [],
+        },
+        numbers: ["Whisker max = 50 <= Upper Fence 57.5"],
+      },
+      {
+        n: 5,
+        verification: VERIFIED,
+        headline: "ตรวจพบค่าผิดปกติ (Outlier)",
+        body: "หากมีข้อมูลค่า 58 ซึ่งเกิน Upper Fence (57.5) ออกไป ค่านั้นจะถูกตัดสินว่าเป็น Outlier ทันทีและวาดแยกเป็นจุดเดี่ยว",
+        visual: {
+          kind: "boxplot",
+          min: 10,
+          q1: 20,
+          median: 28,
+          q3: 35,
+          max: 58,
+          lowerFence: -2.5,
+          upperFence: 57.5,
+          outliers: [58],
+        },
+        numbers: ["58 > 57.5 (Outlier)"],
+      },
+    ],
+  },
+
   /* ============================ EP02 ============================ */
   {
     id: "ep02",
@@ -393,6 +494,181 @@ export const episodes: Episode[] = [
           metric: "manhattan",
         },
         numbers: ["O(tkn)"],
+      },
+    ],
+  },
+
+  /* ============================ EP05 ============================ */
+  {
+    id: "ep05",
+    index: "05",
+    title: "SHAP Force Plot: Local XAI",
+    titleTh: "การอธิบายผลทำนายรายบุคคลด้วย SHAP",
+    lectures: ["Lect 09"],
+    steps: [
+      {
+        n: 1,
+        verification: VERIFIED,
+        headline: "ค่าฐานเฉลี่ยของประชากร",
+        body: "โมเดลเริ่มต้นจาก Base Value 32% ซึ่งคือค่าความน่าจะเป็นเฉลี่ยของการเกิด Inactive จากข้อมูลลูกค้าทั้งหมดก่อนดูคุณสมบัติเฉพาะคน",
+        visual: {
+          kind: "shap-force",
+          baseValue: 32,
+          prediction: 32,
+          contributions: [],
+        },
+        numbers: ["Base Value = 32%"],
+      },
+      {
+        n: 2,
+        verification: VERIFIED,
+        headline: "แรงผลักด้านบวก: ไม่ซื้อสินค้านาน",
+        body: "ฟีเจอร์ 'ไม่ได้ซื้อสินค้านาน (> 45 วัน)' มีค่า SHAP +29% ทำหน้าที่เป็นแรงผลักให้ความน่าจะเป็น Inactive สูงขึ้น 29 จุดเปอร์เซ็นต์",
+        visual: {
+          kind: "shap-force",
+          baseValue: 32,
+          prediction: 61,
+          contributions: [
+            { feature: "ไม่ได้ซื้อสินค้านาน (> 45 วัน)", value: 29 },
+          ],
+        },
+        numbers: ["32% + 29 = 61%"],
+      },
+      {
+        n: 3,
+        verification: VERIFIED,
+        headline: "แรงผลักด้านบวก: ร้องเรียนบริการ",
+        body: "ฟีเจอร์ 'มีประวัติร้องเรียนบริการล่าสุด' มีค่า SHAP +12% ช่วยผลักดันความน่าจะเป็นของการยกเลิกให้สูงขึ้นไปอีก 12 จุดเปอร์เซ็นต์",
+        visual: {
+          kind: "shap-force",
+          baseValue: 32,
+          prediction: 73,
+          contributions: [
+            { feature: "ไม่ได้ซื้อสินค้านาน (> 45 วัน)", value: 29 },
+            { feature: "ประวัติร้องเรียนบริการ", value: 12 },
+          ],
+        },
+        numbers: ["61% + 12 = 73%"],
+      },
+      {
+        n: 4,
+        verification: VERIFIED,
+        headline: "แรงต้านด้านลบ: ยอดซื้อสะสมสูง",
+        body: "ฟีเจอร์ 'ยอดซื้อสะสมในอดีตสูง' มีค่า SHAP -8% ทำหน้าที่ดึงความน่าจะเป็นกลับลงมาทางด้าน Active 8 จุดเปอร์เซ็นต์",
+        visual: {
+          kind: "shap-force",
+          baseValue: 32,
+          prediction: 65,
+          contributions: [
+            { feature: "ไม่ได้ซื้อสินค้านาน (> 45 วัน)", value: 29 },
+            { feature: "ประวัติร้องเรียนบริการ", value: 12 },
+            { feature: "ยอดซื้อสะสมสูง", value: -8 },
+          ],
+        },
+        numbers: ["73% - 8 = 65%"],
+      },
+      {
+        n: 5,
+        verification: VERIFIED,
+        headline: "ผลรวมทำนายสุดท้าย 65%",
+        body: "32% + 29 + 12 - 8 = 65% จุดสำคัญในสไลด์ Lect 09 หน้า 9 คือ SHAP เป็นการบวกแบบจุดเปอร์เซ็นต์ (Percentage Points) ไม่ใช่ Relative Percent",
+        visual: {
+          kind: "shap-force",
+          baseValue: 32,
+          prediction: 65,
+          contributions: [
+            { feature: "ไม่ได้ซื้อสินค้านาน (> 45 วัน)", value: 29 },
+            { feature: "ประวัติร้องเรียนบริการ", value: 12 },
+            { feature: "ยอดซื้อสะสมสูง", value: -8 },
+          ],
+        },
+        numbers: ["32% + 29 + 12 - 8 = 65%"],
+      },
+    ],
+  },
+
+  /* ============================ EP06 ============================ */
+  {
+    id: "ep06",
+    index: "06",
+    title: "Concept Drift & Degradation",
+    titleTh: "การเปลี่ยนสภาพแวดล้อมและความเสื่อมของโมเดล",
+    lectures: ["Lect 09"],
+    steps: [
+      {
+        n: 1,
+        verification: VERIFIED,
+        headline: "ข้อมูลชุดฝึกเดิม (In-distribution)",
+        body: "ในอดีต ลูกค้าที่ไม่ซื้อของเกิน 45 วันมีอัตราเลิกใช้งานจริงสูงถึง 68% โมเดลเรียนรู้กฎนี้และทำนายความแม่นยำได้สูงถึง 88%",
+        visual: {
+          kind: "concept-drift",
+          timeline: [
+            { t: 1, accuracy: 88, note: "โมเดลเดิมแม่นยำ 88% กฎ 45 วันสัมพันธ์กับ Inactive 68%" },
+          ],
+        },
+        numbers: ["Inactive Rate = 68%", "Accuracy = 88%"],
+      },
+      {
+        n: 2,
+        verification: VERIFIED,
+        headline: "ธุรกิจเปลี่ยนเป็น Subscription",
+        body: "บริษัทปรับเปลี่ยนรูปแบบเป็นสมาชิกรายเดือน ทำให้พฤติกรรมลูกค้าไม่จำเป็นต้องสั่งซื้อสินค้าทุก 45 วันอีกต่อไป",
+        visual: {
+          kind: "concept-drift",
+          timeline: [
+            { t: 1, accuracy: 88 },
+            { t: 2, accuracy: 84, note: "เปิดตัว Subscription พฤติกรรมการซื้อเริ่มเปลี่ยน" },
+          ],
+        },
+        numbers: ["Shift to Subscription"],
+      },
+      {
+        n: 3,
+        verification: VERIFIED,
+        headline: "เกิด Concept Drift: P(Y|X) พลิก",
+        body: "ตามสไลด์ Lect 09 หน้า 11 ลูกค้าที่ไม่ซื้อเกิน 45 วัน มีอัตรา Inactive ลดลงเหลือเพียง 31% ความหมายของฟีเจอร์เปลี่ยนไปจากอดีต",
+        visual: {
+          kind: "concept-drift",
+          timeline: [
+            { t: 1, accuracy: 88 },
+            { t: 2, accuracy: 84 },
+            { t: 3, accuracy: 65, note: "Inactive ลดเหลือ 31% แต่โมเดลยังคงใช้กฎเดิม" },
+          ],
+        },
+        numbers: ["68% -> 31% Inactive"],
+      },
+      {
+        n: 4,
+        verification: VERIFIED,
+        headline: "โมเดลเสื่อมสภาพ (Degradation)",
+        body: "โมเดลเดิมทำนายลูกค้ากลุ่มนี้ผิดพลาดจำนวนมากจน False Positive พุ่งสูง และ Accuracy ลดลงเหลือ 54%",
+        visual: {
+          kind: "concept-drift",
+          timeline: [
+            { t: 1, accuracy: 88 },
+            { t: 2, accuracy: 84 },
+            { t: 3, accuracy: 65 },
+            { t: 4, accuracy: 54, note: "ความแม่นยำลดลงเหลือ 54% โมเดลไม่สอดคล้องกับโลกจริง" },
+          ],
+        },
+        numbers: ["Accuracy 88% -> 54%"],
+      },
+      {
+        n: 5,
+        verification: VERIFIED,
+        headline: "ทางแก้: Monitoring & Retraining",
+        body: "แนวปฏิบัติของ Responsible AI คือต้องมี Human Oversight ตรวจจับ Drift สม่ำเสมอ และ Retrain โมเดลด้วยข้อมูลปัจจุบันเพื่อฟื้นความแม่นยำ",
+        visual: {
+          kind: "concept-drift",
+          timeline: [
+            { t: 1, accuracy: 88 },
+            { t: 2, accuracy: 84 },
+            { t: 3, accuracy: 65 },
+            { t: 4, accuracy: 54 },
+            { t: 5, accuracy: 86, note: "Retrain ด้วยข้อมูลใหม่ ความแม่นยำฟื้นกลับมา 86%" },
+          ],
+        },
+        numbers: ["Retrain & Restore Accuracy to 86%"],
       },
     ],
   },

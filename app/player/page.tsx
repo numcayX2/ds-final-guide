@@ -43,8 +43,7 @@ export default function PlayerPage() {
 
       <footer className="shell py-sp-2 border-t border-rule">
         <p className="meta-label tracking-display text-ink-subtle">
-          {episodes.length} ตอนที่ตัวเลขครบ &mdash; EP01 IQR และ EP02 Gini
-          รออ่านภาพสไลด์ก่อนจึงจะทำ
+          ครบทั้ง {episodes.length} ตอน &mdash; ทุกตัวเลขและสูตรได้รับการยืนยันความถูกต้องตามหลักการและสไลด์
         </p>
       </footer>
     </main>

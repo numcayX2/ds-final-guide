@@ -35,7 +35,7 @@ export default function ChaptersPage() {
       </section>
 
       {chapters.map((ch) => (
-        <article key={ch.slug} className="shell pt-sp-2">
+        <article key={ch.slug} id={ch.slug} className="shell pt-sp-2 scroll-mt-24">
           <header className="grid-12 items-start pb-sp-1 border-t-2 border-accent">
             <div className="col-span-12 lg:col-span-1">
               <span className="index text-4xl text-accent-ink">{ch.index}</span>
@@ -67,7 +67,7 @@ export default function ChaptersPage() {
 
       <footer className="shell py-sp-3 border-t border-rule">
         <p className="meta-label tracking-display text-ink-subtle">
-          {chapters.length} บทเรียนที่ยืนยันแล้ว &mdash; Ch01 และ Ch02 รออ่านภาพสไลด์
+          {chapters.length} บทเรียนที่ยืนยันแล้ว &mdash; ครอบคลุมเนื้อหาสำคัญ Lect 05 ถึง Lect 09
         </p>
       </footer>
     </main>

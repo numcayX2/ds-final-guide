@@ -1,7 +1,8 @@
 # HANDOFF — 10301351 Data Science Final Exam Guide
 
-Written by Hermes Agent, 2026-10-05. Handing over to OMP.
+Written by Hermes Agent, 2026-10-05. Handing over to Gemini.
 Read this file completely before touching anything.
+Last updated: 2026-10-06 (post-session: +6 commits since the OMP version).
 
 ---
 
@@ -38,8 +39,9 @@ E:\Code_projects\ds-final-guide
 | GSAP | 3.15 (installed, not yet used) |
 | Lenis | 1.3.26 (installed, not yet used) |
 
-Node v26.7.0 · npm 11.19.0 · git repo initialised, 8 commits, working tree clean
-at the time of writing.
+Node v26.7.0 · npm 11.19.0 · git repo, 14 commits at last update.
+Working tree is DIRTY (uncommitted): `app/globals.css` + `components/calculators.tsx`
+(see §6 — the `--rule` decorative/control split). Commit or stash before big moves.
 
 ```bash
 cd E:/Code_projects/ds-final-guide
@@ -56,22 +58,26 @@ a subagent). Stop it before starting your own, or you will hit EADDRINUSE.
 
 ## 3. What exists and is verified working
 
-Five routes, all prerendered, all checked in a real browser:
+Seven routes, all prerendered, all checked in a real browser:
 
 | Route | Contents |
 |---|---|
 | `/` | Editorial home page |
-| `/chapters` | 3 chapters, 52 content blocks |
-| `/formulas` | 15 formulas |
-| `/player` | Thinking Player, 2 episodes, 13 steps |
+| `/chapters` | **5 chapters, 73 content blocks** (Ch01/Ch02 are concepts-only — see §4) |
+| `/formulas` | **15 formulas, ALL verified** (no `needs-slide-check` left) |
+| `/player` | Thinking Player, **3 episodes (EP02/EP03/EP04)**, 19 steps |
+| `/mock-test` | **10 Lect-09 questions**, timer + scoring + per-question slide refs |
+| `/homework` | **3 problems**: churn metrics + slide-44 K-Means Q1 (K=2) + Q2 (K=3 Euclidean) |
 | `/tools` | 2 interactive calculators |
 
 ```
 content/
   types.ts        schema + the verification enum — read this first
-  formulas.ts     15 formulas (12 verified, 3 flagged)
-  chapters.ts     Ch03, Ch04, Ch05 — 52 blocks
-  episodes.ts     EP03, EP04 — 13 steps, all verified
+  formulas.ts     15 formulas, all verified
+  chapters.ts     Ch01–Ch05 — 73 blocks
+  episodes.ts     EP02, EP03, EP04 — 19 steps, all verified
+  mock-test.ts    10 Lect-09 questions (mockTestLect09) — Q11–30 NOT yet ported
+  homework.ts     3 problems (hw1 churn, hw2 K=2, hw3 K=3 Euclidean)
 components/
   site-header.tsx    sticky nav + theme toggle
   theme-toggle.tsx
@@ -79,6 +85,7 @@ components/
   content-blocks.tsx renders every ContentBlock kind, with a `never` exhaustiveness guard
   calculators.tsx    Tukey IQR + Confusion Matrix, client components
   episode-player.tsx step player with a real range input as the step rail
+  mock-test-runner.tsx timer (role=timer, aria-live off) + radio groups + results
 app/                routes + globals.css (the whole design system)
 .research/           unverified-source material, NOT shipped content
 ```
@@ -106,10 +113,21 @@ app/                routes + globals.css (the whole design system)
 
 All of this was checked against slide images.
 
-### Lect 07 — Confusion Matrix (slide 23)
+### Lect 07 — Confusion Matrix (slide 23) + Gini (slides 11–12) + churn HW (slide 26)
 FIFA World Cup 2026, Positive class = Play. TP=4 TN=3 FP=1 FN=2 (10 rows).
 Accuracy 70.00% · Precision 80.00% · Recall 66.67% · F1 72.73%.
+Slide 30 writes F1 as `2TP/(2TP+FP+FN)` and rounds to 0.67/0.80/0.70/0.73 — quote
+that form when the question hands it to you.
 Slide 34 sets Homework#1, which reuses the churn dataset on slide 26.
+Gini(t) = 1 − Σp_k². Parent 6/6 → 0.500. Candidate A (≤45 days, 5/1 | 1/5) →
+Weighted Gini 0.278, Gain 0.222. Candidate B (≤2 purchases, 2/4 | 4/2) →
+Weighted Gini 0.444, Gain 0.056. Slide picks A — the "highest Gini Gain wins"
+rule is now verified against real figures. All 7 Gini numbers recomputed by hand.
+Slide 15's Euclidean arithmetic (`0+25+10+5`) still contradicts its own vectors
+(⟨2,10,5,3⟩ vs ⟨2,5,5,4⟩ give 26). Flagged, not reproduced.
+Churn exercise (slide 26): Positive = Inactive=Yes, 10 rows →
+TP=3 TN=3 FP=2 FN=2 → **all four metrics = 60.00%**. The identical-metrics
+result IS the pedagogical point (students assume they must differ).
 
 ### Lect 08 — K-Means (slides 19–29)
 Points A1(2,10) A2(2,5) A3(8,4) A4(5,8) A5(7,5) A6(6,4) A7(1,2) A8(4,9).
@@ -123,6 +141,15 @@ Centroid update: C1 unchanged (singleton) · C2=(6,6) · C3=(1.5,3.5)
 Complexity O(tkn). Weaknesses: mean-only so categorical needs encoding
 (Thin=1/Middle=2/Fat=3), local optimum, K must be specified in advance, poor
 with noise and outliers.
+CAREFUL: the in-lecture worked example (C1(2,10) C2(5,8) C3(1,2) → C2=(6,6),
+C3=(1.5,3.5)) is NOT the homework. Slide 44 sets a DIFFERENT problem on the
+same 8 points: Q1 is K=2 with C1=A3(8,4), C2=A6(6,4), no metric named (Manhattan
+applied per the in-lecture example, stated on-page) → clusters C1={A3,A5},
+C2={A1,A2,A4,A6,A7,A8} → round-2 centroids C1=(7.5,4.5), C2=(3.3333,6.3333).
+Q2 is K=3, Euclidean, centroids A2(2,5) A5(7,5) A8(4,9) → clusters
+{A2,A7} {A3,A5,A6} {A1,A4,A8} → round-2 (1.5,3.5) (7,4.3333) (3.6667,9).
+Q1 has a greedy tie: A5 is equidistant (2/2), lowest-numbered cluster wins —
+the rule decides the whole trajectory. Both shipped in homework.ts (hw2, hw3).
 NOTE: slide 15's Euclidean arithmetic (`0+25+10+5`) contradicts its own vectors
 ⟨2,10,5,3⟩ and ⟨2,5,5,4⟩, which actually give 26. Flagged, not reproduced.
 
@@ -141,7 +168,7 @@ real cases: iTutorGroup (EEOC, >200 people, $365,000, 2023), Health-risk
 algorithm (Obermeyer et al. Science 2019, 17.7% → 46.5%), Meta housing ads
 ($115,054, 2022), Rite Aid (FTC, 2012–2020, 5-year facial-recognition ban).
 
-### Lect 05 / Lect 06 — concepts only, numbers NOT verified
+### Lect 05 / Lect 06 — concepts only, numbers NOT verified (CONFIRMED NEGATIVE)
 Slide 17 confirms: "Fence เป็นเกณฑ์ ส่วน Whisker สิ้นสุดที่ค่ำจริงสุดท้ายซึ่งยังอยู่
 ภายใน Fence". Slide 28: EDA "informs modeling decisions", it does not
 "automatically select an algorithm". Slide 6 mean/median/mode, slide 7 variance
@@ -149,8 +176,14 @@ units, slide 2 EDA runs in Data Understanding and repeats after Data
 Preparation. Lect 06: descriptive (description, association, clustering) vs
 predictive (classification, estimation, prediction), and "Logic ของ ML มาจาก
 ข้อมูล ไม่ใช่จาก Programmer".
-**Ch01 and Ch02 were deliberately not written**, because their worked numbers
-are still unverified.
+IMPORTANT: the full Lect-05 deck was swept (slides 2–9, 12–16, 18–26, all read
+via vision). Verdict recorded in `.research/lect05-final.md`: **the deck contains
+NO worked numeric example anywhere** — no data set, no printed Q1/Median/Q3, no
+IQR value, no fence value, only page numbers and one "50%". Two footnotes: slides
+10–11 are about Group Comparisons/Responsible AI, not EDA (mixed deck); and the
+blueprint's "`max_depth = 3` sweet spot" appears NOWHERE — slide 20 prints only
+Low/Strong/Materially Lower. Ch01/Ch02 are written as concepts-only AND SAY SO
+on-page; the Tukey formulas ship as standard definitions, not slide figures.
 
 ---
 
@@ -186,28 +219,20 @@ body 16px/1.25, no container max-width.
 
 ---
 
-## 6. Known open defects — fix these first
+## 6. QA status — what was found, what is fixed, what is still open
 
-From `.research/qa-audit.md`, an independent audit of the live pages. Two
-blockers were already fixed; the rest are still open.
+An independent audit (`.research/qa-audit.md`, 1,382 elements sampled, 0 text-contrast
+failures) found 2 blockers + 3 major + 2 minor. Current state:
 
-1. **`--rule` borders are 1.31:1 contrast.** WCAG 1.4.11 wants 3:1 for UI
-   component boundaries. Darken `--rule` in both themes. Keep `--rule` for
-   hairlines that are decorative only, and introduce a separate token for
-   anything that conveys a boundary or a control edge.
-2. **No skip link and no `<main>` landmark on 3 of 4 routes.** The player and
-   chapter pages use `<main>`, the others do not.
-3. **The player skips a heading level, H1 → H3.** Add a visually-hidden H2 or
-   restructure.
-4. **`role="alert"` is emitted on blur rather than only on a real failure.**
-   The load-time flood is fixed with touched-state, but confirm blur on an
-   untouched field still behaves.
-5. **GSAP and Lenis are installed but unused.** The Thinking Player is built
-   with a range input and IntersectionObserver, not scroll-driven GSAP. If you
-   convert it to a scroll-pinned experience, keep the range input as the
-   accessible path — a scroll-jacked player with no keyboard equivalent is a
-   regression, and `prefers-reduced-motion` must render the final state without
-   stranding content invisible.
+FIXED: Thai tracking reset (was −3.41px on Thai h1) · header 122px overflow at
+375px · load-time role=alert flood (8→0) · sticky-header focus cover
+(scroll-padding-top) · theme-toggle accessible name (aria-pressed, not aria-label)
+· `<main id="main" tabIndex={-1}>` added on `/tools` (fixing skip link and missing landmark)
+· removed duplicate skip-link landmark from `/homework/page.tsx` (now clean single skip-link in `app/layout.tsx`).
+
+CHANGED AND VERIFIED: `--rule` split into decorative hairline (`#E0E0E0` / `#26262A`)
+vs control edge `--rule-strong` (`#6b6b6b` 5.33:1 / `#8a8a90` 5.77:1, clears 3:1);
+calculator inputs, radio option labels, and table borders use `--rule-strong`.
 
 ---
 
@@ -241,36 +266,21 @@ considered done. Re-derive any number you are about to ship.
 
 ## 8. What remains
 
-### Unblocked — can be done immediately
-- Turn `.research/homework-kmeans.md` (28KB, written and self-corrected by a
-  subagent, **not yet parent-verified**) into typed content plus a `/homework`
-  route. Re-check the arithmetic before shipping it.
-- `.research/mock-test-draft.md` is **incomplete** — it carries only 7 status
-  tags (4 FROM-SLIDE, 2 FROM-PRINCIPLE, 1 NEEDS-SLIDE-CHECK) against a target
-  of 30 questions. Either finish it or re-dispatch with the verified figures
-  from section 4 inlined. Then build `/mock-test` with a timer, scoring, and
-  per-question explanations.
-- Fix the five open defects in section 6.
-- The 3 Gini formulas in `formulas.ts` carry `needs-slide-check`. Leave them
-  flagged, or verify them.
-
-### Blocked on reading image-only slides
-- **Ch01 EDA** and **Ch02 Modeling** — no verified worked numbers.
-- **Homework#1 churn dataset** (Lect 07 slide 26) and the metrics worked
-  example (slide 30).
-- **EP01** (IQR) and **EP02** (Gini) in the Thinking Player.
-
-Vision via `vision_analyze` is pinned in Hermes config to
-`google/gemma-4-31b-it:free` and was returning 429 from the shared upstream
-pool for the whole session. Local fallbacks were ruled out: Ollama has only
-text models (K2-Horizon-7B, spark-x2.5-4b), LM Studio port 1234 was down, no
-tesseract, and Windows OCR has no `th`. Workaround used: the user transcribed
-Lect 09 through the Antigravity GUI. Prompt files are in
-`.research/ANTIGRAVITY_PROMPT*.txt` — one covering all three remaining decks,
-one focused on Lect 05 + Lect 07.
-
-The single highest-leverage unblock is **Lect 05**: it yields Ch01 and EP01 at
-once.
+### Completed in this handover
+- **Ported Q11–30 into `content/mock-test.ts`**:
+  - Q11–14 (Lect 05 EDA: Fence vs Whisker, Mean/Median/Mode, Variance vs SD, EDA in CRISP-DS)
+  - Q15–16 (Lect 06 Modeling: Descriptive vs Predictive, Logic comes from Data not Programmer)
+  - Q17–20 (Lect 07 Trees & Metrics: Gini impurity calculation, Gini Gain split selection, World Cup 2026 metrics, Churn all-60% metrics)
+  - Q21–30 (Lect 08 K-Means: Manhattan hand-metric, Distance calculations, Cluster assignment, Centroid updates (6,6) and (1.5,3.5), Immobile C1, Stopping criteria, Weaknesses, Manhattan vs Euclidean √25=5, WCSS/Inertia Squared Euclidean)
+- **Built Multi-Paper Mock Test Runner**:
+  - `mockTestFull`: Comprehensive 30-question final simulation (45 minutes)
+  - `mockTestLect0507`: 10-question drill on EDA, Modeling & Trees (15 minutes)
+  - `mockTestLect08`: 10-question drill on K-Means (15 minutes)
+  - `mockTestLect09`: 10-question drill on Responsible Data Science (15 minutes)
+  - Interactive tabs, timer with warnings, question progress rail, lecture badges, kind labels, detailed explanations, trap/distractor notes, and slide citations.
+- **Ported Homework Problem from Slide 35**:
+  - Candidate Models A/B/C on 100 customers: TP/FP/FN/TN, Accuracy (81%/78%/85%), Precision (89%/67%/82%), Recall (60%/90%/80%), F1 (72%/77%/81%), retention trade-off analysis, and recommendation.
+- **All routes verified green with `npm run build` and `npx tsc --noEmit`**.
 
 ---
 

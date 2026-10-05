@@ -224,6 +224,288 @@ function DecisionTreePanel({
   );
 }
 
+function BoxplotPanel({
+  visual,
+}: {
+  visual: Extract<EpisodeVisual, { kind: "boxplot" }>;
+}) {
+  const W = 100;
+  const H = 60;
+  const minVal = -5;
+  const maxVal = 65;
+  const scaleX = (v: number) => 10 + ((v - minVal) / (maxVal - minVal)) * 80;
+
+  const yBox = 22;
+  const hBox = 16;
+  const q1X = scaleX(visual.q1);
+  const q3X = scaleX(visual.q3);
+  const medX = scaleX(visual.median);
+  const minX = scaleX(visual.min);
+  const maxX = scaleX(visual.max > visual.upperFence ? 50 : visual.max);
+  const ufX = scaleX(visual.upperFence);
+
+  return (
+    <div className="w-full">
+      <div className="flex justify-between items-center mb-3">
+        <p className="meta-label tracking-display text-ink-subtle">
+          Five-number Summary + Fences
+        </p>
+        <span className="meta-label tracking-display text-xs border border-rule px-2 py-0.5 text-accent-ink">
+          IQR = {visual.q3 - visual.q1}
+        </span>
+      </div>
+
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Boxplot visualization">
+        {/* Baseline Axis */}
+        <line x1="8" y1="46" x2="92" y2="46" stroke="var(--rule-strong)" strokeWidth="0.4" />
+
+        {/* Left Whisker */}
+        <line x1={minX} y1={yBox + hBox / 2} x2={q1X} y2={yBox + hBox / 2} stroke="var(--ink)" strokeWidth="0.6" />
+        <line x1={minX} y1={yBox + 4} x2={minX} y2={yBox + hBox - 4} stroke="var(--ink)" strokeWidth="0.6" />
+
+        {/* Right Whisker (stops at last valid data inside fence) */}
+        <line x1={q3X} y1={yBox + hBox / 2} x2={maxX} y2={yBox + hBox / 2} stroke="var(--ink)" strokeWidth="0.6" />
+        <line x1={maxX} y1={yBox + 4} x2={maxX} y2={yBox + hBox - 4} stroke="var(--ink)" strokeWidth="0.6" />
+
+        {/* Box */}
+        <rect
+          x={q1X}
+          y={yBox}
+          width={Math.max(1, q3X - q1X)}
+          height={hBox}
+          fill="none"
+          stroke="var(--ink)"
+          strokeWidth="0.8"
+        />
+
+        {/* Median */}
+        <line x1={medX} y1={yBox} x2={medX} y2={yBox + hBox} stroke="var(--accent)" strokeWidth="1.2" />
+
+        {/* Upper Fence dashed marker */}
+        <line x1={ufX} y1={10} x2={ufX} y2={45} stroke="var(--accent-ink)" strokeWidth="0.5" strokeDasharray="1.5,1.5" />
+
+        {/* Outlier Dots */}
+        {visual.outliers.map((o) => (
+          <circle key={o} cx={scaleX(o)} cy={yBox + hBox / 2} r="2" fill="var(--accent)" />
+        ))}
+      </svg>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-xs">
+        <div className="border border-rule p-2">
+          <p className="meta-label text-ink-subtle">Q1</p>
+          <p className="tnum font-medium text-sm mt-0.5">{visual.q1}</p>
+        </div>
+        <div className="border border-rule p-2">
+          <p className="meta-label text-ink-subtle">Median</p>
+          <p className="tnum font-medium text-sm mt-0.5 text-accent-ink">{visual.median}</p>
+        </div>
+        <div className="border border-rule p-2">
+          <p className="meta-label text-ink-subtle">Q3</p>
+          <p className="tnum font-medium text-sm mt-0.5">{visual.q3}</p>
+        </div>
+        <div className="border border-rule p-2">
+          <p className="meta-label text-ink-subtle">Upper Fence</p>
+          <p className="tnum font-medium text-sm mt-0.5 text-accent-ink">{visual.upperFence}</p>
+        </div>
+      </div>
+
+      <p className="mt-3 text-xs text-ink-muted">
+        Whisker สิ้นสุดที่ {visual.max > visual.upperFence ? 50 : visual.max} (ค่าจริงใน Fence) &middot; Upper Fence อยู่ที่ {visual.upperFence}
+        {visual.outliers.length > 0 && ` &middot; Outlier: ${visual.outliers.join(", ")}`}
+      </p>
+    </div>
+  );
+}
+
+function ShapForcePanel({
+  visual,
+}: {
+  visual: Extract<EpisodeVisual, { kind: "shap-force" }>;
+}) {
+  const base = visual.baseValue;
+  const pred = visual.prediction;
+
+  return (
+    <div className="w-full flex flex-col justify-between h-full">
+      <div>
+        <div className="flex justify-between items-center mb-3">
+          <p className="meta-label tracking-display text-ink-subtle">
+            SHAP Force Plot &middot; Lect 09 p.9
+          </p>
+          <span className="meta-label tracking-display text-xs border border-rule px-2 py-0.5 text-accent-ink font-mono font-medium">
+            f(x) = {pred}%
+          </span>
+        </div>
+
+        {/* Force Track Bar */}
+        <div className="relative pt-6 pb-6 my-2">
+          {/* Base Value marker */}
+          <div
+            className="absolute top-0 transform -translate-x-1/2 flex flex-col items-center"
+            style={{ left: `${base}%` }}
+          >
+            <span className="text-[10px] tnum text-ink-subtle font-mono">Base {base}%</span>
+            <div className="w-0.5 h-3 bg-rule-strong" />
+          </div>
+
+          {/* Bar track (0 to 100%) */}
+          <div className="h-6 w-full bg-rule relative overflow-hidden flex items-center">
+            {/* Base fill */}
+            <div
+              className="h-full bg-ink-subtle/20"
+              style={{ width: `${base}%` }}
+            />
+            {/* Positive push */}
+            {pred > base && (
+              <div
+                className="h-full bg-accent transition-all duration-300"
+                style={{
+                  width: `${pred - base}%`,
+                }}
+              />
+            )}
+          </div>
+
+          {/* Prediction Marker */}
+          <div
+            className="absolute bottom-0 transform -translate-x-1/2 flex flex-col items-center transition-all duration-300"
+            style={{ left: `${pred}%` }}
+          >
+            <div className="w-0.5 h-3 bg-accent" />
+            <span className="text-[11px] tnum text-accent-ink font-bold font-mono">Pred {pred}%</span>
+          </div>
+        </div>
+
+        {/* Contribution breakdown list */}
+        <div className="mt-4 space-y-2">
+          <p className="meta-label tracking-display text-xs text-ink-subtle">
+            Feature Contributions (หน่วย: จุดเปอร์เซ็นต์)
+          </p>
+          {visual.contributions.length === 0 ? (
+            <p className="text-xs text-ink-muted italic py-2">
+              ยังไม่มีฟีเจอร์คำนวณในขั้นตอนนี้ เริ่มต้นที่ Base Value = 32%
+            </p>
+          ) : (
+            <div className="space-y-1.5">
+              {visual.contributions.map((c) => {
+                const isPos = c.value > 0;
+                return (
+                  <div
+                    key={c.feature}
+                    className="flex justify-between items-center text-xs border border-rule px-3 py-2"
+                  >
+                    <span className="text-ink">{c.feature}</span>
+                    <span
+                      className={`tnum font-medium font-mono ${
+                        isPos ? "text-accent-ink" : "text-ink-muted"
+                      }`}
+                    >
+                      {isPos ? `+${c.value}` : c.value} pt
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="border-t border-rule pt-3 mt-4 text-xs">
+        <p className="meta-label tracking-display text-ink-subtle">
+          สมการรวม: {base}% {visual.contributions.map(c => (c.value >= 0 ? `+ ${c.value}` : `- ${Math.abs(c.value)}`)).join(" ")} = <span className="text-accent-ink font-bold font-mono">{pred}%</span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ConceptDriftPanel({
+  visual,
+}: {
+  visual: Extract<EpisodeVisual, { kind: "concept-drift" }>;
+}) {
+  const pts = visual.timeline;
+  const current = pts[pts.length - 1];
+
+  return (
+    <div className="w-full flex flex-col justify-between h-full">
+      <div>
+        <div className="flex justify-between items-center mb-3">
+          <p className="meta-label tracking-display text-ink-subtle">
+            Concept Drift Timeline &middot; Lect 09 p.11
+          </p>
+          <span className="meta-label tracking-display text-xs border border-rule px-2 py-0.5 text-accent-ink font-mono font-medium">
+            Accuracy {current.accuracy}%
+          </span>
+        </div>
+
+        {/* Accuracy Trend Line */}
+        <div className="border border-rule p-3">
+          <p className="meta-label text-[11px] text-ink-subtle mb-1">Model Accuracy Trajectory</p>
+          <svg viewBox="0 0 100 50" className="w-full h-20" role="img" aria-label="Accuracy decline graph">
+            <line x1="8" y1="10" x2="92" y2="10" stroke="var(--rule)" strokeWidth="0.4" />
+            <line x1="8" y1="25" x2="92" y2="25" stroke="var(--rule)" strokeWidth="0.4" />
+            <line x1="8" y1="40" x2="92" y2="40" stroke="var(--rule)" strokeWidth="0.4" />
+
+            {pts.length > 1 && (
+              <polyline
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth="1.2"
+                points={pts
+                  .map((p, i) => {
+                    const x = 12 + (i / 4) * 76;
+                    const y = 45 - ((p.accuracy - 50) / 50) * 35;
+                    return `${x},${y}`;
+                  })
+                  .join(" ")}
+              />
+            )}
+
+            {pts.map((p, i) => {
+              const x = 12 + (i / 4) * 76;
+              const y = 45 - ((p.accuracy - 50) / 50) * 35;
+              const isLatest = i === pts.length - 1;
+              return (
+                <circle
+                  key={i}
+                  cx={x}
+                  cy={y}
+                  r={isLatest ? "2.5" : "1.8"}
+                  fill={isLatest ? "var(--accent)" : "var(--ink-muted)"}
+                />
+              );
+            })}
+          </svg>
+        </div>
+
+        {current.note && (
+          <div className="mt-3 border-l-2 border-accent pl-3 py-1">
+            <p className="text-xs text-ink font-medium">{current.note}</p>
+          </div>
+        )}
+
+        <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+          <div className="border border-rule p-2.5">
+            <p className="meta-label text-ink-subtle">ก่อน Drift (Train)</p>
+            <p className="text-ink-muted mt-0.5 text-[11px]">ไม่ซื้อเกิน 45 วัน</p>
+            <p className="tnum font-medium text-ink mt-0.5">Inactive = 68%</p>
+          </div>
+          <div className="border border-rule p-2.5">
+            <p className="meta-label text-accent-ink">หลัง Drift (โลกจริง)</p>
+            <p className="text-ink-muted mt-0.5 text-[11px]">ไม่ซื้อเกิน 45 วัน</p>
+            <p className="tnum font-medium text-accent-ink mt-0.5">Inactive = 31%</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-rule pt-3 mt-4 text-xs text-ink-muted">
+        P(Y|X) เปลี่ยนแปลงตามกาลเวลา โมเดลเดิมที่จำกัดเฉพาะอดีตจึงเกิด Model Degradation
+      </div>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* The player                                                           */
 /* ------------------------------------------------------------------ */
@@ -355,6 +637,12 @@ export function EpisodePlayer({ episodes }: { episodes: Episode[] }) {
             <MatrixPanel visual={step.visual} showNumbers={step.n >= 2} />
           ) : step.visual.kind === "decision-tree" ? (
             <DecisionTreePanel visual={step.visual} />
+          ) : step.visual.kind === "boxplot" ? (
+            <BoxplotPanel visual={step.visual} />
+          ) : step.visual.kind === "shap-force" ? (
+            <ShapForcePanel visual={step.visual} />
+          ) : step.visual.kind === "concept-drift" ? (
+            <ConceptDriftPanel visual={step.visual} />
           ) : (
             <p className="text-ink-muted">ยังไม่มีภาพสำหรับขั้นตอนนี้</p>
           )}

@@ -21,14 +21,7 @@ import { Reveal } from "@/components/reveal";
 
 export default function HomeworkPage() {
   return (
-    <main id="main" className="flex-1">
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-6 focus:z-50 focus:inline-block focus:bg-bg focus:px-4 focus:py-3 focus:border focus:border-accent"
-      >
-        <span className="meta-label tracking-display">ข้ามไปยังเนื้อหาหลัก</span>
-      </a>
-
+    <main id="main" tabIndex={-1} className="flex-1">
       <section className="shell pt-sp-2 pb-sp-1">
         <div className="grid-12 items-end">
           <div className="col-span-12 lg:col-span-7">

@@ -33,9 +33,11 @@
   --ink: #161616;
   --ink-muted: #5c5c5c;
   --ink-subtle: #757575;
-  /* 3.23:1 on white — WCAG 1.4.11 minimum for control/boundary edges.
-     --rule-strong must stay darker than --rule, not lighter. */
-  --rule: #8f8f8f;
+  /* --rule is a DECORATIVE hairline. Section dividers and table row rules use
+     it, so it stays light. WCAG 1.4.11 (3:1) applies to edges that identify a
+     control, and those use --rule-strong. */
+  --rule: #e0e0e0;
+  /* 5.33:1 on white — clears 3:1 for control edges with margin. */
   --rule-strong: #6b6b6b;
   --accent: #ff4d00;
   /* 4.51:1 on white - passes AA for normal text */
@@ -50,8 +52,9 @@
   --ink: #f7f7f7;
   --ink-muted: #9a9a9f;
   --ink-subtle: #83838a;
-  /* 3.45:1 on #0a0a0a — WCAG 1.4.11 minimum for control/boundary edges. */
-  --rule: #666666;
+  /* Decorative hairline; see the note in the light theme above. */
+  --rule: #26262a;
+  /* 5.77:1 on #0a0a0a — clears 3:1 for control edges with margin. */
   --rule-strong: #8a8a90;
   --accent: #ff4d00;
   /* 5.96:1 on #0A0A0A */
@@ -67,7 +70,7 @@
     --ink-muted: #9a9a9f;
     --ink-subtle: #83838a;
     /* 3.45:1 on #0a0a0a — WCAG 1.4.11 minimum for control/boundary edges. */
-    --rule: #666666;
+    --rule: #26262a;
     --rule-strong: #8a8a90;
     --accent: #ff4d00;
     --accent-ink: #ff6a2b;
@@ -83,6 +86,12 @@ html {
   /* The sticky header must not cover a focused control when the keyboard
      scrolls it into view. */
   scroll-padding-top: 96px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

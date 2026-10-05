@@ -3,23 +3,28 @@ import type { HomeworkProblem } from "./types";
 /**
  * Homework solutions — P5.
  *
- * Two problems, both transcribed from the lecture slides and re-checked against
+ * Four problems, all transcribed from the lecture slides and re-checked against
  * them. Every figure below is a slide figure; nothing is invented to fill a gap.
  *
  * Verified against the decks:
  *   Lect 07 slide 26 — confusion matrix exercise, Positive class = Inactive = Yes
  *   Lect 07 slide 30 — the metric method the homework must use
  *   Lect 07 slide 34 — Homework 1, "นับ TP, TN, FP และ FN"
- *   Lect 08 slides 26-29 — K-Means, Manhattan distance, 8 points, 3 initial centroids
+ *   Lect 07 slide 35 — Homework 2, "เลือก Classifier Model สำหรับ Customer Inactivity"
+ *   Lect 08 slide 44 — Homework K-Means (Q1: K=2 Manhattan, Q2: K=3 Euclidean)
  *
- * The two results worth memorising:
+ * Key results worth memorising:
  *
  * 1. Problem 1 lands on four identical metrics (60.00% each). That is not a
  *    coincidence and not a typo — TP = FP = FN makes Accuracy, Precision, Recall
  *    and F1 collapse onto the same number. A student who assumes the four metrics
  *    always differ will think they mis-copied something.
- * 2. Problem 2 uses Manhattan distance because the slide says so. Squared
- *    Euclidean gives a different partition, so the metric is part of the answer.
+ * 2. Problem 2 compares Models A/B/C: Model C has highest Accuracy (85%) and
+ *    F1 (81%); Model B has highest Recall (90%); Model A has highest Precision (89%).
+ * 3. Problem 3 uses Manhattan distance per in-lecture example. A5 is equidistant
+ *    (2 and 2) and Greedy tie-breaking assigns it to C1.
+ * 4. Problem 4 uses Euclidean distance with initial centroids A2, A5, A8 and converges
+ *    at round 2 to (1.5, 3.5), (7, 4.3333), (3.6667, 9).
  */
 
 export const homeworkProblems: HomeworkProblem[] = [
@@ -61,7 +66,39 @@ export const homeworkProblems: HomeworkProblem[] = [
   },
 
   /* ------------------------------------------------------------------ */
-  /* Homework 2 — K-Means by hand, Lecture 08                           */
+  /* Homework 2 — Candidate Models A/B/C, Lecture 07 slide 35          */
+  /* ------------------------------------------------------------------ */
+  {
+    id: "hw2-candidate-models-slide35",
+    lectures: ["Lect 07"],
+    source: "Lect 07 slide 35 (Homework#2) — การบ้าน: เลือก Classifier Model สำหรับ Customer Inactivity",
+    statement:
+      "จากโจทย์ Customer Inactivity บน Evaluation Set ลูกค้า 100 ราย กำหนดคลาสบวกคือ Inactive = Yes ให้คำนวณ Metrics ทั้งสี่ (Accuracy, Precision, Recall, F1) ของ Candidate Models ทั้งสามตัว (A, B, C) และอธิบายผลกระทบของ False Positive กับ False Negative เพื่อเลือก Primary Metric และเสนอแนะ Model ที่เหมาะสมตามผลกระทบทางธุรกิจ",
+    given: [
+      { label: "คลาสบวก (Positive class)", value: "Customer Inactive = Yes" },
+      { label: "Evaluation Set", value: "ลูกค้า 100 รายเท่ากันทั้ง 3 โมเดล" },
+      { label: "Model A: Actual Yes", value: "TP = 24 · FN = 16" },
+      { label: "Model A: Actual No", value: "FP = 3 · TN = 57" },
+      { label: "Model B: Actual Yes", value: "TP = 36 · FN = 4" },
+      { label: "Model B: Actual No", value: "FP = 18 · TN = 42" },
+      { label: "Model C: Actual Yes", value: "TP = 32 · FN = 8" },
+      { label: "Model C: Actual No", value: "FP = 7 · TN = 53" },
+    ],
+    solutionSteps: [
+      "คำนวณ Model A (TP=24, FN=16, FP=3, TN=57, N=100): Accuracy = (24+57)/100 = 0.81 (81.00%) · Precision = 24/(24+3) = 24/27 ≈ 0.89 (88.89%) · Recall = 24/(24+16) = 24/40 = 0.60 (60.00%) · F1 = 2(24)/(2(24)+3+16) = 48/67 ≈ 0.72 (71.64%)",
+      "คำนวณ Model B (TP=36, FN=4, FP=18, TN=42, N=100): Accuracy = (36+42)/100 = 0.78 (78.00%) · Precision = 36/(36+18) = 36/54 ≈ 0.67 (66.67%) · Recall = 36/(36+4) = 36/40 = 0.90 (90.00%) · F1 = 2(36)/(2(36)+18+4) = 72/94 ≈ 0.77 (76.60%)",
+      "คำนวณ Model C (TP=32, FN=8, FP=7, TN=53, N=100): Accuracy = (32+53)/100 = 0.85 (85.00%) · Precision = 32/(32+7) = 32/39 ≈ 0.82 (82.05%) · Recall = 32/(32+8) = 32/40 = 0.80 (80.00%) · F1 = 2(32)/(2(32)+7+8) = 64/79 ≈ 0.81 (81.01%)",
+      "วิเคราะห์ผลกระทบต่อ Retention Decision: (1) False Positive (FP) หมายถึง ลูกค้ายังไม่คิดจะเลิก แต่โมเดลทำนายว่าจะเลิก ผลกระทบคือสูญใส่งบประมาณส่งโปรโมชั่น/ข้อเสนอรักษาลูกค้าโดยไม่จำเป็น (2) False Negative (FN) หมายถึง ลูกค้ากำลังจะยกเลิกจริง แต่โมเดลทำนายว่าไม่เลิก ผลกระทบคือธุรกิจไม่ได้เข้าไปดูแลและสูญเสียลูกค้ารายนั้นไปอย่างถาวร",
+      "การเลือก Primary Metric และ Model: (1) หากต้องการโมเดลที่สมดุลที่สุด แนะนำ Model C เพราะได้ Accuracy สูงสุด (85%) และ F1 สูงสุด (0.81) โดยมี Precision 82% และ Recall 80% สูงทั้งสองด้าน (2) หากธุรกิจกลัวลูกค้าหลุดที่สุด (ต้นทุนเสียลูกค้าสูงมาก) แนะนำ Model B เพราะได้ Recall สูงสุดถึง 90% (3) หากงบประมาณแคมเปญจำกัดมาก (ต้นทุนต่อคนสูง) แนะนำ Model A เพราะได้ Precision สูงสุดถึง 89%",
+    ],
+    answer:
+      "Model A: Acc 81% · Prec 89% · Rec 60% · F1 72% | Model B: Acc 78% · Prec 67% · Rec 90% · F1 77% | Model C: Acc 85% · Prec 82% · Rec 80% · F1 81% — แนะนำ Model C สำหรับกรณีสมดุล (Accuracy และ F1 สูงสุด) หรือ Model B หากเน้นลดการสูญเสียลูกค้า (Recall สูงสุด 90%)",
+    transcriptionNote:
+      "สไลด์ 35 ระบุว่า 'คำตอบอาจต่างกันได้ แต่ Metric เหตุผล และ Model ต้องสอดคล้องกัน' ดังนั้นการเลือกโมเดลจึงขึ้นอยู่กับบริบททางธุรกิจที่เลือกอ้างอิง แต่ตัวเลขทั้ง 12 ค่าของทั้ง 3 โมเดลต้องคำนวณถูกต้องตามนี้",
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* Homework 3 — K-Means by hand (K=2), Lecture 08 slide 44            */
   /* ------------------------------------------------------------------ */
   {
     id: "hw2-kmeans-slide44",

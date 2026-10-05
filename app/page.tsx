@@ -1,14 +1,81 @@
+import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Reveal } from "@/components/reveal";
 
-/* P0 checkpoint: a page that exercises every token in the THEME CONTRACT. */
-
 const chapters = [
-  { n: "01", lect: "Lect 05", en: "Exploratory Data Analysis", th: "การวิเคราะห์ข้อมูลเบื้องต้น" },
-  { n: "02", lect: "Lect 06-07", en: "Modeling & Decision Tree", th: "โมเดลและต้นไม้การตัดสินใจ" },
-  { n: "03", lect: "Lect 07", en: "Confusion Matrix & Metrics", th: "ตารางสับสนและมาตรวัด" },
-  { n: "04", lect: "Lect 08", en: "K-Means Clustering", th: "การจัดกลุ่มแบบ K-Means" },
-  { n: "05", lect: "Lect 09", en: "Responsible Data Science", th: "วิทยาข้อมูลที่รับผิดชอบ" },
+  {
+    n: "01",
+    lect: "Lect 05",
+    en: "Exploratory Data Analysis",
+    th: "การวิเคราะห์ข้อมูลเบื้องต้น",
+    slug: "eda",
+  },
+  {
+    n: "02",
+    lect: "Lect 06-07",
+    en: "Modeling & Decision Tree",
+    th: "โมเดลและต้นไม้การตัดสินใจ",
+    slug: "modeling",
+  },
+  {
+    n: "03",
+    lect: "Lect 07",
+    en: "Confusion Matrix & Metrics",
+    th: "ตารางสับสนและมาตรวัด",
+    slug: "confusion-matrix",
+  },
+  {
+    n: "04",
+    lect: "Lect 08",
+    en: "K-Means Clustering",
+    th: "การจัดกลุ่มแบบ K-Means",
+    slug: "kmeans",
+  },
+  {
+    n: "05",
+    lect: "Lect 09",
+    en: "Responsible Data Science",
+    th: "วิทยาข้อมูลที่รับผิดชอบ",
+    slug: "responsible-ds",
+  },
+];
+
+const HUB_MODULES = [
+  {
+    href: "/mock-test",
+    title: "Mock Exam (30 ข้อ)",
+    subtitle: "ชุดข้อสอบเสมือนจริง 45 นาที",
+    desc: "ครอบคลุมครบ 5 บทเรียน มีทั้งชุดเต็ม 30 ข้อ และแยกเจาะลึก 10 ข้อรายหัวข้อ พร้อมเฉลยละเอียดและสไลด์อ้างอิง",
+    badge: "ครบ 30 ข้อ",
+  },
+  {
+    href: "/player",
+    title: "Thinking Player",
+    subtitle: "จำลองขั้นตอนการคิดทีละก้าว",
+    desc: "6 ตอน Interactive: Boxplot Outlier, Gini Split, Confusion Matrix, K-Means Step, SHAP Force, Concept Drift",
+    badge: "6 Episodes",
+  },
+  {
+    href: "/homework",
+    title: "เฉลยการบ้าน 4 ข้อ",
+    subtitle: "โจทย์จริงพร้อมวิธีคิดทุกสเต็ป",
+    desc: "Customer Inactivity (all 60%), Candidate Models A/B/C (Slide 35), K-Means Q1 (K=2) และ Q2 (K=3 Euclidean)",
+    badge: "4 ข้อครบ",
+  },
+  {
+    href: "/formulas",
+    title: "คลัง 15 สูตรคำนวณ",
+    subtitle: "Formula Vault & Search",
+    desc: "ค้นหาสูตรเร็ว พร้อมตัวอย่างวิธีทำ ตัวแปรสัญลักษณ์ และจุดหลอกที่คนมักผิดในข้อสอบ",
+    badge: "15 สูตรยืนยัน",
+  },
+  {
+    href: "/tools",
+    title: "เครื่องคิดเลขข้อสอบ",
+    subtitle: "Interactive Exam Calculators",
+    desc: "เครื่องมือคำนวณ 4 ตัวช่วย: Tukey IQR, Gini Gain, Confusion Matrix 4 ตัวชี้วัด, K-Means Iteration & Centroid",
+    badge: "4 เครื่องมือ",
+  },
 ];
 
 const formulas = [
@@ -31,9 +98,6 @@ export default function Home() {
               </p>
             </Reveal>
             <Reveal delay={80}>
-              {/* Latin only — no tracking-reset. The Latin display keeps
-                  Inter Tight's -0.03em from Bhagas; Thai headings reset to 0
-                  via :lang(th) in globals.css. */}
               <h1 lang="en" className="display">
                 Final Exam
                 <br />
@@ -42,7 +106,7 @@ export default function Home() {
             </Reveal>
           </div>
 
-          {/* Bhagas metadata block, mirrored to the right rail */}
+          {/* Metadata block */}
           <div className="col-span-12 lg:col-span-3 lg:col-start-10 mt-sp-1 lg:mt-0">
             <Reveal delay={160}>
               <dl className="space-y-8">
@@ -51,7 +115,7 @@ export default function Home() {
                   <dd className="meta-value mt-2">
                     คู่มือเตรียมสอบ Final
                     <br />
-                    5 บทเรียน
+                    5 บทเรียน &middot; ครบถ้วน
                   </dd>
                 </div>
                 <div>
@@ -59,7 +123,7 @@ export default function Home() {
                   <dd className="meta-value mt-2">
                     Lecture 05 - 09
                     <br />
-                    10301351
+                    10301351 Data Science
                   </dd>
                 </div>
               </dl>
@@ -73,18 +137,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- Spacing rhythm proof ---------- */}
+      {/* ---------- Fast Track / Study Hub ---------- */}
       <section className="shell py-sp-2 border-t border-rule">
         <Reveal>
-          <h2 className="index text-sm text-ink-subtle mb-10">Negative space scale</h2>
+          <div className="flex items-baseline justify-between mb-10">
+            <h2 className="index text-sm text-ink-subtle">Fast Track &middot; ทางลัดเตรียมสอบ</h2>
+            <span className="meta-label text-xs text-accent-ink">ทุกส่วนยืนยันตัวเลขกับสไลด์จริง</span>
+          </div>
         </Reveal>
         <div className="grid-12 gap-6">
-          {[80, 120, 160].map((px, i) => (
-            <Reveal key={px} delay={i * 90} className="col-span-12 md:col-span-4">
-              <div className="border-t-2 border-accent pt-4">
-                <p className="index text-5xl">{px}</p>
-                <p className="meta-value text-ink-muted mt-2">px vertical rhythm</p>
-              </div>
+          {HUB_MODULES.map((m, i) => (
+            <Reveal
+              key={m.href}
+              delay={i * 60}
+              className={i < 2 ? "col-span-12 lg:col-span-6" : "col-span-12 md:col-span-4"}
+            >
+              <Link
+                href={m.href}
+                className="tap group block h-full border-t-2 border-rule-strong hover:border-accent p-6 bg-bg hover:bg-accent-wash/40 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <span className="meta-label text-xs tracking-display text-accent-ink">
+                    {m.badge}
+                  </span>
+                  <span className="text-sm text-ink-subtle group-hover:text-accent-ink transition-colors">
+                    &rarr;
+                  </span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-medium mt-3 group-hover:text-accent-ink transition-colors">
+                  {m.title}
+                </h3>
+                <p className="text-xs font-mono text-ink-muted mt-1">{m.subtitle}</p>
+                <p className="text-sm text-ink-muted mt-3 leading-relaxed">{m.desc}</p>
+              </Link>
             </Reveal>
           ))}
         </div>
@@ -93,30 +178,41 @@ export default function Home() {
       {/* ---------- Chapters ---------- */}
       <section className="shell py-sp-2 border-t border-rule">
         <Reveal>
-          <h2 className="index text-sm text-ink-subtle mb-12">Chapters</h2>
+          <div className="flex items-baseline justify-between mb-12">
+            <h2 className="index text-sm text-ink-subtle">Chapters &middot; เนื้อหา 5 บทเรียน</h2>
+            <Link
+              href="/chapters"
+              className="meta-label text-xs text-ink-subtle hover:text-accent-ink transition-colors"
+            >
+              เปิดหน้าบทเรียนทั้งหมด &rarr;
+            </Link>
+          </div>
         </Reveal>
         <ul className="space-y-0">
           {chapters.map((c, i) => (
             <Reveal as="li" key={c.n} delay={i * 60}>
-              <a
-                href="#"
+              <Link
+                href={`/chapters#${c.slug}`}
                 className="tap group grid-12 items-baseline py-8 border-t border-rule hover:bg-accent-wash transition-colors duration-200"
               >
                 <span className="col-span-2 lg:col-span-1 index text-2xl text-accent-ink">
                   {c.n}
                 </span>
                 <span className="col-span-10 lg:col-span-4">
-                  <span className="line-mask tracking-display text-xl lg:text-2xl font-medium">
+                  <span className="line-mask tracking-display text-xl lg:text-2xl font-medium group-hover:text-accent-ink transition-colors">
                     {c.en}
                   </span>
                 </span>
                 <span className="col-span-12 lg:col-span-3 mt-2 lg:mt-0 text-ink-muted">
                   {c.th}
                 </span>
-                <span className="col-span-12 lg:col-span-2 lg:col-start-11 mt-2 lg:mt-0 meta-label tracking-display text-ink-subtle">
-                  {c.lect}
+                <span className="col-span-12 lg:col-span-2 lg:col-start-11 mt-2 lg:mt-0 meta-label tracking-display text-ink-subtle flex items-center justify-between">
+                  <span>{c.lect}</span>
+                  <span className="text-xs group-hover:text-accent-ink transition-colors opacity-0 group-hover:opacity-100">
+                    อ่าน &rarr;
+                  </span>
                 </span>
-              </a>
+              </Link>
             </Reveal>
           ))}
         </ul>
@@ -125,9 +221,17 @@ export default function Home() {
       {/* ---------- Formula typography ---------- */}
       <section className="shell py-sp-2 border-t border-rule">
         <Reveal>
-          <h2 className="index text-sm text-ink-subtle mb-12">
-            Formula &mdash; tabular numerals
-          </h2>
+          <div className="flex items-baseline justify-between mb-12">
+            <h2 className="index text-sm text-ink-subtle">
+              Formula &mdash; tabular numerals
+            </h2>
+            <Link
+              href="/formulas"
+              className="meta-label text-xs text-accent-ink hover:underline"
+            >
+              ดูสูตรทั้งหมด 15 สูตรพร้อมวิธีทำ &rarr;
+            </Link>
+          </div>
         </Reveal>
         <div className="grid-12 gap-6">
           {formulas.map((f, i) => (
@@ -173,7 +277,7 @@ export default function Home() {
 
       <footer className="shell py-sp-1 border-t border-rule">
         <p className="meta-label tracking-display text-ink-subtle">
-          Less, but better. &mdash; Dieter Rams
+          Less, but better. &mdash; Dieter Rams &middot; 10301351 Data Science Final Exam Guide
         </p>
       </footer>
     </main>
