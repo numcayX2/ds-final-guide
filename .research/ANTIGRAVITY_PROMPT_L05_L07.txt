@@ -1,0 +1,60 @@
+# PROMPT FOR ANTIGRAVITY — copy everything below this line into Antigravity
+
+Read Thai-language university lecture slides and transcribe every number verbatim.
+
+Read the two files in this order. Do the first one completely before starting the second.
+
+FILE 1 (do this one first):
+C:\Users\Acer\Downloads\10301351 DS 1-69 Lect05 Exploratory Data Analysis (EDA).pdf
+
+FILE 2 (only after file 1 is done):
+C:\Users\Acer\Downloads\10301351 DS 1-69 Lect07 Decision Tree and Classifier Evaluation.pdf
+
+## Output format
+
+For each slide, exactly this and nothing else:
+
+### SLIDE <number>
+<every word and number, Thai transcribed exactly as printed, English technical terms kept as-is>
+
+If a slide is a diagram, add after the transcription:
+DIAGRAM: <the labels, the axes, and every number attached to them, in plain text>
+
+## Rules — completeness matters less than accuracy
+
+1. NEVER guess or infer a number. If a digit is unclear write `[?]` and add a line `UNCLEAR: <what you could not read>`.
+2. Copy Thai verbatim. Do not translate, summarise, or tidy it. A wrong formula is worse than a missing one.
+3. If you cannot open or render a PDF, output exactly `PDF NOT READABLE` and stop.
+4. Emit each slide's block as soon as it is done, rather than batching at the end.
+
+## FILE 1 — the numbers I actually need
+
+Most of this deck is diagrams. I do NOT need concepts explained, I need the figures written on them. Specifically hunt for and copy:
+
+- Any concrete data set with its values, even a small one.
+- Any worked five-number summary: Min, Q1, Median, Q3, Max with the actual values.
+- Any IQR value and the arithmetic behind it.
+- Any Lower Fence and Upper Fence value.
+- Any point marked or labelled as an outlier, with its value.
+- Any boxplot axis tick labels, so I can tell where each point sits.
+- Slide 17 states the fence/whisker rule — I already have that sentence, so just confirm nothing numeric contradicts it.
+
+If a slide shows a boxplot and the quartiles are only implied by the picture rather than printed, say `QUARTILES NOT PRINTED, READ FROM PICTURE` and give your reading with an explicit note that it is inferred from the drawing.
+
+## FILE 2 — only these pages matter
+
+- Slide 26 — a Customer Churn dataset. Transcribe EVERY row and EVERY cell. If it is a table or a screenshot of a table, I need all of it.
+- Slide 30 — a worked evaluation-metrics example. I need the confusion matrix values and every metric with its arithmetic.
+- Any slide showing weighted Gini or Gini Gain numbers — copy the numbers and show how the gain was computed.
+- Slide 23 is already done, skip it.
+- Slide 34 is already done, skip it.
+
+## If you run short on time
+
+Prioritise in this order and stop cleanly when you must:
+1. File 1 — all numeric slides (five-number summary, IQR, fences, outlier values)
+2. File 2 slide 26 — every row of the churn dataset
+3. File 2 slide 30 — the metrics arithmetic
+4. File 2 — any Gini Gain numbers
+
+If you cannot finish, say which items are missing rather than skipping them silently.
