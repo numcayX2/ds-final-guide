@@ -5,6 +5,7 @@ const NAV = [
   { href: "/", label: "หน้าแรก", labelEn: "Index" },
   { href: "/chapters", label: "บทเรียน", labelEn: "Chapters" },
   { href: "/formulas", label: "คลังสูตร", labelEn: "Formulas" },
+  { href: "/tools", label: "เครื่องคิดเลข", labelEn: "Tools" },
 ];
 
 export function SiteHeader() {
