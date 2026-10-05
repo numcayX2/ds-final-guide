@@ -152,6 +152,78 @@ function MatrixPanel({
   );
 }
 
+function DecisionTreePanel({
+  visual,
+}: {
+  visual: Extract<EpisodeVisual, { kind: "decision-tree" }>;
+}) {
+  return (
+    <div>
+      <p className="meta-label tracking-display text-ink-subtle mb-4">
+        ค่า Gini ที่ราก = <span className="tnum text-accent-ink">{visual.rootGini.toFixed(3)}</span>
+      </p>
+
+      {/* Root node */}
+      <div className="border border-rule p-3 text-center">
+        <p className="meta-label tracking-display">โหนดพ่อ</p>
+        <p className="tnum text-sm text-ink-muted mt-1">n = 12</p>
+      </div>
+
+      <div className="text-center my-2" aria-hidden="true">
+        <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
+          <path d="M8 0v10M8 10L2 20M8 10l6 10" stroke="var(--rule-strong)" strokeWidth="1" />
+        </svg>
+      </div>
+
+      <div className="space-y-4">
+        {visual.splits.map((s) => {
+          const better = s.gain >= 0.222;
+          return (
+            <div key={s.feature} className="border border-rule p-3">
+              <p className="tnum text-sm font-medium">{s.feature}</p>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div className="border border-rule p-3">
+                  <p className="meta-label tracking-display text-ink-subtle">ซ้าย n={s.nLeft}</p>
+                  <p className="tnum text-lg mt-1">{s.giniLeft.toFixed(3)}</p>
+                </div>
+                <div className="border border-rule p-3">
+                  <p className="meta-label tracking-display text-ink-subtle">ขวา n={s.nRight}</p>
+                  <p className="tnum text-lg mt-1">{s.giniRight.toFixed(3)}</p>
+                </div>
+              </div>
+              <dl className="mt-3 space-y-1">
+                <div className="flex justify-between gap-3">
+                  <dt className="tnum text-sm text-ink-muted">Weighted Gini</dt>
+                  <dd className="tnum text-sm">{s.weightedGini.toFixed(3)}</dd>
+                </div>
+                <div className="flex justify-between gap-3 border-t border-rule pt-1">
+                  <dt className="tnum text-sm text-ink-muted">Gini Gain</dt>
+                  <dd className="tnum text-lg text-accent-ink font-medium">
+                    {s.gain.toFixed(3)}
+                  </dd>
+                </div>
+              </dl>
+              {visual.splits.length > 1 ? (
+                <p
+                  className={`mt-2 meta-label tracking-display ${better ? "text-accent-ink" : "text-ink-subtle"}`}
+                >
+                  {better ? "Gain สูงสุด เลือกตัวนี้" : "Gain ต่ำกว่า ไม่เลือก"}
+                </p>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+
+      {visual.splits.length === 0 ? (
+        <p className="mt-4 text-sm text-ink-muted">
+          ยังไม่มี Candidate Split ที่ต้องเปรียบเทียบในขั้นตอนนี้
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* The player                                                           */
 /* ------------------------------------------------------------------ */
@@ -281,6 +353,8 @@ export function EpisodePlayer({ episodes }: { episodes: Episode[] }) {
             <KMeansPanel visual={step.visual} showAssignment={step.n >= 5} />
           ) : step.visual.kind === "confusion-matrix" ? (
             <MatrixPanel visual={step.visual} showNumbers={step.n >= 2} />
+          ) : step.visual.kind === "decision-tree" ? (
+            <DecisionTreePanel visual={step.visual} />
           ) : (
             <p className="text-ink-muted">ยังไม่มีภาพสำหรับขั้นตอนนี้</p>
           )}

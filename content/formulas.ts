@@ -76,41 +76,58 @@ export const formulas: Formula[] = [
   /* ---------------- Lect 07 — Decision Tree & Evaluation ---------------- */
   {
     id: "gini",
-    verification: NEEDS_CHECK,
+    verification: VERIFIED,
     name: "Gini",
-    expression: "Gini(D) = 1 - SUM(p_i^2)",
+    expression: "Gini(t) = 1 - SUM(p_k^2)",
     symbols: [
-      { symbol: "D", meaning: "ชุดข้อมูลที่พิจารณา" },
-      { symbol: "p_i", meaning: "สัดส่วนของข้อมูลในคลาส i" },
+      { symbol: "t", meaning: "โหนดที่พิจารณา" },
+      { symbol: "p_k", meaning: "สัดส่วนของข้อมูลในคลาส k" },
     ],
-    output: "ค่าความไม่บริสุทธิ์ของชุดข้อมูล ยิ่งต่ำยิ่งบริสุทธิ์",
+    output: "ค่าความไม่บริสุทธิ์ของโหนด ยิ่งต่ำยิ่งบริสุทธิ์",
     example: {
-      given: "คลาส A 50 คน, คลาส B 50 คน",
-      steps: ["p_A = 0.5, p_B = 0.5", "Gini = 1 - (0.5^2 + 0.5^2)", "Gini = 1 - 0.5"],
-      result: "0.5",
+      given: "5 Active, 1 Inactive (Lect 07 p.11)",
+      steps: ["Gini = 1 - (5/6)^2 - (1/6)^2", "= 1 - (25/36 + 1/36)", "= 1 - 0.7222"],
+      result: "0.278",
     },
     lectures: ["Lect 07"],
   },
   {
     id: "gini-split",
-    verification: NEEDS_CHECK,
-    name: "Weighted Gini Split",
-    expression: "(n_L / n) x Gini_L + (n_R / n) x Gini_R",
+    verification: VERIFIED,
+    name: "Gini Split",
+    expression: "Gini_split = (n_L / n) x Gini(L) + (n_R / n) x Gini(R)",
     symbols: [
-      { symbol: "n_L, n_R", meaning: "จ านวนข้อมูลในฝั่งซ้ายและฝั่งขวา" },
+      { symbol: "n_L, n_R", meaning: "จำนวนข้อมูลในฝั่งซ้ายและฝั่งขวา" },
       { symbol: "n", meaning: "จำนวนข้อมูลทั้งหมดในโหนดพ่อ" },
     ],
     output: "ค่า Gini ของโหนดลูก เมื่อถัวเฉลี่ยตามจำนวนข้อมูลแต่ละฝั่ง",
+    example: {
+      given: "Candidate A: <= 45 วัน แบ่งเป็น 5/1 และ 1/5 (Lect 07 p.12)",
+      steps: [
+        "Gini(L) = Gini(R) = 0.278",
+        "Gini_split = (6/12) x 0.278 + (6/12) x 0.278",
+      ],
+      result: "0.278",
+    },
     lectures: ["Lect 07"],
   },
   {
     id: "gini-gain",
-    verification: NEEDS_CHECK,
+    verification: VERIFIED,
     name: "Gini Gain",
-    expression: "Gini(Parent) - Gini(Split)",
+    expression: "Gini Gain = Gini(Parent) - Gini(Split)",
     symbols: [{ symbol: "Gain", meaning: "ความดีของการแบ่ง เทียบกับก่อนแบ่ง" }],
     output: "Candidate Split ที่ได้ค่า Gain สูงสุด คือ split ที่ดีที่สุด",
-    pitfall: "เลือก split ที่ได้ Gini Gain สูงสุดเสมอ ไม่ใช่ตัวที่ Gini ของฝั่งใดฝั่งหนึ่งต่ำที่สุด",
+    example: {
+      given: "Parent 6 Active + 6 Inactive = 0.500; Candidate A = 0.278, Candidate B = 0.444 (Lect 07 p.12)",
+      steps: [
+        "Gini Gain(A) = 0.500 - 0.278 = 0.222",
+        "Gini Gain(B) = 0.500 - 0.444 = 0.056",
+        "0.222 > 0.056 จึงเลือก Candidate A",
+      ],
+      result: "เลือก A ที่ Gain 0.222",
+    },
+    pitfall: "เลือก split ที่ได้ Gini Gain สูงสุดเสมอ ในเคสนี้ A แยกกลุ่มได้ดีกว่า B แม้ B จะดูสมดุลขึ้นก็ตาม",
     lectures: ["Lect 07"],
   },
   {
@@ -165,7 +182,9 @@ export const formulas: Formula[] = [
     id: "f1",
     verification: VERIFIED,
     name: "F1-Score",
-    expression: "2 x (Precision x Recall) / (Precision + Recall)",
+    // The slide writes it the other way round: 2TP / (2TP + FP + FN).
+    // Both forms are identical; quote whichever the question hands you.
+    expression: "2 x (Precision x Recall) / (Precision + Recall)  =  2TP / (2TP + FP + FN)",
     symbols: [],
     output: "ค่าเดียวที่ถัวเฉลี่ย Precision กับ Recall ให้น้ำหนักเท่ากัน",
     example: {
@@ -173,7 +192,8 @@ export const formulas: Formula[] = [
       steps: ["F1 = 2 x (0.80 x 0.6667) / (0.80 + 0.6667)", "= 1.0667 / 1.4667"],
       result: "72.73%",
     },
-    pitfall: "ใช้เมื่อ Precision กับ Recall ขัดกันและไม่อยากเลือกข้างใดข้างหนึ่ง",
+    pitfall:
+      "ใช้เมื่อ Precision กับ Recall ขัดกันและไม่อยากเลือกข้างใดข้างหนึ่ง สไลด์ปัดเป็นทศนิยมสองตำแหน่ง 0.67 และ 0.73 ให้เขียนตามสไลด์เมื่อคำนวณในข้อสอบ",
     lectures: ["Lect 07"],
   },
 

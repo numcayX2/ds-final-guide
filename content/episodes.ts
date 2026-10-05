@@ -15,6 +15,131 @@ import type { Episode, EpisodeStep } from "./types";
 const VERIFIED = "verified-by-principle" as const;
 
 export const episodes: Episode[] = [
+  /* ============================ EP02 ============================ */
+  {
+    id: "ep02",
+    index: "02",
+    title: "Decision Tree: Weighted Gini & Gain",
+    titleTh: "ต้นไม้การตัดสินใจ กับ Gini แบบถัวน้ำหนัก",
+    lectures: ["Lect 07"],
+    steps: [
+      {
+        n: 1,
+        verification: VERIFIED,
+        headline: "โหนดพ่อหารเกือบเท่ากัน",
+        body: "ที่รากมี Active 6 คน และ Inactive 6 คน พอดีกัน Gini จึงสูงสุด เท่ากับ 0.500",
+        visual: { kind: "decision-tree", rootGini: 0.5, splits: [] },
+        numbers: ["Gini(parent) = 1 - 2 x (6/12)^2 = 0.500"],
+      },
+      {
+        n: 2,
+        verification: VERIFIED,
+        headline: "Gini ของโหนดที่ไม่บริสุทธิ์",
+        body: "โหนดที่มี Active 5 คน และ Inactive 1 คน คำนวณได้ 0.278 ยิ่งเข้าใกล้ข้อมูลเป็นก้อนเดียว ค่า Gini ยิ่งต่ำ",
+        visual: {
+          kind: "decision-tree",
+          rootGini: 0.5,
+          splits: [
+            {
+              feature: "days_since_last_purchase <= 45",
+              threshold: 45, nLeft: 6, nRight: 6,
+              giniLeft: 0.278, giniRight: 0.278,
+              weightedGini: 0.278, gain: 0.222,
+            },
+          ],
+        },
+        numbers: ["1 - (5/6)^2 - (1/6)^2 = 0.278"],
+      },
+      {
+        n: 3,
+        verification: VERIFIED,
+        headline: "ถัวเฉลี่ยสองฝั่งตามจำนวนข้อมูล",
+        body: "Candidate A แบ่งได้ 5/1 ฝั่งซ้าย และ 1/5 ฝั่งขวา ทั้งสองฝั่ง Gini เท่ากัน ถัวเฉลี่ยแล้วได้ 0.278",
+        visual: {
+          kind: "decision-tree",
+          rootGini: 0.5,
+          splits: [
+            {
+              feature: "days_since_last_purchase <= 45",
+              threshold: 45, nLeft: 6, nRight: 6,
+              giniLeft: 0.278, giniRight: 0.278,
+              weightedGini: 0.278, gain: 0.222,
+            },
+          ],
+        },
+        numbers: ["(6/12) x 0.278 + (6/12) x 0.278 = 0.278"],
+      },
+      {
+        n: 4,
+        verification: VERIFIED,
+        headline: "Candidate B แยกกลุ่มได้แย่กว่า",
+        body: "Candidate B แบ่งเป็น 2/4 และ 4/2 Gini แต่ละฝั่ง 0.444 ถัวเฉลี่ยแล้วได้ 0.444 ซึ่งแย่กว่า A",
+        visual: {
+          kind: "decision-tree",
+          rootGini: 0.5,
+          splits: [
+            {
+              feature: "days_since_last_purchase <= 45",
+              threshold: 45, nLeft: 6, nRight: 6,
+              giniLeft: 0.278, giniRight: 0.278,
+              weightedGini: 0.278, gain: 0.222,
+            },
+            {
+              feature: "purchases_last_90_days <= 2",
+              threshold: 2, nLeft: 6, nRight: 6,
+              giniLeft: 0.444, giniRight: 0.444,
+              weightedGini: 0.444, gain: 0.056,
+            },
+          ],
+        },
+        numbers: ["(6/12) x 0.444 + (6/12) x 0.444 = 0.444"],
+      },
+      {
+        n: 5,
+        verification: VERIFIED,
+        headline: "เลือกตัวที่ Gain สูงสุด",
+        body: "Gain ของ A เท่ากับ 0.222 ส่วน B ได้แค่ 0.056 กฎคือเลือก Candidate Split ที่ได้ Gini Gain สูงสุดเสมอ",
+        visual: {
+          kind: "decision-tree",
+          rootGini: 0.5,
+          splits: [
+            {
+              feature: "days_since_last_purchase <= 45",
+              threshold: 45, nLeft: 6, nRight: 6,
+              giniLeft: 0.278, giniRight: 0.278,
+              weightedGini: 0.278, gain: 0.222,
+            },
+            {
+              feature: "purchases_last_90_days <= 2",
+              threshold: 2, nLeft: 6, nRight: 6,
+              giniLeft: 0.444, giniRight: 0.444,
+              weightedGini: 0.444, gain: 0.056,
+            },
+          ],
+        },
+        numbers: ["A: 0.500 - 0.278 = 0.222", "B: 0.500 - 0.444 = 0.056", "เลือก A"],
+      },
+      {
+        n: 6,
+        verification: VERIFIED,
+        headline: "สไลด์ให้ค่าเป็นตัวเลขสำเร็จ",
+        body: "หน้าสไลด์พิมพ์ค่าที่คำนวณแล้วเป็น 0.278 และ 0.444 โดยไม่มีการแทนค่าเต็ม ถ้าเขียนในข้อสอบให้เขียนแสดงการแทนค่าด้วย",
+        visual: {
+          kind: "decision-tree",
+          rootGini: 0.5,
+          splits: [
+            {
+              feature: "days_since_last_purchase <= 45",
+              threshold: 45, nLeft: 6, nRight: 6,
+              giniLeft: 0.278, giniRight: 0.278,
+              weightedGini: 0.278, gain: 0.222,
+            },
+          ],
+        },
+      },
+    ],
+  },
+
   /* ============================ EP03 ============================ */
   {
     id: "ep03",
