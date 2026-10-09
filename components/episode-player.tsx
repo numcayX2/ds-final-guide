@@ -1,2069 +1,694 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import Chart from "chart.js/auto";
-import { SegmentedControl } from "@radix-ui/themes";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import type { Episode, EpisodeVisual } from "@/content/types";
-import { ThinkingCartoonVisual } from "./thinking-cartoon-visual";
+import { ThinkingNotes } from "./thinking-notes";
+import { Tex } from "./math-formula";
+import { fmt } from "./ui";
+
+type Kind = EpisodeVisual["kind"];
+type PanelProps<K extends Kind> = { visual: Extract<EpisodeVisual, { kind: K }>; step: number };
+
+const SERIES = ["var(--color-series-1)", "var(--color-series-2)", "var(--color-series-3)"];
+const MOVE = "transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+const avg = (xs: number[]) => xs.reduce((s, v) => s + v, 0) / xs.length;
 
 /* ------------------------------------------------------------------ */
-/* Visual panels with step-linked reactive animations                   */
+/* Shared chrome                                                       */
 /* ------------------------------------------------------------------ */
 
-const CLUSTER_COLOR = ["var(--accent)", "#10B981", "#6366F1"];
-
-/* Slide-verified assignment (Lect 08 p.27): C1 {A1}, C2 {A3,A4,A5,A6,A8},
-   C3 {A2,A7}. The Chart and Vectors views must render this same grouping —
-   in the centroid-update steps members keep their cluster while centroids
-   move to the recomputed means. */
-const KMEANS_GROUPS: Record<string, string[]> = {
-  C1: ["A1"],
-  C2: ["A3", "A4", "A5", "A6", "A8"],
-  C3: ["A2", "A7"],
-};
-
-function getChartTheme() {
-  const isDark =
-    typeof document !== "undefined" &&
-    document.documentElement.getAttribute("data-theme") === "dark";
-
-  return {
-    isDark,
-    text: isDark ? "#e0e0e1" : "#171613",
-    muted: isDark ? "#a6a5a2" : "#55534b",
-    subtle: isDark ? "#848685" : "#7c796e",
-    grid: isDark ? "rgba(224, 224, 225, 0.12)" : "rgba(23, 22, 19, 0.10)",
-    pointBorder: isDark ? "#322628" : "#fdfcf8",
-    accent: isDark ? "#d26e41" : "#e8490f",
-    accentWash: isDark ? "rgba(210, 110, 65, 0.16)" : "rgba(232, 73, 15, 0.10)",
-    mint: isDark ? "#4fa565" : "#31703c",
-    mintWash: isDark ? "rgba(79, 165, 101, 0.16)" : "rgba(49, 112, 60, 0.10)",
-    rose: isDark ? "#e0524c" : "#c03030",
-    roseWash: isDark ? "rgba(224, 82, 76, 0.16)" : "rgba(192, 48, 48, 0.10)",
-    amber: isDark ? "#c98a2e" : "#8f5f0a",
-    purple: isDark ? "#8aa3c2" : "#3f5470",
-    purpleWash: isDark ? "rgba(138, 163, 194, 0.16)" : "rgba(63, 84, 112, 0.10)",
-  };
-}
-
-function KMeansChart({
-  visual,
-  stepIndex,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "kmeans" }>;
-  stepIndex: number;
-}) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<Chart | null>(null);
-
-  const showCentroids = stepIndex >= 1;
-  const showAssignment = stepIndex >= 4;
-  const isRound2 = stepIndex >= 5;
-
-  const activeCentroids = isRound2
-    ? [
-        { id: "C1", x: 2, y: 10 },
-        { id: "C2", x: 6, y: 6 },
-        { id: "C3", x: 1.5, y: 3.5 },
-      ]
-    : visual.initialCentroids;
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const theme = getChartTheme();
-
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
-
-    const unassigned: { x: number; y: number; label: string }[] = [];
-    const datasets: any[] = [];
-
-    if (!showAssignment) {
-      visual.points.forEach((p) => unassigned.push({ x: p.x, y: p.y, label: p.id }));
-      datasets.push({
-        label: "จุดข้อมูลตั้งต้น (Unassigned)",
-        data: unassigned,
-        backgroundColor: theme.text,
-        borderColor: "transparent",
-        pointRadius: 6,
-      });
-    } else {
-      const clusterThemes = [theme.accent, theme.mint, theme.purple];
-      Object.entries(KMEANS_GROUPS).forEach(([, ids], gi) => {
-        datasets.push({
-          label: `Cluster ${gi + 1}: {${ids.join(",")}}`,
-          data: visual.points
-            .filter((p) => ids.includes(p.id))
-            .map((p) => ({ x: p.x, y: p.y, label: p.id })),
-          backgroundColor: clusterThemes[gi],
-          borderColor: "transparent",
-          pointRadius: 6.5,
-        });
-      });
-    }
-
-    if (showCentroids) {
-      datasets.push(
-        {
-          label: "C1",
-          data: [{ x: activeCentroids[0].x, y: activeCentroids[0].y, label: "C1" }],
-          backgroundColor: theme.accent,
-          borderColor: theme.pointBorder,
-          borderWidth: 2.5,
-          pointRadius: 10,
-          pointStyle: "triangle",
-        },
-        {
-          label: "C2",
-          data: [{ x: activeCentroids[1].x, y: activeCentroids[1].y, label: "C2" }],
-          backgroundColor: theme.mint,
-          borderColor: theme.pointBorder,
-          borderWidth: 2.5,
-          pointRadius: 10,
-          pointStyle: "rectRot",
-        },
-        {
-          label: "C3",
-          data: [{ x: activeCentroids[2].x, y: activeCentroids[2].y, label: "C3" }],
-          backgroundColor: theme.purple,
-          borderColor: theme.pointBorder,
-          borderWidth: 2.5,
-          pointRadius: 10,
-          pointStyle: "circle",
-        }
-      );
-    }
-
-    chartRef.current = new Chart(canvasRef.current, {
-      type: "scatter",
-      data: { datasets },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 350 },
-        scales: {
-          x: {
-            min: 0,
-            max: 10,
-            grid: { color: theme.grid },
-            ticks: { color: theme.muted, stepSize: 2, font: { size: 10 } },
-          },
-          y: {
-            min: 0,
-            max: 12,
-            grid: { color: theme.grid },
-            ticks: { color: theme.muted, stepSize: 2, font: { size: 10 } },
-          },
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: "bottom",
-            labels: {
-              boxWidth: 8,
-              color: theme.text,
-              font: { size: 9, weight: 600 },
-            },
-          },
-          tooltip: {
-            callbacks: {
-              label: (ctx: any) => {
-                const raw = ctx.raw;
-                return ` ${raw.label || ctx.dataset.label}: (${raw.x.toFixed(1)}, ${raw.y.toFixed(1)})`;
-              },
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-        chartRef.current = null;
-      }
-    };
-  }, [stepIndex, showCentroids, showAssignment, isRound2, visual.points]);
-
+function PanelHead({ title, sub, right }: { title: string; sub?: ReactNode; right?: ReactNode }) {
   return (
-    <div className="h-64 sm:h-72 w-full relative">
-      <canvas ref={canvasRef} />
+    <div className="mb-4 flex flex-wrap items-start justify-between gap-2 border-b border-rule pb-3">
+      <div>
+        <p className="text-sm font-semibold text-ink">{title}</p>
+        {sub ? <p className="text-xs text-ink-subtle">{sub}</p> : null}
+      </div>
+      {right}
     </div>
   );
 }
 
-/* Segmented view switcher powered by Radix Themes */
-function ViewToggle<T extends string>({
-  value,
-  onChange,
-  options,
-}: {
-  value: T;
-  onChange: (v: T) => void;
-  options: Array<{ value: T; label: string }>;
-}) {
+function Insight({ children }: { children: ReactNode }) {
   return (
-    <SegmentedControl.Root
-      size="1"
-      value={value}
-      onValueChange={(val) => onChange(val as T)}
-    >
-      {options.map((o) => (
-        <SegmentedControl.Item key={o.value} value={o.value}>
-          {o.label}
-        </SegmentedControl.Item>
-      ))}
-    </SegmentedControl.Root>
+    <div className="mt-4 overflow-x-auto rounded-r-lg border-l-2 border-accent bg-accent-wash px-4 py-3 text-sm leading-relaxed text-ink">
+      {children}
+    </div>
   );
 }
 
-function KMeansPanel({
-  visual,
-  stepIndex,
-  viewMode = "chart",
-  onViewModeChange,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "kmeans" }>;
-  stepIndex: number;
-  viewMode?: "chart" | "vectors";
-  onViewModeChange?: (mode: "chart" | "vectors") => void;
-}) {
-  const [internalViewMode, setInternalViewMode] = useState<"chart" | "vectors">("chart");
-  const currentViewMode = viewMode ?? internalViewMode;
-  const setMode = onViewModeChange ?? setInternalViewMode;
-  const W = 100;
-  const H = 100;
-  const pad = 10;
-  const sx = (v: number) => pad + (v / 12) * (W - pad * 2);
-  const sy = (v: number) => H - pad - (v / 12) * (H - pad * 2);
+/* ------------------------------------------------------------------ */
+/* K-Means                                                             */
+/* ------------------------------------------------------------------ */
 
-  const showCentroids = stepIndex >= 1;
-  const showDistances = stepIndex >= 2 && stepIndex < 4;
-  const showAssignment = stepIndex >= 4;
-  const isRound2 = stepIndex >= 5;
+const KM_SIZE = 260, KM_M = 26, KM_MAX = 12;
+const kx = (v: number) => KM_M + (v / KM_MAX) * (KM_SIZE - 2 * KM_M);
+const ky = (v: number) => KM_SIZE - KM_M - (v / KM_MAX) * (KM_SIZE - 2 * KM_M);
+const KM_TICKS = [0, 2, 4, 6, 8, 10, 12];
 
-  const activeCentroids = isRound2
-    ? [
-        { id: "C1", x: 2, y: 10 },
-        { id: "C2", x: 6, y: 6 },
-        { id: "C3", x: 1.5, y: 3.5 },
-      ]
-    : visual.initialCentroids;
+function KMeansPanel({ visual, step }: PanelProps<"kmeans">) {
+  const uid = useId();
+  const showCentroids = step >= 1;
+  const showDistances = step >= 2 && step < 4;
+  const showAssignment = step >= 4;
+  const round2 = step >= 5;
 
-  // Single source of truth for the pre-assignment distance phase (respects the
-  // episode's metric). Once steps reach the slide-verified assignment, point
-  // colors and lines follow KMEANS_GROUPS while centroids move to the new means.
-  const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
-    visual.metric === "manhattan"
-      ? Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
-      : (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
-
-  const nearest: Record<string, { c: { id: string; x: number; y: number } }> = {};
-  for (const p of visual.points) {
-    let best = activeCentroids[0];
-    let bd = Infinity;
-    for (const c of activeCentroids) {
-      const d = dist(p, c);
-      if (d < bd) {
-        bd = d;
-        best = c;
-      }
+  const { assign, means } = useMemo(() => {
+    const d = (a: { x: number; y: number }, b: { x: number; y: number }) =>
+      visual.metric === "manhattan" ? Math.abs(a.x - b.x) + Math.abs(a.y - b.y) : Math.hypot(a.x - b.x, a.y - b.y);
+    const assign: Record<string, number> = {};
+    for (const p of visual.points) {
+      let best = 0;
+      visual.initialCentroids.forEach((c, i) => {
+        if (d(p, c) < d(p, visual.initialCentroids[best]) - 1e-9) best = i;
+      });
+      assign[p.id] = best;
     }
-    nearest[p.id] = { c: best };
-  }
+    const means = visual.initialCentroids.map((c, i) => {
+      const m = visual.points.filter((p) => assign[p.id] === i);
+      return { id: c.id, x: m.length ? avg(m.map((p) => p.x)) : c.x, y: m.length ? avg(m.map((p) => p.y)) : c.y, members: m };
+    });
+    return { assign, means };
+  }, [visual]);
 
-  const groups: Record<string, string[]> = {};
-  const assignmentTarget: Record<string, { id: string; x: number; y: number }> = {};
-  for (const c of activeCentroids) {
-    const ids = KMEANS_GROUPS[c.id] ?? [];
-    groups[c.id] = ids;
-    for (const pid of ids) assignmentTarget[pid] = c;
-  }
+  const centroids = round2 ? means : visual.initialCentroids;
+  const stage =
+    step === 0 ? "จุดข้อมูลตั้งต้น"
+    : step === 1 ? "วาง Centroid เริ่มต้น"
+    : step < 4 ? "วัดระยะ แล้วชี้ไปหา Centroid ที่ใกล้สุด"
+    : step === 4 ? "จัดทุกจุดเข้ากลุ่ม"
+    : "ย้าย Centroid ไปที่ค่าเฉลี่ยของสมาชิก";
 
   return (
-    <div className="w-full h-full flex flex-col justify-between gap-2.5 overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-y-2 pb-2 border-b border-rule shrink-0">
-        <div>
-          <p className="text-xs font-bold text-ink-subtle uppercase tracking-wider">
-            K-Means Clustering
-          </p>
-          <span className="text-[10px] text-ink-muted">
-            {visual.metric === "manhattan" ? "Manhattan Distance" : "Euclidean Distance"}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          {isRound2 && (
-            <span className="bento-pill border border-mint text-mint whitespace-nowrap shrink-0">
-              Round 2
-            </span>
-          )}
-          <ViewToggle
-            value={currentViewMode}
-            onChange={setMode}
-            options={[
-              { value: "chart", label: "Chart" },
-              { value: "vectors", label: "Vectors" },
-            ]}
-          />
-        </div>
-      </div>
+    <div>
+      <PanelHead title="K-Means" sub={`${visual.metric === "manhattan" ? "Manhattan" : "Euclidean"} · ${stage}`} />
 
-      {currentViewMode === "chart" ? (
-        <div className="relative flex-1 min-h-[260px] max-h-[460px] w-full bg-surface p-2 sm:p-3 border border-rule flex flex-col items-center justify-center overflow-hidden my-auto">
-          <KMeansChart visual={visual} stepIndex={stepIndex} />
-        </div>
-      ) : (
-        <div className="relative flex-1 min-h-[260px] max-h-[460px] w-full bg-surface p-4 border border-rule flex items-center justify-center overflow-hidden my-auto">
-          <svg
-          viewBox={`0 0 ${W} ${H}`}
-          className="w-full h-full max-h-full"
-          role="img"
-          aria-label={`กราฟการจัดกลุ่ม ${visual.points.length} จุด`}
-        >
-          {/* axes grid lines */}
-          <line x1={pad} y1={H - pad} x2={W - pad} y2={H - pad} stroke="var(--rule-strong)" strokeWidth="0.5" />
-          <line x1={pad} y1={pad} x2={pad} y2={H - pad} stroke="var(--rule-strong)" strokeWidth="0.5" />
+      <svg viewBox={`0 0 ${KM_SIZE} ${KM_SIZE}`} className="mx-auto w-full max-w-[420px]" role="img"
+        aria-label={`แผนภาพ K-Means ${visual.points.length} จุด: ${stage}`}>
+        <defs>
+          <marker id={`${uid}-arrow`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="var(--color-ink-subtle)" />
+          </marker>
+        </defs>
 
-          {/* grid ticks */}
-          {[2, 4, 6, 8, 10].map((v) => (
-            <g key={v}>
-              <line x1={sx(v)} y1={H - pad} x2={sx(v)} y2={pad} stroke="var(--rule)" strokeWidth="0.2" strokeDasharray="1,2" />
-              <line x1={pad} y1={sy(v)} x2={W - pad} y2={sy(v)} stroke="var(--rule)" strokeWidth="0.2" strokeDasharray="1,2" />
-            </g>
-          ))}
+        {KM_TICKS.map((t) => (
+          <g key={t}>
+            <line x1={kx(t)} x2={kx(t)} y1={ky(0)} y2={ky(KM_MAX)} stroke="var(--color-rule)" strokeWidth={t === 0 ? 1 : 0.5} />
+            <line x1={kx(0)} x2={kx(KM_MAX)} y1={ky(t)} y2={ky(t)} stroke="var(--color-rule)" strokeWidth={t === 0 ? 1 : 0.5} />
+            <text x={kx(t)} y={KM_SIZE - KM_M + 14} textAnchor="middle" fontSize="9" fill="var(--color-ink-subtle)" className="font-mono">{t}</text>
+            <text x={KM_M - 6} y={ky(t) + 3} textAnchor="end" fontSize="9" fill="var(--color-ink-subtle)" className="font-mono">{t}</text>
+          </g>
+        ))}
 
-          {/* distance or assignment lines */}
-          {(showDistances || showAssignment) &&
-            visual.points.map((p) => {
-              const target = showAssignment ? assignmentTarget[p.id] : nearest[p.id]?.c;
-              if (!target) return null;
-              return (
-                <line
-                  key={p.id}
-                  x1={sx(p.x)}
-                  y1={sy(p.y)}
-                  x2={sx(target.x)}
-                  y2={sy(target.y)}
-                  stroke={showAssignment ? "var(--rule-strong)" : "var(--accent)"}
-                  strokeWidth={showAssignment ? "0.3" : "0.5"}
-                  strokeDasharray={showAssignment ? "1 0.8" : "1.5 1"}
-                  style={{
-                    opacity: 0.85,
-                    transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
-                  }}
-                />
-              );
-            })}
-
-          {/* points with smooth color morphing based on assignment */}
-          {visual.points.map((p) => {
-            const gi = Object.keys(groups).findIndex((k) => groups[k].includes(p.id));
-            const pointFill = showAssignment && gi >= 0 ? CLUSTER_COLOR[gi] : "var(--ink)";
+        {(showDistances || showAssignment) &&
+          visual.points.map((p) => {
+            const c = centroids[assign[p.id]];
             return (
-              <g key={p.id}>
-                <circle
-                  cx={sx(p.x)}
-                  cy={sy(p.y)}
-                  r={showAssignment ? "2.6" : "2.2"}
-                  fill={pointFill}
-                  stroke="var(--surface)"
-                  strokeWidth="0.5"
-                  style={{
-                    transition: "fill 0.5s cubic-bezier(0.16, 1, 0.3, 1), r 0.3s ease",
-                  }}
-                />
-                <text
-                  x={sx(p.x) + 2.8}
-                  y={sy(p.y) + 1.2}
-                  fontSize="3"
-                  className="fill-current text-ink font-mono font-medium pointer-events-none"
-                >
-                  {p.id}
-                </text>
-              </g>
+              <line key={p.id} x1={kx(p.x)} y1={ky(p.y)} x2={kx(c.x)} y2={ky(c.y)}
+                stroke={showAssignment ? SERIES[assign[p.id]] : "var(--color-accent)"}
+                strokeOpacity={showAssignment ? 0.45 : 0.8} strokeDasharray="3 3" />
             );
           })}
 
-          {/* centroids with spring position transition and animated pulse aura */}
-          {showCentroids &&
-            activeCentroids.map((c, ci) => (
-              <g
-                key={c.id}
-                style={{
-                  transition: "all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                }}
-              >
-                <circle
-                  cx={sx(c.x)}
-                  cy={sy(c.y)}
-                  r="5"
-                  fill="none"
-                  stroke={CLUSTER_COLOR[ci] || "var(--accent)"}
-                  strokeWidth="0.6"
-                  strokeDasharray="1 1"
-                  className="animate-pulse"
-                  style={{
-                    transition: "cx 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), cy 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                  }}
-                />
-                <line
-                  x1={sx(c.x) - 3} y1={sy(c.y)}
-                  x2={sx(c.x) + 3} y2={sy(c.y)}
-                  stroke={CLUSTER_COLOR[ci] || "var(--accent)"} strokeWidth="1.2"
-                  style={{ transition: "all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-                />
-                <line
-                  x1={sx(c.x)} y1={sy(c.y) - 3}
-                  x2={sx(c.x)} y2={sy(c.y) + 3}
-                  stroke={CLUSTER_COLOR[ci] || "var(--accent)"} strokeWidth="1.2"
-                  style={{ transition: "all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-                />
-                <text
-                  x={sx(c.x)}
-                  y={sy(c.y) - 4}
-                  textAnchor="middle"
-                  fontSize="3.2"
-                  fontWeight="bold"
-                  fill={CLUSTER_COLOR[ci] || "var(--accent)"}
-                  className="font-mono pointer-events-none"
-                  style={{ transition: "all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-                >
-                  {c.id}
-                </text>
+        {round2 &&
+          visual.initialCentroids.map((c, i) =>
+            c.x === means[i].x && c.y === means[i].y ? null : (
+              <g key={c.id}>
+                <circle cx={kx(c.x)} cy={ky(c.y)} r={6} fill="none" stroke={SERIES[i]} strokeDasharray="2 2" />
+                <line x1={kx(c.x)} y1={ky(c.y)} x2={kx(means[i].x)} y2={ky(means[i].y)}
+                  stroke="var(--color-ink-subtle)" markerEnd={`url(#${uid}-arrow)`} />
               </g>
+            ),
+          )}
+
+        {visual.points.map((p) => (
+          <g key={p.id}>
+            <circle cx={kx(p.x)} cy={ky(p.y)} r={4}
+              fill={showAssignment ? SERIES[assign[p.id]] : "var(--color-ink)"}
+              stroke="var(--color-surface)" strokeWidth={1}
+              style={{ transition: "fill 400ms" }} />
+            <text x={kx(p.x) + 7} y={ky(p.y) + 3.5} fontSize="9" fill="var(--color-ink-muted)" className="font-mono">{p.id}</text>
+          </g>
+        ))}
+
+        {showCentroids &&
+          centroids.map((c, i) => (
+            <g key={c.id} style={{ transform: `translate(${kx(c.x)}px, ${ky(c.y)}px)`, transition: MOVE }}>
+              <rect x={-5} y={-5} width={10} height={10} transform="rotate(45)" fill={SERIES[i]} stroke="var(--color-surface)" strokeWidth={1.5} />
+              <text y={-10} textAnchor="middle" fontSize="10" fontWeight={600} fill={SERIES[i]} className="font-mono">{c.id}</text>
+            </g>
+          ))}
+      </svg>
+
+      {showAssignment ? (
+        <ul className="mt-4 grid gap-1.5 text-sm">
+          {means.map((m, i) => (
+            <li key={m.id} className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: SERIES[i] }} />
+              <span className="font-mono text-ink">{m.id}</span>
+              <span className="text-ink-muted">{`{ ${m.members.map((p) => p.id).join(", ")} }`}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      {round2 ? (
+        <Insight>
+          <p className="mb-2">Centroid ใหม่ = ค่าเฉลี่ยพิกัดของสมาชิก</p>
+          <div className="space-y-1.5">
+            {means.map((m) => (
+              <Tex key={m.id} className="block"
+                tex={`${m.id} = \\left(\\tfrac{${m.members.map((p) => p.x).join("+")}}{${m.members.length}},\\ \\tfrac{${m.members.map((p) => p.y).join("+")}}{${m.members.length}}\\right) = \\ans{(${fmt(m.x, 2)},\\ ${fmt(m.y, 2)})}`} />
             ))}
-        </svg>
-      </div>
-      )}
-
-      <div className="pt-2 border-t border-rule flex items-center justify-between text-xs text-ink-muted shrink-0">
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 border border-dashed border-accent" />
-          <span>Centroid {showCentroids ? "(Active)" : "(รอสุ่ม)"}</span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className={`w-2 h-2 ${showAssignment ? "bg-mint" : "bg-ink"}`} />
-          <span>{showAssignment ? "จัดกลุ่มแล้ว (Clustered)" : "จุดข้อมูลตั้งต้น"}</span>
-        </span>
-      </div>
+          </div>
+        </Insight>
+      ) : null}
     </div>
   );
 }
 
-function MatrixMetricsChart({
-  visual,
-  stepIndex,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "confusion-matrix" }>;
-  stepIndex: number;
-}) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<Chart | null>(null);
+/* ------------------------------------------------------------------ */
+/* Confusion matrix                                                    */
+/* ------------------------------------------------------------------ */
 
-  const isStepAccuracy = stepIndex === 3;
-  const isStepRecall = stepIndex === 4;
-  const isStepF1 = stepIndex === 5;
+type MetricKey = "accuracy" | "precision" | "recall" | "f1";
+type Cell = "tp" | "fn" | "fp" | "tn";
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const theme = getChartTheme();
+const MATRIX_FOCUS: Partial<Record<number, MetricKey>> = { 3: "accuracy", 4: "recall", 5: "f1" };
+const CELLS_FOR: Record<MetricKey, Cell[]> = {
+  accuracy: ["tp", "tn"], precision: ["tp", "fp"], recall: ["tp", "fn"], f1: ["tp", "fp", "fn"],
+};
 
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
+function MatrixPanel({ visual, step }: PanelProps<"confusion-matrix">) {
+  const { tp, fp, fn, tn, positiveLabel: pos } = visual;
+  const n = tp + fp + fn + tn;
+  const showNumbers = step >= 1;
+  const focus = MATRIX_FOCUS[step];
+  const P = tp / (tp + fp), R = tp / (tp + fn), F1 = (2 * P * R) / (P + R), A = (tp + tn) / n;
 
-    const labels = ["Accuracy", "Precision", "Recall", "F1-Score"];
-    const values = [70.0, 80.0, 66.7, 72.7];
+  const metrics: Record<MetricKey, { label: string; value: number; tex: string }> = {
+    accuracy: { label: "Accuracy", value: A, tex: `\\text{Accuracy} = \\dfrac{TP+TN}{N} = \\dfrac{${tp}+${tn}}{${n}} = \\ans{${fmt(A, 3)}}` },
+    precision: { label: "Precision", value: P, tex: `\\text{Precision} = \\dfrac{TP}{TP+FP} = \\dfrac{${tp}}{${tp}+${fp}} = \\ans{${fmt(P, 3)}}` },
+    recall: { label: "Recall", value: R, tex: `\\text{Recall} = \\dfrac{TP}{TP+FN} = \\dfrac{${tp}}{${tp}+${fn}} = \\ans{${fmt(R, 3)}}` },
+    f1: { label: "F1", value: F1, tex: `F_1 = 2\\cdot\\dfrac{P\\cdot R}{P+R} = 2\\cdot\\dfrac{${fmt(P, 3)}\\cdot ${fmt(R, 3)}}{${fmt(P, 3)}+${fmt(R, 3)}} = \\ans{${fmt(F1, 3)}}` },
+  };
 
-    const bgColors = [
-      isStepAccuracy ? theme.mint : theme.accent,
-      isStepAccuracy ? theme.mint : theme.accent,
-      isStepRecall ? theme.amber : theme.accent,
-      isStepF1 ? theme.purple : theme.accent,
-    ];
-
-    chartRef.current = new Chart(canvasRef.current, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Model Score (%)",
-            data: values,
-            backgroundColor: bgColors,
-            borderRadius: 6,
-            borderWidth: 1,
-            borderColor: "transparent",
-          },
-        ],
-      },
-      options: {
-        indexAxis: "y",
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 350 },
-        scales: {
-          x: {
-            min: 0,
-            max: 100,
-            grid: { color: theme.grid },
-            ticks: {
-              color: theme.muted,
-              font: { size: 10, family: "inherit" },
-              callback: (v) => `${v}%`,
-            },
-          },
-          y: {
-            grid: { display: false },
-            ticks: {
-              color: theme.text,
-              font: { size: 11, weight: 600, family: "inherit" },
-            },
-          },
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                const metric = labels[ctx.dataIndex];
-                const val = values[ctx.dataIndex];
-                if (metric === "Accuracy") return ` Accuracy: ${val}% (TP+TN)/Total = 7/10`;
-                if (metric === "Precision") return ` Precision: ${val}% TP/(TP+FP) = 4/5`;
-                if (metric === "Recall") return ` Recall: ${val}% TP/(TP+FN) = 4/6 (⚠️ FN=2 หลุดรอด)`;
-                return ` F1-Score: ${val}% Harmonic Mean ถัวน้ำหนักเท่ากัน`;
-              },
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-        chartRef.current = null;
-      }
-    };
-  }, [stepIndex, isStepAccuracy, isStepRecall, isStepF1]);
-
-  return (
-    <div className="h-52 sm:h-60 w-full relative">
-      <canvas ref={canvasRef} />
-    </div>
-  );
-}
-
-function MatrixPanel({
-  visual,
-  stepIndex,
-  viewMode = "grid",
-  onViewModeChange,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "confusion-matrix" }>;
-  stepIndex: number;
-  viewMode?: "grid" | "chart";
-  onViewModeChange?: (mode: "grid" | "chart") => void;
-}) {
-  const [internalViewMode, setInternalViewMode] = useState<"grid" | "chart">("grid");
-  const currentViewMode = viewMode ?? internalViewMode;
-  const setMode = onViewModeChange ?? setInternalViewMode;
-  const showNumbers = stepIndex >= 1;
-  const isStepAccuracy = stepIndex === 3;
-  const isStepRecall = stepIndex === 4;
-  const isStepF1 = stepIndex === 5;
-
-  return (
-    <div className="w-full h-full flex flex-col justify-between gap-2.5 overflow-hidden">
-      {/* Panel Header */}
-      <div className="flex flex-wrap items-center justify-between gap-y-2 pb-2 border-b border-rule shrink-0">
-        <div>
-          <h4 className="text-sm font-bold text-ink">Confusion Matrix (2×2)</h4>
-          <p className="text-[11px] text-ink-subtle">แถว = จริง (Actual) &middot; คอลัมน์ = ทาย (Predicted)</p>
+  const cell = (k: Cell, desc: string) => {
+    const on = focus ? CELLS_FOR[focus].includes(k) : false;
+    return (
+      <div className={`rounded-lg border p-3 transition-[opacity,background-color,border-color] duration-300 ${
+        on ? "border-accent bg-accent-wash" : "border-rule bg-surface"} ${focus && !on ? "opacity-40" : ""}`}>
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="font-mono text-xs font-semibold text-ink">{k.toUpperCase()}</span>
+          <span className="text-[11px] text-ink-subtle">{desc}</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="bento-pill bg-mint-wash text-mint font-semibold text-xs border border-mint/20 hidden sm:inline-block whitespace-nowrap shrink-0">
-            Target (+): {visual.positiveLabel}
-          </span>
-          <ViewToggle
-            value={currentViewMode}
-            onChange={setMode}
-            options={[
-              { value: "grid", label: "Matrix" },
-              { value: "chart", label: "Chart" },
-            ]}
-          />
-        </div>
+        <p className="num mt-1 font-mono text-3xl font-semibold text-ink">{showNumbers ? visual[k] : "–"}</p>
       </div>
-
-      {currentViewMode === "chart" ? (
-        <div className="overflow-hidden border border-rule bg-surface p-3 sm:p-4 my-auto">
-          <div className="text-center pb-2 text-[11px] font-bold text-accent-ink tracking-wider uppercase">
-            ↓ สรุปตัวชี้วัดประสิทธิภาพโมเดล (Classification Metrics) ↓
-          </div>
-          <MatrixMetricsChart visual={visual} stepIndex={stepIndex} />
-        </div>
-      ) : (
-        <div className="overflow-hidden border border-rule bg-surface p-3 sm:p-4 my-auto">
-          {/* Top Prediction Super-header */}
-          <div className="text-center pb-2 text-[11px] font-bold text-accent-ink tracking-wider uppercase">
-            ↓ ผลที่โมเดลทำนาย (Predicted) ↓
-          </div>
-
-        {/* Matrix Grid: 3 columns (Labels, Col 1, Col 2) */}
-        <div className="grid grid-cols-[72px_1fr_1fr] sm:grid-cols-[84px_1fr_1fr] gap-2">
-          {/* Header Row */}
-          <div className="flex items-end justify-center pb-1 text-[11px] font-semibold text-ink-subtle text-center">
-            <span>จริง \ ทาย</span>
-          </div>
-          <div className="bg-surface-hover p-2 text-center border border-rule">
-            <span className="text-xs font-bold text-ink font-mono">ทาย {visual.positiveLabel} (+)</span>
-          </div>
-          <div className="bg-surface-hover p-2 text-center border border-rule">
-            <span className="text-xs font-bold text-ink font-mono">ทาย Rest (-)</span>
-          </div>
-
-          {/* Row 1: Actual Play (+) */}
-          <div className="border border-rule bg-surface p-2 flex flex-col justify-center text-center">
-            <span className="text-xs font-bold text-accent-ink font-mono">จริง {visual.positiveLabel}</span>
-            <span className="text-[10px] text-accent-ink font-medium">Actual (+)</span>
-          </div>
-
-          {/* Cell TP */}
-          <div
-            className={`p-3 border transition-colors duration-300 relative bg-surface ${
-              isStepAccuracy || isStepF1 ? "border-mint" : "border-rule"
-            }`}
-          >
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="font-mono font-bold text-ink">TP</span>
-              <span className="text-[10px] text-mint font-semibold">ถูกต้อง</span>
-            </div>
-            <div className="my-1">
-              <span className="text-2xl sm:text-3xl font-extrabold font-mono text-ink">
-                {showNumbers ? visual.tp : "—"}
-              </span>
-              {showNumbers && (
-                <span className="text-[11px] text-ink-subtle font-mono ml-1.5">/ 10</span>
-              )}
-            </div>
-            <p className="text-[10px] text-ink-muted leading-tight">ทำนาย Play &middot; จริง Play</p>
-          </div>
-
-          {/* Cell FN */}
-          <div
-            className={`p-3 border transition-colors duration-300 relative bg-surface ${
-              isStepRecall ? "border-amber" : "border-rule"
-            }`}
-          >
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="font-mono font-bold text-ink">FN</span>
-              <span className={`text-[10px] font-semibold ${isStepRecall ? "text-amber font-bold" : "text-amber"}`}>
-                หลุดรอด (พลาด)
-              </span>
-            </div>
-            <div className="my-1">
-              <span className={`text-2xl sm:text-3xl font-extrabold font-mono ${isStepRecall ? "text-amber" : "text-ink"}`}>
-                {showNumbers ? visual.fn : "—"}
-              </span>
-              {showNumbers && (
-                <span className="text-[11px] text-ink-subtle font-mono ml-1.5">/ 10</span>
-              )}
-            </div>
-            <p className="text-[10px] text-ink-muted leading-tight">ทาย Rest &middot; จริง Play</p>
-          </div>
-
-          {/* Row 2: Actual Rest (-) */}
-          <div className="border border-rule bg-surface p-2 flex flex-col justify-center text-center">
-            <span className="text-xs font-bold text-ink-muted font-mono">จริง Rest</span>
-            <span className="text-[10px] text-ink-subtle">Actual (-)</span>
-          </div>
-
-          {/* Cell FP */}
-          <div className="p-3 border border-rule bg-surface transition-colors duration-300">
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="font-mono font-bold text-ink">FP</span>
-              <span className="text-[10px] text-rose font-medium">เตือนเกิน</span>
-            </div>
-            <div className="my-1">
-              <span className="text-2xl sm:text-3xl font-extrabold font-mono text-ink">
-                {showNumbers ? visual.fp : "—"}
-              </span>
-              {showNumbers && (
-                <span className="text-[11px] text-ink-subtle font-mono ml-1.5">/ 10</span>
-              )}
-            </div>
-            <p className="text-[10px] text-ink-muted leading-tight">ทาย Play &middot; จริง Rest</p>
-          </div>
-
-          {/* Cell TN */}
-          <div
-            className={`p-3 border transition-colors duration-300 relative bg-surface ${
-              isStepAccuracy ? "border-mint" : "border-rule"
-            }`}
-          >
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="font-mono font-bold text-ink">TN</span>
-              <span className="text-[10px] text-mint font-semibold">ถูกต้อง</span>
-            </div>
-            <div className="my-1">
-              <span className="text-2xl sm:text-3xl font-extrabold font-mono text-ink">
-                {showNumbers ? visual.tn : "—"}
-              </span>
-              {showNumbers && (
-                <span className="text-[11px] text-ink-subtle font-mono ml-1.5">/ 10</span>
-              )}
-            </div>
-            <p className="text-[10px] text-ink-muted leading-tight">ทำนาย Rest &middot; จริง Rest</p>
-          </div>
-        </div>
-      </div>
-      )}
-
-      {/* Summary Score Chips: Acc, Prec, Rec, F1 */}
-      {showNumbers && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 shrink-0">
-          <div
-            className={`p-2.5 border text-center transition-colors duration-300 bg-surface ${
-              isStepAccuracy ? "border-mint" : "border-rule"
-            }`}
-          >
-            <span className="text-[10px] text-ink-subtle block uppercase font-bold">Accuracy</span>
-            <span className="font-mono font-bold text-xs sm:text-sm text-ink">70.0%</span>
-          </div>
-          <div className="p-2.5 border border-rule bg-surface text-center">
-            <span className="text-[10px] text-ink-subtle block uppercase font-bold">Precision</span>
-            <span className="font-mono font-bold text-xs sm:text-sm text-ink">80.0%</span>
-          </div>
-          <div
-            className={`p-2.5 border text-center transition-colors duration-300 bg-surface ${
-              isStepRecall ? "border-amber" : "border-rule"
-            }`}
-          >
-            <span className={`text-[10px] block uppercase font-bold ${isStepRecall ? "text-amber" : "text-ink-subtle"}`}>Recall</span>
-            <span className={`font-mono font-bold text-xs sm:text-sm ${isStepRecall ? "text-amber" : "text-ink"}`}>66.7%</span>
-          </div>
-          <div
-            className={`p-2.5 border text-center transition-colors duration-300 bg-surface ${
-              isStepF1 ? "border-accent" : "border-rule"
-            }`}
-          >
-            <span className="text-[10px] text-ink-subtle block uppercase font-bold">F1-Score</span>
-            <span className="font-mono font-bold text-xs sm:text-sm text-accent-ink">72.7%</span>
-          </div>
-        </div>
-      )}
-
-      {/* Insight Callout Bar */}
-      <div className="p-3.5 border border-l-2 border-l-accent border-rule bg-surface text-xs text-ink-muted flex items-start gap-2.5 shrink-0">
-        <div className="flex-1 leading-relaxed">
-          {isStepRecall ? (
-            <span className="text-amber font-semibold">
-              ไฮไลต์ FN = 2: โมเดลบอกให้ Rest แต่ความจริงนักเตะพร้อม Play (พลาดโอกาสใช้งาน) ทำให้ Recall หล่นเหลือ 66.7%
-            </span>
-          ) : isStepAccuracy ? (
-            <span className="text-mint font-semibold">
-              ไฮไลต์ Accuracy: ผลทำนายที่ถูกต้องทั้งหมดบนแนวทแยง (TP={visual.tp} + TN={visual.tn}) รวมเป็น 7 ใน 10 คน (70%)
-            </span>
-          ) : isStepF1 ? (
-            <span className="text-accent-ink font-semibold">
-              ไฮไลต์ F1 = 72.7%: ค่าเฉลี่ยฮาร์โมนิกระหว่าง Precision (80%) และ Recall (66.7%) ถัวน้ำหนักเท่ากัน
-            </span>
-          ) : showNumbers ? (
-            <span>
-              กลุ่มตัวอย่างทั้งหมด N = 10 คน &middot; ด้านแถวรวมจริง Play = 6, จริง Rest = 4
-            </span>
-          ) : (
-            <span>กำหนดให้ <strong>Play เป็น Positive</strong> เสมอ — ห้ามเริ่มคำนวณก่อนระบุว่าคลาสไหนคือเป้าหมายหลัก</span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DecisionTreeGainChart({
-  visual,
-  stepIndex,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "decision-tree" }>;
-  stepIndex: number;
-}) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<Chart | null>(null);
-
-  const showCandidateA = stepIndex >= 1;
-  const showCandidateB = stepIndex >= 3;
-  const showWinner = stepIndex >= 4;
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const theme = getChartTheme();
-
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
-
-    const labels: string[] = ["Root (Parent)"];
-    const weightedGiniData: number[] = [visual.rootGini];
-    const gainData: number[] = [0];
-
-    if (showCandidateA) {
-      labels.push("Split A (days <= 45)");
-      weightedGiniData.push(0.278);
-      gainData.push(0.222);
-    }
-
-    if (showCandidateB) {
-      labels.push("Split B (purchases <= 2)");
-      weightedGiniData.push(0.444);
-      gainData.push(0.056);
-    }
-
-    const gainColors = labels.map((_, idx) => {
-      if (idx === 0) return theme.muted;
-      if (idx === 1) return showWinner ? theme.mint : theme.accent;
-      return theme.amber;
-    });
-
-    chartRef.current = new Chart(canvasRef.current, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Gini Gain (เกณฑ์ตัดสิน สูงสุด = ชนะ)",
-            data: gainData,
-            backgroundColor: gainColors,
-            borderRadius: 6,
-            borderWidth: 1,
-            borderColor: "transparent",
-          },
-          {
-            label: "Weighted Gini (ความไม่บริสุทธิ์ ยิ่งต่ำยิ่งดี)",
-            data: weightedGiniData,
-            backgroundColor: theme.subtle + "40",
-            borderColor: theme.subtle,
-            borderWidth: 1,
-            borderRadius: 6,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 350 },
-        scales: {
-          x: {
-            grid: { color: theme.grid },
-            ticks: {
-              color: theme.text,
-              font: { size: 10, weight: 600, family: "inherit" },
-            },
-          },
-          y: {
-            min: 0,
-            max: 0.6,
-            grid: { color: theme.grid },
-            ticks: {
-              color: theme.muted,
-              font: { size: 10, family: "inherit" },
-              callback: (v) => Number(v).toFixed(2),
-            },
-          },
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: "top",
-            labels: {
-              boxWidth: 8,
-              color: theme.text,
-              font: { size: 9, weight: 600 },
-            },
-          },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                const val = ctx.parsed.y ?? 0;
-                return ` ${ctx.dataset.label}: ${val.toFixed(3)}`;
-              },
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-        chartRef.current = null;
-      }
-    };
-  }, [stepIndex, showCandidateA, showCandidateB, showWinner, visual.rootGini]);
-
-  return (
-    <div className="h-52 sm:h-60 w-full relative">
-      <canvas ref={canvasRef} />
-    </div>
-  );
-}
-
-function DecisionTreePanel({
-  visual,
-  stepIndex,
-  viewMode = "chart",
-  onViewModeChange,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "decision-tree" }>;
-  stepIndex: number;
-  viewMode?: "chart" | "tree";
-  onViewModeChange?: (mode: "chart" | "tree") => void;
-}) {
-  const [internalViewMode, setInternalViewMode] = useState<"chart" | "tree">("chart");
-  const currentViewMode = viewMode ?? internalViewMode;
-  const setMode = onViewModeChange ?? setInternalViewMode;
-  const showCandidateA = stepIndex >= 1;
-  const showCandidateB = stepIndex >= 3;
-  const showWinner = stepIndex >= 4;
-
-  const splitsToShow = visual.splits.slice(0, showCandidateB ? 2 : showCandidateA ? 1 : 0);
-
-  return (
-    <div className="w-full h-full flex flex-col justify-between gap-2.5 overflow-hidden">
-      <div className="flex items-center justify-between pb-2 border-b border-rule shrink-0">
-        <div>
-          <p className="text-xs font-bold text-ink-subtle uppercase tracking-wider">
-            Decision Tree Split Simulation
-          </p>
-          <span className="text-[10px] text-ink-muted">
-            Root Gini: {visual.rootGini.toFixed(3)}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          {showWinner && (
-            <span className="bento-pill border border-mint text-mint whitespace-nowrap shrink-0">
-              Winner: Split A
-            </span>
-          )}
-          <ViewToggle
-            value={currentViewMode}
-            onChange={setMode}
-            options={[
-              { value: "chart", label: "Gain Chart" },
-              { value: "tree", label: "Tree" },
-            ]}
-          />
-        </div>
-      </div>
-
-      {currentViewMode === "chart" ? (
-        <div className="flex-1 min-h-0 flex flex-col justify-center space-y-2 overflow-y-auto overflow-x-hidden custom-scrollbar py-0.5">
-          <div className="bg-surface p-2 sm:p-3 border border-rule my-auto">
-            <DecisionTreeGainChart visual={visual} stepIndex={stepIndex} />
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-            <div className={`p-2 border text-center transition-colors bg-surface ${showWinner ? "border-mint" : "border-rule"}`}>
-              <span className="text-[10px] font-bold text-ink-subtle uppercase block">Candidate A (days ≤ 45)</span>
-              <span className={`font-mono font-bold text-xs ${showWinner ? "text-mint font-extrabold" : "text-ink"}`}>Gain: 0.222 {showWinner && "★"}</span>
-            </div>
-            <div className={`p-2 border text-center transition-colors bg-surface ${showCandidateB ? "border-rule" : "border-dashed border-rule opacity-60"}`}>
-              <span className="text-[10px] font-bold text-ink-subtle uppercase block">Candidate B (pur ≤ 2)</span>
-              <span className="font-mono font-bold text-xs text-ink-muted">{showCandidateB ? "Gain: 0.056" : "รอเปรียบเทียบ"}</span>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="flex-1 min-h-0 flex flex-col justify-center space-y-2 overflow-y-auto overflow-x-hidden custom-scrollbar py-0.5">
-          {/* Root node */}
-          <div className="bg-surface-hover border border-rule p-2.5 text-center max-w-xs mx-auto">
-            <p className="text-xs font-bold text-ink uppercase tracking-wider">โหนดแม่ (Parent Root)</p>
-            <p className="tnum text-[11px] text-ink-muted mt-0.5 font-mono">n = 12 ตัวอย่าง (Active 6 / Inactive 6)</p>
-          </div>
-
-          <div className="text-center my-0.5 shrink-0" aria-hidden="true">
-            <svg width="20" height="14" viewBox="0 0 24 20" fill="none" className="mx-auto">
-              <path d="M12 0v8M12 8L4 20M12 8l8 12" stroke="var(--rule-strong)" strokeWidth="1.5" />
-            </svg>
-          </div>
-
-          <div className="space-y-2">
-            {splitsToShow.map((s, idx) => {
-              const isWinner = showWinner && idx === 0;
-              return (
-                <div
-                  key={s.feature}
-                  className={`p-2.5 sm:p-3 border transition-colors duration-300 bg-surface ${
-                    isWinner ? "border-mint" : "border-rule"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs sm:text-sm font-bold text-ink font-mono truncate">{s.feature}</p>
-                    <span
-                      className={`bento-pill text-[11px] font-semibold shrink-0 transition-colors ${
-                        isWinner ? "bg-mint text-white" : "border border-rule text-ink-subtle"
-                      }`}
-                    >
-                      Gain: {s.gain.toFixed(3)} {isWinner && "★ SELECTED"}
-                    </span>
-                  </div>
-
-                  <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-surface-hover p-1.5 sm:p-2 border border-rule text-center">
-                      <p className="text-[10px] sm:text-[11px] text-ink-subtle font-medium">แยกซ้าย n={s.nLeft}</p>
-                      <p className="tnum font-mono text-xs sm:text-sm font-bold mt-0.5 text-ink">{s.giniLeft.toFixed(3)}</p>
-                    </div>
-                    <div className="bg-surface-hover p-1.5 sm:p-2 border border-rule text-center">
-                      <p className="text-[10px] sm:text-[11px] text-ink-subtle font-medium">แยกขวา n={s.nRight}</p>
-                      <p className="tnum font-mono text-xs sm:text-sm font-bold mt-0.5 text-ink">{s.giniRight.toFixed(3)}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-1.5 flex justify-between items-center text-[11px] text-ink-muted border-t border-rule/60 pt-1">
-                    <span>Weighted: <strong className="font-mono text-ink">{s.weightedGini.toFixed(3)}</strong></span>
-                    <span className={`font-bold ${isWinner ? "text-mint font-mono" : "text-accent-ink font-mono"}`}>
-                      Gain = {s.gain.toFixed(3)}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {splitsToShow.length === 0 ? (
-            <p className="text-xs text-ink-muted text-center py-3 border border-dashed border-rule">
-              กำลังประเมินโหนดราก เลื่อนลงเพื่อดู Candidate Splits
-            </p>
-          ) : null}
-        </div>
-      )}
-
-      <div className="pt-2 border-t border-rule text-xs text-ink-muted shrink-0">
-        เกณฑ์ตัดสิน: เลือก Candidate Split ที่ได้ <strong>Gini Gain สูงที่สุด</strong> เสมอ
-      </div>
-    </div>
-  );
-}
-
-function BoxplotPanel({
-  visual,
-  stepIndex,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "boxplot" }>;
-  stepIndex: number;
-}) {
-  const W = 100;
-  const H = 52;
-  const minVal = -5;
-  const maxVal = 65;
-  const scaleX = (v: number) => 8 + ((v - minVal) / (maxVal - minVal)) * 84;
-
-  const showIQR = stepIndex >= 1;
-  const showFences = stepIndex >= 2;
-  const showWhiskerCap = stepIndex >= 3;
-  const showOutlier = stepIndex >= 4;
-
-  const yBox = 16;
-  const hBox = 18;
-  const q1X = scaleX(visual.q1);
-  const q3X = scaleX(visual.q3);
-  const medX = scaleX(visual.median);
-  const minX = scaleX(visual.min);
-  const maxX = scaleX(showWhiskerCap ? 50 : visual.max);
-  const ufX = scaleX(visual.upperFence);
-
-  return (
-    <div className="w-full h-full flex flex-col justify-between gap-2.5 overflow-hidden">
-      <div className="flex justify-between items-center pb-2 border-b border-rule shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-accent" />
-          <p className="text-xs font-bold text-ink-subtle uppercase tracking-wider">
-            Tukey&rsquo;s Boxplot Diagram
-          </p>
-        </div>
-        <span
-          className={`bento-pill font-semibold text-xs font-mono transition-colors duration-300 ${
-            showIQR ? "border-mint text-mint" : "border-rule text-ink-subtle"
-          }`}
-        >
-          IQR = {visual.q3 - visual.q1}
-        </span>
-      </div>
-
-      <div className="flex-1 min-h-0 flex flex-col justify-center space-y-2.5 overflow-y-auto overflow-x-hidden custom-scrollbar py-0.5">
-
-        {/* Refined Boxplot Canvas */}
-        <div className="bg-surface p-3 sm:p-4 border border-rule">
-          <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto max-h-[190px] sm:max-h-[230px]" role="img" aria-label="Boxplot visualization">
-            {/* Baseline Axis */}
-            <line x1="6" y1="42" x2="94" y2="42" stroke="var(--rule-strong)" strokeWidth="0.4" />
-
-            {/* Left Whisker with T-cap */}
-            <line
-              x1={minX} y1={yBox + hBox / 2} x2={q1X} y2={yBox + hBox / 2}
-              stroke="var(--ink)" strokeWidth="0.8"
-              style={{ transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-            />
-            <line
-              x1={minX} y1={yBox + 4} x2={minX} y2={yBox + hBox - 4}
-              stroke="var(--ink)" strokeWidth="0.8"
-              style={{ transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-            />
-
-            {/* Right Whisker with T-cap */}
-            <line
-              x1={q3X} y1={yBox + hBox / 2} x2={maxX} y2={yBox + hBox / 2}
-              stroke="var(--ink)" strokeWidth="0.8"
-              style={{ transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-            />
-            <line
-              x1={maxX} y1={yBox + 4} x2={maxX} y2={yBox + hBox - 4}
-              stroke="var(--ink)" strokeWidth="0.8"
-              style={{ transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-            />
-
-            {/* Box with IQR highlight */}
-            <rect
-              x={q1X}
-              y={yBox}
-              width={Math.max(1, q3X - q1X)}
-              height={hBox}
-              rx="2.5"
-              fill={showIQR ? "var(--accent-wash)" : "none"}
-              stroke={showIQR ? "var(--accent)" : "var(--ink)"}
-              strokeWidth={showIQR ? "1.2" : "0.9"}
-              style={{ transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-            />
-
-            {/* Median line */}
-            <line
-              x1={medX} y1={yBox} x2={medX} y2={yBox + hBox}
-              stroke="var(--accent-ink)" strokeWidth="1.6"
-              style={{ transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-            />
-
-            {/* Upper Fence dashed marker */}
-            {showFences && (
-              <g style={{ transition: "opacity 0.6s ease" }}>
-                <line
-                  x1={ufX} y1={5} x2={ufX} y2={40}
-                  stroke="var(--amber)" strokeWidth="0.9" strokeDasharray="1.5,1.5"
-                />
-                <text
-                  x={ufX}
-                  y={4}
-                  textAnchor="middle"
-                  fontSize="2.8"
-                  fontWeight="bold"
-                  fill="var(--amber)"
-                  className="font-mono"
-                >
-                  UF 57.5
-                </text>
-              </g>
-            )}
-
-            {/* Outlier Dots with subtle pulse */}
-            {showOutlier &&
-              [58].map((o) => (
-                <g key={o}>
-                  <circle
-                    cx={scaleX(o)}
-                    cy={yBox + hBox / 2}
-                    r="4"
-                    fill="var(--rose)"
-                    className="animate-ping opacity-35"
-                  />
-                  <circle
-                    cx={scaleX(o)}
-                    cy={yBox + hBox / 2}
-                    r="2.5"
-                    fill="var(--rose)"
-                    style={{ transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
-                  />
-                  <text
-                    x={scaleX(o)}
-                    y={yBox + hBox + 8}
-                    textAnchor="middle"
-                    fontSize="2.8"
-                    fontWeight="bold"
-                    fill="var(--rose)"
-                    className="font-mono"
-                  >
-                    58
-                  </text>
-                </g>
-              ))}
-          </svg>
-        </div>
-
-        {/* Refined Five-Number Summary Bento Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 text-xs">
-          <div className="bg-surface p-2.5 border border-rule transition-colors duration-300 text-center">
-            <p className="text-[10px] text-ink-subtle uppercase font-bold tracking-wider">Q1</p>
-            <p className="tnum font-mono font-bold text-sm mt-0.5 text-ink">{visual.q1}</p>
-          </div>
-          <div className="bg-surface p-2.5 border border-rule transition-colors duration-300 text-center">
-            <p className="text-[10px] text-accent-ink uppercase font-bold tracking-wider">Median</p>
-            <p className="tnum font-mono font-bold text-sm mt-0.5 text-accent-ink">{visual.median}</p>
-          </div>
-          <div className="bg-surface p-2.5 border border-rule transition-colors duration-300 text-center">
-            <p className="text-[10px] text-ink-subtle uppercase font-bold tracking-wider">Q3</p>
-            <p className="tnum font-mono font-bold text-sm mt-0.5 text-ink">{visual.q3}</p>
-          </div>
-          <div className={`bg-surface p-2.5 border transition-colors duration-300 text-center ${showFences ? "border-amber" : "border-rule"}`}>
-            <p className={`text-[10px] uppercase font-bold tracking-wider ${showFences ? "text-amber" : "text-ink-subtle"}`}>Upper Fence</p>
-            <p className={`tnum font-mono font-bold text-sm mt-0.5 ${showFences ? "text-amber" : "text-ink"}`}>{visual.upperFence}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Insight Callout Box */}
-      <div className="p-3 border border-l-2 border-l-accent border-rule bg-surface text-xs text-ink-muted flex items-start gap-2.5 shrink-0">
-        <div className="flex-1 leading-relaxed">
-          {showOutlier ? (
-            <span className="text-rose font-bold">
-              ตรวจพบ Outlier: ค่า 58 เกินกว่า Upper Fence (57.5) ออกไป ถือเป็นค่าผิดปกติที่ต้องพล็อตแยก
-            </span>
-          ) : showWhiskerCap ? (
-            <span>
-              <strong>กฎข้อควรระวัง:</strong> Whisker ขวาสิ้นสุดที่ค่าจริงใน Fence คือ <strong>50</strong> ไม่ได้ลากไปแตะ 57.5
-            </span>
-          ) : showFences ? (
-            <span>
-              <strong>สูตร Fences:</strong> Upper Fence = Q3 + 1.5×IQR = 35 + 22.5 = <strong>57.5</strong>
-            </span>
-          ) : showIQR ? (
-            <span>
-              <strong>IQR:</strong> ความกว้างของกล่อง = Q3 - Q1 = 35 - 20 = <strong>15</strong> ครอบคลุม 50% ของข้อมูล
-            </span>
-          ) : (
-            <span>ตำแหน่งควอร์ไทล์สำคัญ: Q1=20, Median=28, Q3=35 และค่าสุดขอบ Min=10, Max=50</span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ShapForcePanel({
-  visual,
-  stepIndex,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "shap-force" }>;
-  stepIndex: number;
-}) {
-  const base = visual.baseValue;
-  const itemsToShow = visual.contributions.slice(0, stepIndex);
-  const currentPred = itemsToShow.reduce((acc, c) => acc + c.value, base);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<Chart | null>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const theme = getChartTheme();
-
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
-
-    const labels = ["Base Value (Pop. Avg)", ...itemsToShow.map((c) => c.feature)];
-    const dataValues = [base, ...itemsToShow.map((c) => c.value)];
-    const bgColors = [
-      theme.muted,
-      ...itemsToShow.map((c) => (c.value >= 0 ? theme.mint : theme.rose)),
-    ];
-
-    chartRef.current = new Chart(canvasRef.current, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Impact (pt / %)",
-            data: dataValues,
-            backgroundColor: bgColors,
-            borderRadius: 6,
-            borderWidth: 1,
-            borderColor: "transparent",
-          },
-        ],
-      },
-      options: {
-        indexAxis: "y",
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 350 },
-        scales: {
-          x: {
-            min: -15,
-            max: 40,
-            grid: { color: theme.grid },
-            ticks: {
-              color: theme.muted,
-              font: { size: 10, family: "inherit" },
-              callback: (v) => `${Number(v) > 0 ? "+" : ""}${v}%`,
-            },
-          },
-          y: {
-            grid: { display: false },
-            ticks: {
-              color: theme.text,
-              font: { size: 11, weight: 600, family: "inherit" },
-            },
-          },
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                const val = ctx.parsed.x ?? 0;
-                if (ctx.dataIndex === 0) return ` Baseline: ${val}% (สัดส่วนประชากรเฉลี่ย)`;
-                return ` ผลกระทบ: ${val > 0 ? "+" : ""}${val} pt (${val > 0 ? "ดันผลทำนายขึ้น" : "ฉุดผลทำนายลง"})`;
-              },
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-        chartRef.current = null;
-      }
-    };
-  }, [stepIndex, itemsToShow, base]);
-
-  return (
-    <div className="w-full h-full flex flex-col justify-between gap-2.5 overflow-hidden">
-      <div className="flex justify-between items-center pb-2 border-b border-rule shrink-0">
-        <p className="text-xs font-bold text-ink-subtle uppercase tracking-wider">
-          SHAP Force Plot &middot; Lect 09 p.9
-        </p>
-        <span className="bento-pill border border-accent text-accent-ink font-mono font-bold text-xs">
-          f(x) = {currentPred}%
-        </span>
-      </div>
-
-      <div className="flex-1 min-h-0 flex flex-col justify-center space-y-2.5 overflow-y-auto overflow-x-hidden custom-scrollbar py-0.5">
-        {/* Chart.js Force Bar Canvas */}
-        <div className="bg-surface p-2.5 sm:p-3 border border-rule h-56 sm:h-72 w-full relative">
-          <canvas ref={canvasRef} />
-        </div>
-
-        {/* Feature contribution breakdown pills */}
-        <div className="space-y-1.5">
-          {itemsToShow.length === 0 ? (
-            <p className="text-xs text-ink-muted italic py-2 border border-dashed border-rule text-center">
-              เริ่มต้นที่ค่าเฉลี่ยประชากร Base Value = 32% (เลื่อนลงเพื่อดูแรงผลักฟีเจอร์)
-            </p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-              {itemsToShow.map((c) => {
-                const isPos = c.value > 0;
-                return (
-                  <div
-                    key={c.feature}
-                    className="flex justify-between items-center text-xs border border-rule px-2.5 py-1.5 bg-surface transition-colors duration-300"
-                  >
-                    <span className="text-ink font-medium truncate mr-1.5">{c.feature}</span>
-                    <span
-                      className={`tnum font-bold font-mono shrink-0 ${
-                        isPos ? "text-mint" : "text-rose"
-                      }`}
-                    >
-                      {isPos ? `+${c.value}` : c.value} pt
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="border-t border-rule pt-2 text-xs shrink-0">
-        <p className="text-ink-subtle font-mono text-[11px]">
-          สมการรวม: {base}% {itemsToShow.map(c => (c.value >= 0 ? `+ ${c.value}` : `- ${Math.abs(c.value)}`)).join(" ")} = <span className="text-accent-ink font-bold font-mono">{currentPred}%</span>
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function ConceptDriftPanel({
-  visual,
-  stepIndex,
-}: {
-  visual: Extract<EpisodeVisual, { kind: "concept-drift" }>;
-  stepIndex: number;
-}) {
-  const visiblePointsCount = Math.max(1, Math.min(visual.timeline.length, stepIndex + 1));
-  const pts = visual.timeline.slice(0, visiblePointsCount);
-  const current = pts[pts.length - 1];
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<Chart | null>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const theme = getChartTheme();
-
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
-
-    const labels = visual.timeline.map((t) => `T${t.t}`);
-    const accuracyData = visual.timeline.map((t, idx) =>
-      idx < visiblePointsCount ? t.accuracy : null
     );
-    const thresholdData = visual.timeline.map(() => 70);
-    const isDegraded = current.accuracy < 70;
-
-    chartRef.current = new Chart(canvasRef.current, {
-      type: "line",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Model Accuracy (%)",
-            data: accuracyData,
-            borderColor: isDegraded ? theme.rose : theme.accent,
-            backgroundColor: isDegraded ? theme.roseWash : theme.accentWash,
-            fill: true,
-            tension: 0.35,
-            borderWidth: 2.5,
-            pointRadius: (ctx) =>
-              ctx.dataIndex === visiblePointsCount - 1 ? 6 : ctx.dataIndex < visiblePointsCount ? 4 : 0,
-            pointBackgroundColor: (ctx) =>
-              ctx.dataIndex === visiblePointsCount - 1 ? theme.amber : theme.accent,
-            pointBorderColor: "#fff",
-            pointBorderWidth: 1.5,
-          },
-          {
-            label: "Drift Threshold (70%)",
-            data: thresholdData,
-            borderColor: theme.rose,
-            borderDash: [5, 5],
-            borderWidth: 1.5,
-            pointRadius: 0,
-            fill: false,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 350 },
-        scales: {
-          x: {
-            grid: { color: theme.grid },
-            ticks: { color: theme.muted, font: { size: 10, family: "inherit" } },
-          },
-          y: {
-            min: 50,
-            max: 100,
-            grid: { color: theme.grid },
-            ticks: {
-              color: theme.muted,
-              font: { size: 10, family: "inherit" },
-              callback: (v) => `${v}%`,
-            },
-          },
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: "top",
-            labels: {
-              boxWidth: 12,
-              color: theme.text,
-              font: { size: 10, weight: 600 },
-            },
-          },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                if (ctx.datasetIndex === 0) {
-                  const val = ctx.parsed.y;
-                  return val !== null
-                    ? ` Accuracy: ${val}% ${val < 70 ? "(Drift Detected)" : "(Normal)"}`
-                    : "";
-                }
-                return " Critical Threshold: 70%";
-              },
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-        chartRef.current = null;
-      }
-    };
-  }, [visiblePointsCount, visual.timeline, current.accuracy]);
+  };
 
   return (
-    <div className="w-full h-full flex flex-col justify-between gap-2.5 overflow-hidden">
-      <div className="flex justify-between items-center pb-2 border-b border-rule shrink-0">
-        <p className="text-xs font-bold text-ink-subtle uppercase tracking-wider">
-          Concept Drift Timeline &middot; Lect 09 p.11
-        </p>
-        <span
-          className={`bento-pill font-semibold text-xs font-mono transition-colors ${
-            current.accuracy < 70 ? "border-rose text-rose" : "border-mint text-mint"
-          }`}
-        >
-          Accuracy {current.accuracy}%
-        </span>
+    <div>
+      <PanelHead title="Confusion Matrix" sub={`แถว = ค่าจริง · คอลัมน์ = ค่าที่ทาย · Positive = ${pos}`} />
+
+      <div className="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] gap-2 text-xs">
+        <span />
+        <span className="text-center text-ink-subtle">ทาย {pos}</span>
+        <span className="text-center text-ink-subtle">ทาย ไม่ใช่ {pos}</span>
+        <span className="self-center pr-1 text-ink-subtle">จริง {pos}</span>
+        {cell("tp", "ถูก")}
+        {cell("fn", "พลาด")}
+        <span className="self-center pr-1 text-ink-subtle">จริง ไม่ใช่</span>
+        {cell("fp", "เตือนผิด")}
+        {cell("tn", "ถูก")}
       </div>
 
-      <div className="flex-1 min-h-0 flex flex-col justify-center space-y-2.5 overflow-y-auto overflow-x-hidden custom-scrollbar py-0.5">
-        {/* Chart.js Accuracy Trajectory Canvas */}
-        <div className="bg-surface p-2.5 sm:p-3 border border-rule h-56 sm:h-72 w-full relative">
-          <canvas ref={canvasRef} />
-        </div>
+      {showNumbers ? (
+        <ul className="mt-5 space-y-2">
+          {(Object.keys(metrics) as MetricKey[]).map((k) => {
+            const m = metrics[k];
+            const on = focus === k;
+            return (
+              <li key={k} className="grid grid-cols-[5.5rem_minmax(0,1fr)_3.5rem] items-center gap-3 text-sm">
+                <span className={on ? "font-semibold text-ink" : "text-ink-muted"}>{m.label}</span>
+                <span className="h-2 overflow-hidden rounded-full bg-rule">
+                  <span className={`block h-full rounded-full transition-[width] duration-500 ${on ? "bg-accent" : "bg-rule-strong"}`}
+                    style={{ width: `${Math.max(0, Math.min(1, m.value)) * 100}%` }} />
+                </span>
+                <span className={`num text-right font-mono ${on ? "font-semibold text-ink" : "text-ink-muted"}`}>
+                  {(m.value * 100).toFixed(1)}%
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
 
-        {current.note && (
-          <div className="p-2.5 border border-l-2 border-l-accent border-rule bg-surface transition-colors duration-300">
-            <p className="text-xs text-accent-ink font-semibold">{current.note}</p>
-          </div>
+      <Insight>
+        {focus ? (
+          <Tex tex={metrics[focus].tex} />
+        ) : showNumbers ? (
+          <>N = {n} · จริง {pos} = {tp + fn} · จริง ไม่ใช่ {pos} = {fp + tn}</>
+        ) : (
+          <>กำหนดก่อนเสมอว่า <strong>{pos}</strong> คือ Positive — ถ้าสลับฝั่ง Precision และ Recall จะเปลี่ยนทั้งหมด</>
         )}
+      </Insight>
+    </div>
+  );
+}
 
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="bg-surface p-2.5 border border-rule transition-colors duration-300">
-            <p className="text-[11px] text-ink-subtle font-medium">ก่อน Drift (Train)</p>
-            <p className="text-ink-muted mt-0.5 text-[11px]">ไม่ซื้อเกิน 45 วัน</p>
-            <p className="tnum font-bold text-ink mt-0.5 font-mono">Inactive = 68%</p>
-          </div>
-          <div className="bg-surface p-2.5 border border-rule transition-colors duration-300">
-            <p className="text-[11px] text-accent-ink font-medium">หลัง Drift (โลกจริง)</p>
-            <p className="text-ink-muted mt-0.5 text-[11px]">ไม่ซื้อเกิน 45 วัน</p>
-            <p className="tnum font-bold text-rose mt-0.5 font-mono">Inactive = 31%</p>
-          </div>
-        </div>
+/* ------------------------------------------------------------------ */
+/* Decision tree                                                       */
+/* ------------------------------------------------------------------ */
+
+function DecisionTreePanel({ visual, step }: PanelProps<"decision-tree">) {
+  const shown = visual.splits.slice(0, step >= 3 ? 2 : step >= 1 ? 1 : 0);
+  const showWinner = step >= 4;
+  const winner = visual.splits.reduce((b, s, i, arr) => (s.gain > arr[b].gain ? i : b), 0);
+  const n = visual.splits[0] ? visual.splits[0].nLeft + visual.splits[0].nRight : undefined;
+
+  return (
+    <div>
+      <PanelHead title="เลือกจุดแบ่งของ Decision Tree" sub="เกณฑ์: Gini Gain สูงสุด = Weighted Gini ต่ำสุด" />
+
+      <div className="mx-auto max-w-xs rounded-xl border border-rule bg-surface-hover px-4 py-3 text-center">
+        <p className="text-xs text-ink-subtle">โหนดแม่</p>
+        <p className="num font-mono text-sm text-ink">
+          {n !== undefined ? `n = ${n} · ` : ""}Gini = {fmt(visual.rootGini, 3)}
+        </p>
       </div>
 
-      <div className="border-t border-rule pt-2 text-xs text-ink-muted shrink-0">
-        P(Y|X) เปลี่ยนแปลงตามกาลเวลา โมเดลเดิมที่จำกัดเฉพาะอดีตจึงเกิด Model Degradation
+      <div className="mt-4 space-y-3">
+        {shown.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-rule-strong px-4 py-6 text-center text-sm text-ink-subtle">
+            เลื่อนต่อเพื่อดู Candidate Split
+          </p>
+        ) : null}
+        {shown.map((s, i) => {
+          const isWinner = showWinner && i === winner;
+          const total = s.nLeft + s.nRight;
+          return (
+            <article key={s.feature} className={`rounded-xl border p-4 transition-colors ${isWinner ? "border-accent bg-accent-wash" : "border-rule bg-surface"}`}>
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="truncate font-mono text-sm font-semibold text-ink">{s.feature}</p>
+                {isWinner ? <span className="shrink-0 text-xs font-semibold text-accent-ink">เลือก split นี้</span> : null}
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-center text-xs">
+                {[{ t: "ซ้าย", n: s.nLeft, g: s.giniLeft }, { t: "ขวา", n: s.nRight, g: s.giniRight }].map((c) => (
+                  <div key={c.t} className="rounded-lg border border-rule bg-surface px-2 py-2">
+                    <p className="text-ink-subtle">{c.t} · n = {c.n}</p>
+                    <p className="num font-mono text-sm text-ink">Gini {fmt(c.g, 3)}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 space-y-1 overflow-x-auto text-sm text-ink">
+                <Tex className="block" tex={`\\text{Weighted} = \\tfrac{${s.nLeft}}{${total}}(${fmt(s.giniLeft, 3)}) + \\tfrac{${s.nRight}}{${total}}(${fmt(s.giniRight, 3)}) = ${fmt(s.weightedGini, 3)}`} />
+                <Tex className="block" tex={`\\Delta = ${fmt(visual.rootGini, 3)} - ${fmt(s.weightedGini, 3)} = \\ans{${fmt(s.gain, 3)}}`} />
+              </div>
+              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-rule" aria-hidden>
+                <div className={`h-full rounded-full transition-[width] duration-500 ${isWinner ? "bg-accent" : "bg-rule-strong"}`}
+                  style={{ width: `${visual.rootGini > 0 ? (s.gain / visual.rootGini) * 100 : 0}%` }} />
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Scrollytelling Thinking Player with GSAP ScrollTrigger               */
+/* Boxplot                                                             */
+/* ------------------------------------------------------------------ */
+
+function BoxplotPanel({ visual, step }: PanelProps<"boxplot">) {
+  const { q1, q3, median, min, max } = visual;
+  const outliers = ("outliers" in visual && Array.isArray(visual.outliers) ? visual.outliers : []) as number[];
+  const iqr = q3 - q1, lf = q1 - 1.5 * iqr, uf = q3 + 1.5 * iqr;
+  const showIQR = step >= 1, showFences = step >= 2, showWhisker = step >= 3, showOut = step >= 4;
+
+  const lo = Math.min(min, lf, ...outliers), hi = Math.max(max, uf, ...outliers);
+  const pad = (hi - lo) * 0.05 || 1;
+  const W = 320, MID = 52;
+  const x = (v: number) => 14 + ((v - (lo - pad)) / (hi - lo + 2 * pad)) * (W - 28);
+
+  return (
+    <div>
+      <PanelHead title="Boxplot และรั้วของ Tukey" sub={`IQR = ${fmt(iqr)}`} />
+
+      <svg viewBox={`0 0 ${W} 104`} className="w-full" role="img" aria-label="Boxplot">
+        {showFences &&
+          [{ v: lf, t: "LF" }, { v: uf, t: "UF" }].map((f) => (
+            <g key={f.t}>
+              <line x1={x(f.v)} x2={x(f.v)} y1={20} y2={82} stroke="var(--color-warn)" strokeDasharray="3 3" />
+              <text x={x(f.v)} y={13} textAnchor="middle" fontSize="9" fill="var(--color-warn)" className="font-mono">{f.t} {fmt(f.v, 2)}</text>
+            </g>
+          ))}
+        <line x1={x(min)} x2={x(q1)} y1={MID} y2={MID} stroke="var(--color-ink)" />
+        <line x1={x(q3)} x2={x(max)} y1={MID} y2={MID}
+          stroke={showWhisker ? "var(--color-accent)" : "var(--color-ink)"} strokeWidth={showWhisker ? 2 : 1} />
+        {[min, max].map((v) => <line key={v} x1={x(v)} x2={x(v)} y1={MID - 7} y2={MID + 7} stroke="var(--color-ink)" />)}
+        <rect x={x(q1)} y={MID - 13} width={Math.max(1, x(q3) - x(q1))} height={26} rx={3}
+          fill={showIQR ? "var(--color-accent-wash)" : "var(--color-surface)"}
+          stroke={showIQR ? "var(--color-accent)" : "var(--color-ink)"} style={{ transition: "fill 300ms, stroke 300ms" }} />
+        <line x1={x(median)} x2={x(median)} y1={MID - 13} y2={MID + 13} stroke="var(--color-accent)" strokeWidth={2} />
+        {showOut &&
+          outliers.map((o) => (
+            <g key={o}>
+              <circle cx={x(o)} cy={MID} r={4} fill="var(--color-bad)" />
+              <text x={x(o)} y={MID + 20} textAnchor="middle" fontSize="9" fill="var(--color-bad)" className="font-mono">{o}</text>
+            </g>
+          ))}
+        {[{ v: q1, t: "Q₁" }, { v: median, t: "Med" }, { v: q3, t: "Q₃" }].map((q) => (
+          <text key={q.t} x={x(q.v)} y={98} textAnchor="middle" fontSize="9" fill="var(--color-ink-subtle)" className="font-mono">{q.t}</text>
+        ))}
+      </svg>
+
+      <dl className="mt-4 grid grid-cols-5 gap-2 text-center text-xs">
+        {[["Min", min], ["Q₁", q1], ["Median", median], ["Q₃", q3], ["Max", max]].map(([k, v]) => (
+          <div key={k} className="rounded-lg border border-rule py-2">
+            <dt className="text-ink-subtle">{k}</dt>
+            <dd className="num font-mono text-sm text-ink">{v}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <Insight>
+        {showOut ? (
+          <>
+            <Tex tex={`${outliers.map(String).join(", ") || "\\varnothing"} > \\text{UF} = ${fmt(uf)}`} /> — เป็น Outlier
+            ต้องพล็อตเป็นจุดแยก
+          </>
+        ) : showWhisker ? (
+          <>Whisker ขวาจบที่ <strong>{max}</strong> ซึ่งเป็นค่าจริงสูงสุดที่ยังอยู่ในรั้ว — ไม่ได้ลากไปถึง UF ({fmt(uf)})</>
+        ) : showFences ? (
+          <Tex tex={`\\text{UF} = Q_3 + 1.5\\times\\mathrm{IQR} = ${q3} + ${fmt(1.5 * iqr)} = \\ans{${fmt(uf)}}`} />
+        ) : showIQR ? (
+          <Tex tex={`\\mathrm{IQR} = Q_3 - Q_1 = ${q3} - ${q1} = \\ans{${fmt(iqr)}}`} />
+        ) : (
+          <>อ่านค่าจากโจทย์: Q₁ = {q1}, Median = {median}, Q₃ = {q3}</>
+        )}
+      </Insight>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* SHAP — waterfall                                                   */
+/* ------------------------------------------------------------------ */
+
+function ShapForcePanel({ visual, step }: PanelProps<"shap-force">) {
+  const base = visual.baseValue;
+  let run = base;
+  const rows = visual.contributions.map((c) => {
+    const from = run;
+    run += c.value;
+    return { ...c, from, to: run };
+  });
+  const ends = [base, ...rows.map((r) => r.to)];
+  const lo = Math.min(...ends), hi = Math.max(...ends), pad = (hi - lo) * 0.08 || 1;
+  const pos = (v: number) => ((v - (lo - pad)) / (hi - lo + 2 * pad)) * 100;
+  const shown = rows.slice(0, step);
+  const pred = shown.length ? shown[shown.length - 1].to : base;
+  const up = "var(--color-series-2)", down = "var(--color-series-1)";
+
+  const Track = ({ children }: { children?: ReactNode }) => (
+    <div className="relative h-6 rounded bg-paper">
+      <div className="absolute inset-y-0 w-px bg-rule-strong" style={{ left: `${pos(base)}%` }} />
+      {children}
+    </div>
+  );
+
+  return (
+    <div>
+      <PanelHead title="SHAP: ฟีเจอร์ไหนดันผลทำนาย" sub="Lect 09 · หน่วยเป็นจุดเปอร์เซ็นต์" />
+
+      <div className="space-y-2 text-sm">
+        <div className="grid grid-cols-[minmax(0,8.5rem)_minmax(0,1fr)_3.5rem] items-center gap-3">
+          <span className="text-ink-muted">Base value</span>
+          <Track>
+            <div className="absolute inset-y-1 w-1 -translate-x-1/2 rounded-sm bg-ink-subtle" style={{ left: `${pos(base)}%` }} />
+          </Track>
+          <span className="num text-right font-mono text-ink">{fmt(base, 2)}</span>
+        </div>
+
+        {shown.map((r) => (
+          <div key={r.feature} className="grid grid-cols-[minmax(0,8.5rem)_minmax(0,1fr)_3.5rem] items-center gap-3">
+            <span className="truncate text-ink">{r.feature}</span>
+            <Track>
+              <div className="absolute inset-y-1 rounded-sm"
+                style={{ left: `${pos(Math.min(r.from, r.to))}%`, width: `${Math.abs(pos(r.to) - pos(r.from))}%`, background: r.value >= 0 ? up : down }} />
+            </Track>
+            <span className="num text-right font-mono" style={{ color: r.value >= 0 ? up : down }}>
+              {r.value >= 0 ? "+" : "−"}{fmt(Math.abs(r.value), 2)}
+            </span>
+          </div>
+        ))}
+
+        <div className="grid grid-cols-[minmax(0,8.5rem)_minmax(0,1fr)_3.5rem] items-center gap-3 border-t border-rule pt-2">
+          <span className="font-semibold text-ink">f(x)</span>
+          <Track>
+            <div className="absolute inset-y-0.5 w-1 -translate-x-1/2 rounded-sm bg-accent transition-[left] duration-500" style={{ left: `${pos(pred)}%` }} />
+          </Track>
+          <span className="num text-right font-mono font-semibold text-ink">{fmt(pred, 2)}</span>
+        </div>
+      </div>
+
+      <Insight>
+        {shown.length === 0 ? (
+          <>เริ่มจากค่าเฉลี่ยของประชากร (Base value = {fmt(base, 2)}) แล้วแต่ละฟีเจอร์จะดันขึ้นหรือฉุดลง</>
+        ) : (
+          <Tex tex={`f(x) = ${fmt(base, 2)} ${shown.map((c) => (c.value >= 0 ? `+ ${fmt(c.value, 2)}` : `- ${fmt(Math.abs(c.value), 2)}`)).join(" ")} = \\ans{${fmt(pred, 2)}}`} />
+        )}
+      </Insight>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Concept drift                                                       */
+/* ------------------------------------------------------------------ */
+
+const DRIFT_THRESHOLD = 70;
+const DRIFT_EXAMPLE = { rule: "ไม่ซื้อเกิน 45 วัน", before: 68, after: 31 };
+
+function ConceptDriftPanel({ visual, step }: PanelProps<"concept-drift">) {
+  const tl = visual.timeline;
+  const visible = Math.max(1, Math.min(tl.length, step + 1));
+  const current = tl[visible - 1];
+  const degraded = current.accuracy < DRIFT_THRESHOLD;
+
+  const W = 320, H = 190, L = 34, R = 10, T = 12, B = 26;
+  const lo = Math.min(50, ...tl.map((p) => p.accuracy)), hi = 100;
+  const sx = (i: number) => L + (tl.length > 1 ? i / (tl.length - 1) : 0.5) * (W - L - R);
+  const sy = (v: number) => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+  const path = tl.slice(0, visible).map((p, i) => `${i ? "L" : "M"}${sx(i)} ${sy(p.accuracy)}`).join(" ");
+
+  return (
+    <div>
+      <PanelHead title="Concept Drift" sub="Lect 09 · ความแม่นยำของโมเดลตามเวลา"
+        right={<span className={`num font-mono text-sm ${degraded ? "text-bad" : "text-ink"}`}>{current.accuracy}%</span>} />
+
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img"
+        aria-label={`ความแม่นยำ ณ T${current.t} = ${current.accuracy}%${degraded ? " ต่ำกว่าเกณฑ์" : ""}`}>
+        {[50, 60, 70, 80, 90, 100].filter((v) => v >= lo).map((v) => (
+          <g key={v}>
+            <line x1={L} x2={W - R} y1={sy(v)} y2={sy(v)} stroke="var(--color-rule)" strokeWidth={0.5} />
+            <text x={L - 6} y={sy(v) + 3} textAnchor="end" fontSize="9" fill="var(--color-ink-subtle)" className="font-mono">{v}</text>
+          </g>
+        ))}
+        {tl.map((p, i) => (
+          <text key={p.t} x={sx(i)} y={H - 8} textAnchor="middle" fontSize="9" fill="var(--color-ink-subtle)" className="font-mono">T{p.t}</text>
+        ))}
+        <line x1={L} x2={W - R} y1={sy(DRIFT_THRESHOLD)} y2={sy(DRIFT_THRESHOLD)} stroke="var(--color-bad)" strokeDasharray="4 3" />
+        <text x={W - R} y={sy(DRIFT_THRESHOLD) - 4} textAnchor="end" fontSize="9" fill="var(--color-bad)">เกณฑ์ {DRIFT_THRESHOLD}%</text>
+        <path d={path} fill="none" stroke="var(--color-accent)" strokeWidth={2} strokeLinejoin="round" />
+        {tl.slice(0, visible).map((p, i) => (
+          <circle key={p.t} cx={sx(i)} cy={sy(p.accuracy)} r={i === visible - 1 ? 5 : 3}
+            fill={p.accuracy < DRIFT_THRESHOLD ? "var(--color-bad)" : "var(--color-accent)"}
+            stroke="var(--color-surface)" strokeWidth={1.5} />
+        ))}
+      </svg>
+
+      <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+        <div className="rounded-lg border border-rule px-3 py-2">
+          <p className="text-xs text-ink-subtle">ตอนเทรน · {DRIFT_EXAMPLE.rule}</p>
+          <p className="num font-mono text-ink">Inactive = {DRIFT_EXAMPLE.before}%</p>
+        </div>
+        <div className="rounded-lg border border-bad bg-bad-wash px-3 py-2">
+          <p className="text-xs text-ink-subtle">โลกจริงตอนนี้ · {DRIFT_EXAMPLE.rule}</p>
+          <p className="num font-mono text-bad">Inactive = {DRIFT_EXAMPLE.after}%</p>
+        </div>
+      </div>
+
+      <Insight>
+        {current.note ? <p className="mb-1 font-semibold">{current.note}</p> : null}
+        <span>
+          <Tex tex="P(Y \mid X)" /> เปลี่ยนไปตามเวลา โมเดลที่เรียนจากอดีตจึงแม่นน้อยลง (Model Degradation) — ต้องเฝ้าดูและเทรนใหม่
+        </span>
+      </Insight>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Visual switch                                                       */
+/* ------------------------------------------------------------------ */
+
+function StepVisual({ visual, step }: { visual: EpisodeVisual; step: number }) {
+  switch (visual.kind) {
+    case "kmeans": return <KMeansPanel visual={visual} step={step} />;
+    case "confusion-matrix": return <MatrixPanel visual={visual} step={step} />;
+    case "decision-tree": return <DecisionTreePanel visual={visual} step={step} />;
+    case "boxplot": return <BoxplotPanel visual={visual} step={step} />;
+    case "shap-force": return <ShapForcePanel visual={visual} step={step} />;
+    case "concept-drift": return <ConceptDriftPanel visual={visual} step={step} />;
+    default: {
+      const _never: never = visual;
+      return _never;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Player                                                              */
 /* ------------------------------------------------------------------ */
 
 export function EpisodePlayer({ episodes }: { episodes: Episode[] }) {
   const [epIdx, setEpIdx] = useState(0);
-  const [activeStep, setActiveStep] = useState(0);
-  const activeStepRef = useRef(0);
-
-  const stepCardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const lineTrackRef = useRef<HTMLDivElement>(null);
-  const lineProgressRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const ep = episodes[epIdx];
   const total = ep.steps.length;
-  const currentStepData = ep.steps[activeStep] || ep.steps[0];
+  const current = ep.steps[active] ?? ep.steps[0];
 
-  // Persistent viewModes across steps and episode switches
-  const [viewModes, setViewModes] = useState<Record<string, string>>({
-    ep02: "chart",
-    ep03: "grid",
-    ep04: "chart",
-  });
-
-  // Visual presentation mode: technical diagrams vs 2D vector cartoon mental models
-  const [mainVisualMode, setMainVisualMode] = useState<"technical" | "cartoon">("technical");
-  // Per-step inline cartoon expansion in step cards (useful on mobile)
-  const [expandedCardCartoon, setExpandedCardCartoon] = useState<number | null>(null);
-
-  const handleViewModeChange = useCallback((mode: string) => {
-    setViewModes((prev) => ({
-      ...prev,
-      [ep.id]: mode,
-    }));
-  }, [ep.id]);
-
-  // Switch episode & reset step
-  const handleSelectEpisode = useCallback((index: number) => {
-    setEpIdx(index);
-    activeStepRef.current = 0;
-    setActiveStep(0);
-    if (containerRef.current) {
-      const topOffset = containerRef.current.getBoundingClientRect().top + window.scrollY - 160;
-      window.scrollTo({ top: topOffset, behavior: "smooth" });
-    }
-  }, []);
-
-  // Programmatic scroll lock so smooth scroll events don't fight with activeStep state
-  const isProgrammaticScrollRef = useRef(false);
-  const programmaticScrollTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
-
-  // Jump to specific step via smooth scroll
-  const scrollToStep = useCallback((stepIndex: number) => {
-    const card = stepCardRefs.current[stepIndex];
-    if (!card) return;
-
-    // Immediately update activeStep so UI (Next/Prev buttons, counter, diagrams) updates instantaneously
-    setActiveStep(stepIndex);
-    activeStepRef.current = stepIndex;
-
-    // Lock updateTimeline from overriding activeStep during smooth scroll
-    isProgrammaticScrollRef.current = true;
-    clearTimeout(programmaticScrollTimerRef.current);
-    programmaticScrollTimerRef.current = setTimeout(() => {
-      isProgrammaticScrollRef.current = false;
-    }, 750);
-
-    // Calculate exact scroll target to place the card bead directly at/past the focal trigger line
-    const triggerPoint = window.innerHeight * 0.45;
-    const beadOffset = 42;
-    const cardRect = card.getBoundingClientRect();
-    // Align card bead comfortably at the trigger point (+20px margin so it firmly crosses the threshold)
-    const delta = (cardRect.top + beadOffset) - (triggerPoint - 20);
-    const targetScrollY = Math.max(0, window.scrollY + delta);
-
-    window.scrollTo({
-      top: targetScrollY,
-      behavior: "smooth",
-    });
-  }, []);
-
-  // Synchronized Timeline progress & active step tracking
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const updateTimeline = () => {
-      const firstCard = stepCardRefs.current[0];
-      const lastCard = stepCardRefs.current[total - 1];
-      if (!firstCard || !lastCard || !lineTrackRef.current || !lineProgressRef.current) return;
-
-      const firstCardTop = firstCard.offsetTop;
-      const lastCardTop = lastCard.offsetTop;
-      const beadOffset = 42; // Center of bead: top-7 (28px) + half of h-7 (14px)
-      const lineOffsetTop = firstCardTop + beadOffset;
-      const lineLength = Math.max(1, lastCardTop - firstCardTop);
-
-      // Position and size the gray track behind the beads
-      lineTrackRef.current.style.top = `${lineOffsetTop}px`;
-      lineTrackRef.current.style.height = `${lineLength}px`;
-
-      // Focal trigger line in viewport (45% from top of window)
-      const triggerPoint = window.innerHeight * 0.45;
-
-      // Bottom of page safety check: ensures 100% progress and last step active
-      const atBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 60;
-
-      if (atBottom) {
-        lineProgressRef.current.style.height = "100%";
-        if (!isProgrammaticScrollRef.current && activeStepRef.current !== total - 1) {
-          activeStepRef.current = total - 1;
-          setActiveStep(total - 1);
-        }
-        return;
-      }
-
-      const bead0ViewportY = firstCard.getBoundingClientRect().top + beadOffset;
-      const currentPx = Math.max(0, Math.min(lineLength, triggerPoint - bead0ViewportY));
-      const progressPercent = (currentPx / lineLength) * 100;
-
-      lineProgressRef.current.style.height = `${progressPercent}%`;
-
-      // If user is currently smooth-scrolling via Next/Prev/Step buttons, don't let intermediate scroll positions hijack activeStep
-      if (isProgrammaticScrollRef.current) return;
-
-      // Determine active step: find the furthest bead that the line has reached
-      let currentActive = 0;
-      for (let i = 0; i < total; i++) {
-        const card = stepCardRefs.current[i];
-        if (card) {
-          const beadDist = card.offsetTop - firstCardTop;
-          // Activate immediately when the line tip touches the bead (-10px before center)
-          if (currentPx >= beadDist - 10) {
-            currentActive = i;
-          }
-        }
-      }
-
-      if (activeStepRef.current !== currentActive) {
-        activeStepRef.current = currentActive;
-        setActiveStep(currentActive);
-      }
-    };
-
-    // Release programmatic lock if user manually touches or scrolls with wheel
-    const handleUserManualScroll = () => {
-      if (isProgrammaticScrollRef.current) {
-        isProgrammaticScrollRef.current = false;
-        clearTimeout(programmaticScrollTimerRef.current);
-      }
-    };
-
-    window.addEventListener("scroll", updateTimeline, { passive: true });
-    window.addEventListener("resize", updateTimeline, { passive: true });
-    window.addEventListener("wheel", handleUserManualScroll, { passive: true });
-    window.addEventListener("touchmove", handleUserManualScroll, { passive: true });
-
-    updateTimeline();
-    const timer = setTimeout(updateTimeline, 100);
-
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(programmaticScrollTimerRef.current);
-      window.removeEventListener("scroll", updateTimeline);
-      window.removeEventListener("resize", updateTimeline);
-      window.removeEventListener("wheel", handleUserManualScroll);
-      window.removeEventListener("touchmove", handleUserManualScroll);
-    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.step));
+      },
+      { rootMargin: "-45% 0px -54% 0px" },
+    );
+    cardRefs.current.slice(0, total).forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
   }, [epIdx, total]);
 
+  const goTo = useCallback((i: number) => {
+    const el = cardRefs.current[i];
+    if (!el) return;
+    setActive(i);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const top = el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.45 + 16;
+    window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+  }, []);
+
+  const selectEpisode = (i: number) => {
+    setEpIdx(i);
+    setActive(0);
+    rootRef.current?.scrollIntoView({ block: "start" });
+  };
+
   return (
-    <div ref={containerRef} className="space-y-8 relative pt-4 sm:pt-6">
-      {/* ---------------- Top Episode Switcher Tabs ---------------- */}
-      <div className="flex gap-2 flex-wrap items-center pt-2 pb-1">
-        {episodes.map((e, i) => (
-          <button
-            key={e.id}
-            type="button"
-            onClick={() => handleSelectEpisode(i)}
-            aria-current={i === epIdx ? "true" : undefined}
-            className={`px-3.5 py-2 text-xs font-semibold transition-colors duration-150 border cursor-pointer ${
-              i === epIdx
-                ? "bg-ink text-bg border-ink"
-                : "bg-surface text-ink-muted border-rule-strong hover:text-ink"
-            }`}
-          >
-            EP {e.index}: {e.title}
-          </button>
-        ))}
-      </div>
+    <div ref={rootRef} className="scroll-mt-24 space-y-6">
+      <nav aria-label="เลือกตอน" className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
+        <ol className="flex min-w-max gap-2 sm:min-w-0 sm:flex-wrap">
+          {episodes.map((e, i) => (
+            <li key={e.id}>
+              <button type="button" onClick={() => selectEpisode(i)} aria-current={i === epIdx ? "page" : undefined}
+                className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
+                  i === epIdx ? "border-accent bg-accent-wash text-accent-ink" : "border-rule text-ink-muted hover:border-rule-strong hover:text-ink"
+                }`}>
+                <span className="mr-1.5 font-mono text-xs">EP{e.index}</span>
+                {e.title}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
 
-      {/* Episode Header Meta */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 border border-rule bg-surface">
-        <div className="flex items-center gap-3">
-          <span className="w-8 h-8 bg-ink text-bg font-bold text-xs flex items-center justify-center font-mono">
-            EP{ep.index}
-          </span>
-          <div>
-            <h2 className="text-base font-bold text-ink">{ep.title}</h2>
-            <p className="text-xs text-ink-muted">{ep.titleTh} &middot; {ep.lectures.join(" · ")}</p>
-          </div>
-        </div>
+      <header className="border-b border-rule pb-4">
+        <h2 className="text-2xl font-semibold tracking-tight text-ink">{ep.title}</h2>
+        <p className="text-ink-muted">{ep.titleTh} · {ep.lectures.join(" · ")} · <span className="num">{total}</span> ขั้น</p>
+      </header>
 
-        <span className="text-xs font-mono text-ink-subtle whitespace-nowrap">
-          {total} STEPS
-        </span>
-      </div>
+      <div className="lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-10">
+        {/* Step cards */}
+        <ol className="space-y-12 pb-[50vh]">
+          {ep.steps.map((s, i) => {
+            const isActive = i === active;
+            return (
+              <li key={s.n} ref={(el) => { cardRefs.current[i] = el; }} data-step={i} className="relative pl-11">
+                {i < total - 1 ? (
+                  <span aria-hidden className={`absolute left-[13px] top-9 -bottom-11 w-px transition-colors ${i < active ? "bg-accent" : "bg-rule"}`} />
+                ) : null}
+                <button type="button" onClick={() => goTo(i)} aria-label={`ไปขั้นที่ ${s.n}`} aria-current={isActive ? "step" : undefined}
+                  className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full border font-mono text-xs transition-colors ${
+                    isActive ? "border-accent bg-accent text-on-accent"
+                    : i < active ? "border-accent bg-surface text-accent-ink"
+                    : "border-rule-strong bg-surface text-ink-subtle"
+                  }`}>
+                  {s.n}
+                </button>
 
-      {/* ---------------- 2-Column Scrollytelling Layout ----------------
-          Mobile: the diagram column is sticky at the top and the step cards
-          scroll beneath it (flex column + order). Desktop: side-by-side grid
-          with the diagram pinned sticky in the right column. */}
-      <div className="relative flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:gap-10">
-        {/* Step Cards Track with bottom spacer so the last step can activate */}
-        <div className="order-2 lg:order-1 lg:col-span-6 relative">
-          {/* Continuous vertical timeline connector line terminating exactly at last bead */}
-          <div
-            ref={lineTrackRef}
-            className="absolute left-6 -translate-x-1/2 w-0.5 bg-rule/70 -z-0"
-            aria-hidden="true"
-          >
-            {/* Active progress fill line */}
-            <div
-              ref={lineProgressRef}
-              className="w-full bg-accent rounded-full"
-              style={{ height: "0%" }}
-            />
-          </div>
+                <article className={`transition-opacity duration-300 ${isActive ? "" : "lg:opacity-60"}`}>
+                  <h3 className="text-xl font-semibold leading-snug text-ink">{s.headline}</h3>
+                  <p className="mt-2 text-[17px] leading-[1.8] text-ink-muted">{s.body}</p>
 
-          <div className="space-y-16 pt-4 max-md:pb-[40vh] md:pb-[65vh]">
-            {ep.steps.map((step, sIdx) => {
-              const isActive = sIdx === activeStep;
-              const isPast = sIdx < activeStep;
-
-              return (
-                <div
-                  key={step.n}
-                  ref={(el) => {
-                    stepCardRefs.current[sIdx] = el;
-                  }}
-                  data-step-index={sIdx}
-                  id={`step-card-${ep.id}-${sIdx}`}
-                  className="relative pl-14 sm:pl-16 scroll-mt-36"
-                >
-                  {/* Timeline Bead Button */}
-                  <button
-                    id={`timeline-bead-${sIdx}`}
-                    type="button"
-                    onClick={() => scrollToStep(sIdx)}
-                    aria-label={`ไปยังขั้นตอนที่ ${step.n}`}
-                    className={`tactile-btn absolute left-[10px] top-7 w-7 h-7 font-mono text-xs font-bold flex items-center justify-center z-10 cursor-pointer border ${
-                      isActive
-                        ? "bg-accent text-white border-accent shadow-sm"
-                        : isPast
-                        ? "bg-ink text-bg border-ink"
-                        : "bg-surface border-rule-strong text-ink-subtle"
-                    }`}
-                  >
-                    {isPast ? "✓" : step.n}
-                  </button>
-
-                  {/* Step Card */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className={`bento-card p-6 sm:p-7 transition-colors duration-300 ${
-                      isActive
-                        ? "border-accent"
-                        : isPast
-                        ? "opacity-90"
-                        : "opacity-70"
-                    }`}
-                  >
-                    {/* Step Card Header */}
-                    <div className="pb-3 mb-4 border-b border-rule/70">
-                      <span
-                        className={`bento-pill text-xs font-semibold font-mono transition-colors ${
-                          isActive
-                            ? "border border-accent text-accent-ink"
-                            : "border border-rule text-ink-subtle"
-                        }`}
-                      >
-                        STEP {String(step.n).padStart(2, "0")} OF {String(total).padStart(2, "0")}
-                      </span>
+                  {s.numbers?.length ? (
+                    <div className="mt-4 rounded-lg border border-rule bg-surface px-4 py-3">
+                      <p className="mb-1.5 text-xs text-ink-subtle">ค่าที่ได้ในขั้นนี้</p>
+                      <ul className="space-y-1 font-mono text-sm text-ink">
+                        {s.numbers.map((num, k) => <li key={k} className="num">{num}</li>)}
+                      </ul>
                     </div>
+                  ) : null}
 
-                    <h3 className="text-xl sm:text-2xl font-bold text-ink leading-snug tracking-tight">
-                      {step.headline}
-                    </h3>
-
-                    <p className="mt-3 text-sm sm:text-base text-ink-muted leading-relaxed">
-                      {step.body}
-                    </p>
-
-                    {/* Calculated Numbers Box */}
-                    {step.numbers && step.numbers.length > 0 && (
-                      <div className="mt-5 p-4 border border-rule bg-surface-hover space-y-1.5">
-                        <p className="text-[11px] font-bold text-ink-subtle uppercase tracking-wider mb-2">
-                          ค่าและสูตรที่คำนวณได้ในขั้นตอนนี้
-                        </p>
-                        {step.numbers.map((num, k) => (
-                          <div
-                            key={k}
-                            className="font-mono text-xs sm:text-sm font-semibold text-accent-ink"
-                          >
-                            {num}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Generative 2D Cartoon Mental Model Cue */}
-                    <div className="mt-5 pt-3 border-t border-rule/70 flex flex-col gap-2.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-                              setMainVisualMode("cartoon");
-                            } else {
-                              setExpandedCardCartoon(expandedCardCartoon === sIdx ? null : sIdx);
-                            }
-                          }}
-                          className="inline-flex items-center gap-2 text-xs font-semibold text-accent-ink hover:text-ink transition-colors cursor-pointer"
-                        >
-                          <span className="w-5 h-5 rounded-full bg-accent/15 border border-accent/25 flex items-center justify-center text-xs">
-                            🎨
-                          </span>
-                          <span>
-                            {expandedCardCartoon === sIdx
-                              ? "ซ่อนภาพการ์ตูนวิธีคิด ▲"
-                              : "ดูภาพการ์ตูนวิธีคิด 2D (Mental Model) &rarr;"}
-                          </span>
-                        </button>
-                        <span className="text-[10px] font-mono uppercase tracking-wider text-ink-subtle">
-                          2D Cartoon Guide
-                        </span>
-                      </div>
-
-                      {/* Expandable Inline Cartoon for Mobile / In-Place Reading */}
-                      {expandedCardCartoon === sIdx && (
-                        <div className="pt-2">
-                          <div className="p-3 bg-surface border border-rule">
-                            <ThinkingCartoonVisual
-                              episodeId={ep.id}
-                              stepIndex={sIdx}
-                              totalSteps={total}
-                            />
-                          </div>
-                        </div>
-                      )}
+                  {/* Below lg every card carries its own visual + notes inline */}
+                  <div className="mt-5 rounded-xl border border-rule bg-surface p-4 lg:hidden">
+                    <StepVisual visual={s.visual} step={i} />
+                    <div className="mt-6 border-t border-rule pt-5">
+                      <ThinkingNotes episodeId={ep.id} stepIndex={i} />
                     </div>
-                  </motion.div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Diagram Column: sticky side-by-side at lg+; static block below lg
-            (a sticky 56vh panel over a single column leaves no room to read) */}
-        <div className="order-1 lg:order-2 lg:col-span-6 relative lg:self-stretch">
-          <div className="lg:sticky lg:top-24 xl:top-28 z-20">
-            <div className="bento-card p-5 sm:p-6 border border-rule bg-surface max-md:h-auto md:h-[56vh] lg:h-[calc(100vh-7.5rem)] xl:h-[calc(100vh-8.5rem)] lg:max-h-[860px] flex flex-col justify-between overflow-hidden">
-            {/* Visual Header with Step Counter + Prev/Next Controls */}
-            <div className="space-y-2.5 shrink-0">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono font-bold text-accent-ink px-0.5 tabular-nums">
-                    Step {activeStep + 1} / {total}
-                  </span>
-                  {/* Mode Toggle: Technical Chart vs 2D Cartoon */}
-                  <div className="flex items-center gap-0.5 bg-surface-hover p-0.5 border border-rule rounded-sm">
-                    <button
-                      type="button"
-                      onClick={() => setMainVisualMode("technical")}
-                      aria-pressed={mainVisualMode === "technical"}
-                      className={`px-2 py-0.5 text-[11px] font-semibold transition-colors cursor-pointer rounded-xs ${
-                        mainVisualMode === "technical"
-                          ? "bg-ink text-bg"
-                          : "text-ink-muted hover:text-ink"
-                      }`}
-                    >
-                      📊 แผนภาพ
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMainVisualMode("cartoon")}
-                      aria-pressed={mainVisualMode === "cartoon"}
-                      className={`px-2 py-0.5 text-[11px] font-semibold transition-colors cursor-pointer rounded-xs ${
-                        mainVisualMode === "cartoon"
-                          ? "bg-accent text-white"
-                          : "text-ink-muted hover:text-ink"
-                      }`}
-                    >
-                      🎨 การ์ตูนวิธีคิด 2D
-                    </button>
                   </div>
-                </div>
+                </article>
+              </li>
+            );
+          })}
+        </ol>
 
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => scrollToStep(Math.max(0, activeStep - 1))}
-                    disabled={activeStep === 0}
-                    aria-label="ขั้นตอนก่อนหน้า"
-                    className="tactile-btn w-8 h-8 border border-rule bg-surface font-mono font-bold text-ink-muted hover:text-ink hover:border-rule-strong disabled:opacity-30 cursor-pointer flex items-center justify-center"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => scrollToStep(Math.min(total - 1, activeStep + 1))}
-                    disabled={activeStep === total - 1}
-                    aria-label="ขั้นตอนถัดไป"
-                    className="tactile-btn tactile-btn-accent w-8 h-8 border border-accent bg-accent text-white font-mono font-bold hover:bg-accent-ink hover:border-accent-ink disabled:opacity-30 cursor-pointer flex items-center justify-center"
-                  >
-                    ↓
-                  </button>
-                </div>
-              </div>
-
-              {/* Segmented Step Bar */}
-              <div className="flex gap-1 w-full">
-                {ep.steps.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => scrollToStep(i)}
-                    aria-label={`Jump to step ${i + 1}`}
-                    className={`h-1 flex-1 transition-colors duration-200 cursor-pointer ${
-                      i === activeStep
-                        ? "bg-accent"
-                        : i < activeStep
-                        ? "bg-rule-strong"
-                        : "bg-rule hover:bg-rule-strong"
-                    }`}
-                  />
-                ))}
+        {/* Sticky visual (desktop) */}
+        <aside className="hidden lg:block" aria-label="แผนภาพของขั้นปัจจุบัน">
+          <div className="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col rounded-xl border border-rule bg-surface">
+            <div className="flex items-center justify-between gap-3 border-b border-rule px-5 py-3">
+              <span className="num font-mono text-sm text-ink" aria-live="polite">ขั้น {active + 1} / {total}</span>
+              <div className="flex gap-1">
+                <button type="button" onClick={() => goTo(Math.max(0, active - 1))} disabled={active === 0} aria-label="ขั้นก่อนหน้า"
+                  className="flex h-8 w-8 items-center justify-center rounded-md border border-rule text-ink-muted hover:text-ink disabled:opacity-30">
+                  <ArrowUpIcon />
+                </button>
+                <button type="button" onClick={() => goTo(Math.min(total - 1, active + 1))} disabled={active === total - 1} aria-label="ขั้นถัดไป"
+                  className="flex h-8 w-8 items-center justify-center rounded-md bg-accent text-on-accent hover:bg-accent-ink disabled:opacity-30">
+                  <ArrowDownIcon />
+                </button>
               </div>
             </div>
-
-            {/* Dynamic Visual Panel with Motion Transitions */}
-            <div className="flex-1 min-h-0 pt-2 flex flex-col justify-between overflow-y-auto overflow-x-hidden custom-scrollbar">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${ep.id}-${mainVisualMode}`}
-                  initial={{ opacity: 0.75 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full h-full flex flex-col justify-between"
-                >
-                  {mainVisualMode === "cartoon" ? (
-                    <ThinkingCartoonVisual
-                      episodeId={ep.id}
-                      stepIndex={activeStep}
-                      totalSteps={total}
-                    />
-                  ) : currentStepData.visual.kind === "kmeans" ? (
-                    <KMeansPanel
-                      visual={currentStepData.visual}
-                      stepIndex={activeStep}
-                      viewMode={(viewModes[ep.id] as "chart" | "vectors") || "chart"}
-                      onViewModeChange={handleViewModeChange}
-                    />
-                  ) : currentStepData.visual.kind === "confusion-matrix" ? (
-                    <MatrixPanel
-                      visual={currentStepData.visual}
-                      stepIndex={activeStep}
-                      viewMode={(viewModes[ep.id] as "grid" | "chart") || "grid"}
-                      onViewModeChange={handleViewModeChange}
-                    />
-                  ) : currentStepData.visual.kind === "decision-tree" ? (
-                    <DecisionTreePanel
-                      visual={currentStepData.visual}
-                      stepIndex={activeStep}
-                      viewMode={(viewModes[ep.id] as "chart" | "tree") || "chart"}
-                      onViewModeChange={handleViewModeChange}
-                    />
-                  ) : currentStepData.visual.kind === "boxplot" ? (
-                    <BoxplotPanel
-                      visual={currentStepData.visual}
-                      stepIndex={activeStep}
-                    />
-                  ) : currentStepData.visual.kind === "shap-force" ? (
-                    <ShapForcePanel
-                      visual={currentStepData.visual}
-                      stepIndex={activeStep}
-                    />
-                  ) : currentStepData.visual.kind === "concept-drift" ? (
-                    <ConceptDriftPanel
-                      visual={currentStepData.visual}
-                      stepIndex={activeStep}
-                    />
-                  ) : (
-                    <p className="text-ink-muted text-center py-10">ยังไม่มีภาพสำหรับขั้นตอนนี้</p>
-                  )}
-                </motion.div>
-              </AnimatePresence>
+            <div className="flex gap-1 px-5 pt-3">
+              {ep.steps.map((_, i) => (
+                <button key={i} type="button" onClick={() => goTo(i)} aria-label={`ไปขั้นที่ ${i + 1}`}
+                  className={`h-1 flex-1 rounded-full transition-colors ${i === active ? "bg-accent" : i < active ? "bg-rule-strong" : "bg-rule hover:bg-rule-strong"}`} />
+              ))}
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto p-5">
+              <StepVisual visual={current.visual} step={active} />
+              <div className="mt-6 border-t border-rule pt-5">
+                <ThinkingNotes episodeId={ep.id} stepIndex={active} />
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </aside>
       </div>
     </div>
   );

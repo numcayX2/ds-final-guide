@@ -1,1024 +1,726 @@
 "use client";
 
-import { useMemo, useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
+import { Tex } from "./math-formula";
+import { EmptyState, Note, NumberField, Panel, Segmented, WorkingSteps, fmt, pct, sub } from "./ui";
 
-/* ------------------------------------------------------------------ */
-/* Tool 01 — Tukey IQR outlier detector                                */
-/* ------------------------------------------------------------------ */
+/* ================================================================== */
+/* Shared                                                             */
+/* ================================================================== */
 
-type Field = { key: "q1" | "q2" | "q3" | "max"; label: string; hint: string };
+type Parsed = { value?: number; error?: string };
 
-const FIELDS: Field[] = [
-  { key: "q1", label: "Q1 ควอร์ไทล์อันดับหนึ่ง", hint: "ค่าที่ 25% ของข้อมูล" },
-  { key: "q2", label: "Median ค่ามัธยฐาน", hint: "ค่าที่ 50% ของข้อมูล" },
-  { key: "q3", label: "Q3 ควอร์ไทล์อันดับสาม", hint: "ค่าที่ 75% ของข้อมูล" },
-  { key: "max", label: "ค่าสูงสุดจริง", hint: "ค่าที่มากที่สุดที่มีจริง ไม่ใช่ตัวเลขที่ตั้งไว้" },
-];
+function parse(raw: string, opts: { integer?: boolean; min?: number } = {}): Parsed {
+  const v = raw.trim();
+  if (v === "") return { error: "ยังไม่ได้กรอก" };
+  const n = Number(v);
+  if (!Number.isFinite(n)) return { error: "ต้องเป็นตัวเลข" };
+  if (opts.min !== undefined && n < opts.min) return { error: `ต้องไม่น้อยกว่า ${opts.min}` };
+  if (opts.integer && !Number.isInteger(n)) return { error: "ต้องเป็นจำนวนเต็ม" };
+  return { value: n };
+}
 
-const nf = (n: number) => n.toLocaleString("th-TH", { maximumFractionDigits: 4 });
+/** Field state + "only show an error once the student has touched the field". */
+function useFields<K extends string>(initial: Record<K, string>) {
+  const [raw, setRaw] = useState<Record<K, string>>(initial);
+  const [touched, setTouched] = useState<Partial<Record<K, boolean>>>({});
+  return {
+    raw,
+    set: (k: K, v: string) => {
+      setRaw((s) => ({ ...s, [k]: v }) as Record<K, string>);
+      setTouched((t) => ({ ...t, [k]: true }));
+    },
+    touch: (k: K) => setTouched((t) => ({ ...t, [k]: true })),
+    load: (vals: Record<K, number>) => {
+      setRaw(Object.fromEntries(Object.entries(vals).map(([k, v]) => [k, String(v)])) as Record<K, string>);
+      setTouched({});
+    },
+    isLoaded: (vals: Record<K, number>) =>
+      (Object.keys(vals) as K[]).every((k) => raw[k] === String(vals[k])),
+    shown: (k: K, errors: Partial<Record<K, string>>) => (touched[k] ? errors[k] : undefined),
+  };
+}
+
+type Preset = { label: string; onClick: () => void; active?: boolean };
+
+function ToolHeader({ title, lect, desc, presets }: { title: string; lect: string; desc: string; presets?: Preset[] }) {
+  return (
+    <header className="space-y-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+        <span className="font-mono text-xs text-ink-subtle">{lect}</span>
+      </div>
+      <p className="max-w-2xl text-ink-muted">{desc}</p>
+      {presets?.length ? (
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <span className="text-xs text-ink-subtle">โหลดโจทย์:</span>
+          {presets.map((p) => (
+            <button key={p.label} type="button" className="chip" onClick={p.onClick} aria-pressed={p.active ?? false}>
+              {p.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </header>
+  );
+}
+
+/* ================================================================== */
+/* Tool 01 — Tukey's fences                                           */
+/* ================================================================== */
+
+const TUKEY_FIELDS = [
+  { key: "min", label: "Min", hint: "ค่าน้อยที่สุด" },
+  { key: "q1", label: "Q₁", hint: "เปอร์เซ็นไทล์ที่ 25" },
+  { key: "median", label: "Median", hint: "เปอร์เซ็นไทล์ที่ 50" },
+  { key: "q3", label: "Q₃", hint: "เปอร์เซ็นไทล์ที่ 75" },
+  { key: "max", label: "Max", hint: "ค่ามากที่สุด" },
+] as const;
+type TukeyKey = (typeof TUKEY_FIELDS)[number]["key"];
+
+const TUKEY_SLIDE = { min: 10, q1: 20, median: 28, q3: 35, max: 58 };
+
+type TukeyResult = Record<TukeyKey, number> & {
+  iqr: number; lower: number; upper: number; lowOut: boolean; highOut: boolean;
+};
 
 export function TukeyCalculator() {
   const uid = useId();
-  const [raw, setRaw] = useState<Record<string, string>>({
-    q1: "",
-    q2: "",
-    q3: "",
-    max: "",
-  });
-  // An untouched empty field is not an error. Rendering "required" alerts on
-  // page load makes a screen reader announce eight problems before the student
-  // has done anything, so a message only appears once the field has been left.
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const f = useFields<TukeyKey>({ min: "", q1: "", median: "", q3: "", max: "" });
 
-  const parsed = useMemo(() => {
-    const out: Record<string, number> = {};
-    const errors: Record<string, string> = {};
-    for (const f of FIELDS) {
-      const v = raw[f.key].trim();
-      if (v === "") {
-        errors[f.key] = "ยังไม่ได้กรอก";
+  const { values, errors } = useMemo(() => {
+    const values: Partial<Record<TukeyKey, number>> = {};
+    const errors: Partial<Record<TukeyKey, string>> = {};
+    let prev: { label: string; value: number } | null = null;
+    for (const field of TUKEY_FIELDS) {
+      const p = parse(f.raw[field.key]);
+      if (p.error) {
+        errors[field.key] = p.error;
         continue;
       }
-      const n = Number(v);
-      if (!Number.isFinite(n)) {
-        errors[f.key] = "ต้องเป็นตัวเลข";
-        continue;
-      }
-      out[f.key] = n;
+      if (prev && p.value! < prev.value) errors[field.key] = `ต้องไม่น้อยกว่า ${prev.label} (${fmt(prev.value)})`;
+      values[field.key] = p.value!;
+      prev = { label: field.label, value: p.value! };
     }
-    // cross-field validation
-    if (out.q1 !== undefined && out.q3 !== undefined && out.q1 >= out.q3) {
-      errors.q3 = "Q3 ต้องมากกว่า Q1 เสมอ";
-    }
-    if (out.q1 !== undefined && out.q2 !== undefined && out.q1 > out.q2) {
-      errors.q2 = "Median ต้องอยู่ระหว่าง Q1 และ Q3";
-    }
-    if (out.q3 !== undefined && out.q2 !== undefined && out.q2 > out.q3) {
-      errors.q2 = "Median ต้องอยู่ระหว่าง Q1 และ Q3";
-    }
-    if (out.q3 !== undefined && out.max !== undefined && out.max < out.q3) {
-      errors.max = "ค่าสูงสุดต้องไม่น้อยกว่า Q3";
-    }
-    return { out, errors };
-  }, [raw]);
+    return { values, errors };
+  }, [f.raw]);
 
-  const hasError = Object.keys(parsed.errors).length > 0;
-  const ready = FIELDS.every((f) => parsed.out[f.key] !== undefined) && !hasError;
-
-  const result = useMemo(() => {
-    if (!ready) return null;
-    const { q1, q3, max } = parsed.out;
-    const iqr = q3 - q1;
-    const lower = q1 - 1.5 * iqr;
-    const upper = q3 + 1.5 * iqr;
-    return {
-      iqr,
-      lower,
-      upper,
-      isOutlier: max > upper,
-      whiskerEnd: max,
-      gap: max - upper,
-    };
-  }, [parsed.out, ready]);
+  const r = useMemo<TukeyResult | null>(() => {
+    const complete = TUKEY_FIELDS.every((x) => values[x.key] !== undefined);
+    if (!complete || Object.keys(errors).length) return null;
+    const v = values as Record<TukeyKey, number>;
+    const iqr = v.q3 - v.q1;
+    const lower = v.q1 - 1.5 * iqr;
+    const upper = v.q3 + 1.5 * iqr;
+    return { ...v, iqr, lower, upper, lowOut: v.min < lower, highOut: v.max > upper };
+  }, [values, errors]);
 
   return (
-    <div className="grid-12 items-start">
-      <div className="col-span-12 lg:col-span-5">
-        <h2 className="text-2xl lg:text-3xl tracking-reset">ตรวจ Outlier ด้วย IQR</h2>
-        <p className="mt-3 text-ink-muted">
-          กรอกค่าจาก Five-Number Summary ที่โจทย์ให้ เครื่องจะคำนวณ IQR และรั้วทั้งสอง
-          พร้อมบอกว่าค่าสูงสุดที่มีจริงเป็น outlier หรือไม่
-        </p>
+    <div className="space-y-8">
+      <ToolHeader
+        title="ตรวจ Outlier ด้วยรั้วของ Tukey"
+        lect="Lect 05"
+        desc="กรอก Five-Number Summary จากโจทย์ แล้วดูวิธีทำทีละขั้นเหมือนเขียนในกระดาษคำตอบ ตรวจทั้งฝั่งต่ำและฝั่งสูง"
+        presets={[{ label: "ตัวอย่างในสไลด์", onClick: () => f.load(TUKEY_SLIDE), active: f.isLoaded(TUKEY_SLIDE) }]}
+      />
 
-        <div className="mt-sp-1 space-y-6">
-          {FIELDS.map((f) => {
-            const id = `${uid}-${f.key}`;
-            const err = touched[f.key] ? parsed.errors[f.key] : undefined;
-            const hintId = `${id}-hint`;
-            const errId = `${id}-err`;
-            return (
-              <div key={f.key}>
-                <label htmlFor={id} className="meta-label tracking-reset block">
-                  {f.label}
-                </label>
-                <p id={hintId} className="text-sm text-ink-muted mt-1">
-                  {f.hint}
-                </p>
-                <input
-                  id={id}
-                  type="number"
-                  inputMode="decimal"
-                  value={raw[f.key]}
-                  onChange={(e) => {
-                    setRaw((s) => ({ ...s, [f.key]: e.target.value }));
-                    setTouched((t) => ({ ...t, [f.key]: true }));
-                  }}
-                  onBlur={() => setTouched((t) => ({ ...t, [f.key]: true }))}
-                  aria-describedby={err ? `${hintId} ${errId}` : hintId}
-                  aria-invalid={err ? true : undefined}
-                  className="tap mt-2 w-full tnum bg-bg border border-rule-strong px-4 py-3 focus:border-accent outline-none"
-                />
-                {err ? (
-                  /* error sits next to its own field, never at the top of the form */
-                  <p id={errId} className="mt-2 text-sm text-accent-ink" role="alert">
-                    {err}
-                  </p>
-                ) : null}
+      <fieldset className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+        <legend className="sr-only">Five-Number Summary เรียงจากน้อยไปมาก</legend>
+        {TUKEY_FIELDS.map((field) => (
+          <NumberField
+            key={field.key}
+            id={`${uid}-${field.key}`}
+            label={field.label}
+            hint={field.hint}
+            value={f.raw[field.key]}
+            onChange={(v) => f.set(field.key, v)}
+            onBlur={() => f.touch(field.key)}
+            error={f.shown(field.key, errors)}
+            allowNegative
+          />
+        ))}
+      </fieldset>
+
+      {!r ? (
+        <EmptyState>กรอกให้ครบ 5 ช่อง เรียงจากน้อยไปมาก: Min ≤ Q₁ ≤ Median ≤ Q₃ ≤ Max</EmptyState>
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Panel title="วิธีทำ">
+            <WorkingSteps
+              steps={[
+                { label: "หา IQR", tex: `\\mathrm{IQR} = Q_3 - Q_1 = ${sub(r.q3)} - ${sub(r.q1)} = ${fmt(r.iqr)}` },
+                {
+                  label: "รั้วล่าง (Lower Fence)",
+                  tex: `\\text{LF} = Q_1 - 1.5 \\times \\mathrm{IQR} = ${sub(r.q1)} - 1.5 \\times ${sub(r.iqr)} = \\ans{${fmt(r.lower)}}`,
+                },
+                {
+                  label: "รั้วบน (Upper Fence)",
+                  tex: `\\text{UF} = Q_3 + 1.5 \\times \\mathrm{IQR} = ${sub(r.q3)} + 1.5 \\times ${sub(r.iqr)} = \\ans{${fmt(r.upper)}}`,
+                },
+                {
+                  label: "เทียบค่าปลายทั้งสองกับรั้ว",
+                  tex: `\\text{Min} = ${fmt(r.min)} ${r.lowOut ? "<" : "\\ge"} ${fmt(r.lower)}, \\qquad \\text{Max} = ${fmt(r.max)} ${r.highOut ? ">" : "\\le"} ${fmt(r.upper)}`,
+                },
+              ]}
+            />
+          </Panel>
+
+          <Panel title="สรุปผล">
+            <FenceDiagram {...r} />
+            <dl className="mt-5 grid grid-cols-2 gap-3" aria-live="polite">
+              <Verdict label="Min" value={r.min} out={r.lowOut} />
+              <Verdict label="Max" value={r.max} out={r.highOut} />
+            </dl>
+            {r.lowOut || r.highOut ? (
+              <div className="mt-5">
+                <Note tone="pitfall" title="Whisker ไปจบที่ไหน">
+                  Whisker จบที่ <strong className="text-ink">ค่าจริงที่ไกลที่สุดซึ่งยังอยู่ในรั้ว</strong> ไม่ใช่ที่ค่ารั้ว
+                  และไม่ใช่ที่ Outlier — Five-Number Summary ไม่บอกค่านี้ ต้องดูจากข้อมูลดิบ (เส้นประในภาพ)
+                </Note>
               </div>
-            );
-          })}
+            ) : null}
+          </Panel>
         </div>
-      </div>
-
-      <div className="col-span-12 lg:col-span-6 lg:col-start-7">
-        <div
-          aria-live="polite"
-          className="bento-card p-6 sm:p-7 soft-shadow lg:sticky lg:top-28"
-        >
-          {!ready ? (
-            <p className="meta-label tracking-display text-ink-subtle">
-              กรอกให้ครบและเรียงลำดับถูกต้องเพื่อดูผลลัพธ์
-            </p>
-          ) : (
-            <>
-              <p className="meta-label tracking-display text-ink-subtle">ผลลัพธ์</p>
-              <dl className="mt-6 space-y-5">
-                <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <dt className="tnum">IQR = Q3 &minus; Q1</dt>
-                  <dd className="tnum text-xl text-accent-ink font-medium">{nf(result!.iqr)}</dd>
-                </div>
-                <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <dt className="tnum">Lower Fence = Q1 &minus; 1.5 x IQR</dt>
-                  <dd className="tnum text-xl text-accent-ink font-medium">{nf(result!.lower)}</dd>
-                </div>
-                <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <dt className="tnum">Upper Fence = Q3 + 1.5 x IQR</dt>
-                  <dd className="tnum text-xl text-accent-ink font-medium">{nf(result!.upper)}</dd>
-                </div>
-              </dl>
-
-              <div className="mt-sp-1">
-                {result!.isOutlier ? (
-                  <div className="border-t-2 border-accent pt-5">
-                    <p className="meta-label tracking-display text-accent-ink">
-                      เป็น Outlier
-                    </p>
-                    <p className="mt-2">
-                      ค่าสูงสุดจริง {nf(result!.whiskerEnd)} อยู่เหนือ Upper Fence
-                      ที่ {nf(result!.upper)} อยู่ {nf(result!.gap)}
-                    </p>
-                    <p className="mt-3 text-ink-muted">
-                      Whisker จะสิ้นสุดที่ค่าจริงสูงสุดที่ยังอยู่ภายใน Fence
-                      ไม่ใช่ที่ค่า Fence และไม่ใช่ที่ค่าที่เกินกรอบ
-                    </p>
-                  </div>
-                ) : (
-                  <div className="border-t-2 border-accent pt-5">
-                    <p className="meta-label tracking-display text-accent-ink">
-                      ไม่ใช่ Outlier
-                    </p>
-                    <p className="mt-2">
-                      ค่าสูงสุดจริง {nf(result!.whiskerEnd)} ยังอยู่ภายใน Upper Fence
-                      ที่ {nf(result!.upper)}
-                    </p>
-                    <p className="mt-3 text-ink-muted">
-                      Whisker ของ Boxplot จะยื่นไปถึงค่าจริงสูงสุดนี้เลย
-                    </p>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Tool 02 — Confusion matrix & metric calculator                      */
-/* ------------------------------------------------------------------ */
+function Verdict({ label, value, out }: { label: string; value: number; out: boolean }) {
+  return (
+    <div className={`rounded-lg border px-3 py-2 ${out ? "border-bad bg-bad-wash" : "border-rule"}`}>
+      <dt className="text-xs text-ink-subtle">
+        {label} = <span className="num font-mono">{fmt(value)}</span>
+      </dt>
+      <dd className={`font-semibold ${out ? "text-bad" : "text-ink"}`}>{out ? "เป็น Outlier" : "อยู่ในรั้ว"}</dd>
+    </div>
+  );
+}
 
-const CELLS: Array<{ key: "tp" | "fp" | "fn" | "tn"; label: string; hint: string }> = [
-  { key: "tp", label: "TP ทำนายว่าเป็น Positive และความจริงก็เป็น Positive", hint: "ทำนายถูกและเป็นบวก" },
-  { key: "fp", label: "FP ทำนายว่าเป็น Positive แต่ความจริงเป็น Negative", hint: "ผิดฝั่ง เตียงเกิน" },
-  { key: "fn", label: "FN ทำนายว่าเป็น Negative แต่ความจริงเป็น Positive", hint: "ผิดฝั่ง ตกหล่น" },
-  { key: "tn", label: "TN ทำนายว่าเป็น Negative และความจริงก็เป็น Negative", hint: "ทำนายถูกและเป็นลบ" },
+function FenceDiagram(r: TukeyResult) {
+  const lo = Math.min(r.min, r.lower);
+  const hi = Math.max(r.max, r.upper);
+  const span = hi - lo || 1;
+  const W = 360, PAD = 24, MID = 58;
+  const x = (v: number) => PAD + ((v - lo) / span) * (W - 2 * PAD);
+  const wl = r.lowOut ? r.lower : r.min;
+  const wr = r.highOut ? r.upper : r.max;
+
+  return (
+    <svg viewBox={`0 0 ${W} 112`} className="w-full" role="img"
+      aria-label={`Boxplot: รั้วล่าง ${fmt(r.lower)}, รั้วบน ${fmt(r.upper)}`}>
+      {[{ v: r.lower, t: "LF" }, { v: r.upper, t: "UF" }].map((fence) => (
+        <g key={fence.t}>
+          <line x1={x(fence.v)} x2={x(fence.v)} y1={24} y2={88} stroke="var(--color-warn)" strokeDasharray="3 3" />
+          <text x={x(fence.v)} y={16} textAnchor="middle" fontSize="10" fill="var(--color-warn)" className="font-mono">
+            {fence.t} {fmt(fence.v, 2)}
+          </text>
+        </g>
+      ))}
+
+      <line x1={x(wl)} x2={x(r.q1)} y1={MID} y2={MID} stroke="var(--color-ink)" strokeDasharray={r.lowOut ? "2 3" : undefined} />
+      <line x1={x(r.q3)} x2={x(wr)} y1={MID} y2={MID} stroke="var(--color-ink)" strokeDasharray={r.highOut ? "2 3" : undefined} />
+      {!r.lowOut && <line x1={x(r.min)} x2={x(r.min)} y1={MID - 8} y2={MID + 8} stroke="var(--color-ink)" />}
+      {!r.highOut && <line x1={x(r.max)} x2={x(r.max)} y1={MID - 8} y2={MID + 8} stroke="var(--color-ink)" />}
+
+      <rect x={x(r.q1)} y={MID - 14} width={Math.max(1, x(r.q3) - x(r.q1))} height={28} rx={3}
+        fill="var(--color-accent-wash)" stroke="var(--color-accent)" />
+      <line x1={x(r.median)} x2={x(r.median)} y1={MID - 14} y2={MID + 14} stroke="var(--color-accent)" strokeWidth={2} />
+
+      {r.lowOut && <circle cx={x(r.min)} cy={MID} r={4} fill="var(--color-bad)" />}
+      {r.highOut && <circle cx={x(r.max)} cy={MID} r={4} fill="var(--color-bad)" />}
+
+      {[{ v: r.q1, t: "Q₁" }, { v: r.median, t: "Med" }, { v: r.q3, t: "Q₃" }].map((q) => (
+        <text key={q.t} x={x(q.v)} y={104} textAnchor="middle" fontSize="10" fill="var(--color-ink-subtle)" className="font-mono">
+          {q.t}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+/* ================================================================== */
+/* Tool 02 — Confusion matrix metrics                                 */
+/* ================================================================== */
+
+type CellKey = "tp" | "fn" | "fp" | "tn";
+const CELL_KEYS: CellKey[] = ["tp", "fn", "fp", "tn"];
+const CELL_INFO: Record<CellKey, { label: string; hint: string }> = {
+  tp: { label: "TP", hint: "ทาย + และจริง +" },
+  fn: { label: "FN", hint: "ทาย − แต่จริง + · พลาด" },
+  fp: { label: "FP", hint: "ทาย + แต่จริง − · เตือนผิด" },
+  tn: { label: "TN", hint: "ทาย − และจริง −" },
+};
+const MATRIX_ROWS: Array<[string, CellKey, CellKey]> = [
+  ["จริง +", "tp", "fn"],
+  ["จริง −", "fp", "tn"],
 ];
+const METRIC_EXAMPLE = { tp: 4, fn: 2, fp: 1, tn: 3 };
 
 export function MetricCalculator() {
   const uid = useId();
-  const [raw, setRaw] = useState<Record<string, string>>({ tp: "", fp: "", fn: "", tn: "" });
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const f = useFields<CellKey>({ tp: "", fn: "", fp: "", tn: "" });
 
-  const cells = useMemo(() => {
-    const out: Record<string, number> = {};
-    const errors: Record<string, string> = {};
-    for (const c of CELLS) {
-      const v = raw[c.key].trim();
-      if (v === "") {
-        errors[c.key] = "ยังไม่ได้กรอก";
-        continue;
-      }
-      const n = Number(v);
-      if (!Number.isFinite(n)) {
-        errors[c.key] = "ต้องเป็นตัวเลข";
-        continue;
-      }
-      if (n < 0 || !Number.isInteger(n)) {
-        errors[c.key] = "ต้องเป็นจำนวนเต็มที่ไม่ติดลบ";
-        continue;
-      }
-      out[c.key] = n;
+  const { vals, errors } = useMemo(() => {
+    const vals: Partial<Record<CellKey, number>> = {};
+    const errors: Partial<Record<CellKey, string>> = {};
+    for (const k of CELL_KEYS) {
+      const p = parse(f.raw[k], { integer: true, min: 0 });
+      if (p.error) errors[k] = p.error;
+      else vals[k] = p.value!;
     }
-    return { out, errors };
-  }, [raw]);
-
-  const ready = CELLS.every((c) => cells.out[c.key] !== undefined);
+    return { vals, errors };
+  }, [f.raw]);
 
   const m = useMemo(() => {
-    if (!ready) return null;
-    const { tp, fp, fn, tn } = cells.out;
-    const total = tp + tn + fp + fn;
-    const posPredicted = tp + fp;
-    const actuallyPositive = tp + fn;
-
-    // A metric with a zero denominator is undefined, not zero. Surface it
-    // explicitly instead of printing 0 and letting the student memorise a lie.
-    const safe = (num: number, den: number, denLabel: string) => ({
-      value: den === 0 ? null : num / den,
-      denLabel,
-      den,
-    });
-
+    if (!CELL_KEYS.every((k) => vals[k] !== undefined)) return null;
+    const { tp, fn, fp, tn } = vals as Record<CellKey, number>;
+    const total = tp + fn + fp + tn;
+    // Zero denominator = undefined, NOT zero. Students must not memorise "0".
+    const div = (a: number, b: number) => (b === 0 ? null : a / b);
+    const precision = div(tp, tp + fp);
+    const recall = div(tp, tp + fn);
     const f1 =
-      posPredicted === 0 || actuallyPositive === 0
-        ? null
-        : (2 * tp) / (2 * tp + fp + fn);
+      precision === null || recall === null ? null
+      : precision + recall === 0 ? 0
+      : (2 * precision * recall) / (precision + recall);
 
-    return {
-      total,
-      accuracy: safe(tp + tn, total, "TP + TN + FP + FN"),
-      precision: safe(tp, posPredicted, "TP + FP"),
-      recall: safe(tp, actuallyPositive, "TP + FN"),
-      f1,
-      posPredicted,
-      actuallyPositive,
-      metricRows: [
-        { name: "Accuracy", ...safe(tp + tn, total, "TP + TN + FP + FN") },
-        { name: "Precision", ...safe(tp, posPredicted, "TP + FP") },
-        { name: "Recall", ...safe(tp, actuallyPositive, "TP + FN") },
-      ],
-    };
-  }, [cells.out, ready]);
-
-  const pct = (x: number) => `${(x * 100).toFixed(2)}%`;
-
-  return (
-    <div className="grid-12 items-start">
-      <div className="col-span-12 lg:col-span-5">
-        <h2 className="text-2xl lg:text-3xl tracking-reset">คำนวณมาตรวัดจาก Confusion Matrix</h2>
-        <p className="mt-3 text-ink-muted">
-          กรอกตัวเลขในตาราง 2x2 เครื่องจะคำนวณทั้งสี่มาตรวัด
-          พร้อมชี้ว่าตัวไหนหารไม่ได้เพราะตัวส่วนเป็นศูนย์
-        </p>
-
-        <div className="mt-sp-1 space-y-6">
-          {CELLS.map((c) => {
-            const id = `${uid}-${c.key}`;
-            const err = touched[c.key] ? cells.errors[c.key] : undefined;
-            const hintId = `${id}-hint`;
-            const errId = `${id}-err`;
-            return (
-              <div key={c.key}>
-                <label htmlFor={id} className="meta-label tracking-reset block">
-                  {c.label}
-                </label>
-                <p id={hintId} className="text-sm text-ink-muted mt-1">
-                  {c.hint}
-                </p>
-                <input
-                  id={id}
-                  type="number"
-                  inputMode="numeric"
-                  min={0}
-                  step={1}
-                  value={raw[c.key]}
-                  onChange={(e) => {
-                    setRaw((s) => ({ ...s, [c.key]: e.target.value }));
-                    setTouched((t) => ({ ...t, [c.key]: true }));
-                  }}
-                  onBlur={() => setTouched((t) => ({ ...t, [c.key]: true }))}
-                  aria-describedby={err ? `${hintId} ${errId}` : hintId}
-                  aria-invalid={err ? true : undefined}
-                  className="tap mt-2 w-full tnum bg-bg border border-rule-strong px-4 py-3 focus:border-accent outline-none"
-                />
-                {err ? (
-                  <p id={errId} className="mt-2 text-sm text-accent-ink" role="alert">
-                    {err}
-                  </p>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="col-span-12 lg:col-span-6 lg:col-start-7">
-        <div
-          aria-live="polite"
-          className="bento-card p-6 sm:p-7 soft-shadow lg:sticky lg:top-28"
-        >
-          {!ready ? (
-            <p className="meta-label tracking-display text-ink-subtle">
-              กรอก TP, FP, FN, TN ให้ครบเพื่อดูผลลัพธ์
-            </p>
-          ) : (
-            <>
-              <p className="meta-label tracking-display text-ink-subtle">
-                ผลลัพธ์ &mdash; ตัวอย่างทั้งหมด {m!.total} ราย
-              </p>
-
-              <dl className="mt-6 space-y-5">
-                {m!.metricRows.map((row) => (
-                  <div key={row.name} className="border-b border-rule pb-3">
-                    <div className="flex items-baseline justify-between gap-4">
-                      <dt className="tnum">{row.name}</dt>
-                      <dd className="tnum text-xl text-accent-ink font-medium">
-                        {row.value === null ? (
-                          <span className="text-base text-ink-muted">หารไม่ได้</span>
-                        ) : (
-                          pct(row.value)
-                        )}
-                      </dd>
-                    </div>
-                    <p className="tnum text-sm text-ink-muted mt-1">
-                      = {row.name} เมื่อ {row.denLabel} = {row.den}
-                      {row.value === null ? " ซึ่งเป็นศูนย์" : ""}
-                    </p>
-                  </div>
-                ))}
-
-                <div className="border-b border-rule pb-3">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <dt className="tnum">F1-Score</dt>
-                    <dd className="tnum text-xl text-accent-ink font-medium">
-                      {m!.f1 === null ? (
-                        <span className="text-base text-ink-muted">หารไม่ได้</span>
-                      ) : (
-                        pct(m!.f1)
-                      )}
-                    </dd>
-                  </div>
-                  <p className="tnum text-sm text-ink-muted mt-1">
-                    = 2 x TP / (2 x TP + FP + FN)
-                  </p>
-                </div>
-              </dl>
-
-              <div className="mt-sp-1 border-t-2 border-accent pt-5">
-                <p className="meta-label tracking-display text-accent-ink">จำไว้</p>
-                <p className="mt-2 text-ink-muted">
-                  Precision คุ้มเมื่อ False Positive แพง · Recall คุ้มเมื่อ False Negative
-                  วิกฤต · F1 ถัวเฉลี่ยสองตัวนั้นเท่ากัน
-                </p>
-                {m!.posPredicted === 0 ? (
-                  <p className="mt-3 text-accent-ink">
-                    ที่นี่ไม่มีใครถูกทำนายว่าเป็น Positive เลย ทั้ง Precision และ F1
-                    จึงไม่มีความหมาย อย่าเพียงเพราะโจทย์ไม่ให้ตัวเลขแล้วตอบว่า 0
-                  </p>
-                ) : null}
-                {m!.actuallyPositive === 0 ? (
-                  <p className="mt-3 text-accent-ink">
-                    ที่นี่ไม่มีเคสที่เป็น Positive จริงเลย Recall และ F1
-                    จึงไม่มีความหมาย
-                  </p>
-                ) : null}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Tool 03 — Gini Impurity & Gini Gain Calculator                     */
-/* ------------------------------------------------------------------ */
-
-export function GiniCalculator() {
-  const uid = useId();
-  const [p1, setP1] = useState("6");
-  const [p2, setP2] = useState("6");
-  const [l1, setL1] = useState("5");
-  const [l2, setL2] = useState("1");
-  const [r1, setR1] = useState("1");
-  const [r2, setR2] = useState("5");
-
-  const loadPreset = (
-    vals: [number, number, number, number, number, number]
-  ) => {
-    setP1(String(vals[0]));
-    setP2(String(vals[1]));
-    setL1(String(vals[2]));
-    setL2(String(vals[3]));
-    setR1(String(vals[4]));
-    setR2(String(vals[5]));
-  };
-
-  const parsed = useMemo(() => {
-    const np1 = Number(p1);
-    const np2 = Number(p2);
-    const nl1 = Number(l1);
-    const nl2 = Number(l2);
-    const nr1 = Number(r1);
-    const nr2 = Number(r2);
-
-    const validNums =
-      [np1, np2, nl1, nl2, nr1, nr2].every((n) => Number.isFinite(n) && n >= 0);
-
-    if (!validNums) return null;
-
-    const nParent = np1 + np2;
-    const nLeft = nl1 + nl2;
-    const nRight = nr1 + nr2;
-
-    if (nParent === 0) return null;
-
-    const giniSingle = (c1: number, c2: number, total: number) => {
-      if (total === 0) return 0;
-      const prob1 = c1 / total;
-      const prob2 = c2 / total;
-      return 1 - (prob1 * prob1 + prob2 * prob2);
-    };
-
-    const giniParent = giniSingle(np1, np2, nParent);
-    const giniLeft = giniSingle(nl1, nl2, nLeft);
-    const giniRight = giniSingle(nr1, nr2, nRight);
-
-    const totalSplit = nLeft + nRight;
-    const giniSplit =
-      totalSplit === 0
-        ? 0
-        : (nLeft / totalSplit) * giniLeft + (nRight / totalSplit) * giniRight;
-
-    const giniGain = giniParent - giniSplit;
-    const countMismatch = nl1 + nr1 !== np1 || nl2 + nr2 !== np2;
-
-    return {
-      nParent,
-      nLeft,
-      nRight,
-      giniParent,
-      giniLeft,
-      giniRight,
-      giniSplit,
-      giniGain,
-      countMismatch,
-    };
-  }, [p1, p2, l1, l2, r1, r2]);
+    const rows = [
+      {
+        name: "Accuracy", value: div(tp + tn, total),
+        use: "สัดส่วนที่ทายถูกทั้งหมด — หลอกได้เมื่อคลาสไม่สมดุล",
+        tex: `\\dfrac{TP+TN}{TP+TN+FP+FN} = \\dfrac{${tp}+${tn}}{${total}}`,
+      },
+      {
+        name: "Precision", value: precision,
+        use: "ในที่ทายว่า + ถูกจริงกี่ส่วน — สำคัญเมื่อ FP มีราคาแพง",
+        tex: `\\dfrac{TP}{TP+FP} = \\dfrac{${tp}}{${tp}+${fp}}`,
+      },
+      {
+        name: "Recall", value: recall,
+        use: "ในที่เป็น + จริง จับได้กี่ส่วน — สำคัญเมื่อ FN อันตราย",
+        tex: `\\dfrac{TP}{TP+FN} = \\dfrac{${tp}}{${tp}+${fn}}`,
+      },
+      {
+        name: "F1-Score", value: f1,
+        use: "Harmonic mean ของ Precision กับ Recall",
+        tex:
+          precision !== null && recall !== null
+            ? `2\\cdot\\dfrac{P\\cdot R}{P+R} = 2\\cdot\\dfrac{${fmt(precision)}\\cdot ${fmt(recall)}}{${fmt(precision)}+${fmt(recall)}}`
+            : `2\\cdot\\dfrac{P\\cdot R}{P+R}`,
+      },
+    ];
+    return { total, precision, recall, f1, rows, noPredPos: tp + fp === 0, noActualPos: tp + fn === 0 };
+  }, [vals]);
 
   return (
-    <div className="grid-12 items-start">
-      <div className="col-span-12 lg:col-span-5">
-        <h2 className="text-2xl lg:text-3xl tracking-reset">
-          คำนวณ Gini Impurity & Gini Gain
-        </h2>
-        <p className="mt-3 text-ink-muted">
-          คำนวณความไม่บริสุทธิ์ของโหนดแม่ (Parent) เทียบกับกิ่งซ้าย-ขวาหลังการแบ่ง
-          (Split) เพื่อหา Gini Gain ที่โมเดล Decision Tree ใช้เลือกจุดตัด
-        </p>
+    <div className="space-y-8">
+      <ToolHeader
+        title="มาตรวัดจาก Confusion Matrix"
+        lect="Lect 08"
+        desc="กรอกตัวเลขลงตาราง 2×2 ตามตำแหน่งจริง (แถว = ค่าจริง, คอลัมน์ = ค่าที่ทาย) แล้วดูการแทนค่าในแต่ละสูตร"
+        presets={[{ label: "ตัวอย่าง Play / Rest", onClick: () => f.load(METRIC_EXAMPLE), active: f.isLoaded(METRIC_EXAMPLE) }]}
+      />
 
-        {/* Presets */}
-        <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => loadPreset([6, 6, 5, 1, 1, 5])}
-            className="tap px-3 py-1.5 text-xs font-medium border border-rule-strong hover:border-accent hover:text-accent-ink transition-colors"
-          >
-            โหลด: Candidate A (Days &le; 45)
-          </button>
-          <button
-            type="button"
-            onClick={() => loadPreset([6, 6, 2, 4, 4, 2])}
-            className="tap px-3 py-1.5 text-xs font-medium border border-rule-strong hover:border-accent hover:text-accent-ink transition-colors"
-          >
-            โหลด: Candidate B (Purchases &le; 2)
-          </button>
-        </div>
-
-        {/* Inputs */}
-        <div className="mt-8 space-y-6">
-          <div className="border border-rule p-4">
-            <h3 className="meta-label tracking-reset font-medium text-ink">
-              โหนดแม่ (Parent Node)
-            </h3>
-            <div className="grid grid-cols-2 gap-4 mt-3">
-              <div>
-                <label htmlFor={`${uid}-p1`} className="text-xs text-ink-muted block">
-                  Class 1 (เช่น Inactive)
-                </label>
-                <input
-                  id={`${uid}-p1`}
-                  type="number"
-                  min={0}
-                  value={p1}
-                  onChange={(e) => setP1(e.target.value)}
-                  className="tap mt-1 w-full tnum bg-bg border border-rule-strong px-3 py-2 text-sm focus:border-accent outline-none"
-                />
-              </div>
-              <div>
-                <label htmlFor={`${uid}-p2`} className="text-xs text-ink-muted block">
-                  Class 2 (เช่น Active)
-                </label>
-                <input
-                  id={`${uid}-p2`}
-                  type="number"
-                  min={0}
-                  value={p2}
-                  onChange={(e) => setP2(e.target.value)}
-                  className="tap mt-1 w-full tnum bg-bg border border-rule-strong px-3 py-2 text-sm focus:border-accent outline-none"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border border-rule p-4">
-              <h3 className="meta-label tracking-reset font-medium text-ink">
-                กิ่งซ้าย (Left Child)
-              </h3>
-              <div className="space-y-3 mt-3">
-                <div>
-                  <label htmlFor={`${uid}-l1`} className="text-xs text-ink-muted block">
-                    Class 1
-                  </label>
-                  <input
-                    id={`${uid}-l1`}
-                    type="number"
-                    min={0}
-                    value={l1}
-                    onChange={(e) => setL1(e.target.value)}
-                    className="tap mt-1 w-full tnum bg-bg border border-rule-strong px-3 py-2 text-sm focus:border-accent outline-none"
-                  />
-                </div>
-                <div>
-                  <label htmlFor={`${uid}-l2`} className="text-xs text-ink-muted block">
-                    Class 2
-                  </label>
-                  <input
-                    id={`${uid}-l2`}
-                    type="number"
-                    min={0}
-                    value={l2}
-                    onChange={(e) => setL2(e.target.value)}
-                    className="tap mt-1 w-full tnum bg-bg border border-rule-strong px-3 py-2 text-sm focus:border-accent outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-rule p-4">
-              <h3 className="meta-label tracking-reset font-medium text-ink">
-                กิ่งขวา (Right Child)
-              </h3>
-              <div className="space-y-3 mt-3">
-                <div>
-                  <label htmlFor={`${uid}-r1`} className="text-xs text-ink-muted block">
-                    Class 1
-                  </label>
-                  <input
-                    id={`${uid}-r1`}
-                    type="number"
-                    min={0}
-                    value={r1}
-                    onChange={(e) => setR1(e.target.value)}
-                    className="tap mt-1 w-full tnum bg-bg border border-rule-strong px-3 py-2 text-sm focus:border-accent outline-none"
-                  />
-                </div>
-                <div>
-                  <label htmlFor={`${uid}-r2`} className="text-xs text-ink-muted block">
-                    Class 2
-                  </label>
-                  <input
-                    id={`${uid}-r2`}
-                    type="number"
-                    min={0}
-                    value={r2}
-                    onChange={(e) => setR2(e.target.value)}
-                    className="tap mt-1 w-full tnum bg-bg border border-rule-strong px-3 py-2 text-sm focus:border-accent outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {parsed?.countMismatch && (
-            <p className="text-xs text-accent-ink" role="alert">
-              &lowast; ข้อสังเกต: ผลรวมตัวอย่างในโหนดลูก (ซ้าย + ขวา)
-              ไม่เท่ากับโหนดแม่ กรุณาตรวจสอบตัวเลข
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="col-span-12 lg:col-span-6 lg:col-start-7">
-        <div
-          aria-live="polite"
-          className="bento-card p-6 sm:p-7 soft-shadow lg:sticky lg:top-28"
-        >
-          {!parsed ? (
-            <p className="meta-label tracking-display text-ink-subtle">
-              กรอกจำนวนตัวอย่างเพื่อคำนวณ Gini
-            </p>
-          ) : (
-            <>
-              <p className="meta-label tracking-display text-ink-subtle">
-                ผลลัพธ์การคำนวณ Gini (Lect 07)
-              </p>
-
-              <dl className="mt-6 space-y-4">
-                <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <div>
-                    <dt className="tnum font-medium">Gini(Parent)</dt>
-                    <dd className="text-xs text-ink-muted mt-0.5">
-                      1 &minus; &Sigma; p<sub>k</sub><sup>2</sup> ({parsed.nParent} ราย)
-                    </dd>
-                  </div>
-                  <dd className="tnum text-xl text-accent-ink font-medium">
-                    {parsed.giniParent.toFixed(4)}
-                  </dd>
-                </div>
-
-                <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <div>
-                    <dt className="tnum font-medium">Gini(Left Child)</dt>
-                    <dd className="text-xs text-ink-muted mt-0.5">
-                      {parsed.nLeft} ราย
-                    </dd>
-                  </div>
-                  <dd className="tnum text-lg text-ink font-medium">
-                    {parsed.giniLeft.toFixed(4)}
-                  </dd>
-                </div>
-
-                <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <div>
-                    <dt className="tnum font-medium">Gini(Right Child)</dt>
-                    <dd className="text-xs text-ink-muted mt-0.5">
-                      {parsed.nRight} ราย
-                    </dd>
-                  </div>
-                  <dd className="tnum text-lg text-ink font-medium">
-                    {parsed.giniRight.toFixed(4)}
-                  </dd>
-                </div>
-
-                <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <div>
-                    <dt className="tnum font-medium">Weighted Gini(Split)</dt>
-                    <dd className="text-xs text-ink-muted mt-0.5">
-                      ({parsed.nLeft}/{parsed.nLeft + parsed.nRight}) &times;{" "}
-                      {parsed.giniLeft.toFixed(3)} + ({parsed.nRight}/
-                      {parsed.nLeft + parsed.nRight}) &times;{" "}
-                      {parsed.giniRight.toFixed(3)}
-                    </dd>
-                  </div>
-                  <dd className="tnum text-xl text-ink font-medium">
-                    {parsed.giniSplit.toFixed(4)}
-                  </dd>
-                </div>
-
-                <div className="flex items-baseline justify-between gap-4 border-b-2 border-accent pb-3">
-                  <div>
-                    <dt className="tnum text-lg font-medium text-accent-ink">
-                      Gini Gain
-                    </dt>
-                    <dd className="text-xs text-ink-muted mt-0.5">
-                      Gini(Parent) &minus; Weighted Gini(Split)
-                    </dd>
-                  </div>
-                  <dd className="tnum text-2xl text-accent-ink font-bold">
-                    {parsed.giniGain.toFixed(4)}
-                  </dd>
-                </div>
-              </dl>
-
-              <div className="mt-6 border-t border-rule pt-4">
-                <p className="meta-label tracking-display text-accent-ink">กฎการตัดสินใจ</p>
-                <p className="mt-2 text-sm text-ink-muted leading-relaxed">
-                  Decision Tree จะเลือก Feature และ Split Point ที่ให้{" "}
-                  <span className="text-accent-ink font-medium">Gini Gain สูงที่สุด</span>{" "}
-                  (หรือทำให้ Weighted Gini ต่ำที่สุด) เสมอ
-                </p>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Tool 04 — K-Means Iteration & Distance Calculator                  */
-/* ------------------------------------------------------------------ */
-
-interface Point2D {
-  id: string;
-  x: number;
-  y: number;
-}
-
-interface Centroid2D {
-  id: string;
-  name: string;
-  x: number;
-  y: number;
-}
-
-const DEFAULT_POINTS: Point2D[] = [
-  { id: "A1", x: 2, y: 10 },
-  { id: "A2", x: 2, y: 5 },
-  { id: "A3", x: 8, y: 4 },
-  { id: "A4", x: 5, y: 8 },
-  { id: "A5", x: 7, y: 5 },
-  { id: "A6", x: 6, y: 4 },
-  { id: "A7", x: 1, y: 2 },
-  { id: "A8", x: 4, y: 9 },
-];
-
-export function KMeansCalculator() {
-  const [metric, setMetric] = useState<"manhattan" | "euclidean">("manhattan");
-  const [points, setPoints] = useState<Point2D[]>(DEFAULT_POINTS);
-  const [centroids, setCentroids] = useState<Centroid2D[]>([
-    { id: "C1", name: "C1 (A1)", x: 2, y: 10 },
-    { id: "C2", name: "C2 (A4)", x: 5, y: 8 },
-    { id: "C3", name: "C3 (A7)", x: 1, y: 2 },
-  ]);
-
-  const loadPreset = (preset: "lecture" | "hw1" | "hw2") => {
-    setPoints(DEFAULT_POINTS);
-    if (preset === "lecture") {
-      setMetric("manhattan");
-      setCentroids([
-        { id: "C1", name: "C1 (A1)", x: 2, y: 10 },
-        { id: "C2", name: "C2 (A4)", x: 5, y: 8 },
-        { id: "C3", name: "C3 (A7)", x: 1, y: 2 },
-      ]);
-    } else if (preset === "hw1") {
-      setMetric("manhattan");
-      setCentroids([
-        { id: "C1", name: "C1 (A3)", x: 8, y: 4 },
-        { id: "C2", name: "C2 (A6)", x: 6, y: 4 },
-      ]);
-    } else if (preset === "hw2") {
-      setMetric("euclidean");
-      setCentroids([
-        { id: "C1", name: "C1 (A2)", x: 2, y: 5 },
-        { id: "C2", name: "C2 (A5)", x: 7, y: 5 },
-        { id: "C3", name: "C3 (A8)", x: 4, y: 9 },
-      ]);
-    }
-  };
-
-  const results = useMemo(() => {
-    // 1. Calculate distance from each point to each centroid
-    const assignments = points.map((p) => {
-      const dists = centroids.map((c) => {
-        let d = 0;
-        if (metric === "manhattan") {
-          d = Math.abs(p.x - c.x) + Math.abs(p.y - c.y);
-        } else {
-          d = Math.hypot(p.x - c.x, p.y - c.y);
-        }
-        return { centroidId: c.id, distance: d };
-      });
-
-      // Find closest centroid (tie-breaker: lowest centroid index)
-      let minIdx = 0;
-      for (let i = 1; i < dists.length; i++) {
-        if (dists[i].distance < dists[minIdx].distance) {
-          minIdx = i;
-        }
-      }
-
-      return {
-        point: p,
-        dists,
-        assignedCentroidId: centroids[minIdx].id,
-        minDistance: dists[minIdx].distance,
-        isTie: dists.filter((d) => d.distance === dists[minIdx].distance).length > 1,
-      };
-    });
-
-    // 2. Recalculate centroids
-    const newCentroids = centroids.map((c) => {
-      const assignedPoints = assignments
-        .filter((a) => a.assignedCentroidId === c.id)
-        .map((a) => a.point);
-
-      if (assignedPoints.length === 0) {
-        return {
-          ...c,
-          count: 0,
-          newX: c.x,
-          newY: c.y,
-          assignedNames: [],
-          formulaX: "ไม่มีสมาชิก",
-          formulaY: "ไม่มีสมาชิก",
-        };
-      }
-
-      const sumX = assignedPoints.reduce((acc, pt) => acc + pt.x, 0);
-      const sumY = assignedPoints.reduce((acc, pt) => acc + pt.y, 0);
-      const n = assignedPoints.length;
-
-      return {
-        ...c,
-        count: n,
-        newX: sumX / n,
-        newY: sumY / n,
-        assignedNames: assignedPoints.map((pt) => pt.id),
-        formulaX: `(${assignedPoints.map((pt) => pt.x).join(" + ")}) / ${n} = ${(sumX / n).toFixed(4)}`,
-        formulaY: `(${assignedPoints.map((pt) => pt.y).join(" + ")}) / ${n} = ${(sumY / n).toFixed(4)}`,
-      };
-    });
-
-    return { assignments, newCentroids };
-  }, [points, centroids, metric]);
-
-  return (
-    <div className="grid-12 items-start">
-      <div className="col-span-12">
-        <h2 className="text-2xl lg:text-3xl tracking-reset">
-          คำนวณ K-Means Iteration & Recalculate Centroids
-        </h2>
-        <p className="mt-3 text-ink-muted">
-          จำลองการคำนวณระยะห่างรอบที่ 1 และการหาพิกัด Centroid ใหม่ตามสูตรใน Lect 08
-          รองรับทั้ง Manhattan และ Euclidean พร้อมตรวจจับเงื่อนไข Tie-breaking
-        </p>
-
-        {/* Preset Controls */}
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <span className="meta-label text-xs text-ink-subtle">ชุดโจทย์มาตรฐาน:</span>
-          <button
-            type="button"
-            onClick={() => loadPreset("lecture")}
-            className="tap px-3 py-1.5 text-xs font-medium border border-rule-strong hover:border-accent hover:text-accent-ink transition-colors"
-          >
-            Slide 19-29: ในห้อง (K=3, Manhattan)
-          </button>
-          <button
-            type="button"
-            onClick={() => loadPreset("hw1")}
-            className="tap px-3 py-1.5 text-xs font-medium border border-rule-strong hover:border-accent hover:text-accent-ink transition-colors"
-          >
-            Slide 44: การบ้าน Q1 (K=2, Manhattan)
-          </button>
-          <button
-            type="button"
-            onClick={() => loadPreset("hw2")}
-            className="tap px-3 py-1.5 text-xs font-medium border border-rule-strong hover:border-accent hover:text-accent-ink transition-colors"
-          >
-            Slide 44: การบ้าน Q2 (K=3, Euclidean)
-          </button>
-        </div>
-
-        {/* Metric Selector */}
-        <div className="mt-6 flex items-center gap-6 border-b border-rule pb-4">
-          <span className="meta-label text-xs text-ink-subtle">Metric:</span>
-          <label className="inline-flex items-center gap-2 cursor-pointer text-sm">
-            <input
-              type="radio"
-              name="kmetric"
-              value="manhattan"
-              checked={metric === "manhattan"}
-              onChange={() => setMetric("manhattan")}
-              className="accent-accent"
-            />
-            <span>Manhattan (|x<sub>1</sub> &minus; x<sub>2</sub>| + |y<sub>1</sub> &minus; y<sub>2</sub>|)</span>
-          </label>
-          <label className="inline-flex items-center gap-2 cursor-pointer text-sm">
-            <input
-              type="radio"
-              name="kmetric"
-              value="euclidean"
-              checked={metric === "euclidean"}
-              onChange={() => setMetric("euclidean")}
-              className="accent-accent"
-            />
-            <span>Euclidean (&radic;[(x<sub>1</sub> &minus; x<sub>2</sub>)<sup>2</sup> + (y<sub>1</sub> &minus; y<sub>2</sub>)<sup>2</sup>])</span>
-          </label>
-        </div>
-      </div>
-
-      {/* Main Results Table */}
-      <div className="col-span-12 lg:col-span-7">
-        <h3 className="meta-label tracking-display text-ink-subtle mb-4">
-          ตารางระยะห่างรอบที่ 1 และการจัดกลุ่ม (Iteration 1)
-        </h3>
-
-        <div className="overflow-x-auto border border-rule">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-surface-hover border-b border-rule">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
+        <div className="overflow-x-auto">
+          <table className="w-full border-separate border-spacing-2">
+            <caption className="sr-only">Confusion Matrix: แถวคือค่าจริง คอลัมน์คือค่าที่ทำนาย</caption>
+            <thead>
               <tr>
-                <th className="py-2.5 px-3 font-medium">จุด</th>
-                <th className="py-2.5 px-3 font-medium">(x, y)</th>
-                {centroids.map((c) => (
-                  <th key={c.id} className="py-2.5 px-3 font-medium">
-                    d(p, {c.id})
-                  </th>
-                ))}
-                <th className="py-2.5 px-3 font-medium text-accent-ink">กลุ่มที่ได้</th>
+                <td />
+                <th scope="col" className="pb-1 text-xs font-medium text-ink-subtle">ทาย +</th>
+                <th scope="col" className="pb-1 text-xs font-medium text-ink-subtle">ทาย −</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-rule font-mono text-xs">
-              {results.assignments.map((a) => (
-                <tr key={a.point.id} className="hover:bg-surface-hover/60 transition-colors">
-                  <td className="py-2 px-3 font-bold">{a.point.id}</td>
-                  <td className="py-2 px-3 text-ink-muted">
-                    ({a.point.x}, {a.point.y})
-                  </td>
-                  {a.dists.map((d) => {
-                    const isMin = d.centroidId === a.assignedCentroidId;
-                    return (
-                      <td
-                        key={d.centroidId}
-                        className={`py-2 px-3 ${
-                          isMin ? "font-bold text-accent-ink" : "text-ink-muted"
-                        }`}
-                      >
-                        {metric === "manhattan"
-                          ? d.distance
-                          : d.distance.toFixed(3)}
-                      </td>
-                    );
-                  })}
-                  <td className="py-2 px-3 font-bold text-accent-ink">
-                    {a.assignedCentroidId}
-                    {a.isTie ? (
-                      <span className="ml-1 text-[10px] text-ink-subtle font-normal" title="ระยะห่างเท่ากัน กฎให้เลือกคลัสเตอร์ที่เลขน้อยกว่า">
-                        (Tie)
-                      </span>
-                    ) : null}
-                  </td>
+            <tbody>
+              {MATRIX_ROWS.map(([rowLabel, a, b]) => (
+                <tr key={rowLabel}>
+                  <th scope="row" className="pr-1 text-left text-xs font-medium whitespace-nowrap text-ink-subtle">
+                    {rowLabel}
+                  </th>
+                  {[a, b].map((k) => (
+                    <td key={k} className={`rounded-lg border p-3 align-top ${k === "tp" || k === "tn" ? "border-rule-strong" : "border-rule"}`}>
+                      <NumberField
+                        id={`${uid}-${k}`}
+                        label={<span className="font-mono">{CELL_INFO[k].label}</span>}
+                        hint={CELL_INFO[k].hint}
+                        value={f.raw[k]}
+                        onChange={(v) => f.set(k, v)}
+                        onBlur={() => f.touch(k)}
+                        error={f.shown(k, errors)}
+                        integer
+                        size="sm"
+                      />
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
+          <p className="mt-2 px-2 text-xs text-ink-subtle">แนวทแยง (TP, TN) คือที่ทายถูก</p>
         </div>
-      </div>
 
-      {/* Recalculated Centroids Rail */}
-      <div className="col-span-12 lg:col-span-5">
-        <div className="bento-card p-6">
-          <div className="flex items-center justify-between border-b border-rule pb-3 mb-4">
-            <h3 className="text-sm font-bold text-ink">
-              พิกัด Centroid ใหม่หลังรอบที่ 1
-            </h3>
-            <span className="bento-pill border border-mint text-mint">Calculated</span>
-          </div>
+        {!m ? (
+          <EmptyState>กรอก TP, FN, FP, TN ให้ครบเพื่อดูวิธีทำ</EmptyState>
+        ) : (
+          <Panel title="วิธีทำ" meta={`N = ${m.total}`}>
+            <ul>
+              {m.rows.map((row) => (
+                <li key={row.name} className="border-b border-rule py-4 first:pt-0 last:border-0 last:pb-0">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="font-semibold text-ink">{row.name}</span>
+                    {row.value === null ? (
+                      <span className="text-sm text-bad">หารไม่ได้ (ตัวส่วน = 0)</span>
+                    ) : (
+                      <span className="num font-mono text-lg text-ink">{pct(row.value)}</span>
+                    )}
+                  </div>
+                  <div className="mt-2 overflow-x-auto pb-1 text-ink">
+                    <Tex tex={row.value === null ? row.tex : `${row.tex} = \\ans{${fmt(row.value)}}`} />
+                  </div>
+                  <p className="mt-1 text-xs text-ink-subtle">{row.use}</p>
+                </li>
+              ))}
+            </ul>
 
-          <div className="space-y-4">
-            {results.newCentroids.map((c) => (
-              <div key={c.id} className="p-3.5 bg-surface-hover border border-rule">
-                <div className="flex items-baseline justify-between">
-                  <span className="font-bold text-base text-accent-ink">{c.name}</span>
-                  <span className="text-xs text-ink-muted">
-                    สมาชิก {c.count} จุด: {c.assignedNames.join(", ") || "-"}
-                  </span>
-                </div>
-                <div className="mt-2 text-xs font-mono space-y-0.5 text-ink-muted">
-                  <p>New X: {c.formulaX}</p>
-                  <p>New Y: {c.formulaY}</p>
-                </div>
-                <p className="mt-2 tnum font-bold text-base text-ink">
-                  พิกัดใหม่: ({c.newX.toFixed(2)}, {c.newY.toFixed(2)})
-                </p>
-              </div>
-            ))}
-
-            <div className="exam-pitfall-card mt-5">
-              <p className="eyebrow eyebrow-amber mb-1.5">กฎสำคัญที่ออกข้อสอบบ่อย</p>
-              <ul className="list-disc list-inside space-y-1 text-xs text-ink-muted leading-relaxed">
-                <li>
-                  <strong className="text-ink">Tie-break Rule:</strong> หากจุดใดมีระยะห่างเท่ากันหลาย Centroid
-                  (เช่น A5 ในการบ้าน Q1) สไลด์ใช้กฎเลือก Cluster ที่เลขน้อยกว่า
-                </li>
-                <li>
-                  <strong className="text-ink">Centroid Update:</strong> นำเฉพาะจุดที่เป็นสมาชิกในรอบนั้นมาหา Mean (เฉลี่ยเลขคณิต)
-                </li>
-                <li>
-                  <strong className="text-ink">Stopping Criteria:</strong> หยุดเมื่อพิกัด Centroid ไม่ขยับ
-                  หรือไม่มีจุดใดย้ายกลุ่มอีกต่อไป
-                </li>
-              </ul>
+            <div className="mt-5 space-y-3" aria-live="polite">
+              {m.precision !== null && m.recall !== null && m.f1 !== null && m.precision !== m.recall ? (
+                <Note tone="pitfall" title="อย่าเฉลี่ยธรรมดา">
+                  ถ้าใช้ (P + R) / 2 จะได้ {fmt((m.precision + m.recall) / 2)} แต่ F1 จริงคือ {fmt(m.f1)} —
+                  Harmonic mean ลงโทษตัวที่ต่ำกว่าเสมอ
+                </Note>
+              ) : null}
+              {m.noPredPos ? (
+                <Note tone="bad" title="ไม่มีการทายว่า + เลย">
+                  TP + FP = 0 จึงหา Precision และ F1 ไม่ได้ — อย่าตอบว่า 0
+                </Note>
+              ) : null}
+              {m.noActualPos ? (
+                <Note tone="bad" title="ไม่มีเคส + จริงเลย">
+                  TP + FN = 0 จึงหา Recall และ F1 ไม่ได้
+                </Note>
+              ) : null}
             </div>
+          </Panel>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ================================================================== */
+/* Tool 03 — Gini impurity & gain                                     */
+/* ================================================================== */
+
+type GiniKey = "l1" | "l2" | "r1" | "r2";
+const GINI_KEYS: GiniKey[] = ["l1", "l2", "r1", "r2"];
+const GINI_PRESETS = [
+  { label: "Candidate A: Days ≤ 45", vals: { l1: 5, l2: 1, r1: 1, r2: 5 } },
+  { label: "Candidate B: Purchases ≤ 2", vals: { l1: 2, l2: 4, r1: 4, r2: 2 } },
+];
+const GINI_CHILDREN = [
+  { title: "กิ่งซ้าย", keys: ["l1", "l2"] },
+  { title: "กิ่งขวา", keys: ["r1", "r2"] },
+] as const;
+
+function gini(a: number, b: number) {
+  const n = a + b;
+  if (n === 0) return 0;
+  const p = a / n, q = b / n;
+  return 1 - (p * p + q * q);
+}
+
+function giniTex(name: string, a: number, b: number, value: number) {
+  const n = a + b;
+  if (n === 0) return `\\mathrm{Gini}_{\\text{${name}}} = 0 \\quad (n = 0)`;
+  return `\\mathrm{Gini}_{\\text{${name}}} = 1 - \\left[\\left(\\tfrac{${a}}{${n}}\\right)^2 + \\left(\\tfrac{${b}}{${n}}\\right)^2\\right] = ${fmt(value)}`;
+}
+
+export function GiniCalculator() {
+  const uid = useId();
+  const f = useFields<GiniKey>({ l1: "5", l2: "1", r1: "1", r2: "5" });
+
+  const { errors, r } = useMemo(() => {
+    const errors: Partial<Record<GiniKey, string>> = {};
+    const v = {} as Record<GiniKey, number>;
+    for (const k of GINI_KEYS) {
+      const p = parse(f.raw[k], { integer: true, min: 0 });
+      if (p.error) errors[k] = p.error;
+      else v[k] = p.value!;
+    }
+    if (Object.keys(errors).length) return { errors, r: null };
+    const p1 = v.l1 + v.r1, p2 = v.l2 + v.r2;
+    const nL = v.l1 + v.l2, nR = v.r1 + v.r2, n = nL + nR;
+    if (n === 0) return { errors, r: null };
+    const gP = gini(p1, p2), gL = gini(v.l1, v.l2), gR = gini(v.r1, v.r2);
+    const split = (nL / n) * gL + (nR / n) * gR;
+    return { errors, r: { ...v, p1, p2, nL, nR, n, gP, gL, gR, split, gain: gP - split } };
+  }, [f.raw]);
+
+  return (
+    <div className="space-y-8">
+      <ToolHeader
+        title="Gini Impurity และ Gini Gain"
+        lect="Lect 07"
+        desc="กรอกจำนวนแต่ละคลาสในกิ่งซ้ายและขวา โหนดแม่จะรวมให้อัตโนมัติ ลองโหลด Candidate A และ B แล้วเทียบว่าต้นไม้จะเลือก split ไหน"
+        presets={GINI_PRESETS.map((p) => ({ label: p.label, onClick: () => f.load(p.vals), active: f.isLoaded(p.vals) }))}
+      />
+
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
+        {/* Inputs drawn as a tiny tree */}
+        <div>
+          <div className="mx-auto max-w-xs rounded-xl border border-rule bg-surface-hover px-4 py-3 text-center">
+            <p className="text-xs text-ink-subtle">โหนดแม่ (รวมจากกิ่งลูก)</p>
+            <p className="num mt-1 font-mono text-sm text-ink">
+              {r ? `คลาส 1 = ${r.p1} · คลาส 2 = ${r.p2} · n = ${r.n}` : "–"}
+            </p>
+          </div>
+          <svg aria-hidden viewBox="0 0 100 12" preserveAspectRatio="none" className="mx-auto block h-6 w-1/2 text-rule-strong">
+            <path d="M50 0 L25 12 M50 0 L75 12" stroke="currentColor" fill="none" vectorEffect="non-scaling-stroke" />
+          </svg>
+          <div className="grid grid-cols-2 gap-3">
+            {GINI_CHILDREN.map((child) => (
+              <fieldset key={child.title} className="space-y-3 rounded-xl border border-rule p-4">
+                <legend className="px-1 text-sm font-medium text-ink">{child.title}</legend>
+                {child.keys.map((k, i) => (
+                  <NumberField
+                    key={k}
+                    id={`${uid}-${k}`}
+                    label={`คลาส ${i + 1}`}
+                    value={f.raw[k]}
+                    onChange={(v) => f.set(k, v)}
+                    onBlur={() => f.touch(k)}
+                    error={f.shown(k, errors)}
+                    integer
+                    size="sm"
+                  />
+                ))}
+              </fieldset>
+            ))}
           </div>
         </div>
+
+        {!r ? (
+          <EmptyState>กรอกจำนวนเต็มที่ไม่ติดลบให้ครบ 4 ช่อง</EmptyState>
+        ) : (
+          <Panel title="วิธีทำ">
+            <WorkingSteps
+              steps={[
+                { label: "ความไม่บริสุทธิ์ของโหนดแม่", tex: giniTex("parent", r.p1, r.p2, r.gP) },
+                { label: "กิ่งซ้าย", tex: giniTex("left", r.l1, r.l2, r.gL) },
+                { label: "กิ่งขวา", tex: giniTex("right", r.r1, r.r2, r.gR) },
+                {
+                  label: "ถ่วงน้ำหนักตามจำนวนในแต่ละกิ่ง",
+                  tex: `\\mathrm{Gini}_{\\text{split}} = \\tfrac{${r.nL}}{${r.n}}(${fmt(r.gL)}) + \\tfrac{${r.nR}}{${r.n}}(${fmt(r.gR)}) = ${fmt(r.split)}`,
+                },
+                {
+                  label: "Gini Gain",
+                  tex: `\\Delta\\mathrm{Gini} = ${fmt(r.gP)} - ${fmt(r.split)} = \\ans{${fmt(r.gain)}}`,
+                },
+              ]}
+            />
+            <div className="mt-5 space-y-3">
+              <Note title="กฎการเลือก">
+                Decision Tree เลือก split ที่ให้ Gain <strong className="text-ink">สูงที่สุด</strong> (เท่ากับ Weighted Gini ต่ำที่สุด)
+              </Note>
+              <Note tone="pitfall" title="อย่าปัดเลขระหว่างทาง">
+                เครื่องนี้คำนวณด้วยค่าเต็ม แล้วค่อยปัดตอนแสดงผล — ถ้าปัดเป็น 2 ตำแหน่งตั้งแต่ขั้นแรก คำตอบสุดท้ายอาจคลาดได้
+              </Note>
+            </div>
+          </Panel>
+        )}
       </div>
+    </div>
+  );
+}
+
+/* ================================================================== */
+/* Tool 04 — K-Means iterations                                       */
+/* ================================================================== */
+
+type Pt = { id: string; x: number; y: number };
+type Centroid = { id: string; x: number; y: number; seed?: string };
+type Metric = "manhattan" | "euclidean";
+type PresetKey = "lecture" | "hw1" | "hw2";
+
+const POINTS: Pt[] = [
+  { id: "A1", x: 2, y: 10 }, { id: "A2", x: 2, y: 5 }, { id: "A3", x: 8, y: 4 }, { id: "A4", x: 5, y: 8 },
+  { id: "A5", x: 7, y: 5 }, { id: "A6", x: 6, y: 4 }, { id: "A7", x: 1, y: 2 }, { id: "A8", x: 4, y: 9 },
+];
+
+const KM_PRESETS: Record<PresetKey, { label: string; metric: Metric; seeds: string[] }> = {
+  lecture: { label: "ในห้อง · K=3 · Manhattan", metric: "manhattan", seeds: ["A1", "A4", "A7"] },
+  hw1: { label: "การบ้าน Q1 · K=2 · Manhattan", metric: "manhattan", seeds: ["A3", "A6"] },
+  hw2: { label: "การบ้าน Q2 · K=3 · Euclidean", metric: "euclidean", seeds: ["A2", "A5", "A8"] },
+};
+
+const METRIC_TEX: Record<Metric, string> = {
+  manhattan: "d = |x_1 - x_2| + |y_1 - y_2|",
+  euclidean: "d = \\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}",
+};
+
+const EPS = 1e-9;
+const seedsFrom = (ids: string[]): Centroid[] =>
+  ids.map((pid, i) => {
+    const p = POINTS.find((q) => q.id === pid)!;
+    return { id: `C${i + 1}`, x: p.x, y: p.y, seed: pid };
+  });
+
+const distance = (m: Metric, a: Pt | Centroid, b: Pt | Centroid) =>
+  m === "manhattan" ? Math.abs(a.x - b.x) + Math.abs(a.y - b.y) : Math.hypot(a.x - b.x, a.y - b.y);
+
+function runIteration(centroids: Centroid[], metric: Metric) {
+  const rows = POINTS.map((p) => {
+    const d = centroids.map((c) => distance(metric, p, c));
+    let best = 0;
+    for (let i = 1; i < d.length; i++) if (d[i] < d[best] - EPS) best = i; // tie → lower index
+    const tie = d.filter((v) => Math.abs(v - d[best]) < EPS).length > 1;
+    return { p, d, best, tie };
+  });
+  const next = centroids.map((c, ci) => {
+    const members = rows.filter((r) => r.best === ci).map((r) => r.p);
+    if (!members.length) return { id: c.id, x: c.x, y: c.y, members, empty: true };
+    const x = members.reduce((s, m) => s + m.x, 0) / members.length;
+    const y = members.reduce((s, m) => s + m.y, 0) / members.length;
+    return { id: c.id, x, y, members, empty: false };
+  });
+  const converged = next.every((n, i) => Math.abs(n.x - centroids[i].x) < EPS && Math.abs(n.y - centroids[i].y) < EPS);
+  return { rows, next, converged };
+}
+
+export function KMeansCalculator() {
+  const [preset, setPreset] = useState<PresetKey>("lecture");
+  const [metric, setMetric] = useState<Metric>("manhattan");
+  const [centroids, setCentroids] = useState<Centroid[]>(() => seedsFrom(KM_PRESETS.lecture.seeds));
+  const [iter, setIter] = useState(1);
+
+  const res = useMemo(() => runIteration(centroids, metric), [centroids, metric]);
+
+  const load = (k: PresetKey) => {
+    setPreset(k);
+    setMetric(KM_PRESETS[k].metric);
+    setCentroids(seedsFrom(KM_PRESETS[k].seeds));
+    setIter(1);
+  };
+  const changeMetric = (m: Metric) => {
+    setMetric(m);
+    setCentroids(seedsFrom(KM_PRESETS[preset].seeds));
+    setIter(1);
+  };
+  const nextRound = () => {
+    setCentroids(res.next.map(({ id, x, y }) => ({ id, x, y })));
+    setIter((i) => i + 1);
+  };
+
+  return (
+    <div className="space-y-8">
+      <ToolHeader
+        title="K-Means ทีละรอบ"
+        lect="Lect 08–09"
+        desc="วัดระยะทุกจุดไปยังทุก Centroid จัดเข้ากลุ่มที่ใกล้สุด แล้วย้าย Centroid ไปที่ค่าเฉลี่ยของสมาชิก กดรอบถัดไปจนกว่าจะลู่เข้า"
+        presets={(Object.keys(KM_PRESETS) as PresetKey[]).map((k) => ({
+          label: KM_PRESETS[k].label, onClick: () => load(k), active: preset === k,
+        }))}
+      />
+
+      <div className="flex flex-wrap items-center gap-4 border-y border-rule py-3">
+        <Segmented
+          label="วิธีวัดระยะ"
+          value={metric}
+          onChange={changeMetric}
+          options={[{ value: "manhattan", label: "Manhattan" }, { value: "euclidean", label: "Euclidean" }]}
+        />
+        <div className="overflow-x-auto text-ink"><Tex tex={METRIC_TEX[metric]} /></div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start">
+        <section>
+          <h3 className="mb-3 text-sm font-semibold text-ink">
+            รอบที่ <span className="num font-mono">{iter}</span> · ตารางระยะทาง
+          </h3>
+          <div className="overflow-x-auto rounded-xl border border-rule">
+            <table className="w-full text-sm">
+              <thead className="bg-surface-hover text-xs text-ink-muted">
+                <tr>
+                  <th scope="col" className="px-3 py-2.5 text-left font-medium">จุด</th>
+                  <th scope="col" className="px-3 py-2.5 text-left font-medium">(x, y)</th>
+                  {centroids.map((c) => (
+                    <th key={c.id} scope="col" className="px-3 py-2.5 text-right font-medium">
+                      <span className="font-mono">d(·, {c.id})</span>
+                    </th>
+                  ))}
+                  <th scope="col" className="px-3 py-2.5 text-left font-medium">กลุ่ม</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-rule bg-surface font-mono">
+                {res.rows.map((row) => (
+                  <tr key={row.p.id}>
+                    <th scope="row" className="px-3 py-2 text-left font-semibold text-ink">{row.p.id}</th>
+                    <td className="num px-3 py-2 text-ink-muted">({row.p.x}, {row.p.y})</td>
+                    {row.d.map((d, i) => (
+                      <td key={i} className="num px-3 py-2 text-right">
+                        <span className={i === row.best ? "answer font-semibold text-ink" : "text-ink-muted"}>{fmt(d, 3)}</span>
+                      </td>
+                    ))}
+                    <td className="px-3 py-2 font-semibold text-ink">
+                      {centroids[row.best].id}
+                      {row.tie ? <span className="ml-1.5 font-sans text-xs font-normal text-warn">เสมอ → เลือกเลขน้อย</span> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <Panel title="Centroid ใหม่ = ค่าเฉลี่ยของสมาชิก" meta={`รอบ ${iter}`}>
+          <ul className="space-y-5">
+            {res.next.map((c, i) => (
+              <li key={c.id}>
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="font-mono font-semibold text-ink">
+                    {c.id}
+                    {iter === 1 && centroids[i].seed ? <span className="ml-1 font-normal text-ink-subtle">(เริ่มที่ {centroids[i].seed})</span> : null}
+                  </span>
+                  <span className="text-xs text-ink-subtle">{c.members.map((m) => m.id).join(", ") || "ไม่มีสมาชิก"}</span>
+                </div>
+                {c.empty ? (
+                  <p className="mt-1 text-sm text-warn">ไม่มีจุดใดเลือกกลุ่มนี้ Centroid จึงอยู่ที่เดิม</p>
+                ) : (
+                  <div className="mt-1.5 overflow-x-auto pb-1 text-ink">
+                    <Tex
+                      tex={`\\left(\\tfrac{${c.members.map((m) => m.x).join("+")}}{${c.members.length}},\\; \\tfrac{${c.members.map((m) => m.y).join("+")}}{${c.members.length}}\\right) = \\ans{(${fmt(c.x, 3)},\\ ${fmt(c.y, 3)})}`}
+                    />
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-rule pt-4">
+            <button type="button" className="btn btn-primary" onClick={nextRound} disabled={res.converged}>
+              คำนวณรอบถัดไป
+            </button>
+            <button type="button" className="btn btn-secondary" onClick={() => load(preset)}>
+              เริ่มใหม่
+            </button>
+          </div>
+          <div className="mt-4" aria-live="polite">
+            {res.converged ? (
+              <Note title="ลู่เข้าแล้ว">Centroid ไม่ขยับและไม่มีจุดใดย้ายกลุ่ม — K-Means หยุดที่รอบ {iter}</Note>
+            ) : null}
+          </div>
+        </Panel>
+      </div>
+
+      <Note tone="pitfall" title="กฎที่ออกสอบบ่อย">
+        <ul className="list-disc space-y-1 pl-5">
+          <li><strong className="text-ink">ระยะเท่ากัน</strong> (เช่น A5 ในการบ้าน Q1) สไลด์ให้เลือก Cluster ที่เลขน้อยกว่า</li>
+          <li><strong className="text-ink">Centroid ใหม่</strong> ใช้เฉพาะสมาชิกของรอบนั้นมาหาค่าเฉลี่ย</li>
+          <li><strong className="text-ink">หยุดเมื่อ</strong> Centroid ไม่ขยับ หรือไม่มีจุดใดย้ายกลุ่ม</li>
+        </ul>
+      </Note>
     </div>
   );
 }

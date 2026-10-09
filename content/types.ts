@@ -66,6 +66,8 @@ export interface Formula {
   name: string;
   /** The expression exactly as the slides write it, in plain text. */
   expression: string;
+  /** KaTeX expression for rich math rendering. */
+  tex?: string;
   /** Each symbol and what it means. */
   symbols: Array<{ symbol: string; meaning: string }>;
   /** What the formula returns, in one line. */

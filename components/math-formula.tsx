@@ -1,27 +1,23 @@
 import katex from "katex";
 
 /**
- * Server-safe KaTeX renderer. LaTeX is compiled to HTML at build time,
- * so formula cards ship real math markup (fractions, sub/superscripts)
- * with zero client JS. Falls back to the raw source string if KaTeX
- * cannot parse the expression.
+ * KaTeX → HTML. Works in server and client components.
+ * `\ans{…}` wraps a final answer in the yellow highlighter (.answer in globals.css).
  */
-export function MathFormula({
-  tex,
-  className = "",
-}: {
-  tex: string;
-  className?: string;
-}) {
-  const html = katex.renderToString(tex, {
-    displayMode: true,
+export function renderTex(tex: string, display = false): string {
+  return katex.renderToString(tex, {
+    displayMode: display,
     throwOnError: false,
-    strict: false,
+    strict: "ignore",
+    output: "htmlAndMathml",
+    trust: (ctx) => ctx.command === "\\htmlClass",
+    macros: { "\\ans": "\\htmlClass{answer}{#1}" },
   });
-  return (
-    <span
-      className={`math-tex ${className}`}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+}
+
+type TexProps = { tex: string; display?: boolean; className?: string };
+
+export function Tex({ tex, display = false, className }: TexProps) {
+  const Tag = display ? "div" : "span";
+  return <Tag className={className} dangerouslySetInnerHTML={{ __html: renderTex(tex, display) }} />;
 }

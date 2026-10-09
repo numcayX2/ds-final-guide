@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Reveal } from "@/components/reveal";
+import type { ComponentType, SVGProps } from "react";
 import { HomePageTransition } from "@/components/home-page-transition";
 import { StudyPlan, type PlanStep } from "@/components/study-plan";
-import { MathFormula } from "@/components/math-formula";
+import { Tex } from "@/components/tex";
 import {
+  ArrowRightIcon,
   CheckCircledIcon,
   MixerHorizontalIcon,
   Pencil2Icon,
@@ -15,397 +16,384 @@ import { formulas as allFormulas } from "@/content/formulas";
 import { episodes } from "@/content/episodes";
 import { allMockTests } from "@/content/mock-test";
 
-const chapters = [
-  {
-    n: "01",
-    lect: "Lect 05",
-    en: "Exploratory Data Analysis",
-    th: "การวิเคราะห์ข้อมูลเบื้องต้นและตรวจจับ Outlier",
-    slug: "eda",
-  },
-  {
-    n: "02",
-    lect: "Lect 06-07",
-    en: "Modeling & Decision Tree",
-    th: "โมเดลและการคำนวณ Gini Impurity / Information Gain",
-    slug: "modeling",
-  },
-  {
-    n: "03",
-    lect: "Lect 08",
-    en: "Confusion Matrix & Metrics",
-    th: "ตารางสับสน Accuracy, Precision, Recall, F1",
-    slug: "confusion-matrix",
-  },
-  {
-    n: "04",
-    lect: "Lect 08-09",
-    en: "K-Means Clustering",
-    th: "การจัดกลุ่ม K-Means ระยะ Manhattan และ Euclidean",
-    slug: "kmeans",
-  },
-  {
-    n: "05",
-    lect: "Lect 09",
-    en: "Responsible Data Science",
-    th: "วิทยาการข้อมูลที่รับผิดชอบ จริยธรรม และความเป็นส่วนตัว",
-    slug: "responsible-ds",
-  },
+const SHELL = "mx-auto w-full max-w-5xl px-5 sm:px-8";
+
+/* ------------------------------------------------------------------ */
+/* Content                                                             */
+/* ------------------------------------------------------------------ */
+
+const CHAPTERS = [
+  { n: "01", lect: "Lect 05", en: "Exploratory Data Analysis", th: "สำรวจข้อมูลเบื้องต้น และตรวจหา Outlier ด้วย IQR", slug: "eda" },
+  { n: "02", lect: "Lect 06–07", en: "Modeling & Decision Tree", th: "สร้างโมเดล คำนวณ Gini Impurity และ Information Gain", slug: "modeling" },
+  { n: "03", lect: "Lect 08", en: "Confusion Matrix & Metrics", th: "Accuracy, Precision, Recall และ F1-Score", slug: "confusion-matrix" },
+  { n: "04", lect: "Lect 08–09", en: "K-Means Clustering", th: "จัดกลุ่มด้วย K-Means ระยะ Manhattan และ Euclidean", slug: "kmeans" },
+  { n: "05", lect: "Lect 09", en: "Responsible Data Science", th: "จริยธรรม ความเป็นธรรม และความเป็นส่วนตัวของข้อมูล", slug: "responsible-ds" },
 ];
 
-/** The single main path on the homepage: the 3-day plan. */
 const PLAN_STEPS: PlanStep[] = [
   {
     step: "01",
     day: "Day 1",
-    title: "สร้างรากฐาน 5 บทเรียน",
-    desc: "อ่านสรุปเข้ม 5 หัวข้อหลัก ทำความเข้าใจนิยามศัพท์เฉพาะ และจุดหลอกที่พบบ่อยในข้อสอบอาจารย์",
+    title: "อ่านสรุป 5 บทให้ครบ",
+    desc: "ทำความเข้าใจนิยามศัพท์ และจดจุดหลอกที่อาจารย์มักออกสอบ",
     href: "/chapters",
     time: "45 นาที",
-    tag: "Concept Mastery",
+    tag: "ความเข้าใจ",
   },
   {
     step: "02",
     day: "Day 2",
-    title: "ซ้อมคำนวณสดและเล่นแบบจำลอง",
-    desc: "ฝึกไล่ขั้นตอนการคิดทีละก้าวใน Thinking Player และลองใส่ตัวเลขทดสอบในเครื่องคิดเลขคำนวณสด",
+    title: "ฝึกคำนวณด้วยมือ แล้วเช็กกับเครื่องมือ",
+    desc: "ไล่วิธีคิดทีละขั้นใน Thinking Player แล้วลองเปลี่ยนตัวเลขในเครื่องคิดเลข",
     href: "/player",
     time: "35 นาที",
-    tag: "Active Simulation",
+    tag: "ฝึกคำนวณ",
   },
   {
     step: "03",
     day: "Day 3",
-    title: "ตะลุยโจทย์เสมือนจริง 4 ชุด",
-    desc: "ฝึกทำโจทย์แบบจับเวลา 45 นาที หรือเลือกโหมดฝึกทำทันใจเพื่อตรวจเช็กคำใบ้ (Hints) และคำอธิบายลึก",
+    title: "ทำข้อสอบจำลองแบบจับเวลา",
+    desc: "ทำชุดเต็มใน 45 นาที หรือใช้โหมดฝึกเพื่อดูคำใบ้และเฉลยละเอียดทีละข้อ",
     href: "/mock-test",
     time: "45 นาที",
-    tag: "Exam Simulation",
+    tag: "จำลองสอบ",
   },
 ];
 
-/** Secondary entry points — compact, one line each, no competition with the plan. */
-const HUB_MODULES = [
-  {
-    href: "/mock-test",
-    title: "Mock Exam",
-    desc: "ข้อสอบเสมือนจริง 4 ชุด: ชุดเต็ม 30 ข้อ และเจาะลึก 10 ข้อรายหัวข้อ",
-    time: "45 นาที",
-    tag: "30 ข้อ",
-    icon: CheckCircledIcon,
-  },
-  {
-    href: "/tools",
-    title: "เครื่องคิดเลข",
-    desc: "คำนวณสด: Confusion Matrix, Gini Gain Splitter, Tukey IQR, K-Means",
-    time: "Interactive",
-    tag: "4 เครื่องมือ",
-    icon: MixerHorizontalIcon,
-  },
-  {
-    href: "/formulas",
-    title: "คลังสูตร",
-    desc: "15 สูตรคำนวณ พร้อมวิธีทำทีละก้าวและจุดดักที่คนมักผิด",
-    time: "15 นาที",
-    tag: "15 สูตร",
-    icon: SymbolIcon,
-  },
-  {
-    href: "/homework",
-    title: "เฉลยการบ้าน",
-    desc: "เฉลยวิธีคิดทุกขั้น: Customer Inactivity, Candidate Models, K-Means",
-    time: "20 นาที",
-    tag: "4 ข้อ",
-    icon: Pencil2Icon,
-  },
-  {
-    href: "/player",
-    title: "Thinking Player",
-    desc: "จำลองขั้นตอนการคิดทีละก้าว 6 ตอนแบบ Scrollytelling",
-    time: "25 นาที",
-    tag: "6 ตอน",
-    icon: PlayIcon,
-  },
+type Tool = {
+  href: string;
+  title: string;
+  desc: string;
+  meta: string;
+  icon: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+};
+
+const TOOLS: Tool[] = [
+  { href: "/mock-test", title: "ข้อสอบจำลอง", desc: "ชุดเต็ม 30 ข้อ และชุดย่อยรายหัวข้อ มีโหมดฝึกพร้อมคำใบ้", meta: "45 นาที", icon: CheckCircledIcon },
+  { href: "/tools", title: "เครื่องคิดเลข", desc: "Confusion Matrix, Gini Splitter, Tukey IQR, K-Means", meta: "4 เครื่องมือ", icon: MixerHorizontalIcon },
+  { href: "/formulas", title: "คลังสูตร", desc: "ทุกสูตรพร้อมวิธีทำทีละขั้นและจุดที่มักผิด", meta: `${allFormulas.length} สูตร`, icon: SymbolIcon },
+  { href: "/homework", title: "เฉลยการบ้าน", desc: "Customer Inactivity, Candidate Models, K-Means", meta: "4 ข้อ", icon: Pencil2Icon },
+  { href: "/player", title: "Thinking Player", desc: "ดูวิธีคิดทีละขั้นแบบเลื่อนอ่าน", meta: `${episodes.length} ตอน`, icon: PlayIcon },
 ];
 
-const formulas = [
+type FormulaCard = {
+  name: string;
+  tag: string;
+  tex: string;
+  where: { sym: string; meaning: string }[];
+  example: string;
+  pitfall: string;
+};
+
+const FORMULAS: FormulaCard[] = [
   {
-    name: "IQR (Interquartile Range)",
+    name: "Interquartile Range",
+    tag: "Lect 05",
     tex: "\\mathrm{IQR} = Q_3 - Q_1",
-    note: "ผลต่างระหว่างควอร์ไทล์ที่สามกับอันดับหนึ่ง สำหรับหาการกระจายของข้อมูล",
-    tag: "Lect 05",
+    where: [
+      { sym: "Q_1", meaning: "ควอร์ไทล์ที่ 1 (เปอร์เซ็นไทล์ที่ 25)" },
+      { sym: "Q_3", meaning: "ควอร์ไทล์ที่ 3 (เปอร์เซ็นไทล์ที่ 75)" },
+    ],
+    example: "Q_1 = 20,\\; Q_3 = 35 \\;\\Rightarrow\\; \\mathrm{IQR} = 35 - 20 = \\colorbox{var(--color-mark)}{15}",
+    pitfall: "IQR วัดเฉพาะข้อมูล 50% ตรงกลาง ไม่ใช่ max − min",
   },
   {
-    name: "Tukey's Fences (Outlier)",
-    tex: "[\\,Q_1 - 1.5 \\cdot \\mathrm{IQR},\\; Q_3 + 1.5 \\cdot \\mathrm{IQR}\\,]",
-    note: "ค่าที่อยู่นอกช่วงนี้ถือเป็น Outlier ทั้งฝั่งต่ำและฝั่งสูง",
+    name: "Tukey's Fences",
     tag: "Lect 05",
+    tex: "\\big[\\, Q_1 - 1.5\\,\\mathrm{IQR},\\;\\; Q_3 + 1.5\\,\\mathrm{IQR} \\,\\big]",
+    where: [
+      { sym: "1.5", meaning: "ค่าคงที่ของ Tukey สำหรับ Outlier ทั่วไป" },
+      { sym: "x \\notin [\\cdot]", meaning: "ค่าที่อยู่นอกช่วงนี้ถือเป็น Outlier" },
+    ],
+    example: "[\\,20 - 22.5,\\; 35 + 22.5\\,] = \\colorbox{var(--color-mark)}{[-2.5,\\; 57.5]}",
+    pitfall: "ต้องบวก/ลบจาก Q₁ และ Q₃ ไม่ใช่จาก Median",
   },
   {
-    name: "Gini Impurity (2-Class)",
-    tex: "\\mathrm{Gini}(S) = 1 - \\left[ (p_+)^2 + (p_-)^2 \\right]",
-    note: "ค่าต่ำสุด = 0.0 (Pure), ค่าสูงสุด = 0.5 (สัดส่วน 50/50 ปนกันมากสุด)",
+    name: "Gini Impurity (2 คลาส)",
     tag: "Lect 07",
+    tex: "\\mathrm{Gini}(S) = 1 - \\left( p_+^{\\,2} + p_-^{\\,2} \\right)",
+    where: [
+      { sym: "p_+", meaning: "สัดส่วนคลาสบวกในโหนด" },
+      { sym: "p_-", meaning: "สัดส่วนคลาสลบในโหนด" },
+    ],
+    example: "p_+ = 0.6,\\; p_- = 0.4 \\;\\Rightarrow\\; 1 - (0.36 + 0.16) = \\colorbox{var(--color-mark)}{0.48}",
+    pitfall: "ยกกำลังสองที่สัดส่วน ไม่ใช่จำนวนนับ — ค่าสูงสุดคือ 0.5",
   },
   {
-    name: "F1-Score (Harmonic Mean)",
-    tex: "F_1 = 2 \\times \\dfrac{P \\times R}{P + R}",
-    note: "ใช้ Harmonic Mean เพื่อลงโทษกรณีที่ Precision หรือ Recall ด้านใดด้านหนึ่งต่ำมาก",
+    name: "F1-Score",
     tag: "Lect 08",
+    tex: "F_1 = 2 \\cdot \\dfrac{P \\cdot R}{P + R}",
+    where: [
+      { sym: "P", meaning: "Precision = TP / (TP + FP)" },
+      { sym: "R", meaning: "Recall = TP / (TP + FN)" },
+    ],
+    example: "P = 0.8,\\; R = 0.5 \\;\\Rightarrow\\; 2 \\cdot \\tfrac{0.40}{1.30} \\approx \\colorbox{var(--color-mark)}{0.615}",
+    pitfall: "เป็น Harmonic Mean — ถ้าเฉลี่ยธรรมดาจะได้ 0.65 ซึ่งผิด",
   },
 ];
 
 const TOTAL_QUESTIONS = allMockTests.reduce((n, t) => n + t.questions.length, 0);
 
 const STATS = [
-  { n: String(allChapters.length), label: "บทเรียน" },
-  { n: String(allFormulas.length), label: "สูตรคำนวณ" },
-  { n: String(TOTAL_QUESTIONS), label: "ข้อสอบจำลอง" },
-  { n: "4", label: "เครื่องมือสด" },
-  { n: String(episodes.length), label: "ตอนคิดทีละขั้น" },
+  { n: allChapters.length, label: "บทเรียน" },
+  { n: allFormulas.length, label: "สูตร" },
+  { n: TOTAL_QUESTIONS, label: "ข้อสอบจำลอง" },
+  { n: 4, label: "เครื่องคิดเลข" },
+  { n: episodes.length, label: "ตอนคิดทีละขั้น" },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Small building blocks                                               */
+/* ------------------------------------------------------------------ */
+
+function SectionHead({
+  no,
+  title,
+  desc,
+  action,
+}: {
+  no: number;
+  title: string;
+  desc?: string;
+  action?: { href: string; label: string };
+}) {
+  return (
+    <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2 className="flex items-baseline gap-3 text-2xl font-semibold tracking-tight text-ink sm:text-[1.75rem]">
+          <span className="font-mono text-base font-normal text-accent">§{no}</span>
+          {title}
+        </h2>
+        {desc && <p className="mt-2 max-w-2xl text-ink-muted">{desc}</p>}
+      </div>
+      {action && (
+        <Link href={action.href} className="text-link inline-flex shrink-0 items-center gap-1.5 text-sm font-medium">
+          {action.label}
+          <ArrowRightIcon className="h-3.5 w-3.5" />
+        </Link>
+      )}
+    </header>
+  );
+}
+
+/** Hero visual: a real worked problem instead of decoration. */
+function WorkedExample() {
+  return (
+    <figure className="graph-paper rounded-xl border border-rule-strong p-6 sm:p-7">
+      <figcaption className="flex items-center justify-between text-sm">
+        <span className="font-semibold text-ink">ตัวอย่างโจทย์</span>
+        <span className="font-mono text-xs text-ink-subtle">Gini · Lect 07</span>
+      </figcaption>
+
+      <p className="mt-4 text-[15px] text-ink-muted">
+        โหนดหนึ่งมีข้อมูลคลาส <strong className="text-ink">+</strong> จำนวน 6 ตัว และคลาส{" "}
+        <strong className="text-ink">−</strong> จำนวน 4 ตัว ค่า Gini เท่าไร?
+      </p>
+
+      <ol className="mt-5 space-y-3 border-l-2 border-accent pl-4">
+        <li>
+          <span className="mb-0.5 block font-mono text-xs text-ink-subtle">ขั้น 1 · หาสัดส่วน</span>
+          <Tex tex="p_+ = \tfrac{6}{10} = 0.6,\quad p_- = \tfrac{4}{10} = 0.4" />
+        </li>
+        <li>
+          <span className="mb-0.5 block font-mono text-xs text-ink-subtle">ขั้น 2 · แทนค่าในสูตร</span>
+          <Tex tex="\mathrm{Gini} = 1 - (0.6^2 + 0.4^2)" />
+        </li>
+        <li>
+          <span className="mb-0.5 block font-mono text-xs text-ink-subtle">ขั้น 3 · คำนวณ</span>
+          <Tex tex="= 1 - (0.36 + 0.16) = \colorbox{var(--color-mark)}{0.48}" />
+        </li>
+      </ol>
+
+      <p className="mt-5 border-t border-rule pt-4 text-sm text-ink-muted">
+        ค่าใกล้ 0.5 แปลว่าโหนดนี้ยังปนกันมาก ควรแบ่งต่อ{" "}
+        <Link href="/tools" className="text-link font-medium">
+          ลองเปลี่ยนตัวเลขเอง
+        </Link>
+      </p>
+    </figure>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
 export default function Home() {
   return (
     <HomePageTransition>
       {/* ---------- Hero ---------- */}
-      <section className="shell pt-16 pb-12">
-        <Reveal>
-          <p className="eyebrow eyebrow-accent">10301351 &middot; Data Science &middot; Final Exam Prep</p>
-        </Reveal>
-        <Reveal delay={60}>
-          <h1 className="mt-4 text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-ink hero-headline">
-            เตรียมสอบ Data Science
-            <span className="hero-headline-sub text-accent">อย่างมั่นใจและเข้าใจจริง</span>
-          </h1>
-        </Reveal>
-        <Reveal delay={100}>
-          <p className="mt-6 max-w-xl text-base sm:text-lg text-ink-muted leading-relaxed">
-            คู่มือสอบไล่ Lect 05&ndash;09: บทเรียนสรุปเข้ม สูตรคำนวณที่ตรวจทานแล้ว และข้อสอบจำลองจริง
-          </p>
-        </Reveal>
-        <Reveal delay={140}>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="#plan"
-              className="tactile-btn tactile-btn-accent inline-flex items-center gap-2 px-6 py-2.5 text-[15px] font-medium"
-            >
-              ดูแผน 3 วัน &rarr;
-            </Link>
-            <Link
-              href="/mock-test"
-              className="tactile-btn tactile-btn-ghost inline-flex items-center gap-2 px-6 py-2.5 text-[15px] font-medium"
-            >
-              ทำ Mock Exam
-            </Link>
-          </div>
-        </Reveal>
+      <section className={`${SHELL} pb-16 pt-14 sm:pt-20`}>
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <p className="font-mono text-xs text-ink-subtle">
+              10301351 · Data Science · Final Exam · Lect 05–09
+            </p>
 
-        <Reveal delay={180}>
-          <dl className="mt-10 grid grid-cols-2 sm:grid-cols-5 gap-3 border-t border-rule pt-6">
-            {STATS.map((s) => (
-              <div
-                key={s.label}
-                className="bento-card p-4 flex flex-col justify-between group hover:border-rule-strong transition-all"
-              >
-                <dt className="sr-only">{s.label}</dt>
-                <dd className="index text-3xl font-mono font-bold text-ink">
-                  {s.n}
-                  <span className="block mt-1 text-[11px] uppercase tracking-[0.12em] text-ink-subtle font-mono font-medium">
-                    {s.label}
-                  </span>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </Reveal>
+            <h1 className="mt-5 text-[2.25rem] font-semibold tracking-tight text-ink sm:text-5xl leading-[1.25]">
+              ทบทวน Data Science
+              <br />
+              <span className="text-accent">ให้เข้าใจที่มาของทุกตัวเลข</span>
+            </h1>
+
+            <p className="mt-5 max-w-lg text-lg text-ink-muted">
+              สรุปบทเรียน สูตรพร้อมตัวอย่างคำนวณทีละขั้น และข้อสอบจำลองที่มีเฉลยละเอียด
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="#plan" className="btn btn-primary">
+                เริ่มแผน 3 วัน
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+              <Link href="/mock-test" className="btn btn-secondary">
+                ทำข้อสอบจำลอง
+              </Link>
+            </div>
+
+            <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-4 border-t border-rule pt-6">
+              {STATS.map((s) => (
+                <div key={s.label} className="flex flex-col-reverse">
+                  <dt className="text-xs text-ink-subtle">{s.label}</dt>
+                  <dd className="num font-mono text-2xl font-medium text-ink">{s.n}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <WorkedExample />
+        </div>
       </section>
 
-      {/* ---------- 3-Day Plan (the main path) ---------- */}
-      <section id="plan" className="shell py-16 border-t border-rule scroll-mt-24">
-        <Reveal>
-          <div className="flex items-baseline justify-between gap-4 mb-8">
-            <div>
-              <p className="eyebrow eyebrow-mint">3-Day Plan</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
-                แผนทบทวน 3 วันสู่เป้าหมายเกรด A
-              </h2>
-              <p className="text-sm text-ink-muted mt-2 max-w-2xl">
-                เส้นทางติวเร่งรัดที่จัดลำดับตามโครงสร้างสไลด์บรรยาย ทำเครื่องหมายสเต็ปที่เสร็จแล้วได้เลย — บันทึกไว้ในเบราว์เซอร์เครื่องนี้
-              </p>
-            </div>
-          </div>
-        </Reveal>
-
+      {/* ---------- §1 Plan ---------- */}
+      <section id="plan" className={`${SHELL} scroll-mt-24 border-t border-rule py-16`}>
+        <SectionHead
+          no={1}
+          title="แผนทบทวน 3 วัน"
+          desc="เรียงตามลำดับสไลด์บรรยาย กดทำเครื่องหมายเมื่อเสร็จแต่ละขั้น — ความคืบหน้าบันทึกไว้ในเบราว์เซอร์นี้"
+        />
         <StudyPlan steps={PLAN_STEPS} />
       </section>
 
-      {/* ---------- Fast Track (secondary entry points) ---------- */}
-      <section className="shell py-16 border-t border-rule">
-        <Reveal>
-          <div className="flex items-baseline justify-between gap-4 mb-6">
-            <div>
-              <p className="eyebrow eyebrow-accent">Fast Track</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
-                ทางลัดสู่เครื่องมือทุกชิ้น
-              </h2>
-              <p className="text-sm text-ink-muted mt-2 max-w-2xl">
-                ทางเข้ารอง ใช้คู่กับแผน 3 วัน — Mock Exam มี{" "}
-                <strong className="text-ink font-semibold">โหมดฝึก (Practice)</strong>: ตรวจคำตอบทันทีและขอคำใบ้ (Hints) ได้ทุกข้อ
-              </p>
-            </div>
-          </div>
-        </Reveal>
+      {/* ---------- §2 Chapters (table of contents) ---------- */}
+      <section className={`${SHELL} border-t border-rule py-16`}>
+        <SectionHead
+          no={2}
+          title="เนื้อหา 5 บท"
+          desc="ครอบคลุม Lecture 05–09 พร้อมจุดที่มักออกสอบในแต่ละบท"
+          action={{ href: "/chapters", label: "อ่านทั้งหมด" }}
+        />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {HUB_MODULES.map((m, i) => {
-            const Icon = m.icon;
-            return (
-              <Reveal key={m.href} delay={i * 40} className="h-full" scrollCrumble alt={i % 2 === 1}>
-                <Link
-                  href={m.href}
-                  className="bento-card bento-card-interactive p-4 sm:p-5 flex flex-col gap-4 h-full group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="hub-icon">
-                      <Icon className="w-4 h-4" />
-                    </span>
-                    <span className="index text-lg text-ink-subtle group-hover:text-accent-ink transition-colors">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-ink group-hover:text-accent-ink transition-colors">
-                      {m.title}
-                    </h3>
-                    <p className="text-xs text-ink-muted mt-1.5 leading-relaxed">
-                      {m.desc}
-                    </p>
-                  </div>
-                  <div className="mt-auto flex items-center justify-between border-t border-rule pt-3 text-[11px]">
-                    <span className="font-mono text-ink-subtle">
-                      {m.time} &middot; {m.tag}
-                    </span>
-                    <span className="text-accent-ink font-semibold group-hover:translate-x-1 transition-transform">
-                      &rarr;
-                    </span>
-                  </div>
-                </Link>
-              </Reveal>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ---------- Chapters ---------- */}
-      <section className="shell py-16 border-t border-rule">
-        <Reveal>
-          <div className="flex items-baseline justify-between mb-8">
-            <div>
-              <p className="eyebrow">Course Roadmap</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
-                5 บทเรียนหลักสำหรับสอบ Final
-              </h2>
-              <p className="text-sm text-ink-muted mt-2">
-                ครอบคลุมเนื้อหา Lecture 05 ถึง 09 พร้อมจุดระวังข้อสอบ
-              </p>
-            </div>
-            <Link
-              href="/chapters"
-              className="tactile-btn text-xs font-semibold text-accent-ink hover:underline shrink-0"
-            >
-              อ่านเนื้อหาทั้งหมด &rarr;
-            </Link>
-          </div>
-        </Reveal>
-
-        <div className="border-t border-rule">
-          {chapters.map((c, i) => (
-            <Reveal key={c.n} delay={i * 40}>
+        <ol className="border-t border-rule">
+          {CHAPTERS.map((c) => (
+            <li key={c.slug}>
               <Link
                 href={`/chapters#${c.slug}`}
-                className="group flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6 py-5 border-b border-rule hover:bg-surface-hover/60 transition-colors px-2 -mx-2"
+                className="group -mx-3 grid grid-cols-[2.25rem_1fr_auto] items-baseline gap-x-4 rounded-md border-b border-rule px-3 py-5 transition-colors hover:bg-surface-hover"
               >
-                <div className="flex items-baseline gap-5">
-                  <span className="index text-2xl text-ink-subtle w-10 shrink-0 group-hover:text-accent-ink transition-colors">
-                    {c.n}
+                <span className="num font-mono text-sm text-ink-subtle">{c.n}</span>
+                <span>
+                  <span className="block text-lg font-semibold text-ink transition-colors group-hover:text-accent-ink">
+                    {c.en}
                   </span>
-                  <div>
-                    <span className="text-base sm:text-lg font-bold text-ink group-hover:text-accent-ink transition-colors">
-                      {c.en}
-                    </span>
-                    <span className="bento-pill border border-rule text-ink-subtle ml-2 align-middle">
-                      {c.lect}
-                    </span>
-                    <p className="text-xs sm:text-sm text-ink-muted mt-0.5">{c.th}</p>
-                  </div>
-                </div>
-                <span className="text-xs font-semibold text-ink-subtle group-hover:text-accent-ink transition-colors shrink-0">
-                  อ่านสรุป &rarr;
+                  <span className="mt-0.5 block text-[15px] text-ink-muted">{c.th}</span>
                 </span>
+                <span className="font-mono text-xs text-ink-subtle">{c.lect}</span>
               </Link>
-            </Reveal>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ---------- §3 Formulas ---------- */}
+      <section className={`${SHELL} border-t border-rule py-16`}>
+        <SectionHead
+          no={3}
+          title="สูตรที่ออกสอบบ่อย"
+          desc="แต่ละสูตรมีความหมายของสัญลักษณ์ ตัวอย่างแทนค่า และจุดที่คนมักทำผิด"
+          action={{ href: "/formulas", label: `ดูทั้ง ${allFormulas.length} สูตร` }}
+        />
+
+        <div className="grid gap-5 md:grid-cols-2">
+          {FORMULAS.map((f) => (
+            <article key={f.name} className="flex flex-col rounded-xl border border-rule bg-surface p-6">
+              <header className="flex items-baseline justify-between gap-3">
+                <h3 className="font-semibold text-ink">{f.name}</h3>
+                <span className="shrink-0 font-mono text-xs text-ink-subtle">{f.tag}</span>
+              </header>
+
+              {/* The formula itself — the visual centre of the card */}
+              <div className="my-5 rounded-lg bg-accent-wash px-4 py-4 text-ink">
+                <Tex tex={f.tex} display />
+              </div>
+
+              {/* Symbol legend */}
+              <dl className="space-y-1.5 text-[15px]">
+                <p className="mb-1 text-xs text-ink-subtle">โดยที่</p>
+                {f.where.map((w) => (
+                  <div key={w.sym} className="grid grid-cols-[4.5rem_1fr] items-baseline gap-3">
+                    <dt className="text-ink">
+                      <Tex tex={w.sym} />
+                    </dt>
+                    <dd className="text-ink-muted">{w.meaning}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              {/* Worked example */}
+              <div className="mt-5 border-t border-rule pt-4">
+                <p className="mb-1.5 text-xs text-ink-subtle">ตัวอย่าง</p>
+                <div className="overflow-x-auto text-ink">
+                  <Tex tex={f.example} />
+                </div>
+              </div>
+
+              {/* Common mistake */}
+              <p className="mt-auto pt-5 text-sm text-ink-muted">
+                <span className="font-semibold text-ink">จุดที่มักผิด: </span>
+                {f.pitfall}
+              </p>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* ---------- Formulas ---------- */}
-      <section className="shell py-16 border-t border-rule">
-        <Reveal>
-          <div className="flex items-baseline justify-between mb-8">
-            <div>
-              <p className="eyebrow eyebrow-rose">Formula Vault</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
-                สูตรคำนวณที่ออกสอบบ่อย
-              </h2>
-              <p className="text-sm text-ink-muted mt-2">
-                จำง่ายด้วยนิยามที่ชัดเจนและหลักการจำแบบ Active Recall
-              </p>
-            </div>
-            <Link
-              href="/formulas"
-              className="tactile-btn text-xs font-semibold text-accent-ink hover:underline shrink-0"
-            >
-              ดูสูตรทั้งหมด ({allFormulas.length} สูตร) &rarr;
-            </Link>
-          </div>
-        </Reveal>
+      {/* ---------- §4 Tools (reference list) ---------- */}
+      <section className={`${SHELL} border-t border-rule py-16`}>
+        <SectionHead
+          no={4}
+          title="เครื่องมือฝึก"
+          desc="ใช้ควบคู่กับแผน 3 วัน — ข้อสอบจำลองมีโหมดฝึกที่ตรวจคำตอบทันทีและขอคำใบ้ได้ทุกข้อ"
+        />
 
-        <div className="grid-12 gap-4">
-          {formulas.map((f, i) => (
-            <Reveal key={f.name} delay={i * 50} className="col-span-12 md:col-span-6">
-              <div className="bento-card p-5 sm:p-6 h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-center mb-4 gap-3">
-                    <span className="text-sm font-bold text-ink">{f.name}</span>
-                    <span className="bento-pill border border-rule text-ink-subtle shrink-0">
-                      {f.tag}
+        <ul className="grid border-t border-rule sm:grid-cols-2 sm:gap-x-10">
+          {TOOLS.map((t) => {
+            const Icon = t.icon;
+            return (
+              <li key={t.href} className="border-b border-rule">
+                <Link
+                  href={t.href}
+                  className="group -mx-3 flex items-start gap-4 rounded-md px-3 py-4 transition-colors hover:bg-surface-hover"
+                >
+                  <Icon className="mt-1.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-baseline justify-between gap-3">
+                      <span className="font-semibold text-ink group-hover:text-accent-ink">{t.title}</span>
+                      <span className="shrink-0 font-mono text-xs text-ink-subtle">{t.meta}</span>
                     </span>
-                  </div>
-                  <div className="border-l-2 border-accent pl-4">
-                    <MathFormula tex={f.tex} />
-                  </div>
-                  <p className="mt-3 text-xs sm:text-sm text-ink-muted leading-relaxed">
-                    {f.note}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-rule text-right text-xs">
-                  <Link href="/formulas" className="text-accent-ink hover:underline">
-                    รายละเอียด &rarr;
-                  </Link>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+                    <span className="mt-0.5 block text-sm text-ink-muted">{t.desc}</span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
       {/* ---------- Footer ---------- */}
-      <footer className="shell py-8 border-t border-rule">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-ink-subtle">
-          <p>&copy; 2026 DS Final Guide &mdash; สำหรับเตรียมสอบวิชา 10301351 Data Science</p>
-          <p>เรียบเรียงจากสไลด์บรรยาย Lect 05&ndash;09</p>
+      <footer className={`${SHELL} border-t border-rule py-8`}>
+        <div className="flex flex-col gap-1 text-xs text-ink-subtle sm:flex-row sm:justify-between">
+          <p>© 2026 DS Final Guide — วิชา 10301351 Data Science</p>
+          <p>เรียบเรียงจากสไลด์บรรยาย Lect 05–09</p>
         </div>
       </footer>
     </HomePageTransition>
