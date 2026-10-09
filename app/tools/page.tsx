@@ -9,133 +9,97 @@ import { Reveal } from "@/components/reveal";
 const TOOLS = [
   {
     id: "tukey-iqr",
-    name: "Tukey IQR Outlier Detector",
-    nameTh: "ตรวจ Outlier ด้วย IQR",
+    name: "Tukey IQR Outlier",
     lectures: "Lect 05",
   },
   {
     id: "gini-gain",
-    name: "Gini Impurity & Gain Calculator",
-    nameTh: "คำนวณ Gini Impurity & Gini Gain",
+    name: "Gini Impurity & Gain",
     lectures: "Lect 07",
   },
   {
     id: "confusion-matrix",
-    name: "Confusion Matrix Calculator",
-    nameTh: "คำนวณมาตรวัดจากตารางสับสน",
-    lectures: "Lect 07",
+    name: "Confusion Matrix 2x2",
+    lectures: "Lect 08",
   },
   {
     id: "kmeans-iteration",
-    name: "K-Means Iteration & Distance",
-    nameTh: "คำนวณ K-Means Iteration & Centroid",
-    lectures: "Lect 08",
+    name: "K-Means Step-Through",
+    lectures: "Lect 08-09",
   },
 ];
 
 export default function ToolsPage() {
   return (
     <main id="main" tabIndex={-1} className="flex-1">
-      <section className="shell pt-sp-2 pb-sp-1 cyber-grid relative">
-        <div className="grid-12 items-end">
-          <div className="col-span-12 lg:col-span-7">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 px-3 py-1 text-xs font-mono border border-rule-strong/50 bg-accent-wash/50 text-accent-ink mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent cyber-beacon" />
-                <span>LABS // INTERACTIVE_CALCULATORS</span>
-                <span className="text-ink-subtle">|</span>
-                <span className="text-ink-muted">4 TOOLS OPERATIONAL</span>
-              </div>
-            </Reveal>
-            <Reveal delay={80}>
-              <h1 className="display tracking-reset">
-                ลองคำนวณ
-                <br />
-                <span className="text-accent-ink cyber-text-glow">ด้วยตัวเอง</span>
-              </h1>
-            </Reveal>
+      {/* Header */}
+      <section className="shell pt-14 pb-10 border-b border-rule">
+        <Reveal>
+          <p className="eyebrow">Calculators &middot; ห้องแล็บคำนวณ</p>
+        </Reveal>
+        <Reveal delay={60}>
+          <h1 className="mt-4 text-4xl sm:text-6xl font-extrabold tracking-tight text-ink leading-[1.08]">
+            เครื่องคิดเลข
+            <span className="block text-accent-ink">จำลองข้อสอบสด</span>
+          </h1>
+        </Reveal>
+        <Reveal delay={100}>
+          <p className="mt-5 max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+            กรอกตัวเลขจริงจากโจทย์ข้อสอบ แล้วดูขั้นตอนการคำนวณทีละก้าวแบบสดๆ
+            พร้อมตัวตรวจจับการหารด้วยศูนย์ (Zero-division guard)
+          </p>
+        </Reveal>
 
-            {/* Quick Tool Jump Pills */}
-            <Reveal delay={120}>
-              <div className="flex flex-wrap gap-2 mt-8">
-                {TOOLS.map((t, idx) => (
-                  <a
-                    key={t.id}
-                    href={`#${t.id}`}
-                    className="tap px-3 py-1.5 text-xs font-mono border border-rule-strong/70 hover:border-accent hover:text-accent-ink transition-all bg-bg/80 hover:bg-accent-wash/40"
-                  >
-                    [0{idx + 1}] // {t.id.replace("-", "_").toUpperCase()}
-                  </a>
-                ))}
-              </div>
-            </Reveal>
+        {/* Quick Tool Jump Tabs */}
+        <Reveal delay={140}>
+          <div className="flex flex-wrap gap-2 mt-8">
+            {TOOLS.map((t, i) => (
+              <a
+                key={t.id}
+                href={`#${t.id}`}
+                className="px-3.5 py-2 text-xs font-semibold border border-rule bg-surface text-ink-muted hover:text-ink hover:border-rule-strong transition-colors"
+              >
+                <span className="font-mono text-ink-subtle mr-1.5">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {t.name}
+              </a>
+            ))}
           </div>
-
-          <div className="col-span-12 lg:col-span-4 lg:col-start-9 mt-sp-1 lg:mt-0">
-            <Reveal delay={160}>
-              <div className="hud-bracket border border-rule p-5 bg-bg/80 backdrop-blur-sm">
-                <div className="flex items-center justify-between border-b border-rule pb-2 mb-4">
-                  <span className="text-[10px] font-mono tracking-widest text-ink-subtle uppercase flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent cyber-beacon" />
-                    CALCULATOR_CORE
-                  </span>
-                  <span className="text-[10px] font-mono text-accent-ink font-semibold">
-                    READY
-                  </span>
-                </div>
-                <dl className="space-y-3 font-mono text-xs">
-                  <div className="flex justify-between items-baseline border-b border-rule/50 pb-2">
-                    <dt className="text-ink-subtle">AVAILABLE_TOOLS</dt>
-                    <dd className="font-semibold text-accent-ink">{TOOLS.length} APPS</dd>
-                  </div>
-                  <div className="flex justify-between items-baseline border-b border-rule/50 pb-2">
-                    <dt className="text-ink-subtle">MATHEMATICS</dt>
-                    <dd className="text-ink">IQR / GINI / MATRIX / K-MEANS</dd>
-                  </div>
-                  <div className="flex justify-between items-baseline">
-                    <dt className="text-ink-subtle">ZERO_DIV_GUARD</dt>
-                    <dd className="text-accent-ink font-semibold">ACTIVE (หารไม่ได้)</dd>
-                  </div>
-                </dl>
-              </div>
-            </Reveal>
-          </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Tool 01: Tukey IQR */}
-      <section id="tukey-iqr" className="shell py-sp-1 border-t border-rule scroll-mt-24">
+      <section id="tukey-iqr" className="shell py-12 border-b border-rule scroll-mt-24">
         <Reveal>
+          <p className="eyebrow eyebrow-accent mb-4">Tool 01 &middot; Lect 05</p>
           <TukeyCalculator />
         </Reveal>
       </section>
 
       {/* Tool 02: Gini Gain */}
-      <section id="gini-gain" className="shell py-sp-2 border-t border-rule scroll-mt-24">
+      <section id="gini-gain" className="shell py-12 border-b border-rule scroll-mt-24">
         <Reveal>
+          <p className="eyebrow eyebrow-accent mb-4">Tool 02 &middot; Lect 07</p>
           <GiniCalculator />
         </Reveal>
       </section>
 
       {/* Tool 03: Confusion Matrix */}
-      <section id="confusion-matrix" className="shell py-sp-2 border-t border-rule scroll-mt-24">
+      <section id="confusion-matrix" className="shell py-12 border-b border-rule scroll-mt-24">
         <Reveal>
+          <p className="eyebrow eyebrow-accent mb-4">Tool 03 &middot; Lect 08</p>
           <MetricCalculator />
         </Reveal>
       </section>
 
       {/* Tool 04: K-Means */}
-      <section id="kmeans-iteration" className="shell py-sp-2 border-t border-rule scroll-mt-24">
+      <section id="kmeans-iteration" className="shell py-12 border-b border-rule scroll-mt-24">
         <Reveal>
+          <p className="eyebrow eyebrow-accent mb-4">Tool 04 &middot; Lect 08-09</p>
           <KMeansCalculator />
         </Reveal>
       </section>
-
-      <footer className="shell py-sp-2 border-t border-rule">
-        <p className="meta-label tracking-display text-ink-subtle">
-          ถ้าตัวส่วนเป็นศูนย์ เครื่องจะแจ้งว่าหารไม่ได้ ไม่ใช่ตอบ 0 &middot; ทุกเครื่องมือตรงตามโจทย์ข้อสอบจริง
-        </p>
-      </footer>
     </main>
   );
 }

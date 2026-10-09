@@ -11,9 +11,9 @@ interface FormulaExplorerProps {
 const LECTURE_TABS = [
   { id: "all", label: "ทุกบทเรียน" },
   { id: "Lect 05", label: "Lect 05 (EDA)" },
-  { id: "Lect 07", label: "Lect 07 (Trees & Metrics)" },
-  { id: "Lect 08", label: "Lect 08 (K-Means)" },
-  { id: "Lect 09", label: "Lect 09 (RDS & SHAP)" },
+  { id: "Lect 07", label: "Lect 07 (Trees)" },
+  { id: "Lect 08", label: "Lect 08 (Metrics)" },
+  { id: "Lect 09", label: "Lect 09 (RDS & K-Means)" },
 ];
 
 export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
@@ -23,11 +23,9 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return formulas.filter((f) => {
-      // Lecture filter
       if (selectedLect !== "all" && !f.lectures.includes(selectedLect as any)) {
         return false;
       }
-      // Text search
       if (!q) return true;
       const matchName = f.name.toLowerCase().includes(q);
       const matchExpr = f.expression.toLowerCase().includes(q);
@@ -44,10 +42,10 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
   return (
     <div>
       {/* Controls Bar */}
-      <div className="shell py-5 border-b border-rule bg-bg/85 backdrop-blur-md sticky top-[65px] z-40">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {/* Lecture Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2">
+      <div className="shell py-4 border-b border-rule bg-bg/92 backdrop-blur-md sticky top-[68px] sm:top-[74px] z-30">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5">
+          {/* Lecture Filter Tabs */}
+          <div className="flex flex-wrap items-center gap-1.5">
             {LECTURE_TABS.map((tab) => {
               const active = selectedLect === tab.id;
               const count =
@@ -59,143 +57,178 @@ export function FormulaExplorer({ formulas }: FormulaExplorerProps) {
                   key={tab.id}
                   type="button"
                   onClick={() => setSelectedLect(tab.id)}
-                  className={`tap px-3 py-1.5 text-xs font-mono font-medium border transition-all duration-200 ${
+                  aria-pressed={active}
+                  className={`px-3 py-1.5 text-xs font-semibold border transition-colors cursor-pointer ${
                     active
-                      ? "border-accent bg-accent text-white cyber-glow font-bold"
-                      : "border-rule-strong hover:border-accent hover:text-accent-ink"
+                      ? "bg-ink text-bg border-ink"
+                      : "bg-surface text-ink-muted border-rule-strong hover:text-ink"
                   }`}
                 >
-                  {tab.label} [{count}]
+                  {tab.label} ({count})
                 </button>
               );
             })}
           </div>
 
           {/* Quick Search Input */}
-          <div className="relative w-full md:w-72">
+          <div className="relative w-full md:w-80">
             <input
               type="search"
-              placeholder="SEARCH // ค้นหาชื่อสูตร สัญลักษณ์..."
+              placeholder="ค้นหาชื่อสูตร หรือสัญลักษณ์..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="tap w-full text-xs font-mono px-3.5 py-2 bg-bg/90 border border-rule-strong focus:border-accent outline-none"
+              className="w-full text-xs sm:text-sm px-3.5 py-2 bg-surface border border-rule-strong focus:border-accent outline-none text-ink placeholder:text-ink-subtle"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-ink-muted hover:text-accent-ink"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-subtle hover:text-ink"
+                aria-label="ล้างคำค้นหา"
               >
-                CLEAR
+                ✕
               </button>
             )}
           </div>
         </div>
 
-        {/* Status text */}
-        <p className="mt-2.5 text-[11px] font-mono text-ink-subtle">
-          INDEX_COUNT: {filtered.length} / {formulas.length} FORMULAS
-          {searchQuery && ` (FILTER: "${searchQuery}")`}
+        {/* Status count */}
+        <p className="mt-2 text-[11px] text-ink-subtle">
+          แสดง {filtered.length} จากทั้งหมด {formulas.length} สูตร
+          {searchQuery && ` (ผลการค้นหา: "${searchQuery}")`}
         </p>
       </div>
 
-      {/* Formula Cards List */}
-      <ol className="shell">
-        {filtered.map((f, i) => (
-          <Reveal as="li" key={f.id} delay={Math.min(i * 30, 200)}>
-            <article id={f.id} className="grid-12 py-sp-1 border-t border-rule items-start scroll-mt-36">
-              <div className="col-span-12 lg:col-span-1">
-                <span className="index text-2xl font-mono text-ink-subtle">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </div>
+      {/* Formula Sheets */}
+      <div className="shell py-8">
+        <div className="grid gap-6">
+          {filtered.map((f, i) => (
+            <Reveal key={f.id} delay={Math.min(i * 30, 200)}>
+              <article
+                id={f.id}
+                className="bento-card p-6 sm:p-7 scroll-mt-36"
+              >
+                <div className="grid-12 gap-6 items-start">
+                  {/* Left Column: Title, Expression, Variable Glossary */}
+                  <div className="col-span-12 lg:col-span-7">
+                    <div className="flex items-baseline gap-3 mb-2">
+                      <span className="index text-2xl text-ink-subtle">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <h2 className="text-xl sm:text-2xl font-bold text-ink">
+                        {f.name}
+                      </h2>
+                    </div>
 
-              <div className="col-span-12 lg:col-span-6 mt-4 lg:mt-0">
-                <h2 className="text-2xl lg:text-3xl tracking-reset font-medium">
-                  {f.name}
-                </h2>
-                <p className="mt-2 text-ink-muted">{f.output}</p>
-                <div className="mt-4 p-4 bg-accent-wash/60 border border-rule-strong/40 hud-bracket">
-                  <p className="meta-label tracking-display text-accent-ink tnum text-lg font-mono font-bold">
-                    {f.expression}
-                  </p>
-                </div>
+                    <p className="text-xs sm:text-sm text-ink-muted mb-4">{f.output}</p>
 
-                {f.symbols.length > 0 && (
-                  <dl className="mt-6 space-y-2">
-                    {f.symbols.map((s) => (
-                      <div key={s.symbol} className="flex gap-4 text-sm">
-                        <dt className="tnum font-medium w-36 shrink-0">{s.symbol}</dt>
-                        <dd className="text-ink-muted">{s.meaning}</dd>
+                    {/* Expression */}
+                    <p className="font-mono text-xl sm:text-2xl font-bold text-ink border-l-2 border-accent pl-4 mb-5 tnum">
+                      {f.expression}
+                    </p>
+
+                    {/* Variables Table */}
+                    {f.symbols.length > 0 && (
+                      <div className="space-y-2 mt-4 pt-4 border-t border-rule">
+                        <span className="eyebrow block mb-2">
+                          ความหมายตัวแปรในสูตร (Variables)
+                        </span>
+                        <div className="grid sm:grid-cols-2 gap-2">
+                          {f.symbols.map((s) => (
+                            <div
+                              key={s.symbol}
+                              className="p-2.5 bg-surface-hover border border-rule flex items-start gap-2.5 text-xs"
+                            >
+                              <span className="font-mono font-bold text-accent-ink shrink-0 bg-surface px-1.5 py-0.5 border border-rule">
+                                {s.symbol}
+                              </span>
+                              <span className="text-ink-muted leading-relaxed">
+                                {s.meaning}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
-                  </dl>
-                )}
-              </div>
-
-              <div className="col-span-12 lg:col-span-4 mt-8 lg:mt-0 lg:col-start-9">
-                {f.example ? (
-                  <div className="border-t border-rule pt-4">
-                    <p className="meta-label tracking-display text-ink-subtle">
-                      ตัวอย่างการคำนวณ
-                    </p>
-                    <p className="mt-3 text-sm tnum text-ink-muted">{f.example.given}</p>
-                    <ol className="mt-3 space-y-1">
-                      {f.example.steps.map((s, k) => (
-                        <li key={k} className="tnum text-sm text-ink-muted pl-4 relative">
-                          <span className="absolute left-0 text-ink-subtle">{k + 1}.</span>
-                          {s}
-                        </li>
-                      ))}
-                    </ol>
-                    <p className="mt-3 tnum text-xl text-accent-ink font-medium">
-                      = {f.example.result}
-                    </p>
+                    )}
                   </div>
-                ) : null}
 
-                {f.pitfall ? (
-                  <div className="mt-6 border-t-2 border-accent pt-4">
-                    <p className="meta-label tracking-display text-accent-ink">
-                      จุดระวังข้อสอบ
-                    </p>
-                    <p className="mt-2 text-sm text-ink-muted leading-relaxed">
-                      {f.pitfall}
-                    </p>
+                  {/* Right Column: Worked Example & Exam Pitfall */}
+                  <div className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full">
+                    {/* Worked Example */}
+                    {f.example ? (
+                      <div className="p-4 border border-rule bg-surface">
+                        <span className="eyebrow block mb-2">ตัวอย่างการคำนวณจริง</span>
+                        <p className="text-xs font-mono text-ink-muted mt-1">{f.example.given}</p>
+                        <ol className="mt-2.5 space-y-1 text-xs text-ink-muted pl-4 list-decimal">
+                          {f.example.steps.map((s, k) => (
+                            <li key={k} className="leading-relaxed">
+                              {s}
+                            </li>
+                          ))}
+                        </ol>
+                        <div className="mt-3 pt-2 border-t border-rule flex items-center justify-between">
+                          <span className="text-xs text-ink-subtle">คำตอบ:</span>
+                          <span className="font-mono font-bold text-base text-mint tnum">
+                            = {f.example.result}
+                          </span>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {/* Exam Pitfall Box */}
+                    {f.pitfall ? (
+                      <div className="exam-pitfall-card mt-4">
+                        <p className="eyebrow eyebrow-amber mb-1.5">จุดระวังในห้องสอบ (Exam Trap)</p>
+                        <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
+                          {f.pitfall}
+                        </p>
+                      </div>
+                    ) : null}
+
+                    {/* Footer tags */}
+                    <div className="mt-5 pt-3 border-t border-rule flex items-center justify-between">
+                      <div className="flex flex-wrap gap-1.5">
+                        {f.lectures.map((l) => (
+                          <span
+                            key={l}
+                            className="bento-pill border border-rule text-ink-subtle"
+                          >
+                            {l}
+                          </span>
+                        ))}
+                      </div>
+                      {f.verification !== "needs-slide-check" && (
+                        <span className="bento-pill border border-mint text-mint">
+                          Verified
+                        </span>
+                      )}
+                    </div>
                   </div>
-                ) : null}
-
-                <div className="mt-6 flex flex-wrap items-center gap-2">
-                  {f.lectures.map((l) => (
-                    <span
-                      key={l}
-                      className="px-2 py-0.5 text-xs font-mono border border-rule text-ink-subtle"
-                    >
-                      {l}
-                    </span>
-                  ))}
                 </div>
-              </div>
-            </article>
-          </Reveal>
-        ))}
+              </article>
+            </Reveal>
+          ))}
 
-        {filtered.length === 0 && (
-          <li className="py-sp-2 text-center border-t border-rule">
-            <p className="text-ink-muted">ไม่พบสูตรที่ตรงกับคำค้นหา &ldquo;{searchQuery}&rdquo;</p>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedLect("all");
-                setSearchQuery("");
-              }}
-              className="mt-4 tap px-4 py-2 text-xs font-medium border border-rule-strong hover:border-accent hover:text-accent-ink transition-colors"
-            >
-              รีเซ็ตตัวกรองทั้งหมด
-            </button>
-          </li>
-        )}
-      </ol>
+          {filtered.length === 0 && (
+            <div className="bento-card p-12 text-center">
+              <p className="text-base font-semibold text-ink">
+                ไม่พบสูตรที่ตรงกับคำค้นหา &ldquo;{searchQuery}&rdquo;
+              </p>
+              <p className="text-xs text-ink-muted mt-1">ลองค้นหาด้วยคำอื่น หรือกดรีเซ็ตตัวกรอง</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedLect("all");
+                  setSearchQuery("");
+                }}
+                className="mt-4 px-4 py-2 text-xs font-semibold border border-accent bg-accent text-white hover:bg-accent-ink cursor-pointer transition-colors"
+              >
+                รีเซ็ตตัวกรองทั้งหมด
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

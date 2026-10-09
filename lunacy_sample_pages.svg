@@ -1,0 +1,144 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7400 1080' width='7400' height='1080'>
+  <defs>
+    <style>
+      .distill-bg { fill: #FDFBF7; }
+      .distill-text { font-family: 'Georgia', serif; fill: #1A1A1A; }
+      .distill-sans { font-family: 'Inter', sans-serif; fill: #4A4A4A; }
+      
+      .brilliant-bg { fill: #F8F9FA; }
+      .brilliant-card { fill: #FFFFFF; stroke: #E5E7EB; stroke-width: 2; rx: 16; }
+      
+      .b1b-bg { fill: #0B1120; }
+      .b1b-card { fill: #111E36; stroke: #1E293B; stroke-width: 2; rx: 12; }
+      
+      .linear-bg { fill: #08090C; }
+      .linear-card { fill: #0F1015; stroke: #1F222E; stroke-width: 1; rx: 8; }
+      
+      .hybrid-bg { fill: #0F172A; }
+      .hybrid-card { fill: #1E293B; stroke: #334155; stroke-width: 1.5; rx: 14; }
+      
+      .text-mono { font-family: 'JetBrains Mono', monospace; }
+      .text-sans { font-family: 'Inter', system-ui, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- STYLE 1: THE DISTILL (X: 0) -->
+  <g id='Style-1-The-Distill' transform='translate(0, 0)'>
+    <rect x='0' y='0' width='1400' height='1080' class='distill-bg'/>
+    <text x='80' y='60' class='distill-sans' font-size='14' font-weight='600' letter-spacing='2' fill='#6B7280'>STYLE 1: THE DISTILL • EDITORIAL ACADEMIC LAB</text>
+    <line x1='80' y1='80' x2='1320' y2='80' stroke='#E5E7EB' stroke-width='1'/>
+    <text x='80' y='140' class='distill-text' font-size='38' font-weight='700'>Decision Trees and Gini Impurity: A Visual Exposition</text>
+    <text x='80' y='180' class='distill-sans' font-size='16' fill='#6B7280'>Explorable explanation with wide-margin annotations and mathematical intuition.</text>
+    
+    <rect x='80' y='220' width='800' height='420' rx='8' fill='#FFFFFF' stroke='#E5E7EB' stroke-width='1'/>
+    <text x='110' y='265' class='distill-sans' font-size='20' font-weight='600' fill='#111827'>Interactive Feature Split Slider</text>
+    <text x='110' y='300' class='distill-text' font-size='22'>Gini(S) = 1 - Σ (p_i)² = 1 - [(p_+)² + (p_-)²]</text>
+    <rect x='110' y='330' width='740' height='16' rx='8' fill='#E5E7EB'/>
+    <circle cx='360' cy='338' r='14' fill='#2563EB'/>
+    <text x='110' y='390' class='distill-sans' font-size='15' fill='#374151'>Split Threshold: X ≤ 5.2 | Left Gini: 0.375 | Right Gini: 0.420</text>
+    <text x='110' y='430' class='distill-sans' font-size='15' fill='#059669' font-weight='600'>→ Information Gain: +0.214 (Optimal Greedy Split)</text>
+
+    <!-- Margin Footnotes -->
+    <rect x='920' y='220' width='400' height='420' rx='8' fill='#F9FAFB' stroke='#E5E7EB' stroke-width='1'/>
+    <text x='945' y='265' class='distill-sans' font-size='15' font-weight='700' fill='#92400E'>MARGIN NOTE: GREEDY BIAS</text>
+    <text x='945' y='300' class='distill-sans' font-size='14' fill='#4B5563'>Greedy selection picks the highest Gain at the current step without looking ahead. It does not guarantee the global optimum tree.</text>
+  </g>
+
+  <!-- STYLE 2: THE BRILLIANT (X: 1500) -->
+  <g id='Style-2-The-Brilliant' transform='translate(1500, 0)'>
+    <rect x='0' y='0' width='1400' height='1080' class='brilliant-bg'/>
+    <text x='80' y='60' class='text-sans' font-size='14' font-weight='700' letter-spacing='2' fill='#3B82F6'>STYLE 2: THE BRILLIANT • ACTIVE RECALL BENTO</text>
+    <text x='80' y='140' class='text-sans' font-size='36' font-weight='800' fill='#111827'>Interactive Confusion Matrix Playground</text>
+    <text x='80' y='180' class='text-sans' font-size='16' fill='#6B7280'>Tactile problem-solving with instant feedback and blur-to-reveal active recall.</text>
+
+    <!-- Bento 1 -->
+    <rect x='80' y='220' width='580' height='420' class='brilliant-card'/>
+    <text x='110' y='265' class='text-sans' font-size='20' font-weight='700' fill='#111827'>Adjust Cell Values (Drag / Click)</text>
+    <rect x='110' y='295' width='250' height='100' rx='12' fill='#ECFDF5' stroke='#10B981' stroke-width='2'/>
+    <text x='130' y='330' class='text-sans' font-size='14' font-weight='700' fill='#065F46'>TP (True Positive)</text>
+    <text x='130' y='375' class='text-sans' font-size='32' font-weight='800' fill='#059669'>85</text>
+    <rect x='380' y='295' width='250' height='100' rx='12' fill='#FEF2F2' stroke='#EF4444' stroke-width='2'/>
+    <text x='400' y='330' class='text-sans' font-size='14' font-weight='700' fill='#991B1B'>FP (False Positive)</text>
+    <text x='400' y='375' class='text-sans' font-size='32' font-weight='800' fill='#DC2626'>15</text>
+
+    <!-- Bento 2 Active Recall -->
+    <rect x='700' y='220' width='620' height='420' class='brilliant-card'/>
+    <rect x='730' y='250' width='140' height='28' rx='14' fill='#FEF3C7'/>
+    <text x='745' y='269' class='text-mono' font-size='12' font-weight='700' fill='#B45309'>ACTIVE RECALL</text>
+    <text x='730' y='325' class='text-sans' font-size='22' font-weight='700' fill='#111827'>If FP increases while TP remains constant, what happens to Precision?</text>
+    <rect x='730' y='370' width='560' height='60' rx='10' fill='#F3F4F6'/>
+    <text x='750' y='406' class='text-sans' font-size='16' fill='#4B5563'>Click to reveal explanation &amp; formula derivation ▾</text>
+  </g>
+
+  <!-- STYLE 3: THE 3BLUE1BROWN (X: 3000) -->
+  <g id='Style-3-The-3Blue1Brown' transform='translate(3000, 0)'>
+    <rect x='0' y='0' width='1400' height='1080' class='b1b-bg'/>
+    <text x='80' y='60' class='text-mono' font-size='14' font-weight='600' letter-spacing='2' fill='#38BDF8'>STYLE 3: THE 3BLUE1BROWN • COLOR-CODED VISUAL MATH</text>
+    <text x='80' y='140' class='text-sans' font-size='36' font-weight='800' fill='#FFFFFF'>Color-Synthesized Equations</text>
+    <text x='80' y='180' class='text-sans' font-size='16' fill='#94A3B8'>Every algebraic variable is color-matched with its geometric representation.</text>
+
+    <rect x='80' y='220' width='600' height='420' class='b1b-card'/>
+    <text x='110' y='275' class='text-sans' font-size='24' font-weight='700' fill='#FFFFFF'>Precision Equation</text>
+    <text x='110' y='350' class='text-mono' font-size='32'><tspan fill='#34D399'>TP</tspan> / (<tspan fill='#34D399'>TP</tspan> + <tspan fill='#F87171'>FP</tspan>)</text>
+    <text x='110' y='430' class='text-sans' font-size='18' fill='#94A3B8'>• <tspan fill='#34D399' font-weight='700'>TP</tspan> : Emerald clusters on correct side</text>
+    <text x='110' y='470' class='text-sans' font-size='18' fill='#94A3B8'>• <tspan fill='#F87171' font-weight='700'>FP</tspan> : Coral points trespassing into positive</text>
+
+    <rect x='720' y='220' width='600' height='420' class='b1b-card'/>
+    <text x='750' y='275' class='text-sans' font-size='24' font-weight='700' fill='#FFFFFF'>Recall Equation</text>
+    <text x='750' y='350' class='text-mono' font-size='32'><tspan fill='#34D399'>TP</tspan> / (<tspan fill='#34D399'>TP</tspan> + <tspan fill='#FBBF24'>FN</tspan>)</text>
+    <text x='750' y='430' class='text-sans' font-size='18' fill='#94A3B8'>• <tspan fill='#34D399' font-weight='700'>TP</tspan> : Captured target positives</text>
+    <text x='750' y='470' class='text-sans' font-size='18' fill='#94A3B8'>• <tspan fill='#FBBF24' font-weight='700'>FN</tspan> : Amber points missed by detector</text>
+  </g>
+
+  <!-- STYLE 4: THE LINEAR DOCS (X: 4500) -->
+  <g id='Style-4-The-Linear-Docs' transform='translate(4500, 0)'>
+    <rect x='0' y='0' width='1400' height='1080' class='linear-bg'/>
+    <text x='80' y='60' class='text-mono' font-size='13' fill='#71717A'>STYLE 4: THE LINEAR DOCS • SWISS PRECISION TECHNICAL SPEC</text>
+    <text x='80' y='140' class='text-sans' font-size='34' font-weight='700' fill='#FAFAFA'>Lecture 08: Evaluation Metrics Specification</text>
+    <text x='80' y='180' class='text-sans' font-size='15' fill='#A1A1AA'>High-density tabular parameters, 1px hairline borders, and strict callouts.</text>
+
+    <!-- Exam Trap Box -->
+    <rect x='80' y='220' width='1240' height='100' rx='6' fill='#18181B' stroke='#F59E0B' stroke-width='1.5'/>
+    <text x='110' y='255' class='text-mono' font-size='14' font-weight='700' fill='#FBBF24'>[EXAM-TRAP-01] ORIENTATION OF CONFUSION MATRIX</text>
+    <text x='110' y='285' class='text-sans' font-size='14' fill='#D4D4D8'>Verify whether Actual is Rows or Columns in your specific exam problem before computing Precision and Recall.</text>
+
+    <!-- Parameter Table -->
+    <rect x='80' y='350' width='1240' height='300' class='linear-card'/>
+    <line x1='80' y1='410' x2='1320' y2='410' stroke='#27272A' stroke-width='1'/>
+    <text x='110' y='390' class='text-mono' font-size='13' fill='#71717A'>METRIC</text>
+    <text x='350' y='390' class='text-mono' font-size='13' fill='#71717A'>FORMULA</text>
+    <text x='750' y='390' class='text-mono' font-size='13' fill='#71717A'>OPTIMIZATION TARGET</text>
+    <text x='1100' y='390' class='text-mono' font-size='13' fill='#71717A'>STATUS</text>
+
+    <text x='110' y='460' class='text-mono' font-size='16' fill='#FAFAFA'>Precision</text>
+    <text x='350' y='460' class='text-mono' font-size='16' fill='#38BDF8'>TP / (TP + FP)</text>
+    <text x='750' y='460' class='text-sans' font-size='14' fill='#A1A1AA'>Spam filtering, fraud detection</text>
+    <text x='1100' y='460' class='text-mono' font-size='13' fill='#10B981'>[VERIFIED L08]</text>
+  </g>
+
+  <!-- STYLE 5: THE HYBRID MASTER (X: 6000) -->
+  <g id='Style-5-The-Hybrid-Master' transform='translate(6000, 0)'>
+    <rect x='0' y='0' width='1400' height='1080' class='hybrid-bg'/>
+    <text x='80' y='60' class='text-mono' font-size='13' fill='#60A5FA'>STYLE 5: THE HYBRID MASTER • DISTILL + BRILLIANT + LINEAR</text>
+    <text x='80' y='140' class='text-sans' font-size='36' font-weight='800' fill='#F8FAFC'>The Complete Data Science Study Portal</text>
+    <text x='80' y='180' class='text-sans' font-size='16' fill='#94A3B8'>Editorial clarity, interactive bento playgrounds, and surgical precision telemetry.</text>
+
+    <!-- 3 Hybrid Tiles -->
+    <rect x='80' y='220' width='380' height='420' class='hybrid-card'/>
+    <text x='105' y='265' class='text-sans' font-size='18' font-weight='700' fill='#38BDF8'>1. Distill Readability</text>
+    <text x='105' y='310' class='text-sans' font-size='14' fill='#94A3B8'>Clean LaTeX formulas with zero cognitive clutter and wide-margin note support.</text>
+    <text x='105' y='370' class='text-mono' font-size='18' fill='#E2E8F0'>Gini = 1 - Σ(p_i)²</text>
+
+    <rect x='500' y='220' width='380' height='420' class='hybrid-card'/>
+    <text x='525' y='265' class='text-sans' font-size='18' font-weight='700' fill='#34D399'>2. Brilliant Active Cards</text>
+    <text x='525' y='310' class='text-sans' font-size='14' fill='#94A3B8'>Interactive sandboxes, draggable thresholds, and blur-to-reveal testing.</text>
+    <rect x='525' y='350' width='330' height='48' rx='8' fill='#0F172A'/>
+    <text x='545' y='380' class='text-mono' font-size='13' fill='#34D399'>[85% Accuracy • 80% Recall]</text>
+
+    <rect x='920' y='220' width='400' height='420' class='hybrid-card'/>
+    <text x='945' y='265' class='text-sans' font-size='18' font-weight='700' fill='#FBBF24'>3. Linear Telemetry</text>
+    <text x='945' y='310' class='text-sans' font-size='14' fill='#94A3B8'>1px hairline borders, slide verification chips, and high-visibility warning callouts.</text>
+    <rect x='945' y='350' width='350' height='48' rx='6' fill='#451A03' stroke='#F59E0B' stroke-width='1'/>
+    <text x='965' y='380' class='text-mono' font-size='12' fill='#FBBF24'>⚠️ [EXAM TRAP: Don't flip TP/FP]</text>
+  </g>
+</svg>

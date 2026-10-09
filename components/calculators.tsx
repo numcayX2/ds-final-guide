@@ -82,7 +82,7 @@ export function TukeyCalculator() {
   }, [parsed.out, ready]);
 
   return (
-    <div className="grid-12 gap-sp-1 items-start">
+    <div className="grid-12 items-start">
       <div className="col-span-12 lg:col-span-5">
         <h2 className="text-2xl lg:text-3xl tracking-reset">ตรวจ Outlier ด้วย IQR</h2>
         <p className="mt-3 text-ink-muted">
@@ -133,7 +133,7 @@ export function TukeyCalculator() {
       <div className="col-span-12 lg:col-span-6 lg:col-start-7">
         <div
           aria-live="polite"
-          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24 hud-bracket p-4 bg-bg/70"
+          className="bento-card p-6 sm:p-7 soft-shadow lg:sticky lg:top-28"
         >
           {!ready ? (
             <p className="meta-label tracking-display text-ink-subtle">
@@ -275,7 +275,7 @@ export function MetricCalculator() {
   const pct = (x: number) => `${(x * 100).toFixed(2)}%`;
 
   return (
-    <div className="grid-12 gap-sp-1 items-start">
+    <div className="grid-12 items-start">
       <div className="col-span-12 lg:col-span-5">
         <h2 className="text-2xl lg:text-3xl tracking-reset">คำนวณมาตรวัดจาก Confusion Matrix</h2>
         <p className="mt-3 text-ink-muted">
@@ -327,7 +327,7 @@ export function MetricCalculator() {
       <div className="col-span-12 lg:col-span-6 lg:col-start-7">
         <div
           aria-live="polite"
-          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24 hud-bracket p-4 bg-bg/70"
+          className="bento-card p-6 sm:p-7 soft-shadow lg:sticky lg:top-28"
         >
           {!ready ? (
             <p className="meta-label tracking-display text-ink-subtle">
@@ -480,7 +480,7 @@ export function GiniCalculator() {
   }, [p1, p2, l1, l2, r1, r2]);
 
   return (
-    <div className="grid-12 gap-sp-1 items-start">
+    <div className="grid-12 items-start">
       <div className="col-span-12 lg:col-span-5">
         <h2 className="text-2xl lg:text-3xl tracking-reset">
           คำนวณ Gini Impurity & Gini Gain
@@ -626,7 +626,7 @@ export function GiniCalculator() {
       <div className="col-span-12 lg:col-span-6 lg:col-start-7">
         <div
           aria-live="polite"
-          className="border-t-2 border-accent pt-6 lg:sticky lg:top-24 hud-bracket p-4 bg-bg/70"
+          className="bento-card p-6 sm:p-7 soft-shadow lg:sticky lg:top-28"
         >
           {!parsed ? (
             <p className="meta-label tracking-display text-ink-subtle">
@@ -850,7 +850,7 @@ export function KMeansCalculator() {
   }, [points, centroids, metric]);
 
   return (
-    <div className="grid-12 gap-sp-1 items-start">
+    <div className="grid-12 items-start">
       <div className="col-span-12">
         <h2 className="text-2xl lg:text-3xl tracking-reset">
           คำนวณ K-Means Iteration & Recalculate Centroids
@@ -922,7 +922,7 @@ export function KMeansCalculator() {
 
         <div className="overflow-x-auto border border-rule">
           <table className="w-full text-left text-sm">
-            <thead className="bg-accent-wash border-b border-rule">
+            <thead className="bg-surface-hover border-b border-rule">
               <tr>
                 <th className="py-2.5 px-3 font-medium">จุด</th>
                 <th className="py-2.5 px-3 font-medium">(x, y)</th>
@@ -936,7 +936,7 @@ export function KMeansCalculator() {
             </thead>
             <tbody className="divide-y divide-rule font-mono text-xs">
               {results.assignments.map((a) => (
-                <tr key={a.point.id} className="hover:bg-accent-wash/40 transition-colors">
+                <tr key={a.point.id} className="hover:bg-surface-hover/60 transition-colors">
                   <td className="py-2 px-3 font-bold">{a.point.id}</td>
                   <td className="py-2 px-3 text-ink-muted">
                     ({a.point.x}, {a.point.y})
@@ -947,7 +947,7 @@ export function KMeansCalculator() {
                       <td
                         key={d.centroidId}
                         className={`py-2 px-3 ${
-                          isMin ? "font-bold text-accent-ink bg-accent-wash" : "text-ink-muted"
+                          isMin ? "font-bold text-accent-ink" : "text-ink-muted"
                         }`}
                       >
                         {metric === "manhattan"
@@ -973,44 +973,49 @@ export function KMeansCalculator() {
 
       {/* Recalculated Centroids Rail */}
       <div className="col-span-12 lg:col-span-5">
-        <h3 className="meta-label tracking-display text-ink-subtle mb-4">
-          พิกัด Centroid ใหม่หลังรอบที่ 1
-        </h3>
+        <div className="bento-card p-6">
+          <div className="flex items-center justify-between border-b border-rule pb-3 mb-4">
+            <h3 className="text-sm font-bold text-ink">
+              พิกัด Centroid ใหม่หลังรอบที่ 1
+            </h3>
+            <span className="bento-pill border border-mint text-mint">Calculated</span>
+          </div>
 
-        <div className="space-y-4">
-          {results.newCentroids.map((c) => (
-            <div key={c.id} className="border-t-2 border-accent pt-4">
-              <div className="flex items-baseline justify-between">
-                <span className="font-bold text-base text-accent-ink">{c.name}</span>
-                <span className="text-xs text-ink-muted">
-                  สมาชิก {c.count} จุด: {c.assignedNames.join(", ") || "-"}
-                </span>
+          <div className="space-y-4">
+            {results.newCentroids.map((c) => (
+              <div key={c.id} className="p-3.5 bg-surface-hover border border-rule">
+                <div className="flex items-baseline justify-between">
+                  <span className="font-bold text-base text-accent-ink">{c.name}</span>
+                  <span className="text-xs text-ink-muted">
+                    สมาชิก {c.count} จุด: {c.assignedNames.join(", ") || "-"}
+                  </span>
+                </div>
+                <div className="mt-2 text-xs font-mono space-y-0.5 text-ink-muted">
+                  <p>New X: {c.formulaX}</p>
+                  <p>New Y: {c.formulaY}</p>
+                </div>
+                <p className="mt-2 tnum font-bold text-base text-ink">
+                  พิกัดใหม่: ({c.newX.toFixed(2)}, {c.newY.toFixed(2)})
+                </p>
               </div>
-              <div className="mt-2 text-xs font-mono space-y-1 text-ink-muted">
-                <p>New X: {c.formulaX}</p>
-                <p>New Y: {c.formulaY}</p>
-              </div>
-              <p className="mt-2 tnum font-semibold text-lg text-ink">
-                พิกัดใหม่: ({c.newX.toFixed(2)}, {c.newY.toFixed(2)})
-              </p>
+            ))}
+
+            <div className="exam-pitfall-card mt-5">
+              <p className="eyebrow eyebrow-amber mb-1.5">กฎสำคัญที่ออกข้อสอบบ่อย</p>
+              <ul className="list-disc list-inside space-y-1 text-xs text-ink-muted leading-relaxed">
+                <li>
+                  <strong className="text-ink">Tie-break Rule:</strong> หากจุดใดมีระยะห่างเท่ากันหลาย Centroid
+                  (เช่น A5 ในการบ้าน Q1) สไลด์ใช้กฎเลือก Cluster ที่เลขน้อยกว่า
+                </li>
+                <li>
+                  <strong className="text-ink">Centroid Update:</strong> นำเฉพาะจุดที่เป็นสมาชิกในรอบนั้นมาหา Mean (เฉลี่ยเลขคณิต)
+                </li>
+                <li>
+                  <strong className="text-ink">Stopping Criteria:</strong> หยุดเมื่อพิกัด Centroid ไม่ขยับ
+                  หรือไม่มีจุดใดย้ายกลุ่มอีกต่อไป
+                </li>
+              </ul>
             </div>
-          ))}
-
-          <div className="border border-rule p-4 mt-6 text-xs text-ink-muted leading-relaxed">
-            <p className="font-semibold text-ink mb-1">กฎสำคัญที่ออกข้อสอบบ่อย:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>
-                <strong>Tie-break Rule:</strong> หากจุดใดมีระยะห่างเท่ากันหลาย Centroid
-                (เช่น A5 ในการบ้าน Q1) สไลด์ใช้กฎเลือก Cluster ที่เลขน้อยกว่า
-              </li>
-              <li>
-                <strong>Centroid Update:</strong> นำเฉพาะจุดที่เป็นสมาชิกในรอบนั้นมาหา Mean (เฉลี่ยเลขคณิต)
-              </li>
-              <li>
-                <strong>Stopping Criteria:</strong> หยุดเมื่อพิกัด Centroid ไม่ขยับ
-                หรือไม่มีจุดใดย้ายกลุ่มอีกต่อไป
-              </li>
-            </ul>
           </div>
         </div>
       </div>

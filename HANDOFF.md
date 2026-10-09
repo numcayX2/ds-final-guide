@@ -196,17 +196,23 @@ Demak). Body 16px, Thai line-height 1.55.
 
 | Token | Light | Dark |
 |---|---|---|
-| bg | `#FFFFFF` | `#0A0A0A` |
-| ink | `#161616` | `#F7F7F7` |
-| ink-muted | `#5C5C5C` | `#9A9A9F` |
-| ink-subtle | `#757575` | `#83838A` |
-| rule | `#E0E0E0` | `#26262A` |
-| accent | `#FF4D00` | `#FF4D00` |
-| accent-ink | `#D93F00` (4.51:1) | `#FF6A2B` (6.93:1) |
+| bg | `#F6F5F0` | `#0A181E` Black Stallion |
+| surface | `#FDFCF8` | `#322628` Livid Brown |
+| ink | `#171613` | `#E0E0E1` Wind Chime (13.7:1) |
+| ink-muted | `#55534B` | `#A6A5A2` Smokey Wings (7.3:1) |
+| ink-subtle | `#6B685E` | `#848685` (Smokey 78% + Black 22%, 4.9:1) |
+| rule | `#DEDBD1` | `#2C373B` (Black 78% + Smokey 22%) |
+| accent | `#E8490F` | `#D26E41` Fresh Acorn (5.2:1 on bg) |
+| accent-ink | `#BF3A0B` (3.73:1 marker, text uses this) | `#D5835E` (5.0:1 on surface) |
+
+Dark theme is built from the 6-anchor "warm black" palette:
+`#0A181E` · `#322628` · `#655B55` Zinc Grey · `#A6A5A2` · `#D26E41` ·
+`#E0E0E1`. Hover/raised/rule-strong are stated mixes of those anchors
+(see the comments in `app/globals.css`).
 
 accent is used only for: must-remember terms, exam pitfalls, formula results.
-Never for body copy. `--accent-ink` exists because `#FF4D00` on white is only
-3.33:1, which is fine for a marker but fails AA for text.
+Never for body copy. `--accent-ink` exists because `#E8490F` on white is only
+3.73:1, which is fine for a marker but fails AA for text.
 
 Type: display `clamp(64px, 9vw, 140px)` weight 700 line-height 0.85.
 Section index `.index` weight 300, tabular numerals. Metadata label 20px w300.
@@ -234,6 +240,31 @@ CHANGED AND VERIFIED: `--rule` split into decorative hairline (`#E0E0E0` / `#262
 vs control edge `--rule-strong` (`#6b6b6b` 5.33:1 / `#8a8a90` 5.77:1, clears 3:1);
 calculator inputs, radio option labels, and table borders use `--rule-strong`.
 
+VERIFIED: responsive floating glass navbar adapts Frontify's compact 14px link targets
+and outlined/filled CTA pair to the site's palette; desktop links show at 1280px+,
+mobile chip/hamburger below, with no horizontal overflow at 375/640/768/1024/1279/1280/1440.
+Theme toggle is an unboxed native control with a 44px minimum hit target, avoiding the
+Radix ghost-button frame inside the glass navbar.
+
+VERIFIED: Thinking Player step navigation fix — `scrollToStep` immediately updates
+`activeStep` and calculates the scroll target aligned with the focal trigger line
+(`window.innerHeight * 0.45`), protected by an active-step programmatic scroll lock
+with manual touch/wheel override and `md:pb-[65vh]` bottom clearance. The Next button
+(`↓`) advances cleanly across all steps without freezing or requiring manual scroll help.
+
+VERIFIED: Home page exit animation — `HomePageTransition` (`components/home-page-transition.tsx`)
+animates outbound navigation (`opacity: 0, y: -22, scale: 0.985, blur(3px)` over 260ms)
+on both in-page link clicks and navbar navigation from `/`, with instant navigation
+and zero transform under `prefers-reduced-motion: reduce`.
+
+VERIFIED IN THE UX/UI PASS: all 7 routes have no horizontal overflow at 375px;
+`/chapters` has one h1 and 29 h2s; Prompt is the computed font for body and
+Radix headings/components. Under reduced-motion preference, all 28 chapter
+reveals render as static visible elements; normal motion mode retains the
+scroll-reveal behavior.
+Episode visualization toggles reset to their defaults when the active frame
+changes in EP02 (Gain Chart), EP03 (Matrix), and EP04 (Chart).
+
 ---
 
 ## 7. Traps that already bit once — do not repeat them
@@ -256,6 +287,15 @@ a field is touched.
 
 **The port collision.** Do not tell a subagent to run `npm run dev` on a port
 another process already owns.
+
+**The backdrop-filter twin trap.** Writing
+`backdrop-filter` next to `-webkit-backdrop-filter` made the CSS
+pipeline (Turbopack/Lightning CSS) emit ONLY the prefixed form,
+which modern Chrome ignores — so the glass navbar never actually
+blurred (translucency only). Source must carry the unprefixed
+declaration alone; the pipeline re-adds the `-webkit-` line for
+legacy Safari automatically. Verify blur with a real screenshot
+(sharp-to-hazy seam at the pill edge), not just computed styles.
 
 **Subagent output is a self-report.** Three of them were interrupted, and the
 two that finished both needed verification before use: one corrected its own

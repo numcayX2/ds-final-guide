@@ -9,58 +9,49 @@ export default function FormulasPage() {
 
   return (
     <main id="main" tabIndex={-1} className="flex-1">
-      <section className="shell pt-sp-2 pb-sp-1 cyber-grid relative">
-        <div className="grid-12 items-end">
-          <div className="col-span-12 lg:col-span-7">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 px-3 py-1 text-xs font-mono border border-rule-strong/50 bg-accent-wash/50 text-accent-ink mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent cyber-beacon" />
-                <span>TERMINAL // FORMULA_COMPENDIUM</span>
-                <span className="text-ink-subtle">|</span>
-                <span className="text-ink-muted">15 VERIFIED FORMULAS</span>
-              </div>
-            </Reveal>
-            <Reveal delay={80}>
-              <h1 className="display tracking-reset">
-                สูตร
-                <br />
-                <span className="text-accent-ink cyber-text-glow">ที่ต้องจำ</span>
-              </h1>
-            </Reveal>
-          </div>
-          <div className="col-span-12 lg:col-span-3 lg:col-start-10 mt-sp-1 lg:mt-0">
-            <Reveal delay={160}>
-              <dl className="space-y-6">
-                <div>
-                  <dt className="meta-label tracking-display text-ink-subtle">Total</dt>
-                  <dd className="meta-value mt-2 tnum text-3xl">{formulas.length} สูตร</dd>
-                </div>
-                <div>
-                  <dt className="meta-label tracking-display text-ink-subtle">Verified</dt>
-                  <dd className="meta-value mt-2 tnum text-3xl text-accent-ink">
-                    {formulas.length - unverified}
-                  </dd>
-                </div>
-                {unverified > 0 ? (
-                  <div>
-                    <dt className="meta-label tracking-display text-ink-subtle">Pending</dt>
-                    <dd className="meta-value mt-2 tnum text-3xl text-ink-subtle">{unverified}</dd>
-                  </div>
-                ) : null}
-              </dl>
-            </Reveal>
-          </div>
-        </div>
+      {/* Header */}
+      <section className="shell pt-14 pb-10 border-b border-rule">
+        <Reveal>
+          <p className="eyebrow">Formula Vault &middot; คลังสูตร</p>
+        </Reveal>
+        <Reveal delay={60}>
+          <h1 className="mt-4 text-4xl sm:text-6xl font-extrabold tracking-tight text-ink leading-[1.08]">
+            คลังสูตรคำนวณ
+            <span className="block text-accent-ink">ที่ต้องจำก่อนสอบ</span>
+          </h1>
+        </Reveal>
+        <Reveal delay={100}>
+          <p className="mt-5 max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+            รวบรวมครบทุกสมการตั้งแต่ EDA, Decision Tree Gini, Confusion Matrix
+            ตลอดจน K-Means Distance พร้อมตัวอย่างวิธีคิดและจุดที่มักผิด
+          </p>
+        </Reveal>
+        <Reveal delay={140}>
+          <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-rule pt-5 max-w-md">
+            <div>
+              <dt className="sr-only">Total</dt>
+              <dd className="index text-3xl text-ink">
+                {formulas.length}
+                <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
+                  สูตรทั้งหมด
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="sr-only">Verified</dt>
+              <dd className="index text-3xl text-ink">
+                {formulas.length - unverified}
+                <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
+                  ตรวจสอบแล้ว
+                </span>
+              </dd>
+            </div>
+          </dl>
+        </Reveal>
       </section>
 
+      {/* Explorer Component */}
       <FormulaExplorer formulas={formulas} />
-
-      <footer className="shell py-sp-2 border-t border-rule">
-        <p className="meta-label tracking-display text-ink-subtle">
-          {formulas.length} สูตรคำนวณยืนยันความถูกต้องตามหลักการและภาพสไลด์แล้ว &mdash; ครบถ้วนสำหรับการสอบ Final
-        </p>
-      </footer>
     </main>
   );
 }
-

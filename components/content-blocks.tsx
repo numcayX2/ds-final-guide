@@ -1,118 +1,147 @@
 import type { ContentBlock } from "@/content/types";
+import { Box, Card, Callout, Flex, Heading, Text, Table, Badge, Code } from "@radix-ui/themes";
 import { Reveal } from "./reveal";
 
 /**
- * Renders one block of chapter copy. Every block kind in `ContentBlock` gets a
- * layout here, so adding a kind to the schema forces a visual decision rather
- * than silently falling through.
+ * Renders one block of chapter copy powered by Radix Themes.
  */
 export function ContentBlockView({ block }: { block: ContentBlock }) {
   switch (block.kind) {
     case "prose":
-      return <p className="text-lg text-ink max-w-prose">{block.text}</p>;
+      return (
+        <Text as="p" size="3" className="leading-relaxed max-w-prose text-ink">
+          {block.text}
+        </Text>
+      );
 
     case "definition":
       return (
-        <div className="border-l-2 border-accent pl-6 py-1">
-          <p className="meta-label tracking-reset text-accent-ink">{block.term}</p>
-          <p className="mt-2 text-ink-muted max-w-prose">{block.text}</p>
-        </div>
+        <Callout.Root color="orange" variant="surface" className="max-w-prose border-l-2">
+          <Callout.Text>
+            <Text size="1" weight="bold" className="font-mono uppercase tracking-wider block mb-1">
+              {block.term}
+            </Text>
+            <Text size="2" color="gray" className="leading-relaxed">
+              {block.text}
+            </Text>
+          </Callout.Text>
+        </Callout.Root>
       );
 
     case "marker":
       return (
-        <p className="text-lg text-accent-ink font-medium max-w-prose border-t-2 border-accent pt-5">
-          {block.text}
-        </p>
+        <Card variant="surface" className="max-w-prose p-4">
+          <Text size="3" weight="bold" color="orange">
+            {block.text}
+          </Text>
+        </Card>
       );
 
     case "pitfall":
       return (
-        <aside className="border-t-2 border-accent pt-5">
-          <p className="meta-label tracking-display text-accent-ink">
-            จุดระวังข้อสอบ
-          </p>
-          <p className="mt-2 font-medium text-ink">{block.title}</p>
-          <p className="mt-2 text-ink-muted max-w-prose">{block.text}</p>
-        </aside>
+        <Callout.Root color="amber" variant="surface" className="max-w-prose border-l-4">
+          <Callout.Text>
+            <Text size="1" weight="bold" color="amber" className="uppercase tracking-widest block mb-1">
+              จุดระวังข้อสอบ (Exam Trap)
+            </Text>
+            <Text size="3" weight="bold" className="block text-ink mb-1">
+              {block.title}
+            </Text>
+            <Text size="2" color="gray" className="leading-relaxed">
+              {block.text}
+            </Text>
+          </Callout.Text>
+        </Callout.Root>
       );
 
     case "worked-example":
       return (
-        <div className="border border-rule p-6">
-          <p className="meta-label tracking-display text-ink-subtle">{block.title}</p>
-          <ol className="mt-4 space-y-2">
+        <Card variant="surface" className="p-6 max-w-prose">
+          <Flex align="center" justify="between" className="border-b border-rule pb-3 mb-4 gap-3">
+            <Text size="3" weight="bold" className="text-ink">
+              {block.title}
+            </Text>
+            <Badge variant="surface" color="gray">
+              Worked Example
+            </Badge>
+          </Flex>
+          <ol className="space-y-2 text-xs sm:text-sm text-ink-muted list-decimal pl-5">
             {block.steps.map((s, i) => (
-              <li key={i} className="tnum text-ink-muted pl-6 relative">
-                <span className="absolute left-0 index text-ink-subtle">{i + 1}</span>
+              <li key={i} className="leading-relaxed">
                 {s}
               </li>
             ))}
           </ol>
-          <p className="mt-5 pt-4 border-t border-rule tnum text-xl text-accent-ink font-medium">
-            {block.answer}
-          </p>
-        </div>
+          <Flex align="center" justify="between" className="mt-5 pt-4 border-t border-rule gap-3">
+            <Text size="2" color="gray">
+              คำตอบ:
+            </Text>
+            <Text size="4" weight="bold" color="green" className="font-mono tnum">
+              {block.answer}
+            </Text>
+          </Flex>
+        </Card>
       );
 
     case "table":
       return (
-        <figure className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
-            <caption className="text-left meta-label tracking-display text-ink-subtle pb-4">
+        <Card variant="surface" className="p-4 sm:p-5 overflow-x-auto">
+          {block.caption ? (
+            <Text size="1" weight="bold" color="gray" className="block mb-3">
               {block.caption}
-            </caption>
-            <thead>
-              <tr className="border-t border-b border-rule-strong">
+            </Text>
+          ) : null}
+          <Table.Root size="2" variant="surface">
+            <Table.Header>
+              <Table.Row>
                 {block.headers.map((h, i) => (
-                  <th
-                    key={i}
-                    scope="col"
-                    className={`py-3 pr-4 font-medium ${i === 0 ? "text-left" : "text-left"}`}
-                  >
-                    {h}
-                  </th>
+                  <Table.ColumnHeaderCell key={i}>{h}</Table.ColumnHeaderCell>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {block.rows.map((row, i) => (
-                <tr key={i} className="border-b border-rule">
+                <Table.Row key={i}>
                   {row.map((cell, j) => (
-                    <td key={j} className="py-3 pr-4 tnum text-ink-muted">
+                    <Table.Cell key={j} className="font-mono text-xs tnum">
                       {cell}
-                    </td>
+                    </Table.Cell>
                   ))}
-                </tr>
+                </Table.Row>
               ))}
-            </tbody>
-          </table>
-        </figure>
+            </Table.Body>
+          </Table.Root>
+        </Card>
       );
 
     case "formula":
       return (
-        <p className="meta-label tracking-display tnum border-t border-rule pt-4">
-          ดูสูตรที่ {block.formulaId} ในคลังสูตร
-        </p>
+        <Card variant="surface" className="p-3.5 max-w-prose">
+          <Flex align="center" justify="between" gap="3">
+            <Text size="2" color="gray">
+              สูตรที่เกี่ยวข้องในคลังสูตร:
+            </Text>
+            <Code color="orange" weight="bold">
+              {block.formulaId}
+            </Code>
+          </Flex>
+        </Card>
       );
 
     case "image":
       return (
-        <figure>
+        <Card variant="surface" className="p-3 max-w-prose">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={block.src} alt={block.alt} className="w-full border border-rule" />
+          <img src={block.src} alt={block.alt} className="w-full" />
           {block.caption ? (
-            <figcaption className="mt-3 meta-label tracking-display text-ink-subtle">
+            <Text size="1" color="gray" align="center" className="block mt-2">
               {block.caption}
-            </figcaption>
+            </Text>
           ) : null}
-        </figure>
+        </Card>
       );
 
     default: {
-      // Exhaustiveness guard: adding a kind to ContentBlock without a case here
-      // becomes a compile error rather than a silently blank block.
       const _never: never = block;
       return _never;
     }
@@ -126,19 +155,19 @@ export function ChapterBody({
   sections: Array<{ heading: string; body: ContentBlock[] }>;
 }) {
   return (
-    <>
+    <div className="space-y-10">
       {sections.map((section, i) => (
         <Reveal as="section" key={section.heading} delay={Math.min(i * 60, 200)}>
-          <h2 className="text-3xl lg:text-4xl tracking-reset border-b border-rule pb-6 mb-sp-1">
+          <Heading as="h2" size="5" weight="bold" className="border-b border-rule pb-3 mb-6 text-ink">
             {section.heading}
-          </h2>
-          <div className="space-y-sp-1">
+          </Heading>
+          <div className="space-y-6">
             {section.body.map((block, k) => (
               <ContentBlockView key={k} block={block} />
             ))}
           </div>
         </Reveal>
       ))}
-    </>
+    </div>
   );
 }

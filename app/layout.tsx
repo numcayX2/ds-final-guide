@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter_Tight, Prompt } from "next/font/google";
+import "@radix-ui/themes/styles.css";
 import "./globals.css";
+import { Theme } from "@radix-ui/themes";
 import { SiteHeader } from "@/components/site-header";
 
 /* Inter Tight Variable - the single family Bhagas uses, for Latin + numerals */
@@ -27,13 +29,15 @@ export const metadata: Metadata = {
 /* Resolve the theme before first paint so there is no flash of the wrong palette. */
 const THEME_BOOT =
   '(function(){try{var t=localStorage.getItem("ds-theme");' +
-  'if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();';
+  'if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);' +
+  'document.documentElement.classList.toggle("dark",t==="dark");}}catch(e){}})();';
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="th"
       data-theme="light"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${interTight.variable} ${prompt.variable} h-full`}
     >
@@ -41,16 +45,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
       </head>
       <body className="min-h-full flex flex-col bg-bg text-ink">
-        {/* First focusable element in the document: lets a keyboard user jump
-            straight past the nav to the page content. Every page renders
-            exactly one <main id="main">. */}
-        <a href="#main" className="skip-link">
-          ข้ามไปยังเนื้อหาหลัก
-        </a>
-        <div className="page-container">
-          <SiteHeader />
-          {children}
-        </div>
+        <Theme
+          accentColor="orange"
+          grayColor="sand"
+          radius="medium"
+          scaling="100%"
+          appearance="inherit"
+        >
+          {/* First focusable element in the document: lets a keyboard user jump
+              straight past the nav to the page content. Every page renders
+              exactly one <main id="main">. */}
+          <a href="#main" className="skip-link">
+            ข้ามไปยังเนื้อหาหลัก
+          </a>
+          <div className="page-container">
+            <SiteHeader />
+            {children}
+          </div>
+        </Theme>
       </body>
     </html>
   );
