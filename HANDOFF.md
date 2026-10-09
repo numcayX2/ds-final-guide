@@ -240,11 +240,13 @@ CHANGED AND VERIFIED: `--rule` split into decorative hairline (`#E0E0E0` / `#262
 vs control edge `--rule-strong` (`#6b6b6b` 5.33:1 / `#8a8a90` 5.77:1, clears 3:1);
 calculator inputs, radio option labels, and table borders use `--rule-strong`.
 
-VERIFIED: responsive floating glass navbar adapts Frontify's compact 14px link targets
-and outlined/filled CTA pair to the site's palette; desktop links show at 1280px+,
-mobile chip/hamburger below, with no horizontal overflow at 375/640/768/1024/1279/1280/1440.
-Theme toggle is an unboxed native control with a 44px minimum hit target, avoiding the
-Radix ghost-button frame inside the glass navbar.
+VERIFIED: responsive floating glass navbar adapts Frontify's compact 14px link
+targets to the site's palette; the desktop pill (1280px+) now carries all five
+key routes — บทเรียน, คลังสูตร, Thinking Player, Mock Test, เครื่องคิดเลข —
+with the redundant outlined/filled CTA pair removed; mobile chip/hamburger below,
+with no horizontal overflow at 375/640/768/1024/1279/1280/1440.
+Theme toggle is an unboxed native control with a 44px minimum hit target, avoiding
+the Radix ghost-button frame inside the glass navbar.
 
 VERIFIED: Thinking Player step navigation fix — `scrollToStep` immediately updates
 `activeStep` and calculates the scroll target aligned with the focal trigger line
@@ -254,8 +256,46 @@ with manual touch/wheel override and `md:pb-[65vh]` bottom clearance. The Next b
 
 VERIFIED: Home page exit animation — `HomePageTransition` (`components/home-page-transition.tsx`)
 animates outbound navigation (`opacity: 0, y: -22, scale: 0.985, blur(3px)` over 260ms)
+
+VERIFIED: faded-crumble exit animation (`components/faded-crumble.tsx`,
+`components/home-page-transition.tsx`, `app/globals.css`). On exit transitions,
+elements physically deform (scale down to 0.92, compress `scaleY: 0.86`, tilt
+`-1.2deg`/`+1.6deg`, blur 4-5px, and fade out downward). Standalone utility
+`.faded-crumble-exit` / `.animate-faded-crumble` and container `.is-crumbling`
+apply staggered physical crumble to child cards and buttons, fully disabled under
+`prefers-reduced-motion`.
+
+VERIFIED: faded-crumble scrolling exit-animation (`components/scroll-faded-crumble.tsx`,
+`components/reveal.tsx`, `app/globals.css`). As elements scroll out past the top of the
+viewport (`animation-range: exit 0% exit 100%`), they progressively scale down (0.86),
+vertically compress (`scaleY: 0.76`), tilt slightly (-1.8°/+1.8°), blur (5px), and fade out.
+Scrolling back down un-crumbles them smoothly into view. Supported via:
+1. Native CSS scroll-driven animation (`@supports (animation-timeline: view())` classes:
+   `.scroll-faded-crumble`, `.scroll-faded-crumble-alt`, `.scroll-crumble-exit`)
+2. Cross-browser React component `<ScrollFadedCrumble>` powered by Motion `useScroll` + `useTransform`
+3. `<Reveal scrollCrumble>` prop directly available on all reveal containers
+4. Disabled cleanly under `prefers-reduced-motion: reduce`.
 on both in-page link clicks and navbar navigation from `/`, with instant navigation
 and zero transform under `prefers-reduced-motion: reduce`.
+
+VERIFIED: homepage IA overhaul — one main path, everything else secondary.
+The 3-day plan is the centerpiece (`#plan`, `components/study-plan.tsx`):
+horizontal timeline with a dashed rail between numbered day nodes, per-step
+checkboxes, and a progress bar; completion persists in localStorage
+(`ds-plan-done-v1`) via `useSyncExternalStore` (no setState-in-effect, no
+hydration mismatch; server snapshot is always `[]`). Fast Track collapsed
+from five large bento cards into a compact secondary strip
+(`hub-icon` Radix icon tiles, one line each); the hero topic-tag cloud was
+removed (duplicated the Course Roadmap anchors). All emojis (🔥💡📖📝🎬⏱️ etc.)
+replaced by the Radix icon set and numbered badges. Hero copy shortened to one
+line; section padding 3rem→4rem. Formula cards now render real math typesetting
+via KaTeX 0.19 (`components/math-formula.tsx`, server-rendered,
+`katex/dist/katex.min.css` imported in `app/layout.tsx`): F1 as a stacked
+fraction, Gini with `(p±)²` superscripts, IQR/Tukey with subscripts.
+Practice-mode explainer (instant feedback + Hints) added to the Fast Track
+heading. Verified headless (Playwright): tick→67%→reload persists→all three
+→100% + mint fill + "เสร็จสมบูรณ์" pill→reset clears storage; 0 console
+errors.
 
 VERIFIED IN THE UX/UI PASS: all 7 routes have no horizontal overflow at 375px;
 `/chapters` has one h1 and 29 h2s; Prompt is the computed font for body and

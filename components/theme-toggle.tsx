@@ -37,8 +37,8 @@ export function ThemeToggle() {
       aria-pressed={theme === "dark"}
     >
       <Flex align="center" gap="2">
-        <Text size="1" weight="medium" className="meta-label text-xs hidden sm:inline">
-          {ready ? (theme === "dark" ? "Light" : "Dark") : "Dark"}
+        <Text size="1" weight="medium" className="text-xs hidden sm:inline text-ink-muted">
+          {ready ? (theme === "dark" ? "Dark" : "Light") : "Dark"}
         </Text>
         <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false" fill="none">
           <circle cx="7" cy="7" r="6.25" stroke="currentColor" strokeWidth="1.25" />

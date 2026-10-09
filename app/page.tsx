@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { Reveal } from "@/components/reveal";
 import { HomePageTransition } from "@/components/home-page-transition";
+import { StudyPlan, type PlanStep } from "@/components/study-plan";
+import { MathFormula } from "@/components/math-formula";
+import {
+  CheckCircledIcon,
+  MixerHorizontalIcon,
+  Pencil2Icon,
+  PlayIcon,
+  SymbolIcon,
+} from "@radix-ui/react-icons";
 import { chapters as allChapters } from "@/content/chapters";
 import { formulas as allFormulas } from "@/content/formulas";
 import { episodes } from "@/content/episodes";
@@ -44,31 +53,24 @@ const chapters = [
   },
 ];
 
-const TOPIC_TAGS = [
-  { label: "📊 EDA & Outliers (Lect 05)", href: "/chapters#eda" },
-  { label: "🌲 Decision Tree & Gini (Lect 06-07)", href: "/chapters#modeling" },
-  { label: "🎯 Confusion Matrix & F1 (Lect 08)", href: "/chapters#confusion-matrix" },
-  { label: "📍 K-Means Clustering (Lect 08-09)", href: "/chapters#kmeans" },
-  { label: "⚖️ Responsible AI & SHAP (Lect 09)", href: "/chapters#responsible-ds" },
-];
-
-const STUDY_SPRINT = [
+/** The single main path on the homepage: the 3-day plan. */
+const PLAN_STEPS: PlanStep[] = [
   {
     step: "01",
     day: "Day 1",
     title: "สร้างรากฐาน 5 บทเรียน",
     desc: "อ่านสรุปเข้ม 5 หัวข้อหลัก ทำความเข้าใจนิยามศัพท์เฉพาะ และจุดหลอกที่พบบ่อยในข้อสอบอาจารย์",
     href: "/chapters",
-    time: "⏱️ 45 นาที",
+    time: "45 นาที",
     tag: "Concept Mastery",
   },
   {
     step: "02",
     day: "Day 2",
     title: "ซ้อมคำนวณสดและเล่นแบบจำลอง",
-    desc: "ฝึกไล่ขั้นตอนการคิดทีละก้าวใน Thinking Player และลองใส่ตัวเลขทดสอบใน Formula Sandbox & เครื่องคิดเลข",
+    desc: "ฝึกไล่ขั้นตอนการคิดทีละก้าวใน Thinking Player และลองใส่ตัวเลขทดสอบในเครื่องคิดเลขคำนวณสด",
     href: "/player",
-    time: "⏱️ 35 นาที",
+    time: "35 นาที",
     tag: "Active Simulation",
   },
   {
@@ -77,81 +79,77 @@ const STUDY_SPRINT = [
     title: "ตะลุยโจทย์เสมือนจริง 4 ชุด",
     desc: "ฝึกทำโจทย์แบบจับเวลา 45 นาที หรือเลือกโหมดฝึกทำทันใจเพื่อตรวจเช็กคำใบ้ (Hints) และคำอธิบายลึก",
     href: "/mock-test",
-    time: "⏱️ 45 นาที",
+    time: "45 นาที",
     tag: "Exam Simulation",
   },
 ];
 
+/** Secondary entry points — compact, one line each, no competition with the plan. */
 const HUB_MODULES = [
   {
     href: "/mock-test",
-    title: "Mock Exam (30 ข้อ)",
-    subtitle: "จำลองสอบจับเวลาจริง 45 นาที หรือฝึกทันใจ",
-    desc: "ข้อสอบเสมือนจริง 4 ชุด: ชุดเต็ม 30 ข้อ และเจาะลึก 10 ข้อรายหัวข้อ พร้อมโหมดฝึกทำทันใจ ตรวจถูก/ผิดทันที และขอคำใบ้ได้",
+    title: "Mock Exam",
+    desc: "ข้อสอบเสมือนจริง 4 ชุด: ชุดเต็ม 30 ข้อ และเจาะลึก 10 ข้อรายหัวข้อ",
+    time: "45 นาที",
     tag: "30 ข้อ",
-    time: "⏱️ 45 นาที",
-    badge: "🔥 แนะนำ",
+    icon: CheckCircledIcon,
   },
   {
     href: "/tools",
-    title: "เครื่องคิดเลขข้อสอบ",
-    subtitle: "Interactive Exam Calculators",
-    desc: "4 เครื่องมือคำนวณสด: Confusion Matrix 2x2 พร้อมมาตรวัดทันที, Gini Gain Splitter, Tukey IQR Outlier, K-Means Step",
+    title: "เครื่องคิดเลข",
+    desc: "คำนวณสด: Confusion Matrix, Gini Gain Splitter, Tukey IQR, K-Means",
+    time: "Interactive",
     tag: "4 เครื่องมือ",
-    time: "⏱️ สด Interactive",
-    badge: "💡 ทดลองสด",
+    icon: MixerHorizontalIcon,
   },
   {
     href: "/formulas",
-    title: "คลัง 15 สูตรคำนวณ",
-    subtitle: "Formula Vault & Search",
-    desc: "ค้นหาสูตรเร็ว พร้อมตัวแปรสัญลักษณ์สีแยกชัดเจน วิธีทำทีละก้าว และจุดดักที่คนมักผิดในห้องสอบ",
+    title: "คลังสูตร",
+    desc: "15 สูตรคำนวณ พร้อมวิธีทำทีละก้าวและจุดดักที่คนมักผิด",
+    time: "15 นาที",
     tag: "15 สูตร",
-    time: "⏱️ 15 นาที",
-    badge: "📖 Active Recall",
+    icon: SymbolIcon,
   },
   {
     href: "/homework",
-    title: "เฉลยการบ้าน 4 ข้อ",
-    subtitle: "Step-by-Step Proofs",
-    desc: "เฉลยละเอียดแสดงวิธีคิดทุกขั้น: Customer Inactivity (all 60%), Candidate Models A/B/C, K-Means Q1 & Q2",
+    title: "เฉลยการบ้าน",
+    desc: "เฉลยวิธีคิดทุกขั้น: Customer Inactivity, Candidate Models, K-Means",
+    time: "20 นาที",
     tag: "4 ข้อ",
-    time: "⏱️ 20 นาที",
-    badge: "📝 แสดงวิธีทำ",
+    icon: Pencil2Icon,
   },
   {
     href: "/player",
     title: "Thinking Player",
-    subtitle: "จำลองขั้นตอนการคิดทีละก้าว",
-    desc: "6 ตอน Interactive: Boxplot Outlier, Gini Split, Confusion Matrix, K-Means Step, SHAP Force, Concept Drift",
+    desc: "จำลองขั้นตอนการคิดทีละก้าว 6 ตอนแบบ Scrollytelling",
+    time: "25 นาที",
     tag: "6 ตอน",
-    time: "⏱️ 25 นาที",
-    badge: "🎬 Scrollytelling",
+    icon: PlayIcon,
   },
 ];
 
 const formulas = [
   {
     name: "IQR (Interquartile Range)",
-    expr: "IQR = Q3 − Q1",
+    tex: "\\mathrm{IQR} = Q_3 - Q_1",
     note: "ผลต่างระหว่างควอร์ไทล์ที่สามกับอันดับหนึ่ง สำหรับหาการกระจายของข้อมูล",
     tag: "Lect 05",
   },
   {
     name: "Tukey's Fences (Outlier)",
-    expr: "[Q1 − 1.5×IQR,  Q3 + 1.5×IQR]",
+    tex: "[\\,Q_1 - 1.5 \\cdot \\mathrm{IQR},\\; Q_3 + 1.5 \\cdot \\mathrm{IQR}\\,]",
     note: "ค่าที่อยู่นอกช่วงนี้ถือเป็น Outlier ทั้งฝั่งต่ำและฝั่งสูง",
     tag: "Lect 05",
   },
   {
     name: "Gini Impurity (2-Class)",
-    expr: "Gini(S) = 1 − [(p+)² + (p−)²]",
+    tex: "\\mathrm{Gini}(S) = 1 - \\left[ (p_+)^2 + (p_-)^2 \\right]",
     note: "ค่าต่ำสุด = 0.0 (Pure), ค่าสูงสุด = 0.5 (สัดส่วน 50/50 ปนกันมากสุด)",
     tag: "Lect 07",
   },
   {
     name: "F1-Score (Harmonic Mean)",
-    expr: "F1 = 2 × (P × R) / (P + R)",
+    tex: "F_1 = 2 \\times \\dfrac{P \\times R}{P + R}",
     note: "ใช้ Harmonic Mean เพื่อลงโทษกรณีที่ Precision หรือ Recall ด้านใดด้านหนึ่งต่ำมาก",
     tag: "Lect 08",
   },
@@ -171,64 +169,49 @@ export default function Home() {
   return (
     <HomePageTransition>
       {/* ---------- Hero ---------- */}
-      <section className="shell pt-14 pb-12">
+      <section className="shell pt-16 pb-12">
         <Reveal>
-          <p className="eyebrow">10301351 &middot; Data Science &middot; Final Exam Prep</p>
+          <p className="eyebrow eyebrow-accent">10301351 &middot; Data Science &middot; Final Exam Prep</p>
         </Reveal>
         <Reveal delay={60}>
-          <h1 className="mt-4 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-ink leading-[1.08]">
+          <h1 className="mt-4 text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-ink hero-headline">
             เตรียมสอบ Data Science
-            <span className="block text-accent-ink">อย่างมั่นใจและเข้าใจจริง</span>
+            <span className="hero-headline-sub text-accent">อย่างมั่นใจและเข้าใจจริง</span>
           </h1>
         </Reveal>
         <Reveal delay={100}>
           <p className="mt-6 max-w-xl text-base sm:text-lg text-ink-muted leading-relaxed">
-            คู่มือและศูนย์การเรียนรู้เชิงโต้ตอบสำหรับสอบไล่ รวบรวมสรุป {allChapters.length} บทเรียน
-            พร้อมคลังสูตรที่ตรวจทานตรงสไลด์ {allFormulas.length} สูตร เครื่องคิดเลขจำลอง 4 ตัว
-            และชุดข้อสอบเสมือนจริง {TOTAL_QUESTIONS} ข้อ
+            คู่มือสอบไล่ Lect 05&ndash;09: บทเรียนสรุปเข้ม สูตรคำนวณที่ตรวจทานแล้ว และข้อสอบจำลองจริง
           </p>
         </Reveal>
         <Reveal delay={140}>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
-              href="/mock-test"
-              className="tactile-btn tactile-btn-accent inline-flex items-center gap-2 bg-ink text-bg border border-ink px-5 py-3 text-sm font-semibold hover:bg-accent-ink hover:text-bg hover:border-accent-ink"
+              href="#plan"
+              className="tactile-btn tactile-btn-accent inline-flex items-center gap-2 px-6 py-2.5 text-[15px] font-medium"
             >
-              เริ่มทำ Mock Exam &rarr;
+              ดูแผน 3 วัน &rarr;
             </Link>
             <Link
-              href="/tools"
-              className="tactile-btn inline-flex items-center gap-2 bg-surface text-ink border border-rule-strong px-5 py-3 text-sm font-semibold hover:border-ink"
+              href="/mock-test"
+              className="tactile-btn tactile-btn-ghost inline-flex items-center gap-2 px-6 py-2.5 text-[15px] font-medium"
             >
-              เปิดเครื่องคิดเลข &rarr;
+              ทำ Mock Exam
             </Link>
-          </div>
-        </Reveal>
-
-        {/* ParentSquare-style Semantic Floating Topic Cloud */}
-        <Reveal delay={160}>
-          <div className="mt-8 flex flex-wrap items-center gap-2 pt-2">
-            <span className="text-xs font-semibold text-ink-subtle mr-1">หัวข้อบรรยายหลัก:</span>
-            {TOPIC_TAGS.map((t) => (
-              <Link
-                key={t.label}
-                href={t.href}
-                className="tactile-btn px-3 py-1.5 border border-rule bg-surface text-xs font-semibold text-ink-muted hover:text-ink hover:border-rule-strong"
-              >
-                {t.label}
-              </Link>
-            ))}
           </div>
         </Reveal>
 
         <Reveal delay={180}>
-          <dl className="mt-10 grid grid-cols-2 sm:grid-cols-5 gap-x-6 gap-y-4 border-t border-rule pt-5">
+          <dl className="mt-10 grid grid-cols-2 sm:grid-cols-5 gap-3 border-t border-rule pt-6">
             {STATS.map((s) => (
-              <div key={s.label}>
+              <div
+                key={s.label}
+                className="bento-card p-4 flex flex-col justify-between group hover:border-rule-strong transition-all"
+              >
                 <dt className="sr-only">{s.label}</dt>
-                <dd className="index text-3xl text-ink">
+                <dd className="index text-3xl font-mono font-bold text-ink">
                   {s.n}
-                  <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
+                  <span className="block mt-1 text-[11px] uppercase tracking-[0.12em] text-ink-subtle font-mono font-medium">
                     {s.label}
                   </span>
                 </dd>
@@ -238,125 +221,89 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* ---------- Study hub ---------- */}
-      <section className="shell py-12 border-t border-rule">
+      {/* ---------- 3-Day Plan (the main path) ---------- */}
+      <section id="plan" className="shell py-16 border-t border-rule scroll-mt-24">
         <Reveal>
           <div className="flex items-baseline justify-between gap-4 mb-8">
             <div>
-              <p className="eyebrow eyebrow-accent">Fast Track</p>
-              <h2 className="text-2xl sm:text-3xl font-bold text-ink mt-1.5">
-                ทางลัดทบทวนและฝึกทำโจทย์
-              </h2>
-            </div>
-          </div>
-        </Reveal>
-
-        <div className="grid-12 gap-4">
-          {HUB_MODULES.map((m, i) => (
-            <Reveal
-              key={m.href}
-              delay={i * 50}
-              className={i < 2 ? "col-span-12 lg:col-span-6" : "col-span-12 md:col-span-4"}
-            >
-              <Link
-                href={m.href}
-                className="bento-card bento-card-interactive border-rule-strong p-6 flex flex-col justify-between h-full group"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="index text-3xl text-ink-subtle group-hover:text-accent-ink transition-colors">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div className="flex items-center gap-1.5">
-                      {m.badge && (
-                        <span className="bento-pill border border-accent/40 bg-accent-wash/30 text-accent-ink font-semibold">
-                          {m.badge}
-                        </span>
-                      )}
-                      <span className="bento-pill border border-rule text-ink-subtle">
-                        {m.time}
-                      </span>
-                    </div>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-ink mt-4 group-hover:text-accent-ink transition-colors">
-                    {m.title}
-                  </h3>
-                  <p className="text-xs text-accent-ink font-semibold mt-1">{m.subtitle}</p>
-                  <p className="text-sm text-ink-muted mt-3 leading-relaxed">{m.desc}</p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-rule flex items-center justify-between text-xs font-semibold text-accent-ink">
-                  <span>เข้าสู่บทเรียนนี้</span>
-                  <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ---------- 3-Day Sprint Track (Coursera & Khan Academy style) ---------- */}
-      <section className="shell py-12 border-t border-rule">
-        <Reveal>
-          <div className="flex items-baseline justify-between gap-4 mb-8">
-            <div>
-              <p className="eyebrow eyebrow-mint">Study Wayfinding</p>
-              <h2 className="text-2xl sm:text-3xl font-bold text-ink mt-1.5">
+              <p className="eyebrow eyebrow-mint">3-Day Plan</p>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
                 แผนทบทวน 3 วันสู่เป้าหมายเกรด A
               </h2>
-              <p className="text-sm text-ink-muted mt-2">
-                เส้นทางติวเร่งรัดแบบ Step-by-Step จัดลำดับความสำคัญตามโครงสร้างสไลด์บรรยาย
+              <p className="text-sm text-ink-muted mt-2 max-w-2xl">
+                เส้นทางติวเร่งรัดที่จัดลำดับตามโครงสร้างสไลด์บรรยาย ทำเครื่องหมายสเต็ปที่เสร็จแล้วได้เลย — บันทึกไว้ในเบราว์เซอร์เครื่องนี้
               </p>
             </div>
           </div>
         </Reveal>
 
-        <div className="grid-12 gap-4">
-          {STUDY_SPRINT.map((s, idx) => (
-            <Reveal key={s.step} delay={idx * 60} className="col-span-12 md:col-span-4">
-              <Link
-                href={s.href}
-                className="bento-card bento-card-interactive p-6 flex flex-col justify-between h-full group"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <span className="bento-pill border border-mint text-mint bg-mint-wash/30 font-bold font-mono">
-                      {s.day}
+        <StudyPlan steps={PLAN_STEPS} />
+      </section>
+
+      {/* ---------- Fast Track (secondary entry points) ---------- */}
+      <section className="shell py-16 border-t border-rule">
+        <Reveal>
+          <div className="flex items-baseline justify-between gap-4 mb-6">
+            <div>
+              <p className="eyebrow eyebrow-accent">Fast Track</p>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
+                ทางลัดสู่เครื่องมือทุกชิ้น
+              </h2>
+              <p className="text-sm text-ink-muted mt-2 max-w-2xl">
+                ทางเข้ารอง ใช้คู่กับแผน 3 วัน — Mock Exam มี{" "}
+                <strong className="text-ink font-semibold">โหมดฝึก (Practice)</strong>: ตรวจคำตอบทันทีและขอคำใบ้ (Hints) ได้ทุกข้อ
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {HUB_MODULES.map((m, i) => {
+            const Icon = m.icon;
+            return (
+              <Reveal key={m.href} delay={i * 40} className="h-full" scrollCrumble alt={i % 2 === 1}>
+                <Link
+                  href={m.href}
+                  className="bento-card bento-card-interactive p-4 sm:p-5 flex flex-col gap-4 h-full group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="hub-icon">
+                      <Icon className="w-4 h-4" />
                     </span>
-                    <span className="text-xs text-ink-subtle font-mono">
-                      {s.time}
+                    <span className="index text-lg text-ink-subtle group-hover:text-accent-ink transition-colors">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                   </div>
-
-                  <h3 className="text-lg font-bold text-ink group-hover:text-accent-ink transition-colors">
-                    {s.title}
-                  </h3>
-                  <p className="text-xs text-ink-subtle font-mono mt-1 font-semibold">
-                    {s.tag}
-                  </p>
-                  <p className="text-sm text-ink-muted mt-3 leading-relaxed">
-                    {s.desc}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-3 border-t border-rule flex items-center justify-between text-xs font-semibold text-accent-ink">
-                  <span>เริ่มสเต็ปนี้</span>
-                  <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
+                  <div>
+                    <h3 className="text-sm font-bold text-ink group-hover:text-accent-ink transition-colors">
+                      {m.title}
+                    </h3>
+                    <p className="text-xs text-ink-muted mt-1.5 leading-relaxed">
+                      {m.desc}
+                    </p>
+                  </div>
+                  <div className="mt-auto flex items-center justify-between border-t border-rule pt-3 text-[11px]">
+                    <span className="font-mono text-ink-subtle">
+                      {m.time} &middot; {m.tag}
+                    </span>
+                    <span className="text-accent-ink font-semibold group-hover:translate-x-1 transition-transform">
+                      &rarr;
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            );
+          })}
         </div>
       </section>
 
       {/* ---------- Chapters ---------- */}
-      <section className="shell py-12 border-t border-rule">
+      <section className="shell py-16 border-t border-rule">
         <Reveal>
           <div className="flex items-baseline justify-between mb-8">
             <div>
               <p className="eyebrow">Course Roadmap</p>
-              <h2 className="text-2xl sm:text-3xl font-bold text-ink mt-1.5">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
                 5 บทเรียนหลักสำหรับสอบ Final
               </h2>
               <p className="text-sm text-ink-muted mt-2">
@@ -403,12 +350,12 @@ export default function Home() {
       </section>
 
       {/* ---------- Formulas ---------- */}
-      <section className="shell py-12 border-t border-rule">
+      <section className="shell py-16 border-t border-rule">
         <Reveal>
           <div className="flex items-baseline justify-between mb-8">
             <div>
-              <p className="eyebrow">Formula Vault</p>
-              <h2 className="text-2xl sm:text-3xl font-bold text-ink mt-1.5">
+              <p className="eyebrow eyebrow-rose">Formula Vault</p>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-ink mt-1.5 tracking-tight">
                 สูตรคำนวณที่ออกสอบบ่อย
               </h2>
               <p className="text-sm text-ink-muted mt-2">
@@ -419,7 +366,7 @@ export default function Home() {
               href="/formulas"
               className="tactile-btn text-xs font-semibold text-accent-ink hover:underline shrink-0"
             >
-              ดูสูตรทั้งหมด ({formulas.length} สูตร) &rarr;
+              ดูสูตรทั้งหมด ({allFormulas.length} สูตร) &rarr;
             </Link>
           </div>
         </Reveal>
@@ -435,9 +382,9 @@ export default function Home() {
                       {f.tag}
                     </span>
                   </div>
-                  <p className="font-mono text-lg sm:text-xl font-semibold text-ink border-l-2 border-accent pl-4">
-                    {f.expr}
-                  </p>
+                  <div className="border-l-2 border-accent pl-4">
+                    <MathFormula tex={f.tex} />
+                  </div>
                   <p className="mt-3 text-xs sm:text-sm text-ink-muted leading-relaxed">
                     {f.note}
                   </p>

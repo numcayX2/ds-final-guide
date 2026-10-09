@@ -13,11 +13,15 @@ export function Reveal({
   delay = 0,
   as: Tag = "div",
   className = "",
+  scrollCrumble = false,
+  alt = false,
 }: {
   children: ReactNode;
   delay?: number;
   as?: "div" | "section" | "li" | "article";
   className?: string;
+  scrollCrumble?: boolean;
+  alt?: boolean;
 }) {
   const [reduce, setReduce] = useState(true);
   useEffect(() => {
@@ -42,7 +46,13 @@ export function Reveal({
         delay: delay / 1000,
         ease: [0.16, 1, 0.3, 1],
       }}
-      className={`reveal-motion ${className}`}
+      className={`reveal-motion ${
+        scrollCrumble
+          ? alt
+            ? "scroll-faded-crumble-alt"
+            : "scroll-faded-crumble"
+          : ""
+      } ${className}`}
     >
       {children}
     </Component>

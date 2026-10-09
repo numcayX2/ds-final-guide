@@ -69,7 +69,7 @@ const NAV_ITEMS = [
 ];
 
 const DESKTOP_NAV_ITEMS = NAV_ITEMS.filter(
-  (item) => item.href !== "/mock-test" && item.href !== "/tools",
+  (item) => item.href !== "/" && item.href !== "/homework",
 );
 
 export function SiteHeader() {
@@ -148,19 +148,19 @@ export function SiteHeader() {
             href="/"
             className="group flex items-center gap-2.5 sm:gap-3 hover:opacity-95 transition-opacity shrink-0"
           >
-            <div className="w-8 h-8 rounded-xl bg-ink text-bg font-bold text-xs flex items-center justify-center shadow-xs transition-transform group-hover:scale-105 active:scale-95 font-mono">
+            <div className="w-8 h-8 rounded-lg bg-surface-raised border border-rule-strong text-accent font-bold text-xs flex items-center justify-center font-mono">
               DS
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-sm tracking-tight text-ink leading-tight">
+                <span className="font-semibold text-sm tracking-tight text-ink leading-tight" style={{ fontFamily: "var(--font-display)" }}>
                   Final Guide
                 </span>
-                <span className="hidden sm:inline text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-accent/15 text-accent-ink border border-accent/25">
+                <span className="hidden sm:inline text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-surface-raised text-ink-muted border border-rule">
                   10301351
                 </span>
               </div>
-              <span className="text-[10px] text-ink-muted hidden sm:inline -mt-0.5 font-medium leading-tight">
+              <span className="text-[10px] text-ink-muted hidden sm:inline -mt-0.5 leading-tight">
                 Data Science Exam Prep
               </span>
             </div>
@@ -191,33 +191,21 @@ export function SiteHeader() {
 
           {/* Right Actions: Current Page Chip (Mobile), ThemeToggle, Hamburger */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Desktop CTA pair — ghost + solid, Frontify-style */}
-            <div className="hidden lg:flex items-center gap-2 shrink-0">
-              <Link
-                href="/tools"
-                onClick={(e) => handleNavClick(e, "/tools")}
-                aria-current={isActive("/tools") ? "page" : undefined}
-                className="inline-flex items-center rounded-full border border-rule-strong px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-ink"
-              >
-                เครื่องคิดเลข
-              </Link>
-              <Link
-                href="/mock-test"
-                onClick={(e) => handleNavClick(e, "/mock-test")}
-                aria-current={isActive("/mock-test") ? "page" : undefined}
-                className="inline-flex items-center rounded-full bg-ink px-4 py-2 text-sm font-semibold text-bg transition-colors hover:bg-accent-ink"
-              >
-                ทำ Mock Test
-              </Link>
-            </div>
-            <span className="xl:hidden text-[11px] font-medium text-ink-muted bg-surface-hover/80 px-2.5 py-1 rounded-full border border-rule/40 max-w-[110px] sm:max-w-[140px] truncate">
+            {/* Current Page Chip (below xl) */}
+            <span className="xl:hidden text-[11px] font-medium text-ink-muted bg-surface-raised px-2.5 py-1 rounded-full border border-rule max-w-[120px] sm:max-w-[150px] truncate">
               {currentItem.label}
             </span>
 
+            {/* Persistent Apple-style Pill CTA on desktop */}
+            <Link
+              href="/mock-test"
+              className="tactile-btn tactile-btn-accent text-xs !py-1.5 !px-3.5 hidden sm:inline-flex"
+            >
+              ทำ Mock Exam
+            </Link>
+
             {/* Theme Toggle Button */}
             <ThemeToggle />
-
-            {/* Mobile Hamburger Toggle Button */}
             <button
               type="button"
               ref={mobileMenuButtonRef}

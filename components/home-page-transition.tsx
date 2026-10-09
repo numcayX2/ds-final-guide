@@ -29,7 +29,7 @@ export function HomePageTransition({ children }: { children: ReactNode }) {
       setIsExiting(true);
       setTimeout(() => {
         router.push(href);
-      }, 260);
+      }, 320);
     },
     [router, reduce]
   );
@@ -88,20 +88,24 @@ export function HomePageTransition({ children }: { children: ReactNode }) {
         isExiting
           ? {
               opacity: 0,
-              y: -22,
-              scale: 0.985,
-              filter: "blur(3px)",
-              transition: { duration: 0.26, ease: [0.16, 1, 0.3, 1] },
+              y: 24,
+              scale: 0.92,
+              scaleY: 0.86,
+              rotate: -1.2,
+              filter: "blur(5px)",
+              transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] },
             }
           : {
               opacity: 1,
               y: 0,
               scale: 1,
+              scaleY: 1,
+              rotate: 0,
               filter: "blur(0px)",
               transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
             }
       }
-      className={`flex-1 ${isExiting ? "pointer-events-none" : ""}`}
+      className={`flex-1 ${isExiting ? "pointer-events-none is-crumbling" : ""}`}
     >
       {children}
     </motion.main>

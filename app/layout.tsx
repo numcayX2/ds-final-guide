@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import { Inter_Tight, Prompt } from "next/font/google";
 import "@radix-ui/themes/styles.css";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { SiteHeader } from "@/components/site-header";
 
-/* Inter Tight Variable - the single family Bhagas uses, for Latin + numerals */
+/* SF Pro substitute: Inter Tight Variable for Latin + numerals with negative tracking */
 const interTight = Inter_Tight({
   variable: "--f-inter-tight",
   subsets: ["latin"],
   display: "swap",
 });
 
-/* Prompt (Cadson Demak) - geometric Thai that matches Inter Tight's tightness */
+/* Prompt (Cadson Demak) - geometric Thai typography */
 const prompt = Prompt({
   variable: "--f-prompt",
   subsets: ["thai", "latin"],
