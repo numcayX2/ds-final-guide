@@ -135,8 +135,32 @@ function KMeansPanel({ visual, step }: PanelProps<"kmeans">) {
         {showCentroids &&
           centroids.map((c, i) => (
             <g key={c.id} style={{ transform: `translate(${kx(c.x)}px, ${ky(c.y)}px)`, transition: MOVE }}>
-              <rect x={-5} y={-5} width={10} height={10} transform="rotate(45)" fill={SERIES[i]} stroke="var(--color-surface)" strokeWidth={1.5} />
-              <text y={-10} textAnchor="middle" fontSize="10" fontWeight={600} fill={SERIES[i]} className="font-mono">{c.id}</text>
+              <rect
+                x={-5}
+                y={-5}
+                width={10}
+                height={10}
+                fill={SERIES[i]}
+                stroke="var(--color-surface)"
+                strokeWidth={1.5}
+                className={step === 1 ? "centroid-shape-pop" : undefined}
+                style={
+                  step === 1
+                    ? { animationDelay: `${i * 90}ms`, transformOrigin: "0px 0px" }
+                    : { transform: "rotate(45deg)", transformOrigin: "0px 0px" }
+                }
+              />
+              <text
+                y={-10}
+                textAnchor="middle"
+                fontSize="10"
+                fontWeight={600}
+                fill={SERIES[i]}
+                className={`font-mono ${step === 1 ? "centroid-text-pop" : ""}`}
+                style={step === 1 ? { animationDelay: `${i * 90 + 80}ms` } : undefined}
+              >
+                {c.id}
+              </text>
             </g>
           ))}
       </svg>
@@ -328,6 +352,12 @@ function BoxplotPanel({ visual, step }: PanelProps<"boxplot">) {
   const iqr = q3 - q1, lf = q1 - 1.5 * iqr, uf = q3 + 1.5 * iqr;
   const showIQR = step >= 1, showFences = step >= 2, showWhisker = step >= 3, showOut = step >= 4;
 
+  // Whisker ends at the most extreme non-outlier data point within fences.
+  // When outliers exist, max in the 5-number summary could include the outlier (e.g. 58),
+  // but whisker must clamp to the largest value within fence (50).
+  const whiskerLeft = min < lf ? lf : min;
+  const whiskerRight = outliers.length > 0 ? (max > uf ? 50 : max) : max;
+
   const lo = Math.min(min, lf, ...outliers), hi = Math.max(max, uf, ...outliers);
   const pad = (hi - lo) * 0.05 || 1;
   const W = 320, MID = 52;
@@ -345,10 +375,10 @@ function BoxplotPanel({ visual, step }: PanelProps<"boxplot">) {
               <text x={x(f.v)} y={13} textAnchor="middle" fontSize="9" fill="var(--color-warn)" className="font-mono">{f.t} {fmt(f.v, 2)}</text>
             </g>
           ))}
-        <line x1={x(min)} x2={x(q1)} y1={MID} y2={MID} stroke="var(--color-ink)" />
-        <line x1={x(q3)} x2={x(max)} y1={MID} y2={MID}
+        <line x1={x(whiskerLeft)} x2={x(q1)} y1={MID} y2={MID} stroke="var(--color-ink)" />
+        <line x1={x(q3)} x2={x(whiskerRight)} y1={MID} y2={MID}
           stroke={showWhisker ? "var(--color-accent)" : "var(--color-ink)"} strokeWidth={showWhisker ? 2 : 1} />
-        {[min, max].map((v) => <line key={v} x1={x(v)} x2={x(v)} y1={MID - 7} y2={MID + 7} stroke="var(--color-ink)" />)}
+        {[whiskerLeft, whiskerRight].map((v) => <line key={v} x1={x(v)} x2={x(v)} y1={MID - 7} y2={MID + 7} stroke="var(--color-ink)" />)}
         <rect x={x(q1)} y={MID - 13} width={Math.max(1, x(q3) - x(q1))} height={26} rx={3}
           fill={showIQR ? "var(--color-accent-wash)" : "var(--color-surface)"}
           stroke={showIQR ? "var(--color-accent)" : "var(--color-ink)"} style={{ transition: "fill 300ms, stroke 300ms" }} />
@@ -411,7 +441,7 @@ function ShapForcePanel({ visual, step }: PanelProps<"shap-force">) {
   const pos = (v: number) => ((v - (lo - pad)) / (hi - lo + 2 * pad)) * 100;
   const shown = rows.slice(0, step);
   const pred = shown.length ? shown[shown.length - 1].to : base;
-  const up = "var(--color-series-2)", down = "var(--color-series-1)";
+  const up = "var(--color-good)", down = "var(--color-bad)";
 
   const Track = ({ children }: { children?: ReactNode }) => (
     <div className="relative h-6 rounded bg-paper">

@@ -1,6 +1,6 @@
 import { homeworkProblems } from "@/content/homework";
 import { Reveal } from "@/components/reveal";
-
+import { HomeworkStepItem } from "@/components/homework-step-item";
 /**
  * Homework solutions — exam-sheet editorial style.
  *
@@ -152,17 +152,7 @@ export default function HomeworkPage() {
 
                     <ol className="border-t border-rule">
                       {p.solutionSteps.map((s, k) => (
-                        <li
-                          key={k}
-                          className="flex gap-4 py-3.5 border-b border-rule"
-                        >
-                          <span className="index text-lg text-ink-subtle shrink-0 w-6 text-right">
-                            {k + 1}
-                          </span>
-                          <p className="text-xs sm:text-sm text-ink leading-relaxed">
-                            {s}
-                          </p>
-                        </li>
+                        <HomeworkStepItem key={k} text={s} index={k} />
                       ))}
                     </ol>
                   </div>
