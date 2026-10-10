@@ -23,20 +23,42 @@ export function SiteHeader() {
   const [openOn, setOpenOn] = useState<string | null>(null);
   const open = openOn === pathname;
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const navListRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      setOpenOn(null);
-      buttonRef.current?.focus();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  const [hoveredHref, setHoveredHref] = useState<string | null>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number; opacity: number }>({
+    left: 0,
+    width: 0,
+    opacity: 0,
+  });
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const activeItem = NAV.find((item) => isActive(item.href));
+  const targetHref = hoveredHref ?? activeItem?.href ?? null;
 
+  useEffect(() => {
+    const navList = navListRef.current;
+    if (!navList || !targetHref) {
+      setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
+      return;
+    }
+
+    const targetEl = itemRefs.current.get(targetHref);
+    if (!targetEl) {
+      setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
+      return;
+    }
+
+    const navRect = navList.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
+
+    setIndicatorStyle({
+      left: targetRect.left - navRect.left,
+      width: targetRect.width,
+      opacity: 1,
+    });
+  }, [targetHref, pathname]);
   return (
     <header className="sticky top-0 z-40 border-b border-rule bg-paper/90 backdrop-blur">
       <div className="mx-auto flex h-[var(--header-h)] w-full max-w-5xl items-center gap-6 px-5 sm:px-8">
@@ -46,16 +68,38 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="เมนูหลัก" className="hidden lg:block">
-          <ul className="flex items-center gap-0.5">
+          <ul
+            ref={navListRef}
+            onMouseLeave={() => setHoveredHref(null)}
+            className="relative flex items-center gap-0.5"
+          >
+            {/* Sliding background highlight */}
+            <li
+              aria-hidden="true"
+              style={{
+                transform: `translateX(${indicatorStyle.left}px)`,
+                width: `${indicatorStyle.width}px`,
+                opacity: indicatorStyle.opacity,
+              }}
+              className="pointer-events-none absolute inset-y-0 left-0 rounded-md bg-rule/80 transition-[transform,width,opacity] duration-200 ease-out"
+            />
+
             {NAV.map((item) => {
               const active = isActive(item.href);
               return (
-                <li key={item.href}>
+                <li
+                  key={item.href}
+                  ref={(el) => {
+                    if (el) itemRefs.current.set(item.href, el);
+                    else itemRefs.current.delete(item.href);
+                  }}
+                  onMouseEnter={() => setHoveredHref(item.href)}
+                >
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`rounded-md px-2.5 py-1.5 text-sm transition-colors ${
-                      active ? "bg-surface-hover font-medium text-ink" : "text-ink-muted hover:text-ink"
+                    className={`relative z-10 block rounded-md px-2.5 py-1.5 text-sm transition-colors duration-150 ${
+                      active ? "font-semibold text-ink" : "text-ink-muted hover:text-ink"
                     }`}
                   >
                     {item.label}

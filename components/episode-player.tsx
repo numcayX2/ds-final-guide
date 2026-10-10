@@ -558,6 +558,7 @@ function StepVisual({ visual, step }: { visual: EpisodeVisual; step: number }) {
 export function EpisodePlayer({ episodes }: { episodes: Episode[] }) {
   const [epIdx, setEpIdx] = useState(0);
   const [active, setActive] = useState(0);
+  const [sideTab, setSideTab] = useState<"visual" | "notes">("visual");
   const rootRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLLIElement | null)[]>([]);
 
@@ -681,9 +682,55 @@ export function EpisodePlayer({ episodes }: { episodes: Episode[] }) {
                   className={`h-1 flex-1 rounded-full transition-colors ${i === active ? "bg-accent" : i < active ? "bg-rule-strong" : "bg-rule hover:bg-rule-strong"}`} />
               ))}
             </div>
+            <div className="border-b border-rule px-5 pt-2">
+              <div role="tablist" aria-label="โหมดการแสดงผล" className="flex gap-2">
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-visual"
+                  aria-selected={sideTab === "visual"}
+                  aria-controls="tabpanel-visual"
+                  onClick={() => setSideTab("visual")}
+                  className={`border-b-2 pb-2 text-sm font-medium transition-colors ${
+                    sideTab === "visual"
+                      ? "border-accent text-accent-ink"
+                      : "border-transparent text-ink-subtle hover:text-ink"
+                  }`}
+                >
+                  แผนภาพ (Visual)
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-notes"
+                  aria-selected={sideTab === "notes"}
+                  aria-controls="tabpanel-notes"
+                  onClick={() => setSideTab("notes")}
+                  className={`border-b-2 pb-2 text-sm font-medium transition-colors ${
+                    sideTab === "notes"
+                      ? "border-accent text-accent-ink"
+                      : "border-transparent text-ink-subtle hover:text-ink"
+                  }`}
+                >
+                  สรุปวิธีคิด & ทางลัด
+                </button>
+              </div>
+            </div>
             <div className="min-h-0 flex-1 overflow-y-auto p-5">
-              <StepVisual visual={current.visual} step={active} />
-              <div className="mt-6 border-t border-rule pt-5">
+              <div
+                id="tabpanel-visual"
+                role="tabpanel"
+                aria-labelledby="tab-visual"
+                className={sideTab === "visual" ? "block" : "hidden"}
+              >
+                <StepVisual visual={current.visual} step={active} />
+              </div>
+              <div
+                id="tabpanel-notes"
+                role="tabpanel"
+                aria-labelledby="tab-notes"
+                className={sideTab === "notes" ? "block" : "hidden"}
+              >
                 <ThinkingNotes episodeId={ep.id} stepIndex={active} />
               </div>
             </div>
