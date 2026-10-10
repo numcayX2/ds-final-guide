@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { IBM_Plex_Sans_Thai, IBM_Plex_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import "./globals.css";
 
 const plexThai = IBM_Plex_Sans_Thai({
@@ -38,8 +39,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           ข้ามไปที่เนื้อหา
         </a>
-        <SiteHeader />
-        {children}
+        <SmoothScroll>
+          <SiteHeader />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
+@import "lenis/dist/lenis.css";
 
 /* `dark:` follows the toggle (data-theme), not only the OS */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
