@@ -42,11 +42,13 @@
 
 :root {
   --header-h: 3.5rem;
+  --token-amber: #92400e;
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --token-amber: #d97706;
   --color-paper: #121316;
   --color-surface: #18191d;
   --color-surface-hover: #202127;

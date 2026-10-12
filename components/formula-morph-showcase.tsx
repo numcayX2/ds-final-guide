@@ -68,11 +68,14 @@ const TUKEY_MIN = 20;
 const TUKEY_MAX = 55;
 const TUKEY_TICKS = [20, 30, 40, 50];
 
+const COLOR_AMBER = "var(--token-amber, #92400e)";
+
 export function FormulaMorphShowcase() {
   const [topic, setTopic] = useState<FormulaTopic>("tukey");
   const [step, setStep] = useState<number>(0);
   const [anatomySubstep, setAnatomySubstep] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [manualEntry, setManualEntry] = useState<boolean>(false);
   const [hoveredToken, setHoveredToken] = useState<string | null>(null);
 
   // 1. Tukey State (Lect 05)
@@ -157,6 +160,13 @@ export function FormulaMorphShowcase() {
     setStep(0);
     setAnatomySubstep(0);
     setIsPlaying(false);
+    setManualEntry(false);
+  }, []);
+
+  const handleManualSelectAnatomySubstep = useCallback((idx: number) => {
+    setIsPlaying(false);
+    setManualEntry(true);
+    setAnatomySubstep(idx);
   }, []);
 
   const handleAdvanceToStep2 = useCallback(() => {
@@ -180,6 +190,8 @@ export function FormulaMorphShowcase() {
     }
     setStep(0);
     setAnatomySubstep(0);
+    setIsPlaying(false);
+    setManualEntry(false);
   }, [topic]);
 
   // Auto-play driver for Step 0, 2, 3 (timeout chain, one step per tick).
@@ -190,12 +202,14 @@ export function FormulaMorphShowcase() {
     if (!isPlaying) return;
     if (step === 1) return; // TypewriterSubtitleOverlay drives Step 1
     if (step >= totalSteps - 1) {
-      setIsPlaying(false);
-      return;
+      const timer = setTimeout(() => {
+        setIsPlaying(false);
+      }, AUTOPLAY_MS);
+      return () => clearTimeout(timer);
     }
     const timer = setTimeout(() => {
       setAnatomySubstep(0);
-      setStep(step + 1);
+      setStep((s) => s + 1);
     }, AUTOPLAY_MS);
     return () => clearTimeout(timer);
   }, [isPlaying, step, totalSteps]);
@@ -244,9 +258,9 @@ export function FormulaMorphShowcase() {
         </div>
 
         {/* Main Display Board */}
-        <div className="grid gap-6 lg:grid-cols-12 items-start">
+        <div className="grid gap-6 lg:grid-cols-12 items-start min-w-0">
           {/* Left: Formula Stage (Hero Animation) */}
-          <div className="lg:col-span-8 flex flex-col rounded-2xl border border-rule bg-surface p-4 sm:p-6 shadow-xs">
+          <div className="lg:col-span-8 min-w-0 overflow-hidden flex flex-col rounded-2xl border border-rule bg-surface p-4 sm:p-6 shadow-xs">
             <div>
               {/* Stage Tag */}
               <div className="flex items-center justify-between pb-3 border-b border-rule">
@@ -263,12 +277,12 @@ export function FormulaMorphShowcase() {
                   {step === 0 && "สูตรเชิงสัญลักษณ์พร้อม Color Tokens"}
                   {step === 1 && (
                     topic === "tukey"
-                      ? (anatomySubstep === 0 ? "🔵 ลำดับ 1: อธิบาย Q₃ (สีฟ้า)" : "🟠 ลำดับ 2: อธิบาย IQR (สีส้ม)")
+                      ? (anatomySubstep === 0 ? "🔵 ลำดับ 1: อธิบาย Q₃" : "🟠 ลำดับ 2: อธิบาย IQR")
                       : topic === "gini"
                       ? (anatomySubstep === 0 ? "🟢 ลำดับ 1: อธิบาย p(Active)" : "🔴 ลำดับ 2: อธิบาย p(Inactive)")
                       : topic === "confusion"
-                      ? (anatomySubstep === 0 ? "🟢 ลำดับ 1: ผลบวกจริง TP (เขียว)" : anatomySubstep === 1 ? "🟠 ลำดับ 2: ผลบวกลวง FP (ส้ม)" : "🔴 ลำดับ 3: ผลลบลวง FN (แดง)")
-                      : (anatomySubstep === 0 ? "🔵 ลำดับ 1: พิกัดจุดข้อมูล (สีฟ้า)" : "🟠 ลำดับ 2: พิกัด Centroid (สีส้ม)")
+                      ? (anatomySubstep === 0 ? "🟢 ลำดับ 1: ผลบวกจริง TP" : anatomySubstep === 1 ? "🟠 ลำดับ 2: ผลบวกลวง FP" : "🔴 ลำดับ 3: ผลลบลวง FN")
+                      : (anatomySubstep === 0 ? "🔵 ลำดับ 1: พิกัดจุดข้อมูล" : "🟠 ลำดับ 2: พิกัด Centroid")
                   )}
                   {step === 2 && "Morph สัญลักษณ์กลายเป็นตัวเลขจริง"}
                   {step === 3 && "คำนวณตัดทอนจนได้ผลลัพธ์สุทธิ"}
@@ -281,9 +295,11 @@ export function FormulaMorphShowcase() {
                   <TukeyMorphFormula
                     step={step}
                     anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={setAnatomySubstep}
+                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                    onAdvanceAnatomySubstep={setAnatomySubstep}
                     onNextStep={handleAdvanceToStep2}
                     isPlaying={isPlaying}
+                    manualEntry={manualEntry}
                     q1={q1}
                     q3={q3}
                     iqr={tukey.iqr}
@@ -301,9 +317,11 @@ export function FormulaMorphShowcase() {
                   <GiniMorphFormula
                     step={step}
                     anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={setAnatomySubstep}
+                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                    onAdvanceAnatomySubstep={setAnatomySubstep}
                     onNextStep={handleAdvanceToStep2}
                     isPlaying={isPlaying}
+                    manualEntry={manualEntry}
                     active={activeCustomers}
                     inactive={giniCalc.inactive}
                     total={totalCustomers}
@@ -321,9 +339,11 @@ export function FormulaMorphShowcase() {
                   <ConfusionMorphFormula
                     step={step}
                     anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={setAnatomySubstep}
+                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                    onAdvanceAnatomySubstep={setAnatomySubstep}
                     onNextStep={handleAdvanceToStep2}
                     isPlaying={isPlaying}
+                    manualEntry={manualEntry}
                     tp={cm.tp}
                     fp={cm.fp}
                     fn={cm.fn}
@@ -341,9 +361,11 @@ export function FormulaMorphShowcase() {
                   <KMeansMorphFormula
                     step={step}
                     anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={setAnatomySubstep}
+                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                    onAdvanceAnatomySubstep={setAnatomySubstep}
                     onNextStep={handleAdvanceToStep2}
                     isPlaying={isPlaying}
+                    manualEntry={manualEntry}
                     pt={km.pt}
                     c={km.c}
                     dx={km.dx}
@@ -388,6 +410,7 @@ export function FormulaMorphShowcase() {
                       setStep(0);
                       setAnatomySubstep(0);
                     }
+                    setManualEntry(false);
                     setIsPlaying((p) => !p);
                   }}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent-wash px-3 py-1.5 text-xs sm:text-sm font-semibold text-accent-ink hover:bg-accent/15 transition-all shadow-xs"
@@ -410,7 +433,7 @@ export function FormulaMorphShowcase() {
                   <button
                     type="button"
                     disabled={step === 0}
-                    onClick={() => { setIsPlaying(false); setStep((s) => Math.max(0, s - 1)); setAnatomySubstep(0); }}
+                    onClick={() => { setIsPlaying(false); setManualEntry(true); setStep((s) => Math.max(0, s - 1)); setAnatomySubstep(0); }}
                     className="rounded-lg border border-rule p-1.5 text-ink-muted hover:text-ink hover:bg-surface-hover disabled:opacity-30 transition-colors"
                     title="ย้อนกลับ 1 ขั้น"
                   >
@@ -419,7 +442,7 @@ export function FormulaMorphShowcase() {
                   <button
                     type="button"
                     disabled={step === totalSteps - 1}
-                    onClick={() => { setIsPlaying(false); setStep((s) => Math.min(totalSteps - 1, s + 1)); setAnatomySubstep(0); }}
+                    onClick={() => { setIsPlaying(false); setManualEntry(true); setStep((s) => Math.min(totalSteps - 1, s + 1)); setAnatomySubstep(0); }}
                     className="rounded-lg border border-rule p-1.5 text-ink-muted hover:text-ink hover:bg-surface-hover disabled:opacity-30 transition-colors"
                     title="ถัดไป 1 ขั้น"
                   >
@@ -434,7 +457,7 @@ export function FormulaMorphShowcase() {
                   <button
                     key={label}
                     type="button"
-                    onClick={() => { setIsPlaying(false); setStep(idx); setAnatomySubstep(0); }}
+                    onClick={() => { setIsPlaying(false); setManualEntry(true); setStep(idx); setAnatomySubstep(0); }}
                     className={`flex flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 text-center text-xs font-medium transition-all ${
                       step === idx
                         ? "bg-accent-wash text-accent-ink border border-accent/40 font-semibold shadow-xs"
@@ -814,7 +837,6 @@ function useTweenedNumber(target: number, reducedMotion: boolean, duration = 200
   useEffect(() => {
     if (reducedMotion) {
       displayRef.current = target;
-      setDisplay(target);
       return;
     }
     const from = displayRef.current;
@@ -833,7 +855,7 @@ function useTweenedNumber(target: number, reducedMotion: boolean, duration = 200
     return () => cancelAnimationFrame(raf);
   }, [target, reducedMotion, duration]);
 
-  return display;
+  return reducedMotion ? target : display;
 }
 
 interface AnimatedNumberProps {
@@ -1084,7 +1106,7 @@ const ThresholdStripDiagram = memo(function ThresholdStripDiagram({
                     ? "#0f766e"
                     : "#dc2626"
                   : predicted
-                  ? "#d97706"
+                  ? COLOR_AMBER
                   : "#64748b";
                 return (
                   <div
@@ -1192,7 +1214,7 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
             {/* Δx run: point → corner */}
             <line x1={px} y1={py} x2={rx} y2={ry} stroke="#2563eb" strokeWidth={isEuclid ? 2 : 3} strokeOpacity={legOpacity} strokeLinecap="round" />
             {/* Δy rise: corner → centroid */}
-            <line x1={rx} y1={ry} x2={cx} y2={cy} stroke="#d97706" strokeWidth={isEuclid ? 2 : 3} strokeOpacity={legOpacity} strokeLinecap="round" />
+            <line x1={rx} y1={ry} x2={cx} y2={cy} stroke={COLOR_AMBER} strokeWidth={isEuclid ? 2 : 3} strokeOpacity={legOpacity} strokeLinecap="round" />
             {/* Hypotenuse */}
             <line
               x1={px} y1={py} x2={cx} y2={cy}
@@ -1219,15 +1241,15 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
               </text>
             )}
             {ady > 0 && (
-              <text x={(rx + cx) / 2 + 8} y={(ry + cy) / 2} textAnchor="start" fontSize={11} fontFamily="monospace" fontWeight="bold" fill="#d97706">
+              <text x={(rx + cx) / 2 + 8} y={(ry + cy) / 2} textAnchor="start" fontSize={11} fontFamily="monospace" fontWeight="bold" fill={COLOR_AMBER}>
                 Δy={ady}
               </text>
             )}
           </g>
         )}
         {/* Centroid */}
-        <circle cx={cx} cy={cy} r={8} fill="#d97706" stroke="#fff" strokeWidth={2.5} />
-        <text x={cx} y={cy - 13} textAnchor="middle" fontSize={11} fontFamily="monospace" fontWeight="bold" fill="#d97706">
+        <circle cx={cx} cy={cy} r={8} fill={COLOR_AMBER} stroke="#fff" strokeWidth={2.5} />
+        <text x={cx} y={cy - 13} textAnchor="middle" fontSize={11} fontFamily="monospace" fontWeight="bold" fill={COLOR_AMBER}>
           {targetKey}
         </text>
         {/* Data point */}
@@ -1285,8 +1307,12 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
 function getGraphemes(text: string): string[] {
   if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
     try {
-      const segmenter = new (Intl as any).Segmenter("th", { granularity: "grapheme" });
-      return Array.from(segmenter.segment(text), (s: any) => s.segment);
+      const segmenter = new (Intl as unknown as {
+        Segmenter: new (locale: string, options: { granularity: string }) => {
+          segment: (input: string) => Iterable<{ segment: string }>;
+        };
+      }).Segmenter("th", { granularity: "grapheme" });
+      return Array.from(segmenter.segment(text), (s) => s.segment);
     } catch {
       // fallback
     }
@@ -1302,7 +1328,7 @@ interface TypewriterSubtitleOverlayProps {
   autoAdvance?: boolean;
   onComplete: () => void;
   chapterIndex: number;
-  totalChapters: number;
+  totalChapters?: number;
   chapterLabels: string[];
   onSelectChapter?: (idx: number) => void;
   reducedMotion: boolean;
@@ -1317,15 +1343,25 @@ function TypewriterSubtitleOverlay({
   autoAdvance = true,
   onComplete,
   chapterIndex,
-  totalChapters,
   chapterLabels,
   onSelectChapter,
   reducedMotion,
-  onNextStep,
 }: TypewriterSubtitleOverlayProps) {
   const graphemes = useMemo(() => getGraphemes(text), [text]);
   const [charCount, setCharCount] = useState(() => (reducedMotion ? getGraphemes(text).length : 0));
   const [isPaused, setIsPaused] = useState(false);
+  const [prevChapter, setPrevChapter] = useState(chapterIndex);
+
+  // Reset only on chapter switch (NOT on text identity): the IQR/Gini/TP
+  // subtitles embed live slider values, so resetting on `text` restarts
+  // typing on every slider tick and traps scrubbers in a retype loop.
+  // Live value edits clamp instead (see ticker effect).
+  if (prevChapter !== chapterIndex) {
+    setPrevChapter(chapterIndex);
+    setCharCount(reducedMotion ? graphemes.length : 0);
+    setIsPaused(false);
+  }
+
   // Stable callback ref: parents pass inline onComplete arrows (new identity
   // per render from slider/hover state). Without this, the ticker effect
   // below would cancel + re-arm the 28ms / 1.1s timers on every unrelated
@@ -1334,16 +1370,6 @@ function TypewriterSubtitleOverlay({
   useEffect(() => {
     onCompleteRef.current = onComplete;
   });
-
-  // Reset only on chapter switch (NOT on text identity): the IQR/Gini/TP
-  // subtitles embed live slider values, so resetting on `text` restarts
-  // typing on every slider tick and traps scrubbers in a retype loop.
-  // Live value edits clamp instead (see ticker effect).
-  useEffect(() => {
-    setCharCount(reducedMotion ? graphemes.length : 0);
-    setIsPaused(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapterIndex, reducedMotion]);
 
   // Pause typing when document is hidden (background tab) to avoid timer pileup
   useEffect(() => {
@@ -1408,20 +1434,20 @@ function TypewriterSubtitleOverlay({
   const progress = graphemes.length > 0 ? charCount / graphemes.length : 1;
 
   return (
-    <div className="w-full max-w-xl mx-auto pt-4 sm:pt-5 pb-1 text-center select-none">
+    <div className="w-full max-w-xl mx-auto pt-4 sm:pt-5 pb-1 text-center select-none min-w-0">
       {/* Clean Topic Header & Controls (Native to website style, no black box, no CC frame) */}
-      <div className="flex items-center justify-between gap-2 pb-2 mb-2.5 border-b border-rule text-xs text-ink-muted">
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-2 mb-2.5 border-b border-rule text-xs text-ink-muted">
         <div className="flex items-center gap-2 min-w-0">
           <span
             className="size-2 rounded-full shrink-0 animate-pulse"
             style={{ backgroundColor: glowColor }}
           />
-          <span className="font-bold text-xs sm:text-sm tracking-tight truncate" style={{ color: glowColor }}>
+          <span className="font-bold text-xs sm:text-sm tracking-tight min-w-0 whitespace-normal sm:truncate break-words" style={{ color: glowColor }}>
             {badgeText}
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+        <div className="flex items-center gap-1.5 shrink-0 ml-auto sm:ml-2">
           {/* Chapter dots / pills */}
           <div className="flex items-center gap-1">
             {chapterLabels.map((label, idx) => {
@@ -1449,6 +1475,7 @@ function TypewriterSubtitleOverlay({
             onClick={handleReplay}
             className="p-1 rounded text-ink-muted hover:text-ink hover:bg-surface-hover transition-colors"
             title="พิมพ์ซ้ำตั้งแต่ต้น"
+            aria-label="พิมพ์ซ้ำตั้งแต่ต้น"
           >
             <ResetIcon className="size-3.5" />
           </button>
@@ -1457,6 +1484,7 @@ function TypewriterSubtitleOverlay({
             onClick={() => setIsPaused((p) => !p)}
             className="p-1 rounded text-ink-muted hover:text-ink hover:bg-surface-hover transition-colors"
             title={isPaused ? "พิมพ์ต่อ" : "พักการพิมพ์"}
+            aria-label={isPaused ? "พิมพ์ต่อ" : "พักการพิมพ์"}
           >
             {isPaused ? <PlayIcon className="size-3.5" /> : <PauseIcon className="size-3.5" />}
           </button>
@@ -1522,8 +1550,10 @@ interface TukeyMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
+  onAdvanceAnatomySubstep?: (idx: number) => void;
   onNextStep?: () => void;
   isPlaying: boolean;
+  manualEntry?: boolean;
   q1: number;
   q3: number;
   iqr: number;
@@ -1541,8 +1571,10 @@ function TukeyMorphFormula({
   step,
   anatomySubstep,
   onSelectAnatomySubstep,
+  onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  manualEntry,
   q1,
   q3,
   iqr,
@@ -1556,6 +1588,8 @@ function TukeyMorphFormula({
   reducedMotion,
 }: TukeyMorphProps) {
   const anim = reducedMotion ? NO_ANIM : undefined;
+  const isTypingActive = isPlaying || Boolean(manualEntry);
+  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
 
   return (
     <div className="w-full max-w-2xl space-y-3.5">
@@ -1582,7 +1616,7 @@ function TukeyMorphFormula({
         </span>
         <span className="text-ink-muted">×</span>
         <TokenPill
-          color="#d97706"
+          color={COLOR_AMBER}
           label="IQR (Q3 - Q1)"
           ghost="IQR"
           symbol="IQR"
@@ -1677,27 +1711,27 @@ function TukeyMorphFormula({
               glowColor="#2563eb"
               badgeText="Q₃ · ควอร์ไทล์ที่ 3 (75th Percentile)"
               text="Q₃ คือ ควอร์ไทล์ที่ 3 (75th Percentile) จุดตัดที่ข้อมูล 75% กองอยู่ฝั่งซ้าย ทำหน้าที่เป็น 'หมุดตั้งต้น' เพื่อเริ่มปักเสารั้วบน (Upper Fence)"
-              isActive={true}
-              autoAdvance={true}
-              onComplete={() => onSelectAnatomySubstep(1)}
+              isActive={isTypingActive}
+              autoAdvance={isPlaying}
+              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
               chapterIndex={0}
               totalChapters={2}
-              chapterLabels={["1. Q₃ (สีฟ้า)", "2. IQR (สีส้ม)"]}
+              chapterLabels={["1. Q₃", "2. IQR"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
             />
           ) : (
             <TypewriterSubtitleOverlay
               key="sub-iqr"
-              glowColor="#d97706"
+              glowColor={COLOR_AMBER}
               badgeText="IQR · Interquartile Range (Q₃ − Q₁)"
               text={`IQR คือ Interquartile Range ส่วนต่าง Q₃ − Q₁ (${q3} − ${q1} = ${iqr.toFixed(1)}) แทนความกว้าง 50% ตรงกลาง นำไปคูณ 1.5 เท่า แล้วยืดรั้วออกจากหมุด Q₃`}
-              isActive={true}
+              isActive={isTypingActive}
               autoAdvance={isPlaying}
               onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
               chapterIndex={1}
               totalChapters={2}
-              chapterLabels={["1. Q₃ (สีฟ้า)", "2. IQR (สีส้ม)"]}
+              chapterLabels={["1. Q₃", "2. IQR"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
               onNextStep={onNextStep}
@@ -1716,8 +1750,10 @@ interface GiniMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
+  onAdvanceAnatomySubstep?: (idx: number) => void;
   onNextStep?: () => void;
   isPlaying: boolean;
+  manualEntry?: boolean;
   active: number;
   inactive: number;
   total: number;
@@ -1735,8 +1771,10 @@ function GiniMorphFormula({
   step,
   anatomySubstep,
   onSelectAnatomySubstep,
+  onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  manualEntry,
   active,
   inactive,
   total,
@@ -1750,6 +1788,8 @@ function GiniMorphFormula({
   reducedMotion,
 }: GiniMorphProps) {
   const anim = reducedMotion ? NO_ANIM : undefined;
+  const isTypingActive = isPlaying || Boolean(manualEntry);
+  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
   return (
     <div className="w-full max-w-2xl space-y-3.5">
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xl sm:text-2xl font-medium tracking-tight">
@@ -1870,12 +1910,12 @@ function GiniMorphFormula({
               glowColor="#0f766e"
               badgeText="p(Active) · ลูกค้ากลุ่มใช้งานประจำ"
               text={`p(Active) คือ สัดส่วนลูกค้ากลุ่มใช้งานประจำ (${active}/${total} = ${pActive.toFixed(3)}) เป็นกลุ่มแรกที่เราจะนำค่ายกกำลังสองในสูตร Gini Impurity`}
-              isActive={true}
-              autoAdvance={true}
-              onComplete={() => onSelectAnatomySubstep(1)}
+              isActive={isTypingActive}
+              autoAdvance={isPlaying}
+              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
               chapterIndex={0}
               totalChapters={2}
-              chapterLabels={["1. Active (สีเขียว)", "2. Inactive (สีแดง)"]}
+              chapterLabels={["1. Active", "2. Inactive"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
             />
@@ -1885,12 +1925,12 @@ function GiniMorphFormula({
               glowColor="#b91c1c"
               badgeText="p(Inactive) · ลูกค้ากลุ่มไม่ใช้งาน"
               text={`p(Inactive) คือ สัดส่วนลูกค้ากลุ่มไม่ใช้งาน (${inactive}/${total} = ${pInactive.toFixed(3)}) นำมายกกำลังสองแล้วบวกกับกลุ่มแรก ก่อนนำผลรวมทั้งหมดไปหักออกจาก 1`}
-              isActive={true}
+              isActive={isTypingActive}
               autoAdvance={isPlaying}
               onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
               chapterIndex={1}
               totalChapters={2}
-              chapterLabels={["1. Active (สีเขียว)", "2. Inactive (สีแดง)"]}
+              chapterLabels={["1. Active", "2. Inactive"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
               onNextStep={onNextStep}
@@ -1909,8 +1949,10 @@ interface ConfusionMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
+  onAdvanceAnatomySubstep?: (idx: number) => void;
   onNextStep?: () => void;
   isPlaying: boolean;
+  manualEntry?: boolean;
   tp: number;
   fp: number;
   fn: number;
@@ -1928,8 +1970,10 @@ function ConfusionMorphFormula({
   step,
   anatomySubstep,
   onSelectAnatomySubstep,
+  onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  manualEntry,
   tp,
   fp,
   fn,
@@ -1941,6 +1985,9 @@ function ConfusionMorphFormula({
   reducedMotion,
 }: ConfusionMorphProps) {
   const anim = reducedMotion ? NO_ANIM : undefined;
+  const isTypingActive = isPlaying || Boolean(manualEntry);
+  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
+
   return (
     <div className="w-full max-w-2xl space-y-4">
       {/* Precision Row */}
@@ -1982,7 +2029,7 @@ function ConfusionMorphFormula({
               />
               <span className="text-ink-muted text-sm">+</span>
               <TokenPill
-                color="#d97706"
+                color={COLOR_AMBER}
                 label="FP"
                 ghost="FP"
                 symbol="FP"
@@ -2113,12 +2160,12 @@ function ConfusionMorphFormula({
               glowColor="#0f766e"
               badgeText="TP · True Positive (ผลบวกจริง)"
               text={`TP (True Positive) คือ ผลบวกจริง เคสที่คนป่วยจริงและโมเดลทายถูก ${tp} คน เป็นตัวตั้งสำคัญที่สุดทั้งในสูตร Precision และ Recall`}
-              isActive={true}
-              autoAdvance={true}
-              onComplete={() => onSelectAnatomySubstep(1)}
+              isActive={isTypingActive}
+              autoAdvance={isPlaying}
+              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
               chapterIndex={0}
               totalChapters={3}
-              chapterLabels={["1. TP (เขียว)", "2. FP (ส้ม)", "3. FN (แดง)"]}
+              chapterLabels={["1. TP", "2. FP", "3. FN"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
             />
@@ -2127,15 +2174,15 @@ function ConfusionMorphFormula({
           {anatomySubstep === 1 && (
             <TypewriterSubtitleOverlay
               key="sub-fp"
-              glowColor="#d97706"
+              glowColor={COLOR_AMBER}
               badgeText="FP · False Positive (ผลบวกลวง)"
               text={`FP (False Positive) คือ ผลบวกลวง คนปกติแต่โมเดลทายผิดว่าป่วย ${fp} คน เป็นตัวการบวกเพิ่มในตัวหารของ Precision ทำให้ความแม่นยำลดลง`}
-              isActive={true}
-              autoAdvance={true}
-              onComplete={() => onSelectAnatomySubstep(2)}
+              isActive={isTypingActive}
+              autoAdvance={isPlaying}
+              onComplete={() => (isPlaying ? advanceSubstep(2) : undefined)}
               chapterIndex={1}
               totalChapters={3}
-              chapterLabels={["1. TP (เขียว)", "2. FP (ส้ม)", "3. FN (แดง)"]}
+              chapterLabels={["1. TP", "2. FP", "3. FN"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
             />
@@ -2147,12 +2194,12 @@ function ConfusionMorphFormula({
               glowColor="#b91c1c"
               badgeText="FN · False Negative (ผลลบลวง)"
               text={`FN (False Negative) คือ ผลลบลวง คนป่วยจริงแต่โมเดลตรวจไม่เจอ ${fn} คน เป็นตัวการบวกเพิ่มในตัวหารของ Recall ซึ่งอันตรายมากทางการแพทย์`}
-              isActive={true}
+              isActive={isTypingActive}
               autoAdvance={isPlaying}
               onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
               chapterIndex={2}
               totalChapters={3}
-              chapterLabels={["1. TP (เขียว)", "2. FP (ส้ม)", "3. FN (แดง)"]}
+              chapterLabels={["1. TP", "2. FP", "3. FN"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
               onNextStep={onNextStep}
@@ -2171,8 +2218,10 @@ interface KMeansMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
+  onAdvanceAnatomySubstep?: (idx: number) => void;
   onNextStep?: () => void;
   isPlaying: boolean;
+  manualEntry?: boolean;
   pt: { x: number; y: number; label: string };
   c: { x: number; y: number; label: string };
   dx: number;
@@ -2190,8 +2239,10 @@ function KMeansMorphFormula({
   step,
   anatomySubstep,
   onSelectAnatomySubstep,
+  onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  manualEntry,
   pt,
   c,
   dx,
@@ -2205,6 +2256,8 @@ function KMeansMorphFormula({
 }: KMeansMorphProps) {
   const isEuclid = mode === "euclidean";
   const anim = reducedMotion ? NO_ANIM : undefined;
+  const isTypingActive = isPlaying || Boolean(manualEntry);
+  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
 
   return (
     <div className="w-full max-w-2xl space-y-3.5">
@@ -2232,7 +2285,7 @@ function KMeansMorphFormula({
           />
           <span className="text-ink-muted text-base">−</span>
           <TokenPill
-            color="#d97706"
+            color={COLOR_AMBER}
             label="c_x"
             ghost="cₓ"
             symbol="cₓ"
@@ -2277,7 +2330,7 @@ function KMeansMorphFormula({
           />
           <span className="text-ink-muted text-base">−</span>
           <TokenPill
-            color="#d97706"
+            color={COLOR_AMBER}
             label="c_y"
             ghost="cᵧ"
             symbol="cᵧ"
@@ -2360,27 +2413,27 @@ function KMeansMorphFormula({
               glowColor="#2563eb"
               badgeText="(xₚ, yₚ) · พิกัดข้อมูลที่ต้องการจัดกลุ่ม"
               text={`พิกัดจุด (xₚ, yₚ) คือ ตำแหน่งของข้อมูลจุด ${pt.label} (xₚ = ${pt.x}, yₚ = ${pt.y}) ทำหน้าที่เป็นหมุดตั้งต้นในการวัดระยะห่างไปยังคลัสเตอร์`}
-              isActive={true}
-              autoAdvance={true}
-              onComplete={() => onSelectAnatomySubstep(1)}
+              isActive={isTypingActive}
+              autoAdvance={isPlaying}
+              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
               chapterIndex={0}
               totalChapters={2}
-              chapterLabels={["1. พิกัดจุด (ฟ้า)", "2. Centroid (ส้ม)"]}
+              chapterLabels={["1. พิกัดจุด", "2. Centroid"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
             />
           ) : (
             <TypewriterSubtitleOverlay
               key="sub-centroid"
-              glowColor="#d97706"
+              glowColor={COLOR_AMBER}
               badgeText="(cₓ, cᵧ) · จุดกึ่งกลาง Centroid"
               text={`พิกัด Centroid (cₓ, cᵧ) คือ จุดกึ่งกลางคลัสเตอร์ ${c.label} (cₓ = ${c.x}, cᵧ = ${c.y}) ทำหน้าที่เป็นหมุดอ้างอิงเพื่อหาผลต่าง Δx = ${Math.abs(dx)} และ Δy = ${Math.abs(dy)}`}
-              isActive={true}
+              isActive={isTypingActive}
               autoAdvance={isPlaying}
               onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
               chapterIndex={1}
               totalChapters={2}
-              chapterLabels={["1. พิกัดจุด (ฟ้า)", "2. Centroid (ส้ม)"]}
+              chapterLabels={["1. พิกัดจุด", "2. Centroid"]}
               onSelectChapter={onSelectAnatomySubstep}
               reducedMotion={reducedMotion}
               onNextStep={onNextStep}
