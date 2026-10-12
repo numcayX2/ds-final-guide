@@ -1297,7 +1297,6 @@ function getGraphemes(text: string): string[] {
 interface TypewriterSubtitleOverlayProps {
   glowColor: string;
   badgeText: string;
-  speakerTag?: string;
   text: string;
   isActive: boolean;
   autoAdvance?: boolean;
@@ -1313,7 +1312,6 @@ interface TypewriterSubtitleOverlayProps {
 function TypewriterSubtitleOverlay({
   glowColor,
   badgeText,
-  speakerTag,
   text,
   isActive,
   autoAdvance = true,
@@ -1421,11 +1419,6 @@ function TypewriterSubtitleOverlay({
           <span className="font-bold text-xs sm:text-sm tracking-tight truncate" style={{ color: glowColor }}>
             {badgeText}
           </span>
-          {speakerTag && (
-            <span className="hidden sm:inline-block text-[11px] text-ink-subtle shrink-0">
-              ({speakerTag})
-            </span>
-          )}
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0 ml-2">
@@ -1683,7 +1676,6 @@ function TukeyMorphFormula({
               key="sub-q3"
               glowColor="#2563eb"
               badgeText="Q₃ · ควอร์ไทล์ที่ 3 (75th Percentile)"
-              speakerTag="สีฟ้าสว่างขึ้นก่อน"
               text="Q₃ คือ ควอร์ไทล์ที่ 3 (75th Percentile) จุดตัดที่ข้อมูล 75% กองอยู่ฝั่งซ้าย ทำหน้าที่เป็น 'หมุดตั้งต้น' เพื่อเริ่มปักเสารั้วบน (Upper Fence)"
               isActive={true}
               autoAdvance={true}
@@ -1699,7 +1691,6 @@ function TukeyMorphFormula({
               key="sub-iqr"
               glowColor="#d97706"
               badgeText="IQR · Interquartile Range (Q₃ − Q₁)"
-              speakerTag="สีส้มสว่างตามมา"
               text={`IQR คือ Interquartile Range ส่วนต่าง Q₃ − Q₁ (${q3} − ${q1} = ${iqr.toFixed(1)}) แทนความกว้าง 50% ตรงกลาง นำไปคูณ 1.5 เท่า แล้วยืดรั้วออกจากหมุด Q₃`}
               isActive={true}
               autoAdvance={isPlaying}
@@ -1878,7 +1869,6 @@ function GiniMorphFormula({
               key="sub-pactive"
               glowColor="#0f766e"
               badgeText="p(Active) · ลูกค้ากลุ่มใช้งานประจำ"
-              speakerTag="สีเขียวสว่างขึ้นก่อน"
               text={`p(Active) คือ สัดส่วนลูกค้ากลุ่มใช้งานประจำ (${active}/${total} = ${pActive.toFixed(3)}) เป็นกลุ่มแรกที่เราจะนำค่ายกกำลังสองในสูตร Gini Impurity`}
               isActive={true}
               autoAdvance={true}
@@ -1894,7 +1884,6 @@ function GiniMorphFormula({
               key="sub-pinactive"
               glowColor="#b91c1c"
               badgeText="p(Inactive) · ลูกค้ากลุ่มไม่ใช้งาน"
-              speakerTag="สีแดงสว่างตามมา"
               text={`p(Inactive) คือ สัดส่วนลูกค้ากลุ่มไม่ใช้งาน (${inactive}/${total} = ${pInactive.toFixed(3)}) นำมายกกำลังสองแล้วบวกกับกลุ่มแรก ก่อนนำผลรวมทั้งหมดไปหักออกจาก 1`}
               isActive={true}
               autoAdvance={isPlaying}
@@ -2123,7 +2112,6 @@ function ConfusionMorphFormula({
               key="sub-tp"
               glowColor="#0f766e"
               badgeText="TP · True Positive (ผลบวกจริง)"
-              speakerTag="ทายถูกว่าป่วย / สีเขียวสว่างก่อน"
               text={`TP (True Positive) คือ ผลบวกจริง เคสที่คนป่วยจริงและโมเดลทายถูก ${tp} คน เป็นตัวตั้งสำคัญที่สุดทั้งในสูตร Precision และ Recall`}
               isActive={true}
               autoAdvance={true}
@@ -2141,7 +2129,6 @@ function ConfusionMorphFormula({
               key="sub-fp"
               glowColor="#d97706"
               badgeText="FP · False Positive (ผลบวกลวง)"
-              speakerTag="เตือนหลอก / สีส้มสว่างตามมา"
               text={`FP (False Positive) คือ ผลบวกลวง คนปกติแต่โมเดลทายผิดว่าป่วย ${fp} คน เป็นตัวการบวกเพิ่มในตัวหารของ Precision ทำให้ความแม่นยำลดลง`}
               isActive={true}
               autoAdvance={true}
@@ -2159,7 +2146,6 @@ function ConfusionMorphFormula({
               key="sub-fn"
               glowColor="#b91c1c"
               badgeText="FN · False Negative (ผลลบลวง)"
-              speakerTag="ตรวจหลุดรอด / สีแดงสว่างตัวสุดท้าย"
               text={`FN (False Negative) คือ ผลลบลวง คนป่วยจริงแต่โมเดลตรวจไม่เจอ ${fn} คน เป็นตัวการบวกเพิ่มในตัวหารของ Recall ซึ่งอันตรายมากทางการแพทย์`}
               isActive={true}
               autoAdvance={isPlaying}
@@ -2373,7 +2359,6 @@ function KMeansMorphFormula({
               key="sub-pt"
               glowColor="#2563eb"
               badgeText="(xₚ, yₚ) · พิกัดข้อมูลที่ต้องการจัดกลุ่ม"
-              speakerTag="สีฟ้าสว่างขึ้นก่อน"
               text={`พิกัดจุด (xₚ, yₚ) คือ ตำแหน่งของข้อมูลจุด ${pt.label} (xₚ = ${pt.x}, yₚ = ${pt.y}) ทำหน้าที่เป็นหมุดตั้งต้นในการวัดระยะห่างไปยังคลัสเตอร์`}
               isActive={true}
               autoAdvance={true}
@@ -2389,7 +2374,6 @@ function KMeansMorphFormula({
               key="sub-centroid"
               glowColor="#d97706"
               badgeText="(cₓ, cᵧ) · จุดกึ่งกลาง Centroid"
-              speakerTag="สีส้มสว่างตามมา"
               text={`พิกัด Centroid (cₓ, cᵧ) คือ จุดกึ่งกลางคลัสเตอร์ ${c.label} (cₓ = ${c.x}, cᵧ = ${c.y}) ทำหน้าที่เป็นหมุดอ้างอิงเพื่อหาผลต่าง Δx = ${Math.abs(dx)} และ Δy = ${Math.abs(dy)}`}
               isActive={true}
               autoAdvance={isPlaying}
