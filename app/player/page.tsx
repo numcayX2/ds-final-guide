@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { episodes } from "@/content/episodes";
 import { EpisodePlayer } from "@/components/episode-player";
+import { FormulaMorphShowcase } from "@/components/formula-morph-showcase";
 import { Reveal } from "@/components/reveal";
+
+export const metadata: Metadata = {
+  title: "Thinking Player | DS Final Guide",
+  description: "จำลองกระบวนการแก้โจทย์จริงด้วย Formula Morph Transition และ Scrollytelling ละเอียดทีละขั้น",
+};
 
 export default function PlayerPage() {
   const totalSteps = episodes.reduce((n, e) => n + e.steps.length, 0);
@@ -64,8 +71,42 @@ export default function PlayerPage() {
         </Reveal>
       </section>
 
+      {/* Formula Morph Transition (Interactive Formula Thinking Player) */}
+      <section id="morph-player" className="shell mt-12 sm:mt-14 space-y-6">
+        <Reveal>
+          <div className="space-y-2 border-b border-rule pb-5">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-accent-ink">
+              <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-accent-ink font-bold">
+                Kinetic Morph Player
+              </span>
+              <span>&middot;</span>
+              <span>แปลงร่างสูตรทีละขั้น</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+              Formula Morph Transition
+            </h2>
+            <p className="text-sm sm:text-base text-ink-muted max-w-2xl leading-relaxed">
+              จำลองกระบวนการแทนค่าและตัดทอนสูตรแบบ Smooth Morph Transition พร้อมคำอธิบาย Subtitle ทีละตัวอักษรและการเล่นอัตโนมัติ (Tukey, Gini, Confusion Matrix, K-Means)
+            </p>
+          </div>
+        </Reveal>
+
+        <FormulaMorphShowcase />
+      </section>
+
       {/* Main Interactive Player Section */}
-      <section className="shell mt-12 sm:mt-14">
+      <section className="shell mt-16 sm:mt-20 pt-12 border-t border-rule space-y-6">
+        <Reveal>
+          <div className="space-y-2 pb-2">
+            <p className="eyebrow">Scrollytelling &middot; ลงลึกรายกรณี</p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+              Episodes ทั้งหมด
+            </h2>
+            <p className="text-sm sm:text-base text-ink-muted max-w-2xl leading-relaxed">
+              เลื่อนหน้าจอเพื่อคลี่ขั้นตอนการคำนวณอย่างละเอียดพร้อมแผนภาพประกอบการวิเคราะห์
+            </p>
+          </div>
+        </Reveal>
         <EpisodePlayer episodes={episodes} />
       </section>
     </main>
