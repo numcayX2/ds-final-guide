@@ -127,10 +127,10 @@ export const episodes: Episode[] = [
       {
         n: 1,
         verification: VERIFIED,
-        headline: "โหนดพ่อหารเกือบเท่ากัน",
+        headline: "โหนดรากแบ่งครึ่ง 50/50 พอดี",
         body: "ที่รากมี Active 6 คน และ Inactive 6 คน พอดีกัน Gini จึงสูงสุด เท่ากับ 0.500",
         visual: { kind: "decision-tree", rootGini: 0.5, splits: [] },
-        numbers: ["Gini(parent) = 1 - 2 x (6/12)^2 = 0.500"],
+        numbers: ["Gini(parent) = 1 - [(6/12)^2 + (6/12)^2] = 0.500"],
       },
       {
         n: 2,

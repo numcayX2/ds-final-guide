@@ -13,6 +13,7 @@ const NAV = [
   { href: "/tools", label: "เครื่องคิดเลข", desc: "Tukey, Confusion Matrix, Gini, K-Means" },
   { href: "/homework", label: "เฉลยการบ้าน", desc: "วิธีคิดทุกขั้นของการบ้าน" },
   { href: "/mock-test", label: "ข้อสอบจำลอง", desc: "โหมดฝึก และโหมดจับเวลา" },
+  { href: "/lab", label: "สอบ Lab", desc: "คู่มือ Colab version3 + Paper" },
 ] as const;
 
 const MOBILE_NAV = [{ href: "/", label: "หน้าแรก", desc: "แผนทบทวน 3 วัน" }, ...NAV];

@@ -361,6 +361,34 @@ considered done. Re-derive any number you are about to ship.
 - **Ported Homework Problem from Slide 35**:
   - Candidate Models A/B/C on 100 customers: TP/FP/FN/TN, Accuracy (81%/78%/85%), Precision (89%/67%/82%), Recall (60%/90%/80%), F1 (72%/77%/81%), retention trade-off analysis, and recommendation.
 - **All routes verified green with `npm run build` and `npx tsc --noEmit`**.
+- **UX overhaul of `/chapters` (2026-10-12)** — full rewrites of
+  `app/chapters/page.tsx` (now `"use client"`) and `components/content-blocks.tsx`:
+  - ScrollSpy desktop TOC (rAF-throttled, nested section links, `aria-current="location"`,
+    percent progress bar), sticky mobile chapter nav with active pill + progress line,
+    hero read-progress badge, back-to-top FAB (appears after 480px).
+  - In-page quick search (`#ch-q`: chapter meta, headings, key terms, block text,
+    estimate focus, bridge labels) with `<mark>` highlights, block-kind filter chips
+    (`aria-pressed`), `role="status"` result line, empty state with clear button,
+    Escape clears the query.
+  - Contextual bridge cards per chapter + `[WARN] นำเครื่องคิดเลขเข้าห้องสอบ`
+    badge on ch01–04. Spec anchors corrected to real repo ids:
+    `/tools#gini-gain` (spec's `gini-splitter` does not exist) and
+    `/homework#hw-hw1-customer-churn-metrics` (spec's id is missing the `hw1-`).
+  - Mark-as-read per chapter, persisted in `localStorage` key `ds-ch-read-v1`
+    via `useSyncExternalStore` (cross-tab `storage` + custom event).
+  - Block polish: definition card with นิยาม tag, `[WARN]` pitfall box
+    (border-l-4 warn tokens), numbered step-by-step worked examples with answer
+    footer, zebra tables in a keyboard-scrollable `role="region"`.
+- **`/player?ep=ep03` deep link**: mount effect in `components/episode-player.tsx`
+  reads `?ep=` and preselects the episode (needed by the bridge URLs).
+- Known pre-existing (untouched): `.eyebrow`, `.index`, `.bento-pill`,
+  `.tactile-btn` are used site-wide but have no definition in `app/globals.css`
+  — they render unstyled everywhere; `/chapters` keeps them for consistency.
+- Verified in-browser on a fresh `next start` (desktop 1440, 375px, light + dark):
+  search (Gini/IQR/Confusion Matrix/K-Means), chips, ScrollSpy, progress bars,
+  read-state persistence across reload, bridge click-through to
+  `/tools#tukey-iqr`, `/player?ep=ep03` → EP03 `aria-current="page"`,
+  no horizontal overflow, 0 console/page errors.
 
 ---
 

@@ -48,9 +48,9 @@ export const THINKING_NOTES: Record<EpisodeId, ThinkingNote[]> = {
   /* EP02 · Decision tree & Gini */
   ep02: [
     {
-      tex: tex`\mathrm{Gini} = 1 - \left[\left(\tfrac{6}{12}\right)^2 + \left(\tfrac{6}{12}\right)^2\right] = 0.5`,
+      tex: tex`\mathrm{Gini} = 1 - \left[\left(\tfrac{6}{12}\right)^2 + \left(\tfrac{6}{12}\right)^2\right] = 0.500`,
       idea: "สองคลาสปนกันครึ่งต่อครึ่ง ความไม่บริสุทธิ์จึงสูงสุดสำหรับกรณี 2 คลาส",
-      shortcut: "2 คลาสสัดส่วน 50/50 ได้ Gini = 0.5 เสมอ ถ้ามีคลาสเดียวล้วน Gini = 0",
+      shortcut: "2 คลาสสัดส่วน 50/50 ได้ Gini = 0.500 เสมอ ถ้ามีคลาสเดียวล้วน Gini = 0",
       trap: "ยกกำลังสองที่สัดส่วนของแต่ละคลาสก่อน แล้วค่อยรวม",
     },
     {
@@ -72,7 +72,7 @@ export const THINKING_NOTES: Record<EpisodeId, ThinkingNote[]> = {
       trap: "Weighted Gini ของ B (0.444) สูงกว่า A (0.278) แปลว่า B แยกข้อมูลได้แย่กว่า",
     },
     {
-      tex: tex`\Delta_A = 0.5 - 0.278 = 0.222, \qquad \Delta_B = 0.5 - 0.444 = 0.056`,
+      tex: tex`\Delta_A = 0.500 - 0.278 = 0.222, \qquad \Delta_B = 0.500 - 0.444 = 0.056`,
       idea: "เลือก split ที่ Gain สูงสุด จึงเลือก Candidate A",
       shortcut: "Lect 07 p.12: Candidate split ที่ได้ Gini Gain สูงสุดจะถูกเลือก",
       trap: "Gini ยิ่งต่ำยิ่งดี แต่ Gini Gain ยิ่งสูงยิ่งดี — อย่าสลับกัน",

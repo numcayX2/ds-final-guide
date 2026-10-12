@@ -256,6 +256,7 @@ const MATRIX_ROWS: Array<[string, CellKey, CellKey]> = [
   ["จริง −", "fp", "tn"],
 ];
 const METRIC_EXAMPLE = { tp: 4, fn: 2, fp: 1, tn: 3 };
+const CHURN_EXAMPLE = { tp: 3, fn: 2, fp: 2, tn: 3 };
 
 export function MetricCalculator() {
   const uid = useId();
@@ -319,7 +320,10 @@ export function MetricCalculator() {
         title="มาตรวัดจาก Confusion Matrix"
         lect="Lect 08"
         desc="กรอกตัวเลขลงตาราง 2×2 ตามตำแหน่งจริง (แถว = ค่าจริง, คอลัมน์ = ค่าที่ทาย) แล้วดูการแทนค่าในแต่ละสูตร"
-        presets={[{ label: "ตัวอย่าง Play / Rest", onClick: () => f.load(METRIC_EXAMPLE), active: f.isLoaded(METRIC_EXAMPLE) }]}
+        presets={[
+          { label: "เคส FIFA (สไลด์)", onClick: () => f.load(METRIC_EXAMPLE), active: f.isLoaded(METRIC_EXAMPLE) },
+          { label: "เคสลูกค้า Inactivity (HW01: 10 คน)", onClick: () => f.load(CHURN_EXAMPLE), active: f.isLoaded(CHURN_EXAMPLE) },
+        ]}
       />
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
@@ -404,6 +408,51 @@ export function MetricCalculator() {
             </div>
           </Panel>
         )}
+      </div>
+
+      {/* BQ Customer Inactivity & Churn Meaning Card */}
+      <div className="rounded-xl border border-rule bg-surface p-5 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-rule pb-3">
+          <div>
+            <h3 className="text-sm font-semibold text-ink">
+              💼 มุมมองโจทย์ธุรกิจ (Business Question - BQ): การตามลูกค้า Inactive / Churn
+            </h3>
+            <p className="text-xs text-ink-muted mt-0.5">
+              ตัวอย่างข้อสอบและการบ้าน Lect 07 Slide 26 &amp; 35 — กำหนด Positive class คือ Inactive = Yes
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div className="rounded-lg border border-mint/30 bg-mint-wash/50 p-3">
+            <span className="font-semibold text-mint">TP (True Positive) · ตามถูกคน</span>
+            <p className="mt-1 text-ink-muted leading-relaxed">
+              ลูกค้าจะ Inactive จริง และโมเดลทายว่าจะ Inactive → ทีมการตลาดส่งข้อเสนอ/โปรโมชั่น Retention ดึงลูกค้าไว้ได้ทันเวลา ปกป้องรายได้ LTV
+            </p>
+          </div>
+          <div className="rounded-lg border border-rule bg-surface-raised p-3">
+            <span className="font-semibold text-ink">TN (True Negative) · ปกติสุข</span>
+            <p className="mt-1 text-ink-muted leading-relaxed">
+              ลูกค้ายัง Active อยู่ และโมเดลทายว่า Active → ปล่อยให้ใช้งานตามปกติ ไม่ต้องส่งโปรโมชั่นไปรบกวน ประหยัดงบประมาณ
+            </p>
+          </div>
+          <div className="rounded-lg border border-amber/30 bg-amber-wash/50 p-3">
+            <span className="font-semibold text-amber">FP (False Positive) · เปลืองงบ (Type I Error)</span>
+            <p className="mt-1 text-ink-muted leading-relaxed">
+              ลูกค้ายัง Active ปกติ แต่โมเดลทายว่าจะเลิก → เสียเงินส่งส่วนลด/โปรโมชั่นให้คนที่พร้อมจ่ายราคาเต็มฟรีๆ (ควบคุมด้วย <strong>Precision</strong>)
+            </p>
+          </div>
+          <div className="rounded-lg border border-rose/30 bg-rose-wash/50 p-3">
+            <span className="font-semibold text-rose">FN (False Negative) · เสียลูกค้าถาวร! (Type II Error)</span>
+            <p className="mt-1 text-ink-muted leading-relaxed">
+              ลูกค้าจะเลิกจริง แต่โมเดลทายว่าปกติ → ไม่ได้เข้าไปดูแล ลูกค้าหนีไปหาคู่แข่งถาวร เสียหายร้ายแรงที่สุด (ควบคุมด้วย <strong>Recall</strong>)
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-surface-hover p-3 text-xs text-ink-muted leading-relaxed border border-rule/60">
+          💡 <strong>การเลือก Model ตามโจทย์ธุรกิจ (Trade-off):</strong> หากธุรกิจกลัวเสียลูกค้าที่สุด (Cost of Lost Customer สูงมาก) ต้องเลือกโมเดลที่มี <strong>Recall สูง</strong> (เช่น Model B = 90%) แต่ถ้างบประมาณแคมเปญจำกัดมาก (Cost of Campaign สูงมาก) ต้องเลือกโมเดลที่มี <strong>Precision สูง</strong> (เช่น Model A = 89%)
+        </div>
       </div>
     </div>
   );
