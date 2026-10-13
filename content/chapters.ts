@@ -1,15 +1,12 @@
 import type { Chapter } from "./types";
 
 /**
- * Chapters whose figures have been checked against the lecture slides.
+ * Chapters 01-05, content checked against the extracted lecture slides in
+ * scratch/lect05_extracted .. scratch/lect09_extracted.
  *
- * Ch05 currently carries only its Concept Drift section (Lect 09 p.11, read
- * and verified). Its XAI/SHAP and ethics sections are absent on purpose: those
- * slides are image-only and the vision pool has been rate-limited, so they
- * wait rather than shipping guessed figures.
- *
- * Ch01 (EDA) and Ch02 (Modeling) are absent for the same reason: concepts are
- * confirmed, worked numbers are not.
+ * Figures that appear in a slide are cited with their page. Figures the slides
+ * do not print (the Lect 05 deck has no worked numeric example; no train/val/
+ * test percentages; no named candidate-model list) are not shipped.
  */
 
 export const chapters: Chapter[] = [
@@ -22,7 +19,7 @@ export const chapters: Chapter[] = [
     lectures: ["Lect 05"],
     standfirst:
       "EDA ไม่ได้เลือกอัลกอริทึมให้ แต่บอกว่าข้อมูลเป็นอย่างไร เพื่อให้การตัดสินใจภายหลังมีเหตุผล",
-    keyTerms: ["IQR", "Fence", "Whisker", "Long Tail"],
+    keyTerms: ["IQR", "Fence", "Whisker", "Potential Outlier", "Association vs Causation"],
     sections: [
       {
         heading: "EDA เริ่มที่ไหนและทำซ้ำเมื่อไร",
@@ -83,7 +80,7 @@ export const chapters: Chapter[] = [
           {
             kind: "pitfall",
             title: "ห้ามลากเส้น Whisker ไปถึง Fence",
-            text: "Fence เป็นเพียงเกณฑ์ที่คำนวณไว้ ไม่มีค่าข้อมูลจริงที่ตรงกับมัน เส้นใน Boxplot จึงยื่นไปถึงค่าจริงสูงสุดที่ยังอยู่ภายในรั้ว และจุดที่อยู่เกิน Fence คือ outlier",
+            text: "Fence เป็นเพียงเกณฑ์ที่คำนวณไว้ ไม่มีค่าข้อมูลจริงที่ตรงกับมัน เส้นใน Boxplot จึงยื่นไปถึงค่าจริงสุดท้ายที่ยังอยู่ภายในรั้ว และจุดที่อยู่นอก Fence คือ Potential Outlier ที่ต้องตรวจสอบต่อ",
           },
           {
             kind: "marker",
@@ -92,16 +89,85 @@ export const chapters: Chapter[] = [
         ],
       },
       {
+        heading: "Boxplot + IQR คือ Screening ไม่ใช่ Verdict",
+        body: [
+          { kind: "formula", formulaId: "iqr" },
+          { kind: "formula", formulaId: "lower-fence" },
+          { kind: "formula", formulaId: "upper-fence" },
+          {
+            kind: "definition",
+            term: "ประโยคจากสไลด์ (Lect 05 p.17)",
+            text: "Observation นอก Fence คือ Potential Outlier ที่ควรตรวจสอบต่อ และ Potential Outlier ไม่เท่ากับ Error สรุปคือ Outlier Detection ตั้งคำถาม ไม่ได้ตัดสินคำตอบ",
+          },
+          {
+            kind: "table",
+            caption: "ผ่าน Fence แล้วต้องทำอะไรต่อ (Lect 05 p.18)",
+            headers: ["ขั้นตอน", "รายละเอียด"],
+            rows: [
+              ["ตรวจแหล่งที่มา", "ข้อผิดพลาดของข้อมูล, Observation ที่มีอิทธิพลสูง หรือเหตุการณ์หายากแต่ถูกต้อง"],
+              ["เลือกการจัดการ", "ตรวจยืนยัน, คงไว้, ทำเครื่องหมาย หรือแปลงค่า แล้วกลับไป Data Preparation"],
+            ],
+          },
+          {
+            kind: "pitfall",
+            title: "ค่านอก Fence ไม่ได้แปลว่าต้องลบ",
+            text: "ข้อสอบชอบถามว่านอก Fence แปลว่าผิดหรือไม่ คำตอบคือไม่ เป็นแค่ตัวที่ถูกชี้ให้ตรวจสอบ การลบอัตโนมัติโดยไม่ดูบริบทของข้อมูลคือคำตอบที่ผิด",
+          },
+        ],
+      },
+      {
+        heading: "Mean, Median, Mode และความไวต่อค่าสุดโต่ง",
+        body: [
+          {
+            kind: "prose",
+            text: "สไลด์ p.6 ให้เลือกค่ากลางตามชนิดข้อมูล การกระจาย และคำถามที่ต้องการตอบ ไม่ใช่เลือกตามความคุ้นเคย Mean ใช้ทุกค่าในข้อมูลจึงเหมาะเมื่อไม่ห่วงเรื่อง outlier ส่วน Median คือค่ากลางของข้อมูลที่เรียงลำดับ เหมาะเมื่อข้อมูลเบ้หรือมี outlier และ Mode ใช้หาหมวดที่พบบ่อยในข้อมูลเชิงหมวดหมู่",
+          },
+          {
+            kind: "marker",
+            text: "Mean ไวต่อ outlier Median ทนต่อ outlier มากกว่า เลือกจากหลักฐาน ไม่ใช่จากความคุ้นเคย",
+          },
+        ],
+      },
+      {
+        heading: "Correlation คือ Association ไม่ใช่ Causation",
+        body: [
+          {
+            kind: "definition",
+            term: "Correlation",
+            text: "ตัวแปรเปลี่ยนไปด้วยกันทั้งทิศทางและระดับ แต่ยังพิสูจน์ไม่ได้ว่า X causes Y (Lect 05 p.13)",
+          },
+          {
+            kind: "table",
+            caption: "ก่อนอ้างเหตุและผล ต้องตัดคำอธิบายทางเลือกเหล่านี้ (Lect 05 p.13)",
+            headers: ["คำอธิบายทางเลือก", "ความหมาย"],
+            rows: [
+              ["Confounding", "มีตัวแปรที่สามกระทบทั้ง X และ Y"],
+              ["Reverse Direction", "ที่จริง Y เป็นตัวทำให้ X เปลี่ยน"],
+              ["Selection Effects", "กลุ่มตัวอย่างถูกคัดมาในแบบที่ทำให้เห็นความสัมพันธ์"],
+              ["Coincidence", "บังเอิญสัมพันธ์กัน"],
+            ],
+          },
+          {
+            kind: "prose",
+            text: "สไลด์ p.15 เสริมว่า Interesting Pattern เป็นเพียง Candidate Insight ต้องผ่านการตรวจคุณภาพข้อมูลและค่าที่หายไป ขนาดตัวอย่าง องค์ประกอบกลุ่ม มาตราส่วนและวิธีเก็บข้อมูล และคำอธิบายทางเลือก จึงจะเป็น Defensible Insight",
+          },
+          {
+            kind: "marker",
+            text: "Association ช่วยนำทางการสืบค้น แต่ไม่ใช่หลักฐานพิสูจน์สาเหตุ",
+          },
+        ],
+      },
+      {
         heading: "ข้อจำกัดของบทนี้ที่ต้องบอกตรงๆ",
         body: [
           {
             kind: "prose",
-            text: "สไลด์ทั้งเล่มสอนแนวคิด EDA เป็นแผนภาพและคำนิยาม ไม่มีตัวอย่างเลขที่คำนวณไว้ให้เลย ไม่มีชุดข้อมูลตัวอย่าง ไม่มีค่า Q1, Median, Q3 ไม่มีค่า IQR และไม่มีค่า Fence พิมพ์ไว้ที่ไหนเลย ตรวจครบทุกหน้าที่เป็นภาพแล้ว",
+            text: "สไลด์ Lect 05 พิมพ์สูตร IQR และ Fence ไว้ที่ p.17 แต่ทั้งเล่มไม่มีชุดข้อมูลตัวอย่าง ไม่มีค่า Q1, Median, Q3 และไม่มีค่า IQR หรือ Fence ที่คำนวณไว้ ตัวเลข Q1 = 20, Q3 = 35 ในคลังสูตรจึงเป็นตัวเลขสมมติเพื่อฝึกคำนวณ",
           },
           {
             kind: "definition",
             term: "ผลต่อการเรียน",
-            text: "สูตร IQR และ Fence ในคลังสูตรเป็นนิยามมาตรฐานของ Tukey ไม่ได้มาจากตัวเลขในสไลด์ ให้ใช้เครื่องคิดเลขลองกับค่าที่โจทย์ให้จริงแทน",
+            text: "ฝึกใช้สูตรกับค่าที่โจทย์ให้จริงด้วยเครื่องคิดเลข และจำหลักการว่า Fence เป็นเกณฑ์ Whisker จบที่ค่าจริง และ Outlier เป็นจุดตรวจสอบ ไม่ใช่คำตัดสิน",
           },
         ],
       },
@@ -117,7 +183,7 @@ export const chapters: Chapter[] = [
     lectures: ["Lect 06", "Lect 07"],
     standfirst:
       "ไม่มีเทคนิคใดเหมาะกับงานทุกชนิด และตรรกะของโมเดลมาจากข้อมูล ไม่ใช่จากโปรแกรมเมอร์",
-    keyTerms: ["Supervised", "Unsupervised", "Overfitting", "Data Leakage"],
+    keyTerms: ["Underfitting", "Overfitting", "Gini Gain", "Validation vs Test", "Data Leakage"],
     sections: [
       {
         heading: "สองตระกูลของเทคนิคการสร้างโมเดล",
@@ -167,9 +233,63 @@ export const chapters: Chapter[] = [
             text: "โมเดลซับซ้อนเกินไป ไปจับ noise ของชุดฝึกแทนที่จะจับรูปแบบจริง ผลบนข้อมูลใหม่จะต่ำกว่ามาก",
           },
           {
+            kind: "table",
+            caption: "เลือกความลึกต้นไม้ด้วย Validation (Lect 07 p.19, p.31)",
+            headers: ["max_depth", "ผลบน Validation", "Bias และ Variance (p.31)", "การวินิจฉัย"],
+            rows: [
+              ["1", "low", "Bias สูงกว่า Variance ต่ำกว่า", "เสี่ยง Underfitting"],
+              ["3", "high (ถูกเลือกไปพัฒนา)", "ใช้ Validation หาจุดสมดุล", "พอดีกับข้อมูล"],
+              ["6", "lower", "สไลด์ไม่ระบุแยกรายความลึก", "Validation ตกลงจากความลึก 3"],
+              ["ไม่จำกัด", "materially lower", "Training Bias ลดลง Variance สูงขึ้น", "Overfitting (Training Accuracy เข้าใกล้ 1.00)"],
+            ],
+          },
+          {
             kind: "pitfall",
-            title: "สไลด์ไม่ได้พิมพ์ค่าความลึกของต้นไม้ลงไปเลย",
-            text: "ช่วงกลางของกราฟมีแต่คำว่า Strong และ Materially Lower ไม่มีตัวเลขความลึกหรือค่าใดๆ กำกับ ถ้าโจทย์ถามว่าควรตั้งความลึกเท่าไร ให้อ้างหลักการว่าเลือกจุดที่ผลดีที่สุดใน validation ไม่ใช่ตัวเลขที่เห็นในสไลด์",
+            title: "Training Accuracy สูงสุดไม่ได้แปลว่าดีที่สุด",
+            text: "ต้นไม้ที่ไม่จำกัดความลึกจำข้อมูลฝึกได้เกือบหมด แต่ผลบน Validation ต่ำลงมาก ตัดสินด้วยรูปแบบของ Training เทียบ Validation ไม่ใช่คะแนนเดียว และ Test Set ต้องล็อกไว้จนกว่าจะเลือกโมเดลเสร็จ (Lect 07 p.18-20)",
+          },
+          {
+            kind: "table",
+            caption: "บทบาทของข้อมูลสามส่วน (Lect 07 p.7)",
+            headers: ["ชุดข้อมูล", "ใช้ทำอะไร"],
+            rows: [
+              ["Training", "เรียน Feature, Threshold และโครงสร้างของต้นไม้"],
+              ["Validation", "เทียบ Candidate Model และเลือกค่า เช่น max_depth"],
+              ["Test", "ห้ามใช้ตอนเลือกโมเดล ใช้ตรวจ Generalization หลังตัดสินใจเรื่องโมเดลครบแล้วเท่านั้น"],
+            ],
+          },
+        ],
+      },
+      {
+        heading: "เลือก Candidate Split ด้วย Gini Gain",
+        body: [
+          { kind: "formula", formulaId: "gini" },
+          { kind: "formula", formulaId: "gini-split" },
+          { kind: "formula", formulaId: "gini-gain" },
+          {
+            kind: "table",
+            caption: "Parent 6 Active + 6 Inactive มี Gini = 0.500 (Lect 07 p.12)",
+            headers: ["Candidate", "เงื่อนไข", "Child ซ้าย", "Child ขวา", "Weighted Gini", "Gini Gain"],
+            rows: [
+              ["A", "days_since_last_purchase <= 45", "5 Active, 1 Inactive", "1 Active, 5 Inactive", "0.278", "0.222"],
+              ["B", "purchases_last_90_days <= 2", "2 Active, 4 Inactive", "4 Active, 2 Inactive", "0.444", "0.056"],
+            ],
+          },
+          {
+            kind: "worked-example",
+            title: "ทำไมสไลด์เลือก Candidate A",
+            steps: [
+              "Parent: Gini = 1 - (6/12)^2 - (6/12)^2 = 0.500",
+              "A: Child 5/1 และ 1/5 มี Gini = 1 - (5/6)^2 - (1/6)^2 = 0.278 ทั้งสองข้าง ถ่วงน้ำหนัก (6/12) x 0.278 + (6/12) x 0.278 = 0.278",
+              "B: Child 2/4 และ 4/2 มี Gini = 1 - (2/6)^2 - (4/6)^2 = 0.444 ทั้งสองข้าง Weighted Gini = 0.444",
+              "Gain(A) = 0.500 - 0.278 = 0.222 และ Gain(B) = 0.500 - 0.444 = 0.056",
+            ],
+            answer: "เลือก A เพราะ Weighted Child Impurity ต่ำกว่าและ Impurity Reduction สูงกว่า (0.222 > 0.056)",
+          },
+          {
+            kind: "pitfall",
+            title: "B ดูสมดุลกว่า แต่ไม่ใช่เหตุผลเลือก",
+            text: "Child ของ B สัดส่วน 2/4 และ 4/2 ดูสมมาตร แต่ยังปนกันมาก (Gini 0.444) กฎคือเลือก split ที่ Gini Gain สูงสุด และ Weighted Gini ต้องถ่วงด้วยจำนวน Observation ในแต่ละ Child",
           },
         ],
       },
@@ -204,7 +324,7 @@ export const chapters: Chapter[] = [
     lectures: ["Lect 07"],
     standfirst:
       "ตาราง 2x2 บอกว่าโมเดลพลาดตรงไหน และมาตรวัดสี่ตัวบอกว่าพลาดแบบไหนที่แพงกว่า",
-    keyTerms: ["Positive Class", "True Positive", "False Negative", "F1-Score"],
+    keyTerms: ["Positive Class", "True Positive", "False Negative", "F1-Score", "Recall vs Precision"],
     sections: [
       {
         heading: "ตารางประเมินผล 2x2",
@@ -273,6 +393,50 @@ export const chapters: Chapter[] = [
           },
         ],
       },
+      {
+        heading: "เลือกโมเดลจากหลายตัว: Homework #2",
+        body: [
+          {
+            kind: "prose",
+            text: "ประเมิน 3 โมเดลบน Evaluation Set เดียวกัน ลูกค้า 100 ราย Positive = Inactive ซึ่งมีลูกค้า Inactive จริง 40 ราย คำถามคือ ลูกค้ารายใดมีแนวโน้ม Inactive (Lect 07 p.35) ลำดับที่สไลด์กำหนดคือ คำนวณ Metric ทุกตัวก่อน เลือก Metric หลักจากผลของ FP และ FN ต่อการตัดสินใจรักษาลูกค้า แล้วจึงเลือกโมเดลด้วย Metric นั้น",
+          },
+          {
+            kind: "table",
+            caption: "Confusion Matrix ของโมเดลทั้งสาม (Lect 07 p.35)",
+            headers: ["โมเดล", "TP", "FN", "FP", "TN"],
+            rows: [
+              ["A", "24", "16", "3", "57"],
+              ["B", "36", "4", "18", "42"],
+              ["C", "32", "8", "7", "53"],
+            ],
+          },
+          {
+            kind: "table",
+            caption: "ค่า Metric ที่คำนวณซ้ำจาก Confusion Matrix (ปัดสองตำแหน่งตามสไลด์)",
+            headers: ["โมเดล", "Accuracy", "Precision", "Recall", "F1"],
+            rows: [
+              ["A", "81/100 = 0.81", "24/27 = 0.89", "24/40 = 0.60", "48/67 = 0.72"],
+              ["B", "78/100 = 0.78", "36/54 = 0.67", "36/40 = 0.90", "72/94 = 0.77"],
+              ["C", "85/100 = 0.85", "32/39 = 0.82", "32/40 = 0.80", "64/79 = 0.81"],
+            ],
+          },
+          {
+            kind: "table",
+            caption: "Metric หลักต่างกัน โมเดลที่เลือกก็ต่างกัน",
+            headers: ["ถ้าต้นทุนหลักคือ", "Metric หลัก", "โมเดลที่ชนะ", "ราคาที่ต้องจ่าย"],
+            rows: [
+              ["พลาดลูกค้าที่จะ Inactive (FN)", "Recall", "B (0.90)", "FP 18 ราย ต้องติดต่อลูกค้าที่ไม่ได้จะ Inactive เกินมา"],
+              ["ติดต่อผิดคน (FP)", "Precision", "A (0.89)", "FN 16 จาก 40 ราย ปล่อยลูกค้า Inactive หลุดไปมาก"],
+              ["FP และ FN สำคัญใกล้เคียงกัน", "F1", "C (0.81)", "Recall 0.80 ไม่สูงที่สุด"],
+            ],
+          },
+          {
+            kind: "pitfall",
+            title: "ไม่มีโมเดลที่ชนะทุก Metric",
+            text: "สไลด์ระบุว่าคำตอบอาจต่างกันได้ แต่ Metric ที่เลือกต้องอธิบายโมเดลที่เลือกได้อย่างสมเหตุสมผล C มี Accuracy สูงสุด แต่ถ้าโจทย์ให้ต้นทุน FN สูงกว่า คำตอบที่ตรงคือ Recall และ Model B",
+          },
+        ],
+      },
     ],
   },
 
@@ -285,7 +449,7 @@ export const chapters: Chapter[] = [
     lectures: ["Lect 08"],
     standfirst:
       "สามขั้นตอนที่ต้องทำด้วยมือได้ กับคำถามที่ข้อสอบชอบถามว่าระยะห่างใช้แบบไหน",
-    keyTerms: ["Centroid", "Manhattan Distance", "Convergence", "Local Optimum"],
+    keyTerms: ["Centroid", "Manhattan Distance", "Inertia", "Silhouette", "Local Optimum"],
     sections: [
       {
         heading: "นิยามการจัดกลุ่ม",
@@ -365,7 +529,38 @@ export const chapters: Chapter[] = [
           {
             kind: "pitfall",
             title: "Manhattan กับ Squared Euclidean ไม่ใช่อันเดียวกัน",
-            text: "ตอนคิดด้วยมือในข้อสอบใช้ Manhattan แบบบวกล้วน แต่พอคิดค่า WCSS หรือ Inertia ในทฤษฎีจะใช้ Euclidean แบบยกกำลังสองแล้วรากที่สอง ห้ามสลับใช้คิดเพราะจะได้คนละคำตอบ",
+            text: "ตอนคิดด้วยมือในข้อสอบใช้ Manhattan แบบบวกล้วน แต่ Inertia หรือ WCSS ตามสไลด์ใช้ระยะยกกำลังสอง คือผลรวมของ ||x - centroid||^2 ไม่ใช่ผลรวม |x1 - c1| + |x2 - c2| ห้ามสลับใช้เพราะจะได้คนละคำตอบ",
+          },
+        ],
+      },
+      {
+        heading: "ประเมินผลการจัดกลุ่มและเลือก K",
+        body: [
+          { kind: "formula", formulaId: "inertia" },
+          { kind: "formula", formulaId: "silhouette" },
+          {
+            kind: "table",
+            caption: "Compactness กับ Separation (Lect 08 p.35-38)",
+            headers: ["เครื่องมือ", "วัดอะไร", "อ่านค่าอย่างไร"],
+            rows: [
+              ["Inertia / WCSS", "Compactness", "ต่ำ = กลุ่มกระชับ แต่เพิ่ม K แล้วลดลงเสมอ จึงบอก K ที่ดีที่สุดไม่ได้"],
+              ["Elbow Method", "กราฟ Inertia เทียบ K", "เลือก K ใกล้จุดหัก เป็นหลักฐานเชิง Heuristic ไม่ใช่คำตอบอัตโนมัติ"],
+              ["Silhouette", "Compactness และ Separation ต่อจุด", "ช่วง -1 ถึง +1 ใกล้ +1 ดี ใกล้ -1 จัดกลุ่มไม่ดี"],
+            ],
+          },
+          {
+            kind: "definition",
+            term: "เกณฑ์เลือก K (Lect 08 p.38)",
+            text: "Compactness (Inertia), Separation (Silhouette), Stability (ผลสม่ำเสมอ), Simplicity (ไม่ซับซ้อนเกินจำเป็น) และ Business Interpretability (อธิบายและใช้งานได้) ตัวอย่างในสไลด์ 3 กลุ่มที่วางแผนได้ดีกว่า 6 กลุ่มย่อยที่อธิบายยาก",
+          },
+          {
+            kind: "marker",
+            text: "Best K คือทางเลือกที่สมดุลและอธิบายได้ ไม่ใช่ Inertia ต่ำที่สุด และไม่ใช่คะแนนอัตโนมัติ",
+          },
+          {
+            kind: "pitfall",
+            title: "Convergence ไม่เท่ากับความพร้อมใช้งาน",
+            text: "K-Means หยุดเมื่อ centroid ไม่เปลี่ยน แต่ผลลัพธ์ยังต้องผ่านการตรวจหลักฐาน ความหมาย และความเกี่ยวข้องกับการตัดสินใจ ถ้าไม่พอให้ Revise (ทบทวนโจทย์ Feature Scaling K หรือ Validation) หรือ Reject เมื่อหลักฐานไม่พอ (Lect 08 p.43)",
           },
         ],
       },
@@ -387,6 +582,7 @@ export const chapters: Chapter[] = [
       "SHAP",
       "Proxy Feature",
       "Concept Drift",
+      "Decision Gates",
     ],
     sections: [
       {
@@ -501,6 +697,26 @@ export const chapters: Chapter[] = [
             kind: "pitfall",
             title: "จุดเปอร์เซ็นต์ ไม่ใช่เปอร์เซ็นต์เชิงสัมพัทธ์",
             text: "+29 จุดเปอร์เซ็นต์ คือบวกเพิ่มเข้าไป 29 หน่วยโดยตรง ไม่ใช่คูณด้วย 1.29 ถ้าเป็นการคูณเชิงสัมพัทธ์ คำตอบจะเป็น 32 x 1.29 = 41.3% ซึ่งไม่ใช่ตัวเลขบนสไลด์",
+          },
+          {
+            kind: "table",
+            caption: "อ่านทิศทางของ SHAP รายลูกค้า A (Lect 09 p.9 โมเดลทำนาย P(Inactive = Yes))",
+            headers: ["Feature", "ค่า SHAP", "ทิศทาง", "ผลต่อความน่าจะเป็น"],
+            rows: [
+              ["ไม่ซื้อนาน", "+29 จุด", "ผลักไปทาง Inactive = Yes", "เพิ่ม"],
+              ["อายุสมาชิกสั้น", "+12 จุด", "ผลักไปทาง Inactive = Yes", "เพิ่ม"],
+              ["ยอดใช้จ่ายสูง", "-8 จุด", "ผลักออกจาก Inactive = Yes", "ลด"],
+            ],
+          },
+          {
+            kind: "definition",
+            term: "Base Value และ Force Plot",
+            text: "Base Value คือจุดเริ่มต้น ความน่าจะเป็นเฉลี่ยที่โมเดลให้กับข้อมูลทั่วไป ตามนิยามมาตรฐานของ SHAP เท่ากับค่าคาดหมายของ Output E[f(x)] แต่ละ Feature เป็นลูกศรที่ผลักค่าจาก Base Value ไปทางเพิ่มหรือลดจนถึง Prediction ภาพแบบนี้เรียกว่า Force Plot",
+          },
+          {
+            kind: "pitfall",
+            title: "สไลด์ไม่ได้พิมพ์คำว่า Force Plot หรือสีของลูกศร",
+            text: "สิ่งที่ตรวจกับสไลด์แล้วคือสมการ 32% + 29 + 12 - 8 = 65% และทิศทางบวกลบ ส่วนชื่อ Force Plot และ E[f(x)] เป็นความรู้ทั่วไปของ SHAP ที่ไม่ได้อยู่ในสไลด์ และสีแดงหรือสีน้ำเงินเป็นธรรมเนียมของไลบรารีที่ไม่ใช่เนื้อหาของสไลด์ ในข้อสอบให้ตอบด้วยสมการและทิศทาง",
           },
           {
             kind: "marker",
@@ -647,6 +863,47 @@ export const chapters: Chapter[] = [
         ],
       },
       {
+        heading: "อคติสามรูปแบบเทียบกัน",
+        body: [
+          {
+            kind: "table",
+            caption: "Historical, Representation และ Proxy ตอบคำถามต่างกัน (Lect 09 p.10-13)",
+            headers: ["รูปแบบ", "ปัญหาอยู่ที่", "ตัวเลขในสไลด์", "คำถามที่ควรถาม"],
+            rows: [
+              [
+                "Historical Bias (p.10)",
+                "ข้อมูลอดีตสะท้อนวิธีที่องค์กรเคยปฏิบัติ ไม่ใช่แค่พฤติกรรมลูกค้า",
+                "VIP ถูกติดต่อ 80% ลูกค้าใหม่ 20% โมเดลทำนายตอบรับ 70% กับ 20%",
+                "โมเดลเรียนรู้ความสนใจ หรือเรียนรู้ว่าใครเคยได้รับโอกาส",
+              ],
+              [
+                "Representation Bias (p.12)",
+                "จำนวนตัวอย่างของกลุ่มที่ได้รับผลกระทบไม่เท่ากัน",
+                "n = 800 Recall 82% (78-86%) กับ n = 40 Recall 54% (39-69%)",
+                "กลุ่มเล็กมีหลักฐานพอหรือไม่ ช่วงความไม่แน่นอนกว้างแค่ไหน",
+              ],
+              [
+                "Proxy Feature (p.13)",
+                "ลบข้อมูลอ่อนไหวแล้ว แต่ Feature อื่นยังเป็นตัวแทน",
+                "รหัสไปรษณีย์ 10110 เสี่ยง 42% กับ 94100 เสี่ยง 67%",
+                "Feature ใดผลักให้สองคนที่พฤติกรรมเหมือนกันได้ผลต่างกัน",
+              ],
+              [
+                "Concept Drift (p.11)",
+                "โลกเปลี่ยนจนความสัมพันธ์ Feature กับ Target เปลี่ยน ไม่ใช่ปัญหาของข้อมูลในอดีต",
+                "Inactive 68% ลดเหลือ 31% หลังเปิด Subscription",
+                "กฎเดิมยังใช้กับปัจจุบันได้หรือไม่",
+              ],
+            ],
+          },
+          {
+            kind: "pitfall",
+            title: "Recall 54% ไม่ใช่ผลของ Concept Drift",
+            text: "54% คือ Recall ของลูกค้ากลุ่มใหม่ n = 40 ในสไลด์ p.4 และ p.12 เป็นเรื่องความเพียงพอของตัวอย่างและ Accuracy รวม 84% ที่บดบังกลุ่มย่อย ส่วน Concept Drift ในสไลด์ p.11 วัดเป็น Inactive 68% เทียบ 31% ห้ามนำมาปนกัน",
+          },
+        ],
+      },
+      {
         heading: "คดีจริง: ความลำเอียงไม่ได้เกิดจาก ML ซับซ้อนเสมอไป",
         body: [
           {
@@ -684,6 +941,56 @@ export const chapters: Chapter[] = [
             kind: "definition",
             term: "Human Checkpoint",
             text: "ต้องมีผู้อนุมัติก่อนทุกครั้ง ห้ามส่งข้อความอัตโนมัติโดยไม่มี Human Approval",
+          },
+        ],
+      },
+      {
+        heading: "Decision Gates: ใช้ ปรับ หรือยังไม่ใช่",
+        body: [
+          {
+            kind: "prose",
+            text: "การประเมินจบด้วยการตัดสินใจที่อธิบายได้ ต้องรวบรวมหลักฐานก่อน ได้แก่ ตรรกะของโมเดล หลักฐานจาก Validation และ Final Test ความหมายของ Metric และผลของความผิดพลาด และข้อจำกัดสำคัญ แล้วจึงเลือกหนึ่งในสามทาง (Lect 07 p.36)",
+          },
+          {
+            kind: "table",
+            caption: "Accept, Revise, Reject (Lect 07 p.36 และ Lect 09 p.22)",
+            headers: ["ทางเลือก", "เมื่อไร", "ทำอะไรต่อ"],
+            rows: [
+              [
+                "Accept (ใช้)",
+                "หลักฐานเพียงพอ ไม่มีข้อจำกัดสำคัญ ประโยชน์ชัดและตรงเป้าหมาย",
+                "ใช้งานตามที่ตั้งใจ มีแผนติดตามผลต่อเนื่อง",
+              ],
+              [
+                "Revise (ปรับ)",
+                "หลักฐานไม่พอแต่ปรับได้",
+                "จำกัดขอบเขตการใช้ เก็บข้อมูลเพิ่ม หรือกลับไปขั้นก่อนหน้าของ CRISP-DS เช่น Data Preparation",
+              ],
+              [
+                "Reject (ยังไม่ใช่)",
+                "หลักฐานไม่รองรับ ผลงานไม่พอ หรือมีความเสี่ยงสูงต่อผู้ใช้ หรือด้านกฎหมาย จริยธรรม ความเป็นส่วนตัว",
+                "หยุดใช้ จนกว่าจะมีหลักฐานหรือความพร้อมของเทคโนโลยีเพิ่ม",
+              ],
+            ],
+          },
+          {
+            kind: "pitfall",
+            title: "Accuracy 84% ไม่พอให้ Accept",
+            text: "โมเดลในสไลด์ p.4 มี Accuracy รวม 84% แต่ Recall ลูกค้ากลุ่มใหม่เพียง 54% และยังตอบสามคำถามไม่ครบ คือ อธิบายผลได้หรือไม่ กระทบใคร และใช้ข้อมูลเหมาะสมและสอดคล้องกับข้อกำหนดหรือไม่ สถานะจึงเป็น ยังไม่อนุมัติ",
+          },
+          {
+            kind: "table",
+            caption: "หลังใช้งาน ระบบที่รับผิดชอบต้องหยุด ทบทวน และย้อนกลับได้ (Lect 09 p.24)",
+            headers: ["ผลที่ติดตาม", "การตอบสนอง"],
+            rows: [
+              ["เป็นไปตามเป้าหมาย", "ทำต่อ"],
+              ["Recall กลุ่มใหม่ต่ำกว่าเกณฑ์ หรือนโยบาย Subscription เปลี่ยน", "ทบทวนโมเดล ตรวจข้อมูล ฝึกปรับ และประเมินใหม่ หรือกลับไป Data Understanding"],
+              ["พบปัญหาวิกฤต เช่น ข้อร้องเรียนเพิ่ม", "หยุดการติดต่อชั่วคราวจนกว่าจะหาสาเหตุและแก้ไขได้"],
+            ],
+          },
+          {
+            kind: "marker",
+            text: "Acceptance ไม่ใช่จุดจบ ต้อง Monitor และมี Stop Condition เสมอ",
           },
         ],
       },

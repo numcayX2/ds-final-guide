@@ -22,23 +22,34 @@ import {
 } from "@radix-ui/react-icons";
 
 type FormulaTopic = "tukey" | "gini" | "confusion" | "kmeans";
+type MetricMode = "euclidean" | "manhattan";
 
-// ---------------------------------------------------------------------------
-// Shared constants (module scope: zero per-render allocation)
-// ---------------------------------------------------------------------------
+interface AnatomyChapter {
+  label: string;
+  color: string;
+  badge: string;
+  text: string;
+}
+
 const AUTOPLAY_MS = 2800;
+const TOTAL_STEPS = 4;
 
-// Tactile, organic springs: soft enough to feel physical, damped enough to
-// never overshoot into layout jitter. Badges slightly snappier for emphasis.
 const SPRING_TACTILE = { type: "spring" as const, stiffness: 270, damping: 28, mass: 0.9 };
 const SPRING_BADGE = { type: "spring" as const, stiffness: 300, damping: 24, mass: 0.9 };
 const NO_ANIM = { duration: 0 } as const;
 
 const STEP_LABELS = [
-  "1. โครงสร้างสูตร (Symbolic)",
-  "2. ชำแหละตัวแปร (Anatomy)",
-  "3. แทนค่าสด (Substitution)",
-  "4. ตัดทอนคำนวณ (Reduction & Verdict)",
+  "1. โครงสร้างสูตร",
+  "2. ความหมายตัวแปร",
+  "3. แทนค่าตัวเลข",
+  "4. คำนวณผลลัพธ์",
+];
+
+const STEP_DESCRIPTIONS = [
+  "สูตรเชิงสัญลักษณ์แยกสีตามตัวแปร",
+  "คลิกที่ตัวแปรเพื่อดูความหมายและที่มา",
+  "แทนค่าตัวเลขจากข้อมูลลงในสมการ",
+  "ตัดทอนสมการเพื่อหาคำตอบสุดท้าย",
 ];
 
 const TOPICS: { key: FormulaTopic; label: string }[] = [
@@ -48,17 +59,16 @@ const TOPICS: { key: FormulaTopic; label: string }[] = [
   { key: "kmeans", label: "4. K-Means Distance (Lect 08-09)" },
 ];
 
-// Exam dataset (Lect 08): 10 actual-positive + 10 actual-negative scores.
 const POS_SCORES = [0.35, 0.42, 0.52, 0.58, 0.65, 0.72, 0.78, 0.82, 0.88, 0.94];
 const NEG_SCORES = [0.12, 0.18, 0.25, 0.31, 0.38, 0.45, 0.53, 0.59, 0.64, 0.71];
 
-// Lecture points (Lect 09) + centroids.
 const POINTS: Record<string, { x: number; y: number; label: string }> = {
   A1: { x: 2, y: 10, label: "A1 (2, 10)" },
   A2: { x: 2, y: 5, label: "A2 (2, 5)" },
   A3: { x: 8, y: 4, label: "A3 (8, 4)" },
   A8: { x: 4, y: 9, label: "A8 (4, 9)" },
 };
+
 const CENTROIDS: Record<string, { x: number; y: number; label: string }> = {
   C1: { x: 2, y: 10, label: "C1 (2, 10)" },
   C2: { x: 5, y: 8, label: "C2 (5, 8)" },
@@ -67,7 +77,6 @@ const CENTROIDS: Record<string, { x: number; y: number; label: string }> = {
 const TUKEY_MIN = 20;
 const TUKEY_MAX = 55;
 const TUKEY_TICKS = [20, 30, 40, 50];
-
 const COLOR_AMBER = "var(--token-amber, #92400e)";
 
 export function FormulaMorphShowcase() {
@@ -75,32 +84,28 @@ export function FormulaMorphShowcase() {
   const [step, setStep] = useState<number>(0);
   const [anatomySubstep, setAnatomySubstep] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [manualEntry, setManualEntry] = useState<boolean>(false);
   const [hoveredToken, setHoveredToken] = useState<string | null>(null);
 
-  // 1. Tukey State (Lect 05)
+  // 1. Tukey State
   const [q1, setQ1] = useState<number>(22);
   const [q3, setQ3] = useState<number>(30);
-  const multiplier = 1.5; // Locked to 1.5 as per exam syllabus
+  const multiplier = 1.5;
   const [testPoint, setTestPoint] = useState<number>(45);
 
-  // 2. Gini State (Lect 07)
+  // 2. Gini State
   const [activeCustomers, setActiveCustomers] = useState<number>(5);
   const totalCustomers = 6;
 
-  // 3. Confusion Matrix State (Lect 08)
-  const [threshold, setThreshold] = useState<number>(0.5); // 0.2 to 0.8
+  // 3. Confusion Matrix State
+  const [threshold, setThreshold] = useState<number>(0.5);
 
-  // 4. K-Means State (Lect 08-09)
+  // 4. K-Means State
   const [selectedPointKey, setSelectedPointKey] = useState<string>("A2");
-  const [metricMode, setMetricMode] = useState<"euclidean" | "manhattan">("euclidean");
+  const [metricMode, setMetricMode] = useState<MetricMode>("euclidean");
   const [targetCentroid, setTargetCentroid] = useState<"C1" | "C2">("C2");
 
   const reducedMotion = Boolean(useReducedMotion());
-  const totalSteps = 4;
 
-  // ---- Memoized computations: slider ticks re-render, but never recompute
-  // more than the slice that changed. ---------------------------------------
   const tukey = useMemo(() => {
     const iqr = q3 - q1;
     const fenceOffset = multiplier * iqr;
@@ -114,7 +119,14 @@ export function FormulaMorphShowcase() {
     const pInactive = totalCustomers > 0 ? inactive / totalCustomers : 0;
     const pActiveSq = pActive ** 2;
     const pInactiveSq = pInactive ** 2;
-    return { inactive, pActive, pInactive, pActiveSq, pInactiveSq, gini: 1 - (pActiveSq + pInactiveSq) };
+    return {
+      inactive,
+      pActive,
+      pInactive,
+      pActiveSq,
+      pInactiveSq,
+      gini: 1 - (pActiveSq + pInactiveSq),
+    };
   }, [activeCustomers, totalCustomers]);
 
   const cm = useMemo(() => {
@@ -151,21 +163,16 @@ export function FormulaMorphShowcase() {
     };
   }, [selectedPointKey, targetCentroid]);
 
-  // ---- Stable callbacks: memoized pills + step controls keep their identity
-  // so slider ticks never re-render the formula tree from new fn ids.
-  const handleHoverToken = useCallback((t: string | null) => setHoveredToken(t), []);
-
   const handleSelectTopic = useCallback((newTopic: FormulaTopic) => {
     setTopic(newTopic);
     setStep(0);
     setAnatomySubstep(0);
     setIsPlaying(false);
-    setManualEntry(false);
   }, []);
 
   const handleManualSelectAnatomySubstep = useCallback((idx: number) => {
     setIsPlaying(false);
-    setManualEntry(true);
+    setStep(1);
     setAnatomySubstep(idx);
   }, []);
 
@@ -191,20 +198,12 @@ export function FormulaMorphShowcase() {
     setStep(0);
     setAnatomySubstep(0);
     setIsPlaying(false);
-    setManualEntry(false);
   }, [topic]);
 
-  // Auto-play driver for Step 0, 2, 3 (timeout chain, one step per tick).
-  // In Step 1 (Anatomy), TypewriterSubtitleOverlay owns the pacing and
-  // auto-advances to Step 2 when done. Chained setTimeout (not setInterval)
-  // so each tick re-arms from the settled step — no updater side effects.
   useEffect(() => {
-    if (!isPlaying) return;
-    if (step === 1) return; // TypewriterSubtitleOverlay drives Step 1
-    if (step >= totalSteps - 1) {
-      const timer = setTimeout(() => {
-        setIsPlaying(false);
-      }, AUTOPLAY_MS);
+    if (!isPlaying || step === 1) return;
+    if (step >= TOTAL_STEPS - 1) {
+      const timer = setTimeout(() => setIsPlaying(false), AUTOPLAY_MS);
       return () => clearTimeout(timer);
     }
     const timer = setTimeout(() => {
@@ -212,32 +211,33 @@ export function FormulaMorphShowcase() {
       setStep((s) => s + 1);
     }, AUTOPLAY_MS);
     return () => clearTimeout(timer);
-  }, [isPlaying, step, totalSteps]);
+  }, [isPlaying, step]);
 
-  // Pause autoplay when browser tab is hidden to avoid background throttling desync
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.hidden && isPlaying) {
-        setIsPlaying(false);
-      }
+      if (document.hidden && isPlaying) setIsPlaying(false);
     };
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, [isPlaying]);
 
+  const totalSubsteps = topic === "confusion" ? 3 : 2;
+
   return (
     <MotionConfig reducedMotion="user">
-      <div className="space-y-4 sm:space-y-5">
-        {/* 4 Topic Switcher */}
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-rule bg-surface p-3 sm:px-5">
-          <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-rule bg-surface-hover p-1">
+      <div className="space-y-4">
+        {/* Top Bar: Topic Switcher & Reset */}
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-rule bg-surface p-3 sm:px-4">
+          <div className="flex flex-wrap items-center gap-1 rounded-lg border border-rule bg-surface-hover p-1">
             {TOPICS.map((t) => (
               <button
                 key={t.key}
                 type="button"
                 onClick={() => handleSelectTopic(t.key)}
                 className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-all ${
-                  topic === t.key ? "bg-surface text-accent shadow-xs" : "text-ink-muted hover:text-ink"
+                  topic === t.key
+                    ? "bg-surface text-accent shadow-xs"
+                    : "text-ink-muted hover:text-ink"
                 }`}
               >
                 {t.label}
@@ -245,145 +245,121 @@ export function FormulaMorphShowcase() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={resetAll}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-rule bg-surface-hover px-2.5 py-1.5 text-xs font-medium text-ink-muted hover:text-ink transition-colors"
-              title="รีเซ็ตค่าเริ่มต้นทั้งหมด"
-            >
-              <ResetIcon className="size-3.5" /> รีเซ็ตสูตร
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={resetAll}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-rule bg-surface-hover px-3 py-1.5 text-xs font-medium text-ink-muted hover:text-ink transition-colors"
+          >
+            <ResetIcon className="size-3.5" /> รีเซ็ตค่าเริ่มต้น
+          </button>
         </div>
 
-        {/* Main Display Board */}
+        {/* Main Grid: Formula Stage (Left) + Controls & Visuals (Right) */}
         <div className="grid gap-6 lg:grid-cols-12 items-start min-w-0">
-          {/* Left: Formula Stage (Hero Animation) */}
-          <div className="lg:col-span-8 min-w-0 overflow-hidden flex flex-col rounded-2xl border border-rule bg-surface p-4 sm:p-6 shadow-xs">
-            <div>
-              {/* Stage Tag */}
-              <div className="flex items-center justify-between pb-3 border-b border-rule">
-                <span className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-ink">
-                  <span className={`size-2 rounded-full bg-accent ${reducedMotion ? "" : "animate-pulse"}`} />
-                  {STEP_LABELS[step]}
-                  {step === 1 && (
-                    <span className="text-[11px] font-normal text-accent-ink/80">
-                      ({anatomySubstep + 1}/{topic === "confusion" ? 3 : 2})
-                    </span>
-                  )}
-                </span>
-                <span className="text-xs text-ink-subtle">
-                  {step === 0 && "สูตรเชิงสัญลักษณ์พร้อม Color Tokens"}
-                  {step === 1 && (
-                    topic === "tukey"
-                      ? (anatomySubstep === 0 ? "ลำดับ 1: อธิบาย Q₃" : "ลำดับ 2: อธิบาย IQR")
-                      : topic === "gini"
-                      ? (anatomySubstep === 0 ? "ลำดับ 1: อธิบาย p(Active)" : "ลำดับ 2: อธิบาย p(Inactive)")
-                      : topic === "confusion"
-                      ? (anatomySubstep === 0 ? "ลำดับ 1: ผลบวกจริง TP" : anatomySubstep === 1 ? "ลำดับ 2: ผลบวกลวง FP" : "ลำดับ 3: ผลลบลวง FN")
-                      : (anatomySubstep === 0 ? "ลำดับ 1: พิกัดจุดข้อมูล" : "ลำดับ 2: พิกัด Centroid")
-                  )}
-                  {step === 2 && "Morph สัญลักษณ์กลายเป็นตัวเลขจริง"}
-                  {step === 3 && "คำนวณตัดทอนจนได้ผลลัพธ์สุทธิ"}
-                </span>
-              </div>
-
-              {/* Formula Morphing Area */}
-              <div className="py-4 sm:py-6 flex items-center justify-center">
-                {topic === "tukey" && (
-                  <TukeyMorphFormula
-                    step={step}
-                    anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
-                    onAdvanceAnatomySubstep={setAnatomySubstep}
-                    onNextStep={handleAdvanceToStep2}
-                    isPlaying={isPlaying}
-                    manualEntry={manualEntry}
-                    q1={q1}
-                    q3={q3}
-                    iqr={tukey.iqr}
-                    multiplier={multiplier}
-                    fenceOffset={tukey.fenceOffset}
-                    upperFence={tukey.upperFence}
-                    testPoint={testPoint}
-                    isOutlier={tukey.isOutlier}
-                    hoveredToken={hoveredToken}
-                    onHoverToken={handleHoverToken}
-                    reducedMotion={reducedMotion}
-                  />
+          {/* Left: Formula Stage */}
+          <div className="lg:col-span-8 min-w-0 flex flex-col justify-between rounded-2xl border border-rule bg-surface p-4 sm:p-6 shadow-xs">
+            {/* Stage Header */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-rule">
+              <span className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-ink">
+                <span className={`size-2 rounded-full bg-accent ${reducedMotion ? "" : "animate-pulse"}`} />
+                {STEP_LABELS[step]}
+                {step === 1 && (
+                  <span className="text-[11px] font-normal text-accent-ink/80">
+                    ({anatomySubstep + 1}/{totalSubsteps})
+                  </span>
                 )}
-                {topic === "gini" && (
-                  <GiniMorphFormula
-                    step={step}
-                    anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
-                    onAdvanceAnatomySubstep={setAnatomySubstep}
-                    onNextStep={handleAdvanceToStep2}
-                    isPlaying={isPlaying}
-                    manualEntry={manualEntry}
-                    active={activeCustomers}
-                    inactive={giniCalc.inactive}
-                    total={totalCustomers}
-                    pActive={giniCalc.pActive}
-                    pInactive={giniCalc.pInactive}
-                    pActiveSq={giniCalc.pActiveSq}
-                    pInactiveSq={giniCalc.pInactiveSq}
-                    gini={giniCalc.gini}
-                    hoveredToken={hoveredToken}
-                    onHoverToken={handleHoverToken}
-                    reducedMotion={reducedMotion}
-                  />
-                )}
-                {topic === "confusion" && (
-                  <ConfusionMorphFormula
-                    step={step}
-                    anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
-                    onAdvanceAnatomySubstep={setAnatomySubstep}
-                    onNextStep={handleAdvanceToStep2}
-                    isPlaying={isPlaying}
-                    manualEntry={manualEntry}
-                    tp={cm.tp}
-                    fp={cm.fp}
-                    fn={cm.fn}
-                    tn={cm.tn}
-                    precision={cm.precision}
-                    recall={cm.recall}
-                    f1={cm.f1}
-                    threshold={threshold}
-                    hoveredToken={hoveredToken}
-                    onHoverToken={handleHoverToken}
-                    reducedMotion={reducedMotion}
-                  />
-                )}
-                {topic === "kmeans" && (
-                  <KMeansMorphFormula
-                    step={step}
-                    anatomySubstep={anatomySubstep}
-                    onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
-                    onAdvanceAnatomySubstep={setAnatomySubstep}
-                    onNextStep={handleAdvanceToStep2}
-                    isPlaying={isPlaying}
-                    manualEntry={manualEntry}
-                    pt={km.pt}
-                    c={km.c}
-                    dx={km.dx}
-                    dy={km.dy}
-                    distEuclidean={km.distEuclidean}
-                    distManhattan={km.distManhattan}
-                    mode={metricMode}
-                    targetCentroid={targetCentroid}
-                    hoveredToken={hoveredToken}
-                    onHoverToken={handleHoverToken}
-                    reducedMotion={reducedMotion}
-                  />
-                )}
-              </div>
+              </span>
+              <span className="text-xs text-ink-subtle">{STEP_DESCRIPTIONS[step]}</span>
             </div>
 
-            {/* Stepper Timeline Buttons + Player Controls (Positioned directly above the 4 step tabs) */}
-            <div className="border-t border-rule pt-3 mt-1 space-y-2.5">
+            {/* Formula Render Area */}
+            <div className="py-6 sm:py-8 min-h-[220px] flex items-center justify-center">
+              {topic === "tukey" && (
+                <TukeyMorphFormula
+                  step={step}
+                  anatomySubstep={anatomySubstep}
+                  onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                  onAdvanceAnatomySubstep={setAnatomySubstep}
+                  onNextStep={handleAdvanceToStep2}
+                  isPlaying={isPlaying}
+                  q1={q1}
+                  q3={q3}
+                  iqr={tukey.iqr}
+                  multiplier={multiplier}
+                  fenceOffset={tukey.fenceOffset}
+                  upperFence={tukey.upperFence}
+                  testPoint={testPoint}
+                  isOutlier={tukey.isOutlier}
+                  hoveredToken={hoveredToken}
+                  onHoverToken={setHoveredToken}
+                  reducedMotion={reducedMotion}
+                />
+              )}
+              {topic === "gini" && (
+                <GiniMorphFormula
+                  step={step}
+                  anatomySubstep={anatomySubstep}
+                  onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                  onAdvanceAnatomySubstep={setAnatomySubstep}
+                  onNextStep={handleAdvanceToStep2}
+                  isPlaying={isPlaying}
+                  active={activeCustomers}
+                  inactive={giniCalc.inactive}
+                  total={totalCustomers}
+                  pActive={giniCalc.pActive}
+                  pInactive={giniCalc.pInactive}
+                  pActiveSq={giniCalc.pActiveSq}
+                  pInactiveSq={giniCalc.pInactiveSq}
+                  gini={giniCalc.gini}
+                  hoveredToken={hoveredToken}
+                  onHoverToken={setHoveredToken}
+                  reducedMotion={reducedMotion}
+                />
+              )}
+              {topic === "confusion" && (
+                <ConfusionMorphFormula
+                  step={step}
+                  anatomySubstep={anatomySubstep}
+                  onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                  onAdvanceAnatomySubstep={setAnatomySubstep}
+                  onNextStep={handleAdvanceToStep2}
+                  isPlaying={isPlaying}
+                  tp={cm.tp}
+                  fp={cm.fp}
+                  fn={cm.fn}
+                  precision={cm.precision}
+                  recall={cm.recall}
+                  f1={cm.f1}
+                  hoveredToken={hoveredToken}
+                  onHoverToken={setHoveredToken}
+                  reducedMotion={reducedMotion}
+                />
+              )}
+              {topic === "kmeans" && (
+                <KMeansMorphFormula
+                  step={step}
+                  anatomySubstep={anatomySubstep}
+                  onSelectAnatomySubstep={handleManualSelectAnatomySubstep}
+                  onAdvanceAnatomySubstep={setAnatomySubstep}
+                  onNextStep={handleAdvanceToStep2}
+                  isPlaying={isPlaying}
+                  pt={km.pt}
+                  c={km.c}
+                  dx={km.dx}
+                  dy={km.dy}
+                  distEuclidean={km.distEuclidean}
+                  distManhattan={km.distManhattan}
+                  mode={metricMode}
+                  hoveredToken={hoveredToken}
+                  onHoverToken={setHoveredToken}
+                  reducedMotion={reducedMotion}
+                />
+              )}
+            </div>
+
+            {/* Stepper Controls & Timeline */}
+            <div className="border-t border-rule pt-3 space-y-3">
+              {/* Progress Bar */}
               <div className="h-1 overflow-hidden rounded-full bg-surface-hover" aria-hidden="true">
                 {isPlaying && !reducedMotion && step !== 1 ? (
                   <motion.div
@@ -396,71 +372,82 @@ export function FormulaMorphShowcase() {
                 ) : (
                   <div
                     className="h-full bg-accent/40 transition-[width]"
-                    style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
+                    style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
                   />
                 )}
               </div>
 
-              {/* Player Controller Row: Play/Pause Button + Step Trackers */}
+              {/* Playback Buttons */}
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => {
-                    if (!isPlaying && step >= totalSteps - 1) {
+                    if (!isPlaying && step >= TOTAL_STEPS - 1) {
                       setStep(0);
                       setAnatomySubstep(0);
                     }
-                    setManualEntry(false);
                     setIsPlaying((p) => !p);
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent-wash px-3 py-1.5 text-xs sm:text-sm font-semibold text-accent-ink hover:bg-accent/15 transition-all shadow-xs"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent-wash px-3 py-1.5 text-xs sm:text-sm font-semibold text-accent-ink hover:bg-accent/15 transition-all"
                 >
                   {isPlaying ? (
                     <>
-                      <PauseIcon className="size-3.5 sm:size-4" /> พักแอนิเมชัน
+                      <PauseIcon className="size-3.5" /> หยุดชั่วคราว
                     </>
                   ) : (
                     <>
-                      <PlayIcon className="size-3.5 sm:size-4" /> เล่นแบบคลิปอัตโนมัติ
+                      <PlayIcon className="size-3.5" /> เล่นอัตโนมัติ
                     </>
                   )}
                 </button>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <span className="font-mono text-xs text-ink-muted mr-1 hidden sm:inline">
-                    ขั้นที่ {step + 1} จาก {totalSteps}
+                    ขั้นที่ {step + 1} / {TOTAL_STEPS}
                   </span>
                   <button
                     type="button"
                     disabled={step === 0}
-                    onClick={() => { setIsPlaying(false); setManualEntry(true); setStep((s) => Math.max(0, s - 1)); setAnatomySubstep(0); }}
+                    onClick={() => {
+                      setIsPlaying(false);
+                      setStep((s) => Math.max(0, s - 1));
+                      setAnatomySubstep(0);
+                    }}
                     className="rounded-lg border border-rule p-1.5 text-ink-muted hover:text-ink hover:bg-surface-hover disabled:opacity-30 transition-colors"
-                    title="ย้อนกลับ 1 ขั้น"
+                    title="ย้อนกลับ"
                   >
                     <TrackPreviousIcon className="size-3.5" />
                   </button>
                   <button
                     type="button"
-                    disabled={step === totalSteps - 1}
-                    onClick={() => { setIsPlaying(false); setManualEntry(true); setStep((s) => Math.min(totalSteps - 1, s + 1)); setAnatomySubstep(0); }}
+                    disabled={step === TOTAL_STEPS - 1}
+                    onClick={() => {
+                      setIsPlaying(false);
+                      setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1));
+                      setAnatomySubstep(0);
+                    }}
                     className="rounded-lg border border-rule p-1.5 text-ink-muted hover:text-ink hover:bg-surface-hover disabled:opacity-30 transition-colors"
-                    title="ถัดไป 1 ขั้น"
+                    title="ถัดไป"
                   >
                     <TrackNextIcon className="size-3.5" />
                   </button>
                 </div>
               </div>
 
-              {/* 4 Step Timeline Tabs */}
-              <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+              {/* 4 Step Tabs */}
+              <div className="grid grid-cols-4 gap-1.5">
                 {STEP_LABELS.map((label, idx) => (
                   <button
                     key={label}
                     type="button"
-                    onClick={() => { setIsPlaying(false); setManualEntry(true); setStep(idx); setAnatomySubstep(0); }}
-                    className={`flex flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 text-center text-xs font-medium transition-all ${
+                    onClick={() => {
+                      setIsPlaying(false);
+                      setStep(idx);
+                      setAnatomySubstep(0);
+                    }}
+                    className={`flex flex-col items-center gap-1 rounded-lg px-2 py-1.5 text-center text-xs font-medium transition-all ${
                       step === idx
-                        ? "bg-accent-wash text-accent-ink border border-accent/40 font-semibold shadow-xs"
+                        ? "bg-accent-wash text-accent-ink border border-accent/40 font-semibold"
                         : "text-ink-muted hover:bg-surface-hover hover:text-ink"
                     }`}
                   >
@@ -473,351 +460,320 @@ export function FormulaMorphShowcase() {
             </div>
           </div>
 
-          {/* Right: Live Interactive Sandbox & Diagram Link */}
-          <div className="lg:col-span-4 flex flex-col justify-between space-y-6 rounded-2xl border border-rule bg-surface p-6 shadow-xs">
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-rule">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-ink">Live Parameter Sensitivity</h3>
-                <span className="text-xs text-ink-subtle">ปรับค่าสด</span>
-              </div>
-
-              <p className="mt-3 text-xs leading-relaxed text-ink-muted">
-                เมื่อลากเลื่อนค่าด้านล่าง ตัวเลขในสมการฝั่งซ้ายจะ{" "}
-                <strong className="text-ink">คำนวณและ Morph ทันที</strong> สะท้อนคณิตศาสตร์แบบ Real-time:
+          {/* Right: Parameter Controls & Mini Visuals */}
+          <div className="lg:col-span-4 rounded-2xl border border-rule bg-surface p-5 sm:p-6 shadow-xs space-y-5">
+            <div className="pb-3 border-b border-rule">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-ink">
+                ปรับค่าตัวแปร (Live Parameters)
+              </h3>
+              <p className="mt-1 text-xs text-ink-muted">
+                เลื่อนปรับค่าเพื่อดูผลกระทบต่อสมการและแผนภาพแบบทันที
               </p>
-
-              {/* Topic 1: Tukey Sandbox */}
-              {topic === "tukey" && (
-                <div className="mt-5 space-y-5">
-                  <div>
-                    <div className="flex justify-between text-xs font-medium">
-                      <span className="text-accent-ink font-semibold">จุดทดสอบ x (Data Point)</span>
-                      <span
-                        className={`font-mono font-bold px-2 py-0.5 rounded tabular-nums ${
-                          tukey.isOutlier ? "bg-bad-wash text-bad" : "bg-surface-hover text-ink"
-                        }`}
-                      >
-                        <AnimatedNumber
-                          value={testPoint}
-                          decimals={1}
-                          reducedMotion={reducedMotion}
-                        />
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={TUKEY_MIN}
-                      max={TUKEY_MAX}
-                      step={0.5}
-                      value={testPoint}
-                      onChange={(e) => setTestPoint(Number(e.target.value))}
-                      aria-label="จุดทดสอบ x เทียบกับรั้วบน"
-                      className="mt-2 w-full accent-accent cursor-pointer"
-                    />
-                    <div className="flex justify-between text-[10px] text-ink-subtle">
-                      <span>20.0 (ในรั้ว)</span>
-                      <span className="font-semibold text-accent tabular-nums">
-                        รั้ว = <AnimatedNumber value={tukey.upperFence} decimals={1} reducedMotion={reducedMotion} />
-                      </span>
-                      <span>55.0 (นอกรั้ว)</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-medium">
-                      <span className="text-ink">Q₃ (ควอร์ไทล์ที่ 3)</span>
-                      <span className="font-mono font-bold text-ink tabular-nums">{q3}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={25}
-                      max={35}
-                      step={1}
-                      value={q3}
-                      onChange={(e) => setQ3(Number(e.target.value))}
-                      aria-label="ควอร์ไทล์ที่ 3"
-                      className="mt-2 w-full accent-accent cursor-pointer"
-                    />
-                  </div>
-
-                  {/* Multiplier locked to 1.5 */}
-                  <div className="rounded-xl border border-rule bg-surface-hover/80 p-3 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-ink">ตัวคูณ Tukey Multiplier</span>
-                      <span className="rounded-md border border-warn/40 bg-warn/10 px-2 py-0.5 font-mono font-bold text-warn">
-                        1.5 × IQR
-                      </span>
-                    </div>
-                    <p className="mt-1.5 text-[11px] text-ink-subtle leading-relaxed">
-                      <strong>กับดักข้อสอบ:</strong> ใช้ 1.5 (Inner Fence) เสมอ — อย่าหยิบ 3.0 (Outer Fence ไม่ออกสอบ)
-                    </p>
-                  </div>
-
-                  <TukeyAxisDiagram
-                    q1={q1}
-                    q3={q3}
-                    upperFence={tukey.upperFence}
-                    testPoint={testPoint}
-                    isOutlier={tukey.isOutlier}
-                    reducedMotion={reducedMotion}
-                  />
-                </div>
-              )}
-
-              {/* Topic 2: Gini Sandbox */}
-              {topic === "gini" && (
-                <div className="mt-5 space-y-5">
-                  <div>
-                    <div className="flex justify-between text-xs font-medium">
-                      <span className="text-good font-semibold">ลูกค้ากลุ่ม Active</span>
-                      <span className="font-mono font-bold text-good tabular-nums">
-                        {activeCustomers} / {totalCustomers}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={0}
-                      max={6}
-                      step={1}
-                      value={activeCustomers}
-                      onChange={(e) => setActiveCustomers(Number(e.target.value))}
-                      aria-label="จำนวนลูกค้ากลุ่ม Active"
-                      className="mt-2 w-full accent-good cursor-pointer"
-                    />
-                    <div className="flex justify-between text-[10px] text-ink-subtle">
-                      <span>0 Active (Pure I)</span>
-                      <span>3 Active (ปนกันครึ่งๆ 0.5)</span>
-                      <span>6 Active (Pure A)</span>
-                    </div>
-                  </div>
-
-                  <GiniPopulationPanel
-                    active={activeCustomers}
-                    total={totalCustomers}
-                    gini={giniCalc.gini}
-                    reducedMotion={reducedMotion}
-                  />
-                </div>
-              )}
-
-              {/* Topic 3: Confusion Matrix Sandbox */}
-              {topic === "confusion" && (
-                <div className="mt-5 space-y-5">
-                  <div>
-                    <div className="flex justify-between text-xs font-medium">
-                      <span className="text-accent-ink font-semibold">เกณฑ์ตัดสินใจ (Threshold T)</span>
-                      <span className="font-mono font-bold text-accent px-2 py-0.5 rounded bg-accent/10 tabular-nums">
-                        T = <AnimatedNumber value={threshold} decimals={2} reducedMotion={reducedMotion} />
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={0.2}
-                      max={0.8}
-                      step={0.05}
-                      value={threshold}
-                      onChange={(e) => setThreshold(Number(e.target.value))}
-                      aria-label="เกณฑ์ตัดสินใจ Threshold"
-                      className="mt-2 w-full accent-accent cursor-pointer"
-                    />
-                    <div className="flex justify-between text-[10px] text-ink-subtle">
-                      <span>0.20 (ระแวงสูง: Recall สูง)</span>
-                      <span>0.80 (เข้มงวด: Precision สูง)</span>
-                    </div>
-                  </div>
-
-                  <ThresholdStripDiagram
-                    posScores={POS_SCORES}
-                    negScores={NEG_SCORES}
-                    threshold={threshold}
-                    tp={cm.tp}
-                    fp={cm.fp}
-                    fn={cm.fn}
-                    tn={cm.tn}
-                    reducedMotion={reducedMotion}
-                  />
-
-                  {/* 2×2 Matrix Table Mini Diagram */}
-                  <div className="mt-4 rounded-xl border border-rule bg-surface-hover p-3.5 text-xs">
-                    <p className="text-[11px] font-semibold uppercase text-ink-muted pb-2 border-b border-rule">
-                      Confusion Matrix (N = 20)
-                    </p>
-                    <div className="grid grid-cols-2 gap-2 mt-2 font-mono text-center">
-                      <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 p-2">
-                        <span className="text-[10px] text-ink-subtle block font-sans">True Positive</span>
-                        <strong className="text-base text-teal-700 dark:text-teal-300 tabular-nums">TP = {cm.tp}</strong>
-                      </div>
-                      <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-2">
-                        <span className="text-[10px] text-ink-subtle block font-sans">False Positive</span>
-                        <strong className="text-base text-amber-700 dark:text-amber-300 tabular-nums">
-                          FP = {cm.fp}
-                        </strong>
-                      </div>
-                      <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-2">
-                        <span className="text-[10px] text-ink-subtle block font-sans">False Negative</span>
-                        <strong className="text-base text-red-700 dark:text-red-300 tabular-nums">FN = {cm.fn}</strong>
-                      </div>
-                      <div className="rounded-lg border border-slate-500/30 bg-slate-500/10 p-2">
-                        <span className="text-[10px] text-ink-subtle block font-sans">True Negative</span>
-                        <strong className="text-base text-slate-700 dark:text-slate-300 tabular-nums">TN = {cm.tn}</strong>
-                      </div>
-                    </div>
-                    <p className="mt-2 text-[11px] leading-relaxed text-ink-subtle">
-                      <strong>กับดัก:</strong> T ต่ำ → จับคนป่วยครบ (Recall↑) แต่ทายผิดเยอะ (Precision↓) — F1 คือ
-                      harmonic mean ไม่ใช่ค่าเฉลี่ยธรรมดา
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Topic 4: K-Means Sandbox */}
-              {topic === "kmeans" && (
-                <div className="mt-5 space-y-5">
-                  <div>
-                    <label className="text-xs font-semibold text-ink block mb-1.5">เลือกจุดข้อมูลจากข้อสอบจริง:</label>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {Object.entries(POINTS).map(([k, p]) => (
-                        <button
-                          key={k}
-                          type="button"
-                          onClick={() => setSelectedPointKey(k)}
-                          className={`rounded-lg border px-2.5 py-1.5 text-xs font-mono transition-all ${
-                            selectedPointKey === k
-                              ? "border-accent bg-accent-wash text-accent-ink font-bold shadow-xs"
-                              : "border-rule bg-surface hover:bg-surface-hover text-ink-muted"
-                          }`}
-                        >
-                          {p.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-ink block mb-1.5">เปรียบเทียบระยะทางกับ Centroid:</label>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => setTargetCentroid("C1")}
-                        className={`rounded-lg border px-2.5 py-1.5 text-xs font-mono transition-all ${
-                          targetCentroid === "C1"
-                            ? "border-blue-500 bg-blue-500/15 text-blue-700 dark:text-blue-300 font-bold shadow-xs"
-                            : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
-                        }`}
-                      >
-                        C1 (2, 10)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setTargetCentroid("C2")}
-                        className={`rounded-lg border px-2.5 py-1.5 text-xs font-mono transition-all ${
-                          targetCentroid === "C2"
-                            ? "border-amber-500 bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold shadow-xs"
-                            : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
-                        }`}
-                      >
-                        C2 (5, 8)
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-ink block mb-1.5">
-                      ฟังก์ชันวัดระยะทาง (Distance Metric):
-                    </label>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => setMetricMode("euclidean")}
-                        className={`rounded-lg border px-2.5 py-1.5 text-xs transition-all ${
-                          metricMode === "euclidean"
-                            ? "border-accent bg-accent text-on-accent font-semibold"
-                            : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
-                        }`}
-                      >
-                        Euclidean (L2)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setMetricMode("manhattan")}
-                        className={`rounded-lg border px-2.5 py-1.5 text-xs transition-all ${
-                          metricMode === "manhattan"
-                            ? "border-accent bg-accent text-on-accent font-semibold"
-                            : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
-                        }`}
-                      >
-                        Manhattan (L1)
-                      </button>
-                    </div>
-                  </div>
-
-                  <KMeansTriangleSVG pt={km.pt} c={km.c} mode={metricMode} pointKey={selectedPointKey} targetKey={targetCentroid} />
-
-                  {/* Distance Comparison Card */}
-                  <div className="rounded-xl border border-rule bg-surface-hover p-3 text-xs space-y-1.5 font-mono">
-                    <p className="font-sans font-semibold text-ink text-[11px] uppercase">
-                      เปรียบเทียบระยะสู่ C1 vs C2 ({metricMode}):
-                    </p>
-                    <div className="flex justify-between pt-1 tabular-nums">
-                      <span>
-                        d({selectedPointKey}, C1):
-                      </span>
-                      <strong className="text-blue-600">
-                        <AnimatedNumber
-                          value={metricMode === "euclidean" ? km.d1Euclid : km.d1Manhattan}
-                          decimals={metricMode === "euclidean" ? 3 : 1}
-                          reducedMotion={reducedMotion}
-                        />
-                      </strong>
-                    </div>
-                    <div className="flex justify-between tabular-nums">
-                      <span>
-                        d({selectedPointKey}, C2):
-                      </span>
-                      <strong className="text-amber-600">
-                        <AnimatedNumber
-                          value={metricMode === "euclidean" ? km.d2Euclid : km.d2Manhattan}
-                          decimals={metricMode === "euclidean" ? 3 : 1}
-                          reducedMotion={reducedMotion}
-                        />
-                      </strong>
-                    </div>
-                    <div className="pt-2 border-t border-rule font-sans text-[11px] text-ink-muted">
-                      {metricMode === "euclidean"
-                        ? km.d1Euclid < km.d2Euclid
-                          ? "✨ ใกล้ C1 มากกว่า → อยู่ Cluster 1"
-                          : "✨ ใกล้ C2 มากกว่า → อยู่ Cluster 2"
-                        : km.d1Manhattan < km.d2Manhattan
-                        ? "✨ ใกล้ C1 มากกว่า → อยู่ Cluster 1"
-                        : "✨ ใกล้ C2 มากกว่า → อยู่ Cluster 2"}
-                    </div>
-                    {selectedPointKey === "A2" && (
-                      <div className="rounded-lg border border-warn/40 bg-warn/10 p-2 font-sans text-[11px] leading-relaxed text-ink">
-                        🪤 <strong>กับดักข้อสอบ:</strong> A2 → Euclid ใกล้ C2 (
-                        <span className="font-mono font-bold tabular-nums">
-                          <AnimatedNumber value={km.d2Euclid} decimals={3} reducedMotion={reducedMotion} /> {"<"}{" "}
-                          <AnimatedNumber value={km.d1Euclid} decimals={3} reducedMotion={reducedMotion} />
-                        </span>
-                        ) แต่ Manhattan ใกล้ C1 (
-                        <span className="font-mono font-bold tabular-nums">
-                          <AnimatedNumber value={km.d1Manhattan} decimals={0} reducedMotion={reducedMotion} /> {"<"}{" "}
-                          <AnimatedNumber value={km.d2Manhattan} decimals={0} reducedMotion={reducedMotion} />
-                        </span>
-                        ) — เมตริกพลิกคำตอบ
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
 
-            <button
-              type="button"
-              onClick={resetAll}
-              className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-rule px-3 py-2 text-xs font-medium text-ink-muted hover:border-rule-strong hover:text-ink transition-colors"
-            >
-              <ResetIcon className="size-3.5" /> รีเซ็ตค่าเริ่มต้นตามสไลด์
-            </button>
+            {/* Topic 1 Controls: Tukey */}
+            {topic === "tukey" && (
+              <div className="space-y-5">
+                <div>
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-accent-ink font-semibold">จุดทดสอบ x (Data Point)</span>
+                    <span
+                      className={`font-mono font-bold px-2 py-0.5 rounded tabular-nums ${
+                        tukey.isOutlier ? "bg-bad-wash text-bad" : "bg-surface-hover text-ink"
+                      }`}
+                    >
+                      <AnimatedNumber value={testPoint} decimals={1} reducedMotion={reducedMotion} />
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={TUKEY_MIN}
+                    max={TUKEY_MAX}
+                    step={0.5}
+                    value={testPoint}
+                    onChange={(e) => setTestPoint(Number(e.target.value))}
+                    className="mt-2 w-full accent-accent cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-ink-subtle">
+                    <span>20.0 (ในรั้ว)</span>
+                    <span className="font-semibold text-accent tabular-nums">
+                      รั้ว = <AnimatedNumber value={tukey.upperFence} decimals={1} reducedMotion={reducedMotion} />
+                    </span>
+                    <span>55.0 (นอกรั้ว)</span>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-ink">Q₃ (ควอร์ไทล์ที่ 3)</span>
+                    <span className="font-mono font-bold text-ink tabular-nums">{q3}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={25}
+                    max={35}
+                    step={1}
+                    value={q3}
+                    onChange={(e) => setQ3(Number(e.target.value))}
+                    className="mt-2 w-full accent-accent cursor-pointer"
+                  />
+                </div>
+
+                <div className="rounded-xl border border-rule bg-surface-hover/80 p-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-ink">ตัวคูณ Tukey Multiplier</span>
+                    <span className="rounded-md border border-warn/40 bg-warn/10 px-2 py-0.5 font-mono font-bold text-warn">
+                      1.5 × IQR
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-ink-subtle leading-relaxed">
+                    <strong>ข้อควรระวัง:</strong> ในห้องสอบใช้ 1.5 (Inner Fence) เสมอ ไม่ใช้ 3.0
+                  </p>
+                </div>
+
+                <TukeyAxisDiagram
+                  q1={q1}
+                  q3={q3}
+                  upperFence={tukey.upperFence}
+                  testPoint={testPoint}
+                  isOutlier={tukey.isOutlier}
+                  reducedMotion={reducedMotion}
+                />
+              </div>
+            )}
+
+            {/* Topic 2 Controls: Gini */}
+            {topic === "gini" && (
+              <div className="space-y-5">
+                <div>
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-good font-semibold">ลูกค้ากลุ่ม Active</span>
+                    <span className="font-mono font-bold text-good tabular-nums">
+                      {activeCustomers} / {totalCustomers}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={6}
+                    step={1}
+                    value={activeCustomers}
+                    onChange={(e) => setActiveCustomers(Number(e.target.value))}
+                    className="mt-2 w-full accent-good cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-ink-subtle">
+                    <span>0 (Pure I)</span>
+                    <span>3 (ปนกันครึ่งๆ = 0.5)</span>
+                    <span>6 (Pure A)</span>
+                  </div>
+                </div>
+
+                <GiniPopulationPanel
+                  active={activeCustomers}
+                  total={totalCustomers}
+                  gini={giniCalc.gini}
+                  reducedMotion={reducedMotion}
+                />
+              </div>
+            )}
+
+            {/* Topic 3 Controls: Confusion Matrix */}
+            {topic === "confusion" && (
+              <div className="space-y-5">
+                <div>
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-accent-ink font-semibold">เกณฑ์ตัดสินใจ (Threshold T)</span>
+                    <span className="font-mono font-bold text-accent px-2 py-0.5 rounded bg-accent/10 tabular-nums">
+                      T = <AnimatedNumber value={threshold} decimals={2} reducedMotion={reducedMotion} />
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0.2}
+                    max={0.8}
+                    step={0.05}
+                    value={threshold}
+                    onChange={(e) => setThreshold(Number(e.target.value))}
+                    className="mt-2 w-full accent-accent cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-ink-subtle">
+                    <span>0.20 (เน้น Recall สูง)</span>
+                    <span>0.80 (เน้น Precision สูง)</span>
+                  </div>
+                </div>
+
+                <ThresholdStripDiagram
+                  posScores={POS_SCORES}
+                  negScores={NEG_SCORES}
+                  threshold={threshold}
+                  tp={cm.tp}
+                  fp={cm.fp}
+                  fn={cm.fn}
+                  tn={cm.tn}
+                  reducedMotion={reducedMotion}
+                />
+
+                <div className="rounded-xl border border-rule bg-surface-hover p-3.5 text-xs">
+                  <p className="text-[11px] font-semibold uppercase text-ink-muted pb-2 border-b border-rule">
+                    Confusion Matrix (N = 20)
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 mt-2 font-mono text-center">
+                    <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 p-2">
+                      <span className="text-[10px] text-ink-subtle block font-sans">True Positive</span>
+                      <strong className="text-base text-teal-700 dark:text-teal-300 tabular-nums">
+                        TP = {cm.tp}
+                      </strong>
+                    </div>
+                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-2">
+                      <span className="text-[10px] text-ink-subtle block font-sans">False Positive</span>
+                      <strong className="text-base text-amber-700 dark:text-amber-300 tabular-nums">
+                        FP = {cm.fp}
+                      </strong>
+                    </div>
+                    <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-2">
+                      <span className="text-[10px] text-ink-subtle block font-sans">False Negative</span>
+                      <strong className="text-base text-red-700 dark:text-red-300 tabular-nums">
+                        FN = {cm.fn}
+                      </strong>
+                    </div>
+                    <div className="rounded-lg border border-slate-500/30 bg-slate-500/10 p-2">
+                      <span className="text-[10px] text-ink-subtle block font-sans">True Negative</span>
+                      <strong className="text-base text-slate-700 dark:text-slate-300 tabular-nums">
+                        TN = {cm.tn}
+                      </strong>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-[11px] leading-relaxed text-ink-subtle">
+                    <strong>ข้อสังเกต:</strong> เมื่อลดค่า T จะตรวจพบคนป่วยมากขึ้น (Recall สูงขึ้น) แต่ก็ทายผิดมากขึ้นเช่นกัน (Precision ลดลง)
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Topic 4 Controls: K-Means */}
+            {topic === "kmeans" && (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-ink block mb-1.5">
+                    เลือกจุดข้อมูล:
+                  </label>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {Object.entries(POINTS).map(([k, p]) => (
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => setSelectedPointKey(k)}
+                        className={`rounded-lg border px-2.5 py-1.5 text-xs font-mono transition-all ${
+                          selectedPointKey === k
+                            ? "border-accent bg-accent-wash text-accent-ink font-bold"
+                            : "border-rule bg-surface hover:bg-surface-hover text-ink-muted"
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-ink block mb-1.5">
+                    เปรียบเทียบกับ Centroid:
+                  </label>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {(["C1", "C2"] as const).map((cKey) => (
+                      <button
+                        key={cKey}
+                        type="button"
+                        onClick={() => setTargetCentroid(cKey)}
+                        className={`rounded-lg border px-2.5 py-1.5 text-xs font-mono transition-all ${
+                          targetCentroid === cKey
+                            ? cKey === "C1"
+                              ? "border-blue-500 bg-blue-500/15 text-blue-700 dark:text-blue-300 font-bold"
+                              : "border-amber-500 bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold"
+                            : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
+                        }`}
+                      >
+                        {CENTROIDS[cKey].label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-ink block mb-1.5">
+                    วิธีวัดระยะทาง (Distance Metric):
+                  </label>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {(["euclidean", "manhattan"] as const).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setMetricMode(m)}
+                        className={`rounded-lg border px-2.5 py-1.5 text-xs transition-all ${
+                          metricMode === m
+                            ? "border-accent bg-accent text-on-accent font-semibold"
+                            : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
+                        }`}
+                      >
+                        {m === "euclidean" ? "Euclidean (L2)" : "Manhattan (L1)"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <KMeansTriangleSVG
+                  pt={km.pt}
+                  c={km.c}
+                  mode={metricMode}
+                  pointKey={selectedPointKey}
+                  targetKey={targetCentroid}
+                />
+
+                <div className="rounded-xl border border-rule bg-surface-hover p-3 text-xs space-y-1.5 font-mono">
+                  <p className="font-sans font-semibold text-ink text-[11px] uppercase">
+                    เปรียบเทียบระยะห่าง ({metricMode}):
+                  </p>
+                  <div className="flex justify-between pt-1 tabular-nums">
+                    <span>d({selectedPointKey}, C1):</span>
+                    <strong className="text-blue-600">
+                      <AnimatedNumber
+                        value={metricMode === "euclidean" ? km.d1Euclid : km.d1Manhattan}
+                        decimals={metricMode === "euclidean" ? 3 : 1}
+                        reducedMotion={reducedMotion}
+                      />
+                    </strong>
+                  </div>
+                  <div className="flex justify-between tabular-nums">
+                    <span>d({selectedPointKey}, C2):</span>
+                    <strong className="text-amber-600">
+                      <AnimatedNumber
+                        value={metricMode === "euclidean" ? km.d2Euclid : km.d2Manhattan}
+                        decimals={metricMode === "euclidean" ? 3 : 1}
+                        reducedMotion={reducedMotion}
+                      />
+                    </strong>
+                  </div>
+                  <div className="pt-2 border-t border-rule font-sans text-[11px] text-ink-muted font-medium">
+                    {(metricMode === "euclidean" ? km.d1Euclid < km.d2Euclid : km.d1Manhattan < km.d2Manhattan)
+                      ? "ผลลัพธ์: ใกล้ C1 มากกว่า (จัดเข้า Cluster 1)"
+                      : "ผลลัพธ์: ใกล้ C2 มากกว่า (จัดเข้า Cluster 2)"}
+                  </div>
+                  {selectedPointKey === "A2" && (
+                    <div className="rounded-lg border border-warn/40 bg-warn/10 p-2 font-sans text-[11px] leading-relaxed text-ink">
+                      <strong>จุดสังเกตข้อสอบ:</strong> จุด A2 เมื่อวัดแบบ Euclidean จะใกล้ C2 (
+                      <span className="font-mono font-bold tabular-nums">
+                        {km.d2Euclid.toFixed(2)} &lt; {km.d1Euclid.toFixed(2)}
+                      </span>
+                      ) แต่ถ้าวัดแบบ Manhattan จะใกล้ C1 (
+                      <span className="font-mono font-bold tabular-nums">
+                        {km.d1Manhattan} &lt; {km.d2Manhattan}
+                      </span>
+                      )
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -825,11 +781,9 @@ export function FormulaMorphShowcase() {
   );
 }
 
-// -------------------------------------------------------------
-// Number ticker: eased rAF interpolation toward the live target.
-// Isolated per instance → slider scrub re-renders only the digits,
-// never the formula tree. Reduced-motion returns the target as-is.
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Number Interpolation Hook & Component
+// ---------------------------------------------------------------------------
 function useTweenedNumber(target: number, reducedMotion: boolean, duration = 200): number {
   const [display, setDisplay] = useState(target);
   const displayRef = useRef(target);
@@ -881,9 +835,9 @@ const AnimatedNumber = memo(function AnimatedNumber({
   );
 });
 
-// -------------------------------------------------------------
-// Tukey 1D axis: tick marks, IQR box, glowing fence, springy dot.
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Mini Diagrams (Right Panel)
+// ---------------------------------------------------------------------------
 interface TukeyAxisProps {
   q1: number;
   q3: number;
@@ -909,20 +863,27 @@ const TukeyAxisDiagram = memo(function TukeyAxisDiagram({
   }`;
 
   return (
-    <div className="mt-6 rounded-xl border border-rule bg-surface-hover p-4">
-      <p className="text-xs font-semibold uppercase text-ink-muted">แผนภาพระนาบ 1 มิติ (Mini Axis)</p>
-      <div className="relative mt-8 mb-4 h-12 flex items-center" role="img" aria-label={`แกน 1 มิติ รั้วบน ${upperFence.toFixed(1)} จุดทดสอบ ${testPoint.toFixed(1)}`}>
+    <div className="rounded-xl border border-rule bg-surface-hover p-4">
+      <p className="text-xs font-semibold uppercase text-ink-muted">แผนภาพแกน 1 มิติ</p>
+      <div
+        className="relative mt-8 mb-4 h-12 flex items-center"
+        role="img"
+        aria-label={`แกน 1 มิติ รั้วบน ${upperFence.toFixed(1)} จุดทดสอบ ${testPoint.toFixed(1)}`}
+      >
         <div className="w-full h-1 bg-rule-strong rounded-full" />
-        {/* Tick marks at 20 / 30 / 40 / 50 */}
         {TUKEY_TICKS.map((t) => (
-          <div key={t} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${pos(t)}%` }} aria-hidden="true">
+          <div
+            key={t}
+            className="absolute top-1/2 -translate-y-1/2"
+            style={{ left: `${pos(t)}%` }}
+            aria-hidden="true"
+          >
             <div className="w-px h-2.5 bg-ink-subtle/60 mx-auto" />
             <span className="absolute top-3.5 -translate-x-1/2 left-1/2 text-xs font-mono text-ink-subtle tabular-nums">
               {t}
             </span>
           </div>
         ))}
-        {/* IQR box */}
         <div
           className="absolute h-5 rounded border border-accent bg-accent/20"
           style={{ left: `${pos(q1)}%`, width: `${Math.max(2, pos(q3) - pos(q1))}%` }}
@@ -935,13 +896,9 @@ const TukeyAxisDiagram = memo(function TukeyAxisDiagram({
             Q3
           </span>
         </div>
-        {/* Glowing fence boundary */}
         <div
           className="absolute -top-2 w-0.5 h-8 bg-warn z-10 rounded-full"
-          style={{
-            left: `${pos(upperFence)}%`,
-            boxShadow: "0 0 14px 2px color-mix(in srgb, var(--color-warn) 65%, transparent)",
-          }}
+          style={{ left: `${pos(upperFence)}%` }}
         >
           <span className="absolute -top-5 -translate-x-1/2 text-xs font-mono text-warn font-bold whitespace-nowrap tabular-nums">
             Fence {upperFence.toFixed(1)}
@@ -950,23 +907,25 @@ const TukeyAxisDiagram = memo(function TukeyAxisDiagram({
         {reducedMotion ? (
           <div className={dotClass} style={{ left: dotLeft }} />
         ) : (
-          <motion.div className={dotClass} initial={false} animate={{ left: dotLeft }} transition={SPRING_TACTILE} />
+          <motion.div
+            className={dotClass}
+            initial={false}
+            animate={{ left: dotLeft }}
+            transition={SPRING_TACTILE}
+          />
         )}
       </div>
 
       <div className="mt-5 flex items-center justify-between text-xs">
-        <span className="text-ink-subtle">สถานะจุด:</span>
+        <span className="text-ink-subtle">สถานะข้อมูล:</span>
         {isOutlier ? (
           <span className="inline-flex items-center gap-1 font-bold text-bad">
-            <ExclamationTriangleIcon className="size-3.5" /> Outlier! (เกินรั้ว{" "}
-            <span className="tabular-nums">
-              <AnimatedNumber value={testPoint - upperFence} decimals={1} reducedMotion={reducedMotion} />
-            </span>
-            )
+            <ExclamationTriangleIcon className="size-3.5" /> Outlier (เกินรั้ว{" "}
+            <AnimatedNumber value={testPoint - upperFence} decimals={1} reducedMotion={reducedMotion} />)
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 font-bold text-good">
-            <CheckCircledIcon className="size-3.5" /> Normal (Inlier)
+            <CheckCircledIcon className="size-3.5" /> Normal (อยู่ในเกณฑ์ปกติ)
           </span>
         )}
       </div>
@@ -974,9 +933,6 @@ const TukeyAxisDiagram = memo(function TukeyAxisDiagram({
   );
 });
 
-// -------------------------------------------------------------
-// Gini population panel: dots + animated impurity meter (0 → 0.5).
-// -------------------------------------------------------------
 interface GiniPanelProps {
   active: number;
   total: number;
@@ -984,11 +940,18 @@ interface GiniPanelProps {
   reducedMotion: boolean;
 }
 
-const GiniPopulationPanel = memo(function GiniPopulationPanel({ active, total, gini, reducedMotion }: GiniPanelProps) {
-  const meterColor = gini === 0 ? "var(--color-good)" : gini >= 0.45 ? "var(--color-bad)" : "var(--color-warn)";
+const GiniPopulationPanel = memo(function GiniPopulationPanel({
+  active,
+  total,
+  gini,
+  reducedMotion,
+}: GiniPanelProps) {
+  const meterColor =
+    gini === 0 ? "var(--color-good)" : gini >= 0.45 ? "var(--color-bad)" : "var(--color-warn)";
+
   return (
-    <div className="mt-6 rounded-xl border border-rule bg-surface-hover p-4">
-      <p className="text-[11px] font-semibold uppercase text-ink-muted">การกระจายตัวของประชากร</p>
+    <div className="rounded-xl border border-rule bg-surface-hover p-4">
+      <p className="text-[11px] font-semibold uppercase text-ink-muted">สัดส่วนข้อมูลในโหนด</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {Array.from({ length: total }).map((_, i) => {
           const isActive = i < active;
@@ -1007,22 +970,20 @@ const GiniPopulationPanel = memo(function GiniPopulationPanel({ active, total, g
         })}
       </div>
 
-      {/* Impurity meter: full bar = 0.5 (2-class max — the exam trap) */}
       <div className="mt-4 pt-3 border-t border-rule">
         <div className="flex justify-between text-xs">
-          <span className="text-ink-muted">Impurity Meter:</span>
+          <span className="text-ink-muted">ระดับความปนเปื้อน (Impurity):</span>
           <span className="font-mono font-bold tabular-nums" style={{ color: meterColor }}>
             <AnimatedNumber value={gini} decimals={3} reducedMotion={reducedMotion} />{" "}
-            {gini === 0 ? "✨ Pure!" : gini >= 0.5 ? "⚡ Maximally Mixed" : ""}
+            {gini === 0 ? "(Pure)" : gini >= 0.5 ? "(Max Impurity)" : ""}
           </span>
         </div>
-        <div
-          className="relative mt-2 h-2 overflow-hidden rounded-full bg-rule-strong/40"
-          role="img"
-          aria-label={`Gini impurity ${gini.toFixed(3)} จากสูงสุด 0.5`}
-        >
+        <div className="relative mt-2 h-2 overflow-hidden rounded-full bg-rule-strong/40">
           {reducedMotion ? (
-            <div className="h-full rounded-full" style={{ width: `${(gini / 0.5) * 100}%`, backgroundColor: meterColor }} />
+            <div
+              className="h-full rounded-full"
+              style={{ width: `${(gini / 0.5) * 100}%`, backgroundColor: meterColor }}
+            />
           ) : (
             <motion.div
               className="h-full rounded-full"
@@ -1032,20 +993,16 @@ const GiniPopulationPanel = memo(function GiniPopulationPanel({ active, total, g
             />
           )}
         </div>
-        <div className="mt-1 flex justify-between text-xs font-mono text-ink-subtle tabular-nums">
-          <span>0 (Pure)</span>
+        <div className="mt-1 flex justify-between text-[11px] font-mono text-ink-subtle tabular-nums">
+          <span>0.00 (บริสุทธิ์)</span>
           <span>0.25</span>
-          <span>0.5 (ปนครึ่งๆ = สูงสุด)</span>
+          <span>0.50 (ปนกันสูงสุด)</span>
         </div>
       </div>
     </div>
   );
 });
 
-// -------------------------------------------------------------
-// Threshold strip: 20 exam cases as dots on a score axis; the T line
-// visibly re-sorts them into TP/FN vs FP/TN + population bars.
-// -------------------------------------------------------------
 interface ThresholdStripProps {
   posScores: number[];
   negScores: number[];
@@ -1075,8 +1032,8 @@ const ThresholdStripDiagram = memo(function ThresholdStripDiagram({
   const tLeft = `${pos(threshold)}%`;
 
   const rows = [
-    { label: "Actual ⊕ (ป่วยจริง)", scores: posScores, isPos: true },
-    { label: "Actual ⊖ (ไม่ป่วย)", scores: negScores, isPos: false },
+    { label: "Actual Positive (ป่วยจริง)", scores: posScores, isPos: true },
+    { label: "Actual Negative (ปกติ)", scores: negScores, isPos: false },
   ];
   const bars = [
     { label: "TP", count: tp, total: posScores.length, cls: "bg-teal-500", text: "text-teal-700 dark:text-teal-300" },
@@ -1086,15 +1043,11 @@ const ThresholdStripDiagram = memo(function ThresholdStripDiagram({
   ];
 
   return (
-    <div className="mt-4 rounded-xl border border-rule bg-surface-hover p-3.5 text-xs">
+    <div className="rounded-xl border border-rule bg-surface-hover p-3.5 text-xs">
       <p className="text-[11px] font-semibold uppercase text-ink-muted pb-2 border-b border-rule">
-        เกณฑ์ T กวาดแยก 20 เคส (ดูจุดย้ายฝั่ง)
+        การแบ่งกลุ่มตามเกณฑ์ T (20 เคส)
       </p>
-      <div
-        className="relative mt-3 space-y-4 pb-5"
-        role="img"
-        aria-label={`เคสที่เกณฑ์ ${threshold.toFixed(2)}: TP ${tp} FN ${fn} FP ${fp} TN ${tn}`}
-      >
+      <div className="relative mt-3 space-y-4 pb-5">
         {rows.map((row) => (
           <div key={row.label}>
             <p className="text-[10px] font-semibold text-ink-subtle mb-1">{row.label}</p>
@@ -1111,7 +1064,7 @@ const ThresholdStripDiagram = memo(function ThresholdStripDiagram({
                 return (
                   <div
                     key={`${row.label}-${s}`}
-                    title={`${s.toFixed(2)} → ${row.isPos ? (predicted ? "TP" : "FN") : predicted ? "FP" : "TN"}`}
+                    title={`${s.toFixed(2)} -> ${row.isPos ? (predicted ? "TP" : "FN") : predicted ? "FP" : "TN"}`}
                     className="absolute top-1/2 size-3 -translate-y-1/2 rounded-full border-2 border-white shadow-xs"
                     style={{
                       left: `calc(${pos(s)}% - 6px)`,
@@ -1121,26 +1074,23 @@ const ThresholdStripDiagram = memo(function ThresholdStripDiagram({
                   />
                 );
               })}
-              {/* Threshold line spanning both rows */}
               <div
                 className="absolute -top-1 -bottom-1 w-0.5 rounded-full bg-accent z-10"
                 style={{
                   left: tLeft,
-                  boxShadow: "0 0 10px 1px color-mix(in srgb, var(--color-accent) 60%, transparent)",
                   transition: reducedMotion ? undefined : "left 160ms ease-out",
                 }}
               />
             </div>
           </div>
         ))}
-        <div className="absolute bottom-0 flex justify-between text-xs font-mono text-ink-subtle tabular-nums" style={{ left: 0, right: 0 }}>
+        <div className="absolute bottom-0 inset-x-0 flex justify-between text-xs font-mono text-ink-subtle tabular-nums">
           <span>0.1</span>
           <span className="font-bold text-accent">T = {threshold.toFixed(2)}</span>
           <span>1.0</span>
         </div>
       </div>
 
-      {/* Population bars */}
       <div className="mt-3 space-y-1.5 border-t border-rule pt-3">
         {bars.map((b) => (
           <div key={b.label} className="flex items-center gap-2">
@@ -1162,19 +1112,21 @@ const ThresholdStripDiagram = memo(function ThresholdStripDiagram({
   );
 });
 
-// -------------------------------------------------------------
-// K-Means right-triangle: Δx run (blue) × Δy rise (amber), hypotenuse
-// for Euclidean vs L-path for Manhattan.
-// -------------------------------------------------------------
 interface KMeansSVGProps {
   pt: { x: number; y: number; label: string };
   c: { x: number; y: number; label: string };
-  mode: "euclidean" | "manhattan";
+  mode: MetricMode;
   pointKey: string;
   targetKey: string;
 }
 
-const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKey, targetKey }: KMeansSVGProps) {
+const KMeansTriangleSVG = memo(function KMeansTriangleSVG({
+  pt,
+  c,
+  mode,
+  pointKey,
+  targetKey,
+}: KMeansSVGProps) {
   const W = 320;
   const H = 240;
   const PAD = 30;
@@ -1198,11 +1150,9 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
   return (
     <div className="rounded-xl border border-rule bg-surface-hover p-3.5">
       <p className="text-[11px] font-semibold uppercase text-ink-muted pb-2">
-        สามเหลี่ยมระยะทาง {pointKey} → {targetKey} ({mode})
+        แผนภาพระยะทาง {pointKey} ไปยัง {targetKey} ({mode})
       </p>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`สามเหลี่ยมระยะทางจาก ${pt.label} ถึง ${c.label}`}>
-        <title>{`Δx = ${adx}, Δy = ${ady}`}</title>
-        {/* Grid */}
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`ระยะทางจาก ${pt.label} ถึง ${c.label}`}>
         {Array.from({ length: 11 }).map((_, i) => (
           <line key={`gx${i}`} x1={X(i)} y1={H - PAD} x2={X(i)} y2={PAD - 10} stroke="#94a3b8" strokeOpacity={0.25} strokeWidth={1} />
         ))}
@@ -1210,18 +1160,20 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
           <line key={`gy${i}`} x1={PAD} y1={Y(i * 2)} x2={W - PAD} y2={Y(i * 2)} stroke="#94a3b8" strokeOpacity={0.25} strokeWidth={1} />
         ))}
         {!degenerate && (
-          <g style={{ transition: "opacity 180ms ease" }}>
-            {/* Δx run: point → corner */}
+          <g>
             <line x1={px} y1={py} x2={rx} y2={ry} stroke="#2563eb" strokeWidth={isEuclid ? 2 : 3} strokeOpacity={legOpacity} strokeLinecap="round" />
-            {/* Δy rise: corner → centroid */}
             <line x1={rx} y1={ry} x2={cx} y2={cy} stroke={COLOR_AMBER} strokeWidth={isEuclid ? 2 : 3} strokeOpacity={legOpacity} strokeLinecap="round" />
-            {/* Hypotenuse */}
             <line
-              x1={px} y1={py} x2={cx} y2={cy}
-              stroke="#7c3aed" strokeWidth={isEuclid ? 3 : 2} strokeOpacity={hypOpacity}
-              strokeDasharray={isEuclid ? undefined : "6 4"} strokeLinecap="round"
+              x1={px}
+              y1={py}
+              x2={cx}
+              y2={cy}
+              stroke="#7c3aed"
+              strokeWidth={isEuclid ? 3 : 2}
+              strokeOpacity={hypOpacity}
+              strokeDasharray={isEuclid ? undefined : "6 4"}
+              strokeLinecap="round"
             />
-            {/* Right-angle marker */}
             {adx > 0 && ady > 0 && (
               <rect
                 x={rx + (px > rx ? -9 : 1)}
@@ -1234,7 +1186,6 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
                 strokeWidth={1.5}
               />
             )}
-            {/* Leg labels */}
             {adx > 0 && (
               <text x={(px + rx) / 2} y={(py + ry) / 2 - 7} textAnchor="middle" fontSize={11} fontFamily="monospace" fontWeight="bold" fill="#2563eb">
                 Δx={adx}
@@ -1247,12 +1198,10 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
             )}
           </g>
         )}
-        {/* Centroid */}
         <circle cx={cx} cy={cy} r={8} fill={COLOR_AMBER} stroke="#fff" strokeWidth={2.5} />
         <text x={cx} y={cy - 13} textAnchor="middle" fontSize={11} fontFamily="monospace" fontWeight="bold" fill={COLOR_AMBER}>
           {targetKey}
         </text>
-        {/* Data point */}
         <circle cx={px} cy={py} r={degenerate ? 9 : 7} fill="#2563eb" stroke="#fff" strokeWidth={2.5} />
         <text
           x={px + (px >= cx ? 11 : -11)}
@@ -1267,204 +1216,141 @@ const KMeansTriangleSVG = memo(function KMeansTriangleSVG({ pt, c, mode, pointKe
         </text>
         {degenerate && (
           <text x={W / 2} y={PAD - 12} textAnchor="middle" fontSize={11} fontFamily="sans-serif" fill="currentColor" opacity={0.7}>
-            จุดตรงกับ centroid — ระยะ 0
+            จุดเดียวกับ Centroid (ระยะทาง = 0)
           </text>
         )}
       </svg>
       <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-[10px] font-mono text-ink-subtle">
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block h-0.5 w-4 bg-blue-600" /> Δx run
+          <span className="inline-block h-0.5 w-3 bg-blue-600" /> Δx
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block h-0.5 w-4 bg-amber-600" /> Δy rise
+          <span className="inline-block h-0.5 w-3 bg-amber-600" /> Δy
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block h-0.5 w-4 bg-violet-600" /> {isEuclid ? "เส้นตรง (Euclid)" : "เส้นตรง (อ้างอิง)"}
+          <span className="inline-block h-0.5 w-3 bg-violet-600" /> Euclidean (L2)
         </span>
-        {!isEuclid && (
-          <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-0.5 w-4 bg-blue-600" /> + <span className="inline-block h-0.5 w-4 bg-amber-600" />{" "}
-            เส้นหักมุม (Manhattan)
-          </span>
-        )}
       </div>
     </div>
   );
 });
 
-// -------------------------------------------------------------
-// Typewriter Subtitle Overlay (Character-by-Character Streaming)
-// Types out subtitle text letter-by-letter like video closed captions.
-// Features:
-// - Intl.Segmenter Thai grapheme splitting (keeps tone marks & vowels intact)
-// - Character-by-character typing with blinking cursor
-// - Translucent obsidian glass backdrop (bg-neutral-950/92 backdrop-blur-md)
-// - Crisp, high-contrast white text (ZERO blurry neon glow)
-// - Micro hairline timeline scrubber along the bottom edge
-// - Minimalist video controls: replay ↺, play/pause ⏯, chapter scrubbers
-// - Automatic smooth transition to the next color when typing finishes!
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Typewriter Subtitle Overlay (Step 1 Anatomy Explanation)
+// ---------------------------------------------------------------------------
 function getGraphemes(text: string): string[] {
   if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
     try {
-      const segmenter = new (Intl as unknown as {
-        Segmenter: new (locale: string, options: { granularity: string }) => {
-          segment: (input: string) => Iterable<{ segment: string }>;
-        };
-      }).Segmenter("th", { granularity: "grapheme" });
+      const segmenter = new Intl.Segmenter("th", { granularity: "grapheme" });
       return Array.from(segmenter.segment(text), (s) => s.segment);
     } catch {
-      // fallback
+      // Fallback below
     }
   }
   return Array.from(text);
 }
 
 interface TypewriterSubtitleOverlayProps {
-  glowColor: string;
-  badgeText: string;
-  text: string;
-  isActive: boolean;
-  autoAdvance?: boolean;
-  onComplete: () => void;
+  chapters: AnatomyChapter[];
   chapterIndex: number;
-  totalChapters?: number;
-  chapterLabels: string[];
-  onSelectChapter?: (idx: number) => void;
+  onSelectChapter: (idx: number) => void;
+  autoAdvance: boolean;
+  onComplete: () => void;
   reducedMotion: boolean;
-  onNextStep?: () => void;
 }
 
 function TypewriterSubtitleOverlay({
-  glowColor,
-  badgeText,
-  text,
-  isActive,
-  autoAdvance = true,
-  onComplete,
+  chapters,
   chapterIndex,
-  chapterLabels,
   onSelectChapter,
+  autoAdvance,
+  onComplete,
   reducedMotion,
 }: TypewriterSubtitleOverlayProps) {
-  const graphemes = useMemo(() => getGraphemes(text), [text]);
-  const [charCount, setCharCount] = useState(() => (reducedMotion ? getGraphemes(text).length : 0));
+  const current = chapters[chapterIndex] ?? chapters[0];
+  const graphemes = useMemo(() => getGraphemes(current.text), [current.text]);
+  const [charCount, setCharCount] = useState(() => (reducedMotion ? graphemes.length : 0));
   const [isPaused, setIsPaused] = useState(false);
   const [prevChapter, setPrevChapter] = useState(chapterIndex);
 
-  // Reset only on chapter switch (NOT on text identity): the IQR/Gini/TP
-  // subtitles embed live slider values, so resetting on `text` restarts
-  // typing on every slider tick and traps scrubbers in a retype loop.
-  // Live value edits clamp instead (see ticker effect).
   if (prevChapter !== chapterIndex) {
     setPrevChapter(chapterIndex);
     setCharCount(reducedMotion ? graphemes.length : 0);
     setIsPaused(false);
   }
 
-  // Stable callback ref: parents pass inline onComplete arrows (new identity
-  // per render from slider/hover state). Without this, the ticker effect
-  // below would cancel + re-arm the 28ms / 1.1s timers on every unrelated
-  // re-render (visible typing stall while scrubbing sliders).
   const onCompleteRef = useRef(onComplete);
   useEffect(() => {
     onCompleteRef.current = onComplete;
   });
 
-  // Pause typing when document is hidden (background tab) to avoid timer pileup
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.hidden) {
-        setIsPaused(true);
-      }
+      if (document.hidden) setIsPaused(true);
     };
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
-  // 1) Typewriter streaming ticker: advances 1 grapheme per 28ms
   useEffect(() => {
-    if (!isActive || isPaused || reducedMotion) return;
+    if (isPaused || reducedMotion) return;
     if (charCount < graphemes.length) {
       const timer = setTimeout(() => {
         setCharCount((prev) => Math.min(prev + 1, graphemes.length));
       }, 28);
       return () => clearTimeout(timer);
     }
-  }, [isActive, isPaused, charCount, graphemes.length, reducedMotion]);
+  }, [isPaused, charCount, graphemes.length, reducedMotion]);
 
-  // 2) Auto-advance ticker: triggers after sentence typing completes (1.1s reading pause)
-  // or paced AUTOPLAY_MS under reducedMotion. Decoupled from charCount ticking so it never self-cancels.
   const isTypingDone = charCount >= graphemes.length;
 
   useEffect(() => {
-    if (!isActive || isPaused || !autoAdvance) return;
+    if (isPaused || !autoAdvance) return;
+    const delay = reducedMotion ? AUTOPLAY_MS : isTypingDone ? 1100 : null;
+    if (delay === null) return;
 
-    if (reducedMotion) {
-      const timer = setTimeout(() => {
-        onCompleteRef.current();
-      }, AUTOPLAY_MS);
-      return () => clearTimeout(timer);
-    }
+    const timer = setTimeout(() => {
+      onCompleteRef.current();
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [isPaused, autoAdvance, isTypingDone, reducedMotion, chapterIndex]);
 
-    if (isTypingDone) {
-      const timer = setTimeout(() => {
-        onCompleteRef.current();
-      }, 1100); // 1.1s natural pause to read complete sentence before advancing to next color
-      return () => clearTimeout(timer);
-    }
-  }, [isActive, isPaused, autoAdvance, isTypingDone, reducedMotion, chapterIndex]);
-
-  const handleReplay = () => {
-    if (reducedMotion) return; // full text already shown; replay is a no-op
-    setCharCount(0);
-    setIsPaused(false);
-  };
-
-  const handleSkipToEnd = () => {
-    setCharCount(graphemes.length);
-  };
-  // Render window: settled prefix as one static node, kinetic spring pop only
-  // for the trailing few graphemes. Keeps the tactile feel with ~8 live
-  // motion nodes instead of ~150 simultaneous springs on long Thai sentences.
-  const POP_WINDOW = 8;
-  const popStart = Math.max(0, charCount - POP_WINDOW);
-  const staticPrefix = graphemes.slice(0, popStart).join("");
-  const popChars = graphemes.slice(popStart, charCount);
   const progress = graphemes.length > 0 ? charCount / graphemes.length : 1;
+  const visibleText = graphemes.slice(0, charCount).join("");
 
   return (
-    <div className="w-full max-w-xl mx-auto pt-4 sm:pt-5 pb-1 text-center select-none min-w-0">
-      {/* Clean Topic Header & Controls (Native to website style, no black box, no CC frame) */}
-      <div className="flex flex-wrap items-center justify-between gap-2 pb-2 mb-2.5 border-b border-rule text-xs text-ink-muted">
+    <div className="w-full max-w-xl mx-auto pt-4 pb-1 text-center select-none min-w-0">
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-2 mb-2 border-b border-rule text-xs text-ink-muted">
         <div className="flex items-center gap-2 min-w-0">
           <span
-            className="size-2 rounded-full shrink-0 animate-pulse"
-            style={{ backgroundColor: glowColor }}
+            className="size-2 rounded-full shrink-0"
+            style={{ backgroundColor: current.color }}
           />
-          <span className="font-bold text-xs sm:text-sm tracking-tight min-w-0 whitespace-normal sm:truncate break-words" style={{ color: glowColor }}>
-            {badgeText}
+          <span
+            className="font-bold text-xs sm:text-sm tracking-tight truncate"
+            style={{ color: current.color }}
+          >
+            {current.badge}
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0 ml-auto sm:ml-2">
-          {/* Chapter dots / pills */}
+        <div className="flex items-center gap-1.5 shrink-0 ml-auto">
           <div className="flex items-center gap-1">
-            {chapterLabels.map((label, idx) => {
+            {chapters.map((ch, idx) => {
               const isCurrent = idx === chapterIndex;
               return (
                 <button
-                  key={idx}
+                  key={ch.label}
                   type="button"
-                  onClick={() => onSelectChapter?.(idx)}
+                  onClick={() => onSelectChapter(idx)}
                   className={`rounded-md px-2 py-0.5 text-[11px] font-medium transition-all ${
                     isCurrent
                       ? "font-bold text-ink bg-surface-hover border-b-2"
                       : "text-ink-subtle hover:text-ink hover:bg-surface-hover/60"
                   }`}
-                  style={isCurrent ? { borderColor: glowColor } : undefined}
+                  style={isCurrent ? { borderColor: current.color } : undefined}
                 >
-                  {label}
+                  {ch.label}
                 </button>
               );
             })}
@@ -1472,10 +1358,14 @@ function TypewriterSubtitleOverlay({
 
           <button
             type="button"
-            onClick={handleReplay}
+            onClick={() => {
+              if (!reducedMotion) {
+                setCharCount(0);
+                setIsPaused(false);
+              }
+            }}
             className="p-1 rounded text-ink-muted hover:text-ink hover:bg-surface-hover transition-colors"
-            title="พิมพ์ซ้ำตั้งแต่ต้น"
-            aria-label="พิมพ์ซ้ำตั้งแต่ต้น"
+            title="เล่นซ้ำ"
           >
             <ResetIcon className="size-3.5" />
           </button>
@@ -1483,77 +1373,43 @@ function TypewriterSubtitleOverlay({
             type="button"
             onClick={() => setIsPaused((p) => !p)}
             className="p-1 rounded text-ink-muted hover:text-ink hover:bg-surface-hover transition-colors"
-            title={isPaused ? "พิมพ์ต่อ" : "พักการพิมพ์"}
-            aria-label={isPaused ? "พิมพ์ต่อ" : "พักการพิมพ์"}
+            title={isPaused ? "เล่นต่อ" : "หยุดชั่วคราว"}
           >
             {isPaused ? <PlayIcon className="size-3.5" /> : <PauseIcon className="size-3.5" />}
           </button>
         </div>
       </div>
 
-      {/* Micro hairline timeline: reading progress toward the 1.1s auto-advance */}
-      <div className="h-px w-full bg-rule/70" aria-hidden="true">
+      <div className="h-0.5 w-full bg-rule/70 overflow-hidden rounded-full" aria-hidden="true">
         <div
           className="h-full transition-[width] duration-150 ease-linear"
-          style={{ width: `${Math.round(progress * 100)}%`, backgroundColor: glowColor }}
+          style={{ width: `${Math.round(progress * 100)}%`, backgroundColor: current.color }}
         />
       </div>
 
-      {/* Kinetic Pop Typing Subtitle Text */}
       <div
-        className="py-2.5 sm:py-3 min-h-[58px] sm:min-h-[66px] flex items-center justify-center cursor-pointer"
-        onClick={handleSkipToEnd}
-        title="คลิกเพื่อแสดงข้อความทั้งหมดทันที"
+        className="py-3 min-h-[64px] flex items-center justify-center cursor-pointer"
+        onClick={() => setCharCount(graphemes.length)}
+        title="คลิกเพื่อแสดงข้อความทั้งหมด"
       >
-        <p className="text-base sm:text-lg leading-relaxed font-sans font-medium tracking-normal text-center text-ink" aria-live="off">
-          {staticPrefix && <span className="inline">{staticPrefix}</span>}
-          {popChars.map((char, i) => {
-            const idx = popStart + i;
-            if (char === " ") {
-              return (
-                <span key={idx} className="inline" style={{ whiteSpace: "pre" }}>
-                  {" "}
-                </span>
-              );
-            }
-            return reducedMotion ? (
-              <span key={idx} className="inline-block">
-                {char}
-              </span>
-            ) : (
-              <motion.span
-                key={idx}
-                initial={{ opacity: 0, scale: 0.65, y: 3 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 520,
-                  damping: 22,
-                  mass: 0.5,
-                }}
-                className="inline-block"
-              >
-                {char}
-              </motion.span>
-            );
-          })}
+        <p className="text-sm sm:text-base leading-relaxed font-sans font-medium text-ink">
+          {visibleText}
         </p>
       </div>
     </div>
   );
 }
 
-// -------------------------------------------------------------
-// Component 1: Tukey's Formula with Smooth Morph Transition
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Formula 1: Tukey's Outlier
+// ---------------------------------------------------------------------------
 interface TukeyMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
-  onAdvanceAnatomySubstep?: (idx: number) => void;
-  onNextStep?: () => void;
+  onAdvanceAnatomySubstep: (idx: number) => void;
+  onNextStep: () => void;
   isPlaying: boolean;
-  manualEntry?: boolean;
   q1: number;
   q3: number;
   iqr: number;
@@ -1574,7 +1430,6 @@ function TukeyMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
-  manualEntry,
   q1,
   q3,
   iqr,
@@ -1588,11 +1443,27 @@ function TukeyMorphFormula({
   reducedMotion,
 }: TukeyMorphProps) {
   const anim = reducedMotion ? NO_ANIM : undefined;
-  const isTypingActive = isPlaying || Boolean(manualEntry);
-  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
+
+  const chapters: AnatomyChapter[] = useMemo(
+    () => [
+      {
+        label: "1. Q₃",
+        color: "#2563eb",
+        badge: "Q₃ · ควอร์ไทล์ที่ 3 (75th Percentile)",
+        text: "Q₃ คือจุดที่ข้อมูล 75% มีค่าน้อยกว่าหรือเท่ากับจุดนี้ ทำหน้าที่เป็นจุดตั้งต้นสำหรับคำนวณรั้วฝั่งบน (Upper Fence)",
+      },
+      {
+        label: "2. IQR",
+        color: COLOR_AMBER,
+        badge: "IQR · Interquartile Range (Q₃ − Q₁)",
+        text: `IQR คือผลต่าง Q₃ − Q₁ (${q3} − ${q1} = ${iqr.toFixed(1)}) แทนความกว้างของข้อมูล 50% ตรงกลาง นำมาคูณ 1.5 เพื่อกำหนดระยะรั้ว`,
+      },
+    ],
+    [q1, q3, iqr]
+  );
 
   return (
-    <div className="w-full max-w-2xl space-y-3.5">
+    <div className="w-full max-w-2xl space-y-4">
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xl sm:text-2xl font-medium tracking-tight">
         <span className="text-ink font-semibold">Upper Fence =</span>
         <TokenPill
@@ -1607,7 +1478,7 @@ function TukeyMorphFormula({
           onHoverToken={onHoverToken}
           reducedMotion={reducedMotion}
           isSpotlight={step === 1 && anatomySubstep === 0}
-          dimmed={step === 1 && anatomySubstep > 0}
+          dimmed={step === 1 && anatomySubstep !== 0}
           onClick={() => onSelectAnatomySubstep(0)}
         />
         <span className="text-ink-muted">+</span>
@@ -1627,7 +1498,7 @@ function TukeyMorphFormula({
           onHoverToken={onHoverToken}
           reducedMotion={reducedMotion}
           isSpotlight={step === 1 && anatomySubstep === 1}
-          dimmed={step === 1 && anatomySubstep === 0}
+          dimmed={step === 1 && anatomySubstep !== 1}
           onClick={() => onSelectAnatomySubstep(1)}
         />
       </div>
@@ -1635,10 +1506,10 @@ function TukeyMorphFormula({
       <AnimatePresence mode="wait">
         {step >= 2 && (
           <motion.div
-            initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reducedMotion ? 0 : -10 }}
-            transition={anim ?? { duration: 0.22 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
+            transition={anim ?? { duration: 0.2 }}
             className="space-y-3 pt-3 border-t border-rule/60 text-center font-mono"
           >
             <div className="flex flex-wrap items-center justify-center gap-2 text-sm sm:text-base text-ink-muted tabular-nums">
@@ -1650,7 +1521,8 @@ function TukeyMorphFormula({
               <span className="text-amber-600 font-semibold">
                 {step === 2 ? (
                   <>
-                    {multiplier.toFixed(1)} × <AnimatedNumber value={iqr} decimals={1} reducedMotion={reducedMotion} />
+                    {multiplier.toFixed(1)} ×{" "}
+                    <AnimatedNumber value={iqr} decimals={1} reducedMotion={reducedMotion} />
                   </>
                 ) : (
                   <AnimatedNumber value={fenceOffset} decimals={1} reducedMotion={reducedMotion} />
@@ -1660,12 +1532,14 @@ function TukeyMorphFormula({
 
             {step >= 3 && (
               <motion.div
-                initial={{ scale: reducedMotion ? 1 : 0.92, opacity: 0 }}
+                initial={{ scale: reducedMotion ? 1 : 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={anim ?? SPRING_BADGE}
-                className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-accent/40 bg-accent-wash px-5 py-3 shadow-xs"
+                className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-accent/40 bg-accent-wash px-5 py-2.5"
               >
-                <span className="text-xs uppercase font-sans tracking-wider text-ink-muted font-bold">รั้วบนสุทธิ:</span>
+                <span className="text-xs uppercase font-sans tracking-wider text-ink-muted font-bold">
+                  Upper Fence:
+                </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-accent-ink tracking-tight tabular-nums">
                   <AnimatedNumber value={upperFence} decimals={1} reducedMotion={reducedMotion} />
                 </span>
@@ -1673,87 +1547,57 @@ function TukeyMorphFormula({
             )}
 
             {step === 3 && (
-              <motion.div
-                initial={{ opacity: 0, y: reducedMotion ? 0 : 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={anim ?? { delay: 0.15, duration: 0.22 }}
-                className="mt-4 rounded-xl border border-rule bg-surface-hover p-3 text-xs sm:text-sm font-sans flex flex-wrap items-center justify-center gap-2 tabular-nums"
-              >
-                <span>ทดสอบจุด</span>
-                <span className="font-mono font-bold text-ink">
-                  x = <AnimatedNumber value={testPoint} decimals={1} reducedMotion={reducedMotion} />
-                </span>
+              <div className="mt-3 rounded-xl border border-rule bg-surface-hover p-3 text-xs sm:text-sm font-sans flex flex-wrap items-center justify-center gap-2 tabular-nums">
+                <span>จุดทดสอบ</span>
+                <span className="font-mono font-bold text-ink">x = {testPoint.toFixed(1)}</span>
                 <span>เทียบกับรั้ว</span>
-                <span className="font-mono font-bold text-accent">
-                  <AnimatedNumber value={upperFence} decimals={1} reducedMotion={reducedMotion} />
-                </span>
-                <span>:</span>
+                <span className="font-mono font-bold text-accent">{upperFence.toFixed(1)}:</span>
                 {isOutlier ? (
-                  <span className="font-bold text-bad bg-bad-wash px-2 py-0.5 rounded tabular-nums">
-                    {testPoint.toFixed(1)} &gt; {upperFence.toFixed(1)} → จัดเป็น Outlier!
+                  <span className="font-bold text-bad bg-bad-wash px-2 py-0.5 rounded">
+                    {testPoint.toFixed(1)} &gt; {upperFence.toFixed(1)} (เป็น Outlier)
                   </span>
                 ) : (
-                  <span className="font-bold text-good bg-good-wash px-2 py-0.5 rounded tabular-nums">
-                    {testPoint.toFixed(1)} ≤ {upperFence.toFixed(1)} → ปกติ (ไม่ใช่ Outlier)
+                  <span className="font-bold text-good bg-good-wash px-2 py-0.5 rounded">
+                    {testPoint.toFixed(1)} ≤ {upperFence.toFixed(1)} (ข้อมูลปกติ)
                   </span>
                 )}
-              </motion.div>
+              </div>
             )}
           </motion.div>
         )}
       </AnimatePresence>
 
       {step === 1 && (
-        <AnimatePresence mode="wait" initial={false}>
-          {anatomySubstep === 0 ? (
-            <TypewriterSubtitleOverlay
-              key="sub-q3"
-              glowColor="#2563eb"
-              badgeText="Q₃ · ควอร์ไทล์ที่ 3 (75th Percentile)"
-              text="Q₃ คือ ควอร์ไทล์ที่ 3 (75th Percentile) จุดตัดที่ข้อมูล 75% กองอยู่ฝั่งซ้าย ทำหน้าที่เป็น 'หมุดตั้งต้น' เพื่อเริ่มปักเสารั้วบน (Upper Fence)"
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
-              chapterIndex={0}
-              totalChapters={2}
-              chapterLabels={["1. Q₃", "2. IQR"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-            />
-          ) : (
-            <TypewriterSubtitleOverlay
-              key="sub-iqr"
-              glowColor={COLOR_AMBER}
-              badgeText="IQR · Interquartile Range (Q₃ − Q₁)"
-              text={`IQR คือ Interquartile Range ส่วนต่าง Q₃ − Q₁ (${q3} − ${q1} = ${iqr.toFixed(1)}) แทนความกว้าง 50% ตรงกลาง นำไปคูณ 1.5 เท่า แล้วยืดรั้วออกจากหมุด Q₃`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
-              chapterIndex={1}
-              totalChapters={2}
-              chapterLabels={["1. Q₃", "2. IQR"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-              onNextStep={onNextStep}
-            />
-          )}
-        </AnimatePresence>
+        <TypewriterSubtitleOverlay
+          chapters={chapters}
+          chapterIndex={anatomySubstep}
+          onSelectChapter={onSelectAnatomySubstep}
+          autoAdvance={isPlaying}
+          onComplete={() => {
+            if (!isPlaying) return;
+            if (anatomySubstep < chapters.length - 1) {
+              onAdvanceAnatomySubstep(anatomySubstep + 1);
+            } else {
+              onNextStep();
+            }
+          }}
+          reducedMotion={reducedMotion}
+        />
       )}
     </div>
   );
 }
 
-// -------------------------------------------------------------
-// Component 2: Gini Formula with Smooth Morph Transition
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Formula 2: Decision Tree Gini Impurity
+// ---------------------------------------------------------------------------
 interface GiniMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
-  onAdvanceAnatomySubstep?: (idx: number) => void;
-  onNextStep?: () => void;
+  onAdvanceAnatomySubstep: (idx: number) => void;
+  onNextStep: () => void;
   isPlaying: boolean;
-  manualEntry?: boolean;
   active: number;
   inactive: number;
   total: number;
@@ -1774,7 +1618,6 @@ function GiniMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
-  manualEntry,
   active,
   inactive,
   total,
@@ -1788,10 +1631,27 @@ function GiniMorphFormula({
   reducedMotion,
 }: GiniMorphProps) {
   const anim = reducedMotion ? NO_ANIM : undefined;
-  const isTypingActive = isPlaying || Boolean(manualEntry);
-  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
+
+  const chapters: AnatomyChapter[] = useMemo(
+    () => [
+      {
+        label: "1. Active",
+        color: "#0f766e",
+        badge: "p(Active) · สัดส่วนกลุ่ม Active",
+        text: `p(Active) คือสัดส่วนของข้อมูลคลาส Active ในโหนดนี้ (${active}/${total} = ${pActive.toFixed(3)}) นำมายกกำลังสองเป็นพจน์แรก`,
+      },
+      {
+        label: "2. Inactive",
+        color: "#b91c1c",
+        badge: "p(Inactive) · สัดส่วนกลุ่ม Inactive",
+        text: `p(Inactive) คือสัดส่วนของข้อมูลคลาส Inactive (${inactive}/${total} = ${pInactive.toFixed(3)}) นำมายกกำลังสองแล้วบวกกับกลุ่มแรก ก่อนนำไปลบออกจาก 1`,
+      },
+    ],
+    [active, inactive, total, pActive, pInactive]
+  );
+
   return (
-    <div className="w-full max-w-2xl space-y-3.5">
+    <div className="w-full max-w-2xl space-y-4">
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xl sm:text-2xl font-medium tracking-tight">
         <span className="text-ink font-semibold">Gini = 1 − [</span>
         <div className="inline-flex items-center gap-0.5">
@@ -1817,7 +1677,7 @@ function GiniMorphFormula({
             onHoverToken={onHoverToken}
             reducedMotion={reducedMotion}
             isSpotlight={step === 1 && anatomySubstep === 0}
-            dimmed={step === 1 && anatomySubstep > 0}
+            dimmed={step === 1 && anatomySubstep !== 0}
             onClick={() => onSelectAnatomySubstep(0)}
           />
           <sup className="text-sm font-bold text-ink-muted">2</sup>
@@ -1846,7 +1706,7 @@ function GiniMorphFormula({
             onHoverToken={onHoverToken}
             reducedMotion={reducedMotion}
             isSpotlight={step === 1 && anatomySubstep === 1}
-            dimmed={step === 1 && anatomySubstep === 0}
+            dimmed={step === 1 && anatomySubstep !== 1}
             onClick={() => onSelectAnatomySubstep(1)}
           />
           <sup className="text-sm font-bold text-ink-muted">2</sup>
@@ -1857,10 +1717,10 @@ function GiniMorphFormula({
       <AnimatePresence mode="wait">
         {step >= 2 && (
           <motion.div
-            initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reducedMotion ? 0 : -10 }}
-            transition={anim ?? { duration: 0.22 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
+            transition={anim ?? { duration: 0.2 }}
             className="space-y-3 pt-3 border-t border-rule/60 text-center font-mono"
           >
             <div className="flex flex-wrap items-center justify-center gap-2 text-sm sm:text-base text-ink-muted tabular-nums">
@@ -1880,20 +1740,20 @@ function GiniMorphFormula({
 
             {step >= 3 && (
               <motion.div
-                initial={{ scale: reducedMotion ? 1 : 0.92, opacity: 0 }}
+                initial={{ scale: reducedMotion ? 1 : 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={anim ?? SPRING_BADGE}
-                className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-teal-500/40 bg-teal-500/10 px-6 py-3 shadow-xs"
+                className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-teal-500/40 bg-teal-500/10 px-6 py-2.5"
               >
                 <span className="text-xs uppercase font-sans tracking-wider text-ink-muted font-bold">
-                  Gini Impurity สุทธิ:
+                  Gini Impurity:
                 </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-teal-700 dark:text-teal-300 tracking-tight tabular-nums">
                   <AnimatedNumber value={gini} decimals={3} reducedMotion={reducedMotion} />
                 </span>
                 {gini === 0 && (
-                  <span className="text-xs bg-teal-500/20 text-teal-700 dark:text-teal-300 font-sans font-bold px-2.5 py-1 rounded-full">
-                    ✨ โหนดบริสุทธิ์ 100%
+                  <span className="text-xs bg-teal-500/20 text-teal-700 dark:text-teal-300 font-sans font-bold px-2.5 py-0.5 rounded-full">
+                    Pure Node (บริสุทธิ์)
                   </span>
                 )}
               </motion.div>
@@ -1903,64 +1763,42 @@ function GiniMorphFormula({
       </AnimatePresence>
 
       {step === 1 && (
-        <AnimatePresence mode="wait" initial={false}>
-          {anatomySubstep === 0 ? (
-            <TypewriterSubtitleOverlay
-              key="sub-pactive"
-              glowColor="#0f766e"
-              badgeText="p(Active) · ลูกค้ากลุ่มใช้งานประจำ"
-              text={`p(Active) คือ สัดส่วนลูกค้ากลุ่มใช้งานประจำ (${active}/${total} = ${pActive.toFixed(3)}) เป็นกลุ่มแรกที่เราจะนำค่ายกกำลังสองในสูตร Gini Impurity`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
-              chapterIndex={0}
-              totalChapters={2}
-              chapterLabels={["1. Active", "2. Inactive"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-            />
-          ) : (
-            <TypewriterSubtitleOverlay
-              key="sub-pinactive"
-              glowColor="#b91c1c"
-              badgeText="p(Inactive) · ลูกค้ากลุ่มไม่ใช้งาน"
-              text={`p(Inactive) คือ สัดส่วนลูกค้ากลุ่มไม่ใช้งาน (${inactive}/${total} = ${pInactive.toFixed(3)}) นำมายกกำลังสองแล้วบวกกับกลุ่มแรก ก่อนนำผลรวมทั้งหมดไปหักออกจาก 1`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
-              chapterIndex={1}
-              totalChapters={2}
-              chapterLabels={["1. Active", "2. Inactive"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-              onNextStep={onNextStep}
-            />
-          )}
-        </AnimatePresence>
+        <TypewriterSubtitleOverlay
+          chapters={chapters}
+          chapterIndex={anatomySubstep}
+          onSelectChapter={onSelectAnatomySubstep}
+          autoAdvance={isPlaying}
+          onComplete={() => {
+            if (!isPlaying) return;
+            if (anatomySubstep < chapters.length - 1) {
+              onAdvanceAnatomySubstep(anatomySubstep + 1);
+            } else {
+              onNextStep();
+            }
+          }}
+          reducedMotion={reducedMotion}
+        />
       )}
     </div>
   );
 }
 
-// -------------------------------------------------------------
-// Component 3: Confusion Matrix & F1 Morph Transition
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Formula 3: Confusion Matrix & F1
+// ---------------------------------------------------------------------------
 interface ConfusionMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
-  onAdvanceAnatomySubstep?: (idx: number) => void;
-  onNextStep?: () => void;
+  onAdvanceAnatomySubstep: (idx: number) => void;
+  onNextStep: () => void;
   isPlaying: boolean;
-  manualEntry?: boolean;
   tp: number;
   fp: number;
   fn: number;
-  tn: number;
   precision: number;
   recall: number;
   f1: number;
-  threshold: number;
   hoveredToken: string | null;
   onHoverToken: (t: string | null) => void;
   reducedMotion: boolean;
@@ -1973,7 +1811,6 @@ function ConfusionMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
-  manualEntry,
   tp,
   fp,
   fn,
@@ -1985,16 +1822,54 @@ function ConfusionMorphFormula({
   reducedMotion,
 }: ConfusionMorphProps) {
   const anim = reducedMotion ? NO_ANIM : undefined;
-  const isTypingActive = isPlaying || Boolean(manualEntry);
-  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
+
+  const chapters: AnatomyChapter[] = useMemo(
+    () => [
+      {
+        label: "1. TP",
+        color: "#0f766e",
+        badge: "TP · True Positive (ทายบวกถูกต้อง)",
+        text: `TP คือจำนวนเคสที่ป่วยจริงและโมเดลทายว่าป่วย (${tp} คน) เป็นตัวตั้งหลักของทั้ง Precision และ Recall`,
+      },
+      {
+        label: "2. FP",
+        color: COLOR_AMBER,
+        badge: "FP · False Positive (ผลบวกลวง)",
+        text: `FP คือจำนวนคนปกติแต่โมเดลทายผิดว่าป่วย (${fp} คน) เป็นตัวหารในสูตร Precision ยิ่งมีมากความแม่นยำยิ่งลดลง`,
+      },
+      {
+        label: "3. FN",
+        color: "#b91c1c",
+        badge: "FN · False Negative (ผลลบลวง)",
+        text: `FN คือจำนวนคนป่วยจริงแต่โมเดลตรวจไม่พบ (${fn} คน) เป็นตัวหารในสูตร Recall ซึ่งสำคัญมากในการคัดกรองโรค`,
+      },
+    ],
+    [tp, fp, fn]
+  );
 
   return (
     <div className="w-full max-w-2xl space-y-4">
       {/* Precision Row */}
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-lg sm:text-xl font-medium tracking-tight">
-          <span className="font-bold text-ink">Precision =</span>
-          <div className="inline-flex flex-col items-center">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-lg sm:text-xl font-medium tracking-tight">
+        <span className="font-bold text-ink">Precision =</span>
+        <div className="inline-flex flex-col items-center">
+          <TokenPill
+            color="#0f766e"
+            label="TP"
+            ghost="TP"
+            symbol="TP"
+            value={tp}
+            step={step}
+            active={hoveredToken === "tp"}
+            tokenKey="tp"
+            onHoverToken={onHoverToken}
+            reducedMotion={reducedMotion}
+            isSpotlight={step === 1 && anatomySubstep === 0}
+            dimmed={step === 1 && anatomySubstep !== 0}
+            onClick={() => onSelectAnatomySubstep(0)}
+          />
+          <span className="w-full border-b-2 border-current my-1" />
+          <div className="inline-flex items-center gap-1">
             <TokenPill
               color="#0f766e"
               label="TP"
@@ -2010,62 +1885,60 @@ function ConfusionMorphFormula({
               dimmed={step === 1 && anatomySubstep !== 0}
               onClick={() => onSelectAnatomySubstep(0)}
             />
-            <span className="w-full border-b-2 border-current my-1" />
-            <div className="inline-flex items-center gap-1">
-              <TokenPill
-                color="#0f766e"
-                label="TP"
-                ghost="TP"
-                symbol="TP"
-                value={tp}
-                step={step}
-                active={hoveredToken === "tp"}
-                tokenKey="tp"
-                onHoverToken={onHoverToken}
-                reducedMotion={reducedMotion}
-                isSpotlight={step === 1 && anatomySubstep === 0}
-                dimmed={step === 1 && anatomySubstep !== 0}
-                onClick={() => onSelectAnatomySubstep(0)}
-              />
-              <span className="text-ink-muted text-sm">+</span>
-              <TokenPill
-                color={COLOR_AMBER}
-                label="FP"
-                ghost="FP"
-                symbol="FP"
-                value={fp}
-                step={step}
-                active={hoveredToken === "fp"}
-                tokenKey="fp"
-                onHoverToken={onHoverToken}
-                reducedMotion={reducedMotion}
-                isSpotlight={step === 1 && anatomySubstep === 1}
-                dimmed={step === 1 && anatomySubstep !== 1}
-                onClick={() => onSelectAnatomySubstep(1)}
-              />
-            </div>
+            <span className="text-ink-muted text-sm">+</span>
+            <TokenPill
+              color={COLOR_AMBER}
+              label="FP"
+              ghost="FP"
+              symbol="FP"
+              value={fp}
+              step={step}
+              active={hoveredToken === "fp"}
+              tokenKey="fp"
+              onHoverToken={onHoverToken}
+              reducedMotion={reducedMotion}
+              isSpotlight={step === 1 && anatomySubstep === 1}
+              dimmed={step === 1 && anatomySubstep !== 1}
+              onClick={() => onSelectAnatomySubstep(1)}
+            />
           </div>
-          {step >= 2 && (
-            <motion.span
-              initial={{ opacity: 0, x: reducedMotion ? 0 : -5 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={anim ?? { duration: 0.2 }}
-              className="font-mono text-ink-muted text-sm sm:text-base ml-2 tabular-nums"
-            >
-              = {tp}/{tp + fp} ={" "}
-              <strong className="text-teal-600 font-bold">
-                <AnimatedNumber value={precision * 100} decimals={1} reducedMotion={reducedMotion} />%
-              </strong>
-            </motion.span>
-          )}
         </div>
+        {step >= 2 && (
+          <motion.span
+            initial={{ opacity: 0, x: reducedMotion ? 0 : -5 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={anim ?? { duration: 0.2 }}
+            className="font-mono text-ink-muted text-sm sm:text-base ml-2 tabular-nums"
+          >
+            = {tp}/{tp + fp} ={" "}
+            <strong className="text-teal-600 font-bold">
+              <AnimatedNumber value={precision * 100} decimals={1} reducedMotion={reducedMotion} />%
+            </strong>
+          </motion.span>
+        )}
       </div>
 
       {/* Recall Row */}
-      <div className="space-y-2 pt-2.5 border-t border-rule/50">
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-lg sm:text-xl font-medium tracking-tight">
-          <span className="font-bold text-ink">Recall =</span>
-          <div className="inline-flex flex-col items-center">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2.5 border-t border-rule/50 text-lg sm:text-xl font-medium tracking-tight">
+        <span className="font-bold text-ink">Recall =</span>
+        <div className="inline-flex flex-col items-center">
+          <TokenPill
+            color="#0f766e"
+            label="TP"
+            ghost="TP"
+            symbol="TP"
+            value={tp}
+            step={step}
+            active={hoveredToken === "tp"}
+            tokenKey="tp"
+            onHoverToken={onHoverToken}
+            reducedMotion={reducedMotion}
+            isSpotlight={step === 1 && anatomySubstep === 0}
+            dimmed={step === 1 && anatomySubstep !== 0}
+            onClick={() => onSelectAnatomySubstep(0)}
+          />
+          <span className="w-full border-b-2 border-current my-1" />
+          <div className="inline-flex items-center gap-1">
             <TokenPill
               color="#0f766e"
               label="TP"
@@ -2081,155 +1954,96 @@ function ConfusionMorphFormula({
               dimmed={step === 1 && anatomySubstep !== 0}
               onClick={() => onSelectAnatomySubstep(0)}
             />
-            <span className="w-full border-b-2 border-current my-1" />
-            <div className="inline-flex items-center gap-1">
-              <TokenPill
-                color="#0f766e"
-                label="TP"
-                ghost="TP"
-                symbol="TP"
-                value={tp}
-                step={step}
-                active={hoveredToken === "tp"}
-                tokenKey="tp"
-                onHoverToken={onHoverToken}
-                reducedMotion={reducedMotion}
-                isSpotlight={step === 1 && anatomySubstep === 0}
-                dimmed={step === 1 && anatomySubstep !== 0}
-                onClick={() => onSelectAnatomySubstep(0)}
-              />
-              <span className="text-ink-muted text-sm">+</span>
-              <TokenPill
-                color="#b91c1c"
-                label="FN"
-                ghost="FN"
-                symbol="FN"
-                value={fn}
-                step={step}
-                active={hoveredToken === "fn"}
-                tokenKey="fn"
-                onHoverToken={onHoverToken}
-                reducedMotion={reducedMotion}
-                isSpotlight={step === 1 && anatomySubstep === 2}
-                dimmed={step === 1 && anatomySubstep !== 2}
-                onClick={() => onSelectAnatomySubstep(2)}
-              />
-            </div>
+            <span className="text-ink-muted text-sm">+</span>
+            <TokenPill
+              color="#b91c1c"
+              label="FN"
+              ghost="FN"
+              symbol="FN"
+              value={fn}
+              step={step}
+              active={hoveredToken === "fn"}
+              tokenKey="fn"
+              onHoverToken={onHoverToken}
+              reducedMotion={reducedMotion}
+              isSpotlight={step === 1 && anatomySubstep === 2}
+              dimmed={step === 1 && anatomySubstep !== 2}
+              onClick={() => onSelectAnatomySubstep(2)}
+            />
           </div>
-          {step >= 2 && (
-            <motion.span
-              initial={{ opacity: 0, x: reducedMotion ? 0 : -5 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={anim ?? { duration: 0.2 }}
-              className="font-mono text-ink-muted text-sm sm:text-base ml-2 tabular-nums"
-            >
-              = {tp}/{tp + fn} ={" "}
-              <strong className="text-teal-600 font-bold">
-                <AnimatedNumber value={recall * 100} decimals={1} reducedMotion={reducedMotion} />%
-              </strong>
-            </motion.span>
-          )}
         </div>
+        {step >= 2 && (
+          <motion.span
+            initial={{ opacity: 0, x: reducedMotion ? 0 : -5 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={anim ?? { duration: 0.2 }}
+            className="font-mono text-ink-muted text-sm sm:text-base ml-2 tabular-nums"
+          >
+            = {tp}/{tp + fn} ={" "}
+            <strong className="text-teal-600 font-bold">
+              <AnimatedNumber value={recall * 100} decimals={1} reducedMotion={reducedMotion} />%
+            </strong>
+          </motion.span>
+        )}
       </div>
 
-      {/* Reduction & Final F1 Badge on Step 3 */}
       {step >= 3 && (
         <motion.div
-          initial={{ scale: reducedMotion ? 1 : 0.92, opacity: 0 }}
+          initial={{ scale: reducedMotion ? 1 : 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={anim ?? SPRING_BADGE}
           className="pt-2 text-center"
         >
-          <div className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-purple-500/40 bg-purple-500/10 px-6 py-3 shadow-xs">
+          <div className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-purple-500/40 bg-purple-500/10 px-6 py-2.5">
             <span className="text-xs uppercase font-sans tracking-wider text-ink-muted font-bold">
-              Harmonic Mean F1-Score:
+              F1-Score:
             </span>
             <span className="text-2xl sm:text-3xl font-extrabold text-purple-700 dark:text-purple-300 font-mono tracking-tight tabular-nums">
               <AnimatedNumber value={f1} decimals={3} reducedMotion={reducedMotion} />
             </span>
-            <span className="text-xs text-ink-muted font-mono font-medium">(2 × P × R / (P + R))</span>
+            <span className="text-xs text-ink-muted font-mono">(2 × P × R / (P + R))</span>
           </div>
         </motion.div>
       )}
 
       {step === 1 && (
-        <AnimatePresence mode="wait" initial={false}>
-          {anatomySubstep === 0 && (
-            <TypewriterSubtitleOverlay
-              key="sub-tp"
-              glowColor="#0f766e"
-              badgeText="TP · True Positive (ผลบวกจริง)"
-              text={`TP (True Positive) คือ ผลบวกจริง เคสที่คนป่วยจริงและโมเดลทายถูก ${tp} คน เป็นตัวตั้งสำคัญที่สุดทั้งในสูตร Precision และ Recall`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
-              chapterIndex={0}
-              totalChapters={3}
-              chapterLabels={["1. TP", "2. FP", "3. FN"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-            />
-          )}
-
-          {anatomySubstep === 1 && (
-            <TypewriterSubtitleOverlay
-              key="sub-fp"
-              glowColor={COLOR_AMBER}
-              badgeText="FP · False Positive (ผลบวกลวง)"
-              text={`FP (False Positive) คือ ผลบวกลวง คนปกติแต่โมเดลทายผิดว่าป่วย ${fp} คน เป็นตัวการบวกเพิ่มในตัวหารของ Precision ทำให้ความแม่นยำลดลง`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? advanceSubstep(2) : undefined)}
-              chapterIndex={1}
-              totalChapters={3}
-              chapterLabels={["1. TP", "2. FP", "3. FN"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-            />
-          )}
-
-          {anatomySubstep === 2 && (
-            <TypewriterSubtitleOverlay
-              key="sub-fn"
-              glowColor="#b91c1c"
-              badgeText="FN · False Negative (ผลลบลวง)"
-              text={`FN (False Negative) คือ ผลลบลวง คนป่วยจริงแต่โมเดลตรวจไม่เจอ ${fn} คน เป็นตัวการบวกเพิ่มในตัวหารของ Recall ซึ่งอันตรายมากทางการแพทย์`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
-              chapterIndex={2}
-              totalChapters={3}
-              chapterLabels={["1. TP", "2. FP", "3. FN"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-              onNextStep={onNextStep}
-            />
-          )}
-        </AnimatePresence>
+        <TypewriterSubtitleOverlay
+          chapters={chapters}
+          chapterIndex={anatomySubstep}
+          onSelectChapter={onSelectAnatomySubstep}
+          autoAdvance={isPlaying}
+          onComplete={() => {
+            if (!isPlaying) return;
+            if (anatomySubstep < chapters.length - 1) {
+              onAdvanceAnatomySubstep(anatomySubstep + 1);
+            } else {
+              onNextStep();
+            }
+          }}
+          reducedMotion={reducedMotion}
+        />
       )}
     </div>
   );
 }
 
-// -------------------------------------------------------------
-// Component 4: K-Means Distance Morph Transition
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Formula 4: K-Means Distance
+// ---------------------------------------------------------------------------
 interface KMeansMorphProps {
   step: number;
   anatomySubstep: number;
   onSelectAnatomySubstep: (idx: number) => void;
-  onAdvanceAnatomySubstep?: (idx: number) => void;
-  onNextStep?: () => void;
+  onAdvanceAnatomySubstep: (idx: number) => void;
+  onNextStep: () => void;
   isPlaying: boolean;
-  manualEntry?: boolean;
   pt: { x: number; y: number; label: string };
   c: { x: number; y: number; label: string };
   dx: number;
   dy: number;
   distEuclidean: number;
   distManhattan: number;
-  mode: "euclidean" | "manhattan";
-  targetCentroid: string;
+  mode: MetricMode;
   hoveredToken: string | null;
   onHoverToken: (t: string | null) => void;
   reducedMotion: boolean;
@@ -2242,7 +2056,6 @@ function KMeansMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
-  manualEntry,
   pt,
   c,
   dx,
@@ -2256,16 +2069,30 @@ function KMeansMorphFormula({
 }: KMeansMorphProps) {
   const isEuclid = mode === "euclidean";
   const anim = reducedMotion ? NO_ANIM : undefined;
-  const isTypingActive = isPlaying || Boolean(manualEntry);
-  const advanceSubstep = onAdvanceAnatomySubstep ?? onSelectAnatomySubstep;
+
+  const chapters: AnatomyChapter[] = useMemo(
+    () => [
+      {
+        label: "1. พิกัดจุด",
+        color: "#2563eb",
+        badge: "(xₚ, yₚ) · พิกัดจุดข้อมูล",
+        text: `พิกัด (xₚ, yₚ) คือตำแหน่งของจุดข้อมูล ${pt.label} (xₚ = ${pt.x}, yₚ = ${pt.y}) ที่ต้องการคำนวณระยะห่าง`,
+      },
+      {
+        label: "2. Centroid",
+        color: COLOR_AMBER,
+        badge: "(cₓ, cᵧ) · พิกัดจุดศูนย์กลางกลุ่ม",
+        text: `พิกัด (cₓ, cᵧ) คือตำแหน่งของ ${c.label} (cₓ = ${c.x}, cᵧ = ${c.y}) นำมาหาผลต่างตามแนวแกนได้ Δx = ${Math.abs(dx)} และ Δy = ${Math.abs(dy)}`,
+      },
+    ],
+    [pt, c, dx, dy]
+  );
 
   return (
-    <div className="w-full max-w-2xl space-y-3.5">
-      {/* Distance Formula */}
+    <div className="w-full max-w-2xl space-y-4">
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xl sm:text-2xl font-medium tracking-tight">
         <span className="text-ink font-semibold">{isEuclid ? "d(p, c) = √[" : "d(p, c) = "}</span>
 
-        {/* Delta X Component */}
         <div className="inline-flex items-center gap-0.5">
           {isEuclid ? "(" : "|"}
           <TokenPill
@@ -2273,7 +2100,7 @@ function KMeansMorphFormula({
             label="x_p"
             ghost="xₚ"
             symbol="xₚ"
-            value={step < 2 ? "xₚ" : pt.x}
+            value={pt.x}
             step={step}
             active={hoveredToken === "xp"}
             tokenKey="xp"
@@ -2289,7 +2116,7 @@ function KMeansMorphFormula({
             label="c_x"
             ghost="cₓ"
             symbol="cₓ"
-            value={step < 2 ? "cₓ" : c.x}
+            value={c.x}
             step={step}
             active={hoveredToken === "cx"}
             tokenKey="cx"
@@ -2310,7 +2137,6 @@ function KMeansMorphFormula({
 
         <span className="text-ink-muted">+</span>
 
-        {/* Delta Y Component */}
         <div className="inline-flex items-center gap-0.5">
           {isEuclid ? "(" : "|"}
           <TokenPill
@@ -2318,7 +2144,7 @@ function KMeansMorphFormula({
             label="y_p"
             ghost="yₚ"
             symbol="yₚ"
-            value={step < 2 ? "yₚ" : pt.y}
+            value={pt.y}
             step={step}
             active={hoveredToken === "yp"}
             tokenKey="yp"
@@ -2334,7 +2160,7 @@ function KMeansMorphFormula({
             label="c_y"
             ghost="cᵧ"
             symbol="cᵧ"
-            value={step < 2 ? "cᵧ" : c.y}
+            value={c.y}
             step={step}
             active={hoveredToken === "cy"}
             tokenKey="cy"
@@ -2356,41 +2182,37 @@ function KMeansMorphFormula({
         <span className="text-ink font-semibold">{isEuclid ? "]" : ""}</span>
       </div>
 
-      {/* Reduction steps */}
       <AnimatePresence mode="wait">
         {step >= 2 && (
           <motion.div
-            initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reducedMotion ? 0 : -10 }}
-            transition={anim ?? { duration: 0.22 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
+            transition={anim ?? { duration: 0.2 }}
             className="space-y-3 pt-3 border-t border-rule/60 text-center font-mono"
           >
             {isEuclid ? (
-              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm md:text-base text-ink-muted tabular-nums">
+              <div className="flex flex-wrap items-center justify-center gap-2 text-xs sm:text-base text-ink-muted tabular-nums">
                 <span>= √[({dx})² + ({dy})²]</span>
-                <span className="hidden sm:inline text-ink-subtle">→</span>
                 <span>= √[{dx ** 2} + {dy ** 2}]</span>
-                <span className="hidden sm:inline text-ink-subtle">→</span>
                 <span>= √{dx ** 2 + dy ** 2}</span>
               </div>
             ) : (
-              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm md:text-base text-ink-muted tabular-nums">
+              <div className="flex flex-wrap items-center justify-center gap-2 text-xs sm:text-base text-ink-muted tabular-nums">
                 <span>= |{dx}| + |{dy}|</span>
-                <span className="hidden sm:inline text-ink-subtle">→</span>
                 <span>= {Math.abs(dx)} + {Math.abs(dy)}</span>
               </div>
             )}
 
             {step >= 3 && (
               <motion.div
-                initial={{ scale: reducedMotion ? 1 : 0.92, opacity: 0 }}
+                initial={{ scale: reducedMotion ? 1 : 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={anim ?? SPRING_BADGE}
-                className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-blue-500/40 bg-blue-500/10 px-6 py-3 shadow-xs"
+                className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-blue-500/40 bg-blue-500/10 px-6 py-2.5"
               >
                 <span className="text-xs uppercase font-sans tracking-wider text-ink-muted font-bold">
-                  ระยะทางสุทธิ ({mode}):
+                  Distance ({mode}):
                 </span>
                 <span className="text-2xl sm:text-3xl font-extrabold text-blue-700 dark:text-blue-300 tracking-tight tabular-nums">
                   <AnimatedNumber
@@ -2406,51 +2228,29 @@ function KMeansMorphFormula({
       </AnimatePresence>
 
       {step === 1 && (
-        <AnimatePresence mode="wait" initial={false}>
-          {anatomySubstep === 0 ? (
-            <TypewriterSubtitleOverlay
-              key="sub-pt"
-              glowColor="#2563eb"
-              badgeText="(xₚ, yₚ) · พิกัดข้อมูลที่ต้องการจัดกลุ่ม"
-              text={`พิกัดจุด (xₚ, yₚ) คือ ตำแหน่งของข้อมูลจุด ${pt.label} (xₚ = ${pt.x}, yₚ = ${pt.y}) ทำหน้าที่เป็นหมุดตั้งต้นในการวัดระยะห่างไปยังคลัสเตอร์`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? advanceSubstep(1) : undefined)}
-              chapterIndex={0}
-              totalChapters={2}
-              chapterLabels={["1. พิกัดจุด", "2. Centroid"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-            />
-          ) : (
-            <TypewriterSubtitleOverlay
-              key="sub-centroid"
-              glowColor={COLOR_AMBER}
-              badgeText="(cₓ, cᵧ) · จุดกึ่งกลาง Centroid"
-              text={`พิกัด Centroid (cₓ, cᵧ) คือ จุดกึ่งกลางคลัสเตอร์ ${c.label} (cₓ = ${c.x}, cᵧ = ${c.y}) ทำหน้าที่เป็นหมุดอ้างอิงเพื่อหาผลต่าง Δx = ${Math.abs(dx)} และ Δy = ${Math.abs(dy)}`}
-              isActive={isTypingActive}
-              autoAdvance={isPlaying}
-              onComplete={() => (isPlaying ? onNextStep?.() : undefined)}
-              chapterIndex={1}
-              totalChapters={2}
-              chapterLabels={["1. พิกัดจุด", "2. Centroid"]}
-              onSelectChapter={onSelectAnatomySubstep}
-              reducedMotion={reducedMotion}
-              onNextStep={onNextStep}
-            />
-          )}
-        </AnimatePresence>
+        <TypewriterSubtitleOverlay
+          chapters={chapters}
+          chapterIndex={anatomySubstep}
+          onSelectChapter={onSelectAnatomySubstep}
+          autoAdvance={isPlaying}
+          onComplete={() => {
+            if (!isPlaying) return;
+            if (anatomySubstep < chapters.length - 1) {
+              onAdvanceAnatomySubstep(anatomySubstep + 1);
+            } else {
+              onNextStep();
+            }
+          }}
+          reducedMotion={reducedMotion}
+        />
       )}
     </div>
   );
 }
 
-// -------------------------------------------------------------
-// Helper: TokenPill — tactile spring morph + persistent ghost trace.
-// The ghost caption reserves a fixed h-4 slot (no CLS) and fades in
-// on substitution, legible in both themes via full-strength token
-// color boosted under the dark variant.
-// -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Shared TokenPill Component
+// ---------------------------------------------------------------------------
 interface TokenPillProps {
   color: string;
   label: string;
@@ -2483,8 +2283,6 @@ const TokenPill = memo(function TokenPill({
   onClick,
 }: TokenPillProps) {
   const morphed = step >= 2;
-
-  // When dimmed, token loses its vivid accent color and becomes neutral/faint
   const effectiveBorder = dimmed ? "var(--color-rule-strong)" : color;
   const effectiveColor = dimmed ? "var(--color-ink-muted)" : color;
   const effectiveBg = dimmed
@@ -2493,8 +2291,8 @@ const TokenPill = memo(function TokenPill({
 
   return (
     <span
-      className={`relative inline-flex flex-col items-center cursor-pointer outline-none transition-all duration-300 ${
-        dimmed ? "opacity-35 grayscale" : "opacity-100"
+      className={`relative inline-flex flex-col items-center cursor-pointer outline-none transition-opacity duration-200 ${
+        dimmed ? "opacity-40 grayscale" : "opacity-100"
       }`}
       onClick={onClick}
       onMouseEnter={() => onHoverToken(tokenKey)}
@@ -2506,9 +2304,7 @@ const TokenPill = memo(function TokenPill({
     >
       <motion.span
         layout={reducedMotion ? false : "position"}
-        animate={{
-          scale: isSpotlight && !reducedMotion ? 1.06 : 1,
-        }}
+        animate={{ scale: isSpotlight && !reducedMotion ? 1.06 : 1 }}
         transition={reducedMotion ? NO_ANIM : SPRING_TACTILE}
         className="relative inline-flex items-center justify-center rounded-xl border px-3 py-1 font-mono text-base sm:text-lg font-bold shadow-xs transition-colors duration-200"
         style={{
@@ -2516,34 +2312,33 @@ const TokenPill = memo(function TokenPill({
           color: effectiveColor,
           backgroundColor: effectiveBg,
           boxShadow: isSpotlight
-            ? `0 0 0 3px color-mix(in srgb, ${color} 50%, transparent), 0 6px 16px color-mix(in srgb, ${color} 30%, transparent)`
+            ? `0 0 0 3px color-mix(in srgb, ${color} 45%, transparent)`
             : active
-            ? `0 0 0 2px color-mix(in srgb, ${color} 55%, transparent)`
+            ? `0 0 0 2px color-mix(in srgb, ${color} 50%, transparent)`
             : undefined,
         }}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={morphed ? "number" : "symbol"}
-            initial={{ opacity: 0, y: reducedMotion ? 0 : 5 }}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reducedMotion ? 0 : -5 }}
-            transition={reducedMotion ? NO_ANIM : { duration: 0.16 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : -4 }}
+            transition={reducedMotion ? NO_ANIM : { duration: 0.15 }}
             className="relative z-10 tabular-nums"
           >
             {morphed ? value : symbol}
           </motion.span>
         </AnimatePresence>
       </motion.span>
-      {/* Ghost trace: fixed slot, fades gracefully, always legible */}
       <span className="flex h-4 items-center" aria-hidden="true">
         <AnimatePresence initial={false}>
           {morphed && (
             <motion.span
-              initial={{ opacity: 0, y: -3 }}
+              initial={{ opacity: 0, y: -2 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={reducedMotion ? NO_ANIM : { duration: 0.22 }}
+              transition={reducedMotion ? NO_ANIM : { duration: 0.2 }}
               className="text-[10px] font-sans font-bold uppercase tracking-wider dark:brightness-150"
               style={{ color }}
             >

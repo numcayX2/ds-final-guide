@@ -20,10 +20,9 @@ export const formulas: Formula[] = [
   /* ---------------- Lect 05 — EDA ---------------- */
   {
     id: "iqr",
-    // Standard Tukey definition. Lecture 05 teaches the concept and defines
-    // IQR as "the middle 50% of the data" on slide 7, but prints no formula and
-    // works no numeric example anywhere in the deck, so this is principled
-    // rather than slide-sourced.
+    // Lect 05 p.17 prints IQR = Q3 - Q1 ("ช่วงของข้อมูลกึ่งกลาง 50%") and the
+    // 1.5 x IQR fence rules. The deck still works no numeric example, so the
+    // worked figures below are illustrative, not slide data.
     verification: VERIFIED_BY_PRINCIPLE,
     name: "IQR",
     expression: "Q3 - Q1",
@@ -33,19 +32,17 @@ export const formulas: Formula[] = [
     ],
     output: "ความกว้างของช่วงกลางของข้อมูล ครอบคลุม 50% ของทั้งหมด",
     example: {
-      given: "Q1 = 20, Q3 = 35",
+      given: "Q1 = 20, Q3 = 35 (ตัวเลขสมมติ สไลด์ไม่มีตัวอย่างเลข)",
       steps: ["IQR = Q3 - Q1", "IQR = 35 - 20", "IQR = 15"],
       result: "15",
     },
-    pitfall: "สไลด์นิยาม IQR ว่าเป็นช่วงของข้อมูลกึ่งกลาง 50% แต่ไม่ได้พิมพ์สูตรและไม่มีตัวอย่างเลขในทั้งเล่ม จุดที่อยู่ไกลจากกลุ่มจะไม่ทำให้ IQR ใหญ่ขึ้นเลย",
+    pitfall: "IQR วัดความกระจายของข้อมูลครึ่งกลาง ไม่ใช่ทั้งหมด จุดไกลๆ ไม่ทำให้ IQR ใหญ่ขึ้น (Lect 05 p.17)",
     lectures: ["Lect 05"],
   },
   {
     id: "lower-fence",
-    // Standard Tukey definition. Lecture 05 teaches the concept and defines
-    // IQR as "the middle 50% of the data" on slide 7, but prints no formula and
-    // works no numeric example anywhere in the deck, so this is principled
-    // rather than slide-sourced.
+    // Lect 05 p.17 "กฎที่ใช้บ่อยสำหรับการ Flag": Lower Fence = Q1 - 1.5 x IQR.
+    // Numbers below are illustrative; the deck has no numeric example.
     verification: VERIFIED_BY_PRINCIPLE,
     name: "Lower Fence",
     expression: "Q1 - 1.5 x IQR",
@@ -55,19 +52,17 @@ export const formulas: Formula[] = [
     ],
     output: "เกณฑ์ล่าง ค่าที่ต่ำกว่านี้ถือเป็น outlier",
     example: {
-      given: "Q1 = 20, Q3 = 35, IQR = 15",
+      given: "Q1 = 20, Q3 = 35, IQR = 15 (ตัวเลขสมมติ)",
       steps: ["Lower Fence = Q1 - 1.5 x IQR", "= 20 - 1.5 x 15", "= 20 - 22.5"],
       result: "-2.5",
     },
-    pitfall: "Fence เป็นเพียงเกณฑ์ ไม่ใช่ค่าข้อมูลจริง ไม่มีจุดไหนที่ Whisker จะไปถึง Fence",
+    pitfall: "Fence เป็นเกณฑ์ ไม่ใช่ค่าข้อมูลจริง Whisker จบที่ค่าจริงสุดท้ายที่ยังอยู่ใน Fence และค่านอก Fence เป็น Potential Outlier ซึ่งไม่เท่ากับ Error (Lect 05 p.17)",
     lectures: ["Lect 05"],
   },
   {
     id: "upper-fence",
-    // Standard Tukey definition. Lecture 05 teaches the concept and defines
-    // IQR as "the middle 50% of the data" on slide 7, but prints no formula and
-    // works no numeric example anywhere in the deck, so this is principled
-    // rather than slide-sourced.
+    // Lect 05 p.17 "กฎที่ใช้บ่อยสำหรับการ Flag": Upper Fence = Q3 + 1.5 x IQR.
+    // Numbers below are illustrative; the deck has no numeric example.
     verification: VERIFIED_BY_PRINCIPLE,
     name: "Upper Fence",
     expression: "Q3 + 1.5 x IQR",
@@ -77,11 +72,11 @@ export const formulas: Formula[] = [
     ],
     output: "เกณฑ์บน ค่าที่สูงกว่านี้ถือเป็น outlier",
     example: {
-      given: "Q1 = 20, Q3 = 35, IQR = 15",
+      given: "Q1 = 20, Q3 = 35, IQR = 15 (ตัวเลขสมมติ)",
       steps: ["Upper Fence = Q3 + 1.5 x IQR", "= 35 + 1.5 x 15", "= 35 + 22.5"],
       result: "57.5",
     },
-    pitfall: "จุดที่อยู่ระหว่าง Fence กับค่าจริงสูงสุด ไม่ใช่ outlier แม้จะห่างจากกลุ่มมากก็ตาม",
+    pitfall: "ค่านอก Fence คือ Potential Outlier ที่ต้องตรวจสอบต่อ ไม่ใช่ Error และไม่ต้องลบเสมอไป Outlier Detection ตั้งคำถาม ไม่ได้ตัดสินคำตอบ (Lect 05 p.17-18)",
     lectures: ["Lect 05"],
   },
 
@@ -256,6 +251,50 @@ export const formulas: Formula[] = [
     expression: "d(x, y) = ( SUM |xi - yi|^p ) ^ (1/p)",
     symbols: [{ symbol: "p", meaning: "ค่า p กำหนดว่าเป็น Manhattan เมื่อ p = 1 และ Euclidean เมื่อ p = 2" }],
     output: "รูปทั่วไปของระยะห่างทั้งสองแบบ",
+    lectures: ["Lect 08"],
+  },
+  {
+    id: "inertia",
+    verification: VERIFIED,
+    name: "Inertia / WCSS",
+    expression: "Inertia = SUM( || x_i - Centroid_c(i) ||^2 )",
+    tex: "\\text{Inertia} = \\sum_{i=1}^{n} \\lVert x_i - C_{c(i)} \\rVert^2",
+    symbols: [
+      { symbol: "x_i", meaning: "จุดข้อมูลที่ i" },
+      { symbol: "C_c(i)", meaning: "จุดศูนย์กลางของกลุ่มที่จุด i ถูกจัดเข้าไป" },
+    ],
+    output: "ผลรวมระยะยกกำลังสองจากแต่ละจุดถึง centroid ของมัน ยิ่งต่ำยิ่งกระชับ",
+    example: {
+      given: "กลุ่ม C3 = {A2(2,5), A7(1,2)} centroid (1.5, 3.5) (Lect 08 p.35 สูตร, ตัวเลขจากตารางรอบที่ 2)",
+      steps: [
+        "A2: (2-1.5)^2 + (5-3.5)^2 = 0.25 + 2.25 = 2.5",
+        "A7: (1-1.5)^2 + (2-3.5)^2 = 0.25 + 2.25 = 2.5",
+        "Inertia ของกลุ่ม C3 = 2.5 + 2.5",
+      ],
+      result: "5.0",
+    },
+    pitfall:
+      "Inertia ใช้ Squared Euclidean ไม่ใช่ Manhattan ที่ใช้จัดกลุ่มด้วยมือ และ Inertia ต่ำสุดไม่ได้บอก K ที่ดีที่สุด เพราะเพิ่ม K แล้วค่าลดลงเสมอ (Lect 08 p.35, p.37)",
+    lectures: ["Lect 08"],
+  },
+  {
+    id: "silhouette",
+    verification: VERIFIED,
+    name: "Silhouette Score",
+    expression: "s(i) = (b(i) - a(i)) / max(a(i), b(i))",
+    tex: "s(i) = \\frac{b(i) - a(i)}{\\max\\bigl(a(i),\\, b(i)\\bigr)}",
+    symbols: [
+      { symbol: "a(i)", meaning: "ระยะเฉลี่ยจากจุด i ไปยังจุดอื่นในกลุ่มเดียวกัน (Compactness)" },
+      { symbol: "b(i)", meaning: "ระยะเฉลี่ยไปยังกลุ่มที่ใกล้ที่สุดรองลงมา (Separation)" },
+    ],
+    output: "ค่าในช่วง -1 ถึง +1 ใกล้ +1 คือกลุ่มดี ใกล้ -1 คือจัดกลุ่มไม่ดี",
+    example: {
+      given: "a(i) = 2, b(i) = 6 (ตัวเลขสมมติเพื่อฝึกคำนวณ ไม่ใช่ตัวเลขในสไลด์)",
+      steps: ["s(i) = (6 - 2) / max(2, 6)", "= 4 / 6"],
+      result: "0.667",
+    },
+    pitfall:
+      "ตัวส่วนคือค่าที่มากกว่าระหว่าง a กับ b ไม่ใช่ a + b จึงไม่เกิน 1 และ Best K ต้องดู Inertia, Silhouette, Stability, Simplicity และความหมายทางธุรกิจร่วมกัน (Lect 08 p.36, p.38)",
     lectures: ["Lect 08"],
   },
 

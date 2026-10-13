@@ -1,14 +1,15 @@
 import type { MockTest, Question } from "./types";
 
 /**
- * Mock exam — 30 questions covering Lecture 05 to Lecture 09.
+ * Mock exam — 35 questions covering Lecture 05 to Lecture 09.
  *
- * All 30 questions have been verified against the official lecture decks:
- * - Questions 01–10: Lect 09 (Responsible Data Science, XAI, Bias & Ethics)
+ * Every question was checked against the extracted lecture slides
+ * (scratch/lect0N_extracted):
+ * - Questions 01–10, 35: Lect 09 (Responsible Data Science, XAI, Bias & Ethics, Monitoring)
  * - Questions 11–14: Lect 05 (Exploratory Data Analysis, Fences vs Whiskers)
  * - Questions 15–16: Lect 06 (Modeling & CRISP-DS Framework)
- * - Questions 17–20: Lect 07 (Decision Tree, Gini Impurity, Confusion Matrix)
- * - Questions 21–30: Lect 08 (K-Means Clustering: Centroids, Metrics, Weaknesses)
+ * - Questions 17–20, 31–33: Lect 07 (Gini, Confusion Matrix, HW#2, depth selection, Decision Gates)
+ * - Questions 21–30, 34: Lect 08 (K-Means: Centroids, Metrics, Weaknesses, Silhouette)
  *
  * Every number and formula matches verified lecture slides.
  */
@@ -163,7 +164,7 @@ export const questionsLect09: Question[] = [
       },
     ],
     explanation:
-      "Concept Drift คือปรากฏการณ์ที่ความสัมพันธ์ทางสถิติระหว่างตัวแปรต้น (Features) กับตัวแปรเป้าหมาย (Target) หรือ P(Y|X) เปลี่ยนแปลงไปตามกาลเวลา เนื่องจากสภาพแวดล้อม พฤติกรรมผู้บริโภค หรือบริบททางสังคมในโลกจริงเปลี่ยนไป (เช่น ในอดีตการไม่ซื้อของเกิน 45 วันถือว่า Inactive แต่ปัจจุบันเปลี่ยนเป็น 70 วัน) ส่งผลให้โมเดลเดิมที่เคยแม่นยำเกิดการเสื่อมประสิทธิภาพ (Model Degradation)",
+      "Concept Drift คือปรากฏการณ์ที่ความสัมพันธ์ระหว่าง Feature กับ Target ไม่เหมือนช่วงที่ train เนื่องจากสภาพแวดล้อมในโลกจริงเปลี่ยนไป ตามสไลด์ p.11 โมเดลเรียนรู้กฎ 'ไม่ซื้อเกิน 45 วัน ทำนาย Inactive 68%' ในยุคที่ไม่มีการสมัครสมาชิก แต่หลังเปิดบริการ Subscription ที่ส่งสินค้าอัตโนมัติ กฎเดิมให้ Inactive เพียง 31% ทั้งที่โมเดลและ Code ไม่ได้เปลี่ยน ผลคือกฎเดิมผิดพลาดมากขึ้น",
     slideRef:
       "Lect 09 p11 (Concept Drift: ไม่ซื้อเกิน 45 วัน, Inactive 68% เปลี่ยนเป็น 31%)",
     verification: V,
@@ -335,6 +336,29 @@ export const questionsLect09: Question[] = [
       "แนวปฏิบัติที่ดีที่สุดของ Responsible Communication and Governance ตามสไลด์ Lect 09 หน้า 19 และ 21:\n- ต้องแปลผลลัพธ์และสื่อสารด้วยภาษาที่เหมาะสมกับบริบทของผู้มีส่วนได้ส่วนเสียแต่ละกลุ่ม เพื่อให้เกิดความเข้าใจร่วมกัน\n- ต้องรักษาความโปร่งใสและข้อเท็จจริงทางสถิติอย่างเคร่งครัด โดยเปิดเผยความไม่แน่นอน (Uncertainty), สมมติฐาน และข้อจำกัดของโมเดล (Limitations) อย่างตรงไปตรงมา\n- ต้องกำหนดกรอบการกำกับดูแลโดยมนุษย์ (Human Oversight / Human-in-the-loop) ในทุกจุดตัดสินใจสำคัญ ไม่ปล่อยให้ระบบอัตโนมัติทำงานโดยไร้การตรวจสอบ",
     slideRef:
       "Lect 09 p19 (แยกผลที่พบ ความหมาย ข้อจำกัด และเงื่อนไข) และ p21 (เปลี่ยนภาษาได้ ห้ามเปลี่ยนข้อเท็จจริง)",
+    verification: V,
+  },
+  {
+    n: 35,
+    kind: "scenario",
+    lectures: ["Lect 09"],
+    prompt:
+      "ทีมนำโมเดลทำนายลูกค้า Inactive ไปทดลองใช้ในวงจำกัด ระหว่างติดตามผลพบสัญญาณสองอย่างพร้อมกัน คือ Recall ของลูกค้ากลุ่มใหม่ต่ำกว่าเกณฑ์ที่ตั้งไว้ และข้อร้องเรียนเรื่องการติดต่อที่ไม่เหมาะสมเพิ่มขึ้น แม้ Accuracy รวมยังสูงอยู่ การตอบสนองข้อใดสอดคล้องกับสไลด์เรื่องระบบที่รับผิดชอบต้องหยุด ทบทวน และย้อนกลับได้มากที่สุด?",
+    options: [
+      { label: "a", text: "ทำต่อ เพราะ Accuracy รวมยังสูง และสัญญาณเตือนเป็นเพียงข้อยกเว้นของกลุ่มเล็ก", correct: false },
+      {
+        label: "b",
+        text: "ทบทวนโมเดล ตรวจข้อมูลและประเมินใหม่ และหยุดส่งข้อความหรือข้อเสนอชั่วคราวจนกว่าจะหาสาเหตุและแก้ไขได้ แล้วย้อนกลับไปปรับปรุงตามวงจร CRISP-DS",
+        correct: true,
+      },
+      { label: "c", text: "ยกเลิกการติดตามผล เพราะการทดลองใช้งานในวงจำกัดจบแล้ว", correct: false },
+      { label: "d", text: "ลบคอลัมน์ข้อมูลกลุ่มลูกค้าออกจากข้อมูล แล้วเดินหน้าส่งข้อความอัตโนมัติต่อ", correct: false },
+    ],
+    explanation:
+      "สไลด์ p.24 วางลำดับ CRISP-DS, Pilot, Monitor แล้วถามว่าผลเป็นอย่างไร มีสามทาง คือ ทำต่อเมื่อผลเป็นไปตามเป้าหมาย ทบทวนเมื่อต้องทบทวนโมเดล ข้อมูล หรือเงื่อนไข และหยุดชั่วคราวเมื่อพบปัญหาวิกฤต สัญญาณที่สไลด์ยกตัวอย่างตรงกับโจทย์ คือ Recall กลุ่มใหม่ต่ำกว่าเกณฑ์ และข้อร้องเรียนเพิ่ม การตอบสนองที่เหมาะสมคือทบทวนโมเดล หยุดการติดต่อจนกว่าจะหาสาเหตุ และกลับไป Data Understanding เมื่อบริบทหรือข้อกำหนดเปลี่ยน",
+    distractor:
+      "ตัวเลือก a ติดกับดักเดียวกับ Accuracy 84% ใน p.4 คือคะแนนรวมซ่อนกลุ่มที่ทำได้แย่ ตัวเลือก d สับสนกับ Proxy Feature ใน p.13 การลบคอลัมน์ไม่ได้แก้ปัญหาที่เกิดแล้ว และไม่ตอบสัญญาณจากการติดตามผล",
+    slideRef: "Lect 09 p24 (Monitor: Recall กลุ่มใหม่ต่ำกว่าเกณฑ์, ข้อร้องเรียนเพิ่ม; ทำต่อ ทบทวน หยุด)",
     verification: V,
   },
 ];
@@ -700,6 +724,63 @@ export const questionsLect0507: Question[] = [
       "Lect 07 p26 (ตารางลูกค้า 10 แถว Inactive=Yes), p30 (สูตร) และ p34 (Homework#1)",
     verification: V,
   },
+  {
+    n: 31,
+    kind: "scenario",
+    lectures: ["Lect 07"],
+    prompt:
+      "Homework #2: ประเมิน 3 โมเดลบน Evaluation Set ลูกค้า 100 ราย Positive = Inactive (ลูกค้าจริงที่ Inactive มี 40 ราย)\n- Model A: TP=24, FN=16, FP=3, TN=57\n- Model B: TP=36, FN=4, FP=18, TN=42\n- Model C: TP=32, FN=8, FP=7, TN=53\nทีมรักษาลูกค้าระบุว่า การพลาดลูกค้าที่กำลังจะ Inactive แพงกว่าการติดต่อลูกค้าที่ไม่ได้จะ Inactive เกินมา ควรเลือก Metric หลักและโมเดลใด?",
+    options: [
+      { label: "a", text: "Precision เพราะ Model A สูงสุด (0.89) จึงเลือก Model A", correct: false },
+      { label: "b", text: "Recall เพราะ Model B สูงสุด (0.90) จึงเลือก Model B", correct: true },
+      { label: "c", text: "Accuracy เพราะ Model C สูงสุด (0.85) จึงเลือก Model C", correct: false },
+      { label: "d", text: "F1 เพราะ Model C สูงสุด (0.81) จึงเลือก Model C ทั้งที่ต้นทุน FN สูงกว่า", correct: false },
+    ],
+    explanation:
+      "ขั้นแรกเลือก Metric ตามต้นทุนของความผิดพลาด แล้วจึงเลือกโมเดลด้วย Metric นั้น (สไลด์ p.35)\n- Model A: Acc 81/100 = 0.81, Precision 24/27 = 0.89, Recall 24/40 = 0.60, F1 = 48/67 = 0.72\n- Model B: Acc 78/100 = 0.78, Precision 36/54 = 0.67, Recall 36/40 = 0.90, F1 = 72/94 = 0.77\n- Model C: Acc 85/100 = 0.85, Precision 32/39 = 0.82, Recall 32/40 = 0.80, F1 = 64/79 = 0.81\nFN แพงกว่า FP จึงใช้ Recall Model B พลาดลูกค้าที่จะ Inactive เพียง 4 ราย (A พลาด 16, C พลาด 8) แลกกับ FP 18 ราย สไลด์ระบุว่าคำตอบอาจต่างกันได้ แต่ Metric ที่เลือกต้องอธิบายโมเดลที่เลือกได้ ถ้าต้นทุน FP กับ FN ใกล้เคียงกัน F1 จะชี้ไปที่ Model C",
+    distractor:
+      "Model C ดูดีที่สุดในภาพรวม (Accuracy 0.85 และ F1 0.81 สูงสุด) จึงเป็นตัวเลือกที่หลอกง่าย แต่โจทย์กำหนดต้นทุน FN ไว้แล้ว Metric หลักจึงต้องเป็น Recall ส่วน Model A มี Precision สูงสุดเพราะระมัดระวัง FP แต่ปล่อยลูกค้า Inactive หลุดไป 16 จาก 40 ราย",
+    slideRef: "Lect 07 p35 (Homework #2: Model A, B, C บน Evaluation Set 100 ราย, Positive = Inactive)",
+    verification: V,
+  },
+  {
+    n: 32,
+    kind: "scenario",
+    lectures: ["Lect 07"],
+    prompt:
+      "ทีมฝึก Decision Tree หลายความลึกบน Training Data แล้วเทียบบน Validation Data ได้ผลดังนี้: max_depth = 1 ผล low, max_depth = 3 ผล high, max_depth = 6 ผล lower, ไม่จำกัดความลึกผล materially lower (Training Accuracy ของต้นไม้ที่ไม่จำกัดความลึกเข้าใกล้ 1.00) ควรเลือกอย่างไร?",
+    options: [
+      { label: "a", text: "ไม่จำกัดความลึก เพราะ Training Accuracy สูงสุดที่ 1.00", correct: false },
+      { label: "b", text: "max_depth = 1 เพราะเรียบง่ายที่สุดและอธิบายง่ายที่สุด", correct: false },
+      { label: "c", text: "max_depth = 3 เพราะ Validation ดีที่สุด และเก็บ Test Set ไว้ใช้หลังตัดสินใจเรื่องโมเดลครบแล้วเท่านั้น", correct: true },
+      { label: "d", text: "ตัดสินระหว่าง max_depth = 3 กับ 6 ด้วยการลองบน Test Set", correct: false },
+    ],
+    explanation:
+      "สไลด์ p.19: Training Data ใช้เรียน Candidate Tree ที่ความลึกต่างกัน Validation Data ใช้เทียบค่า max_depth และ max_depth = 3 ได้ Validation สูงสุดจึงถูกเลือกไปพัฒนาต่อ ส่วน Final Test Set ต้องล็อกไว้ไม่ให้ใช้ระหว่างเลือก ตามสไลด์ p.31 ต้นไม้ตื้นมี Bias สูงกว่าและ Variance ต่ำกว่า เสี่ยง Underfitting ต้นไม้ลึกมาก Training Bias ลดลงแต่ Variance สูงขึ้น เสี่ยง Overfitting ความซับซ้อนจึงต้องเลือกด้วย Validation Evidence",
+    distractor:
+      "Training Accuracy 1.00 บอกแค่ว่าจำข้อมูลที่เห็นได้หมด ไม่ได้บอกว่าใช้ได้กับลูกค้าที่ไม่เคยเห็น ตัวเลือก d ทำลายความเป็นกลางของ Test Set",
+    slideRef: "Lect 07 p19 (Validation Evidence Selects Tree Complexity), p18 และ p31 (Bias-Variance)",
+    verification: V,
+  },
+  {
+    n: 33,
+    kind: "scenario",
+    lectures: ["Lect 07"],
+    prompt:
+      "หลังประเมินโมเดลครบ ทีมพบว่าหลักฐานยังไม่เพียงพอสำหรับการใช้งาน แต่ปัญหาแก้ไขได้ เช่น ต้องปรับการเตรียมข้อมูลและประเมินซ้ำ ตามกรอบ Decision Gates ของสไลด์ ควรเลือกการกระทำใด?",
+    options: [
+      { label: "a", text: "Accept คือใช้งานตามที่ตั้งใจแล้วติดตามผลต่อไป", correct: false },
+      { label: "b", text: "Revise คือกลับไปยังขั้นก่อนหน้าของ CRISP-DS เช่น Data Preparation เพื่อปรับปรุง", correct: true },
+      { label: "c", text: "Reject คือหยุดใช้โมเดลนี้ทั้งหมดเพราะขาดหลักฐานสนับสนุน", correct: false },
+      { label: "d", text: "Accept เพราะ Convergence หรือ Validation ผ่านแล้วถือว่าพร้อมใช้งาน", correct: false },
+    ],
+    explanation:
+      "สไลด์ p.36 แบ่งเป็นสามทาง Accept เมื่อมีหลักฐานเพียงพอและไม่มีข้อจำกัดสำคัญ ให้ใช้งานแล้วติดตามผล Revise เมื่อหลักฐานไม่พอแต่ปรับได้ ให้กลับไปขั้นก่อนหน้า เช่น Data Preparation Reject เมื่อไม่มีหลักฐานรองรับ ให้หยุดใช้โมเดลนั้น โจทย์ระบุว่าไม่เพียงพอแต่ปรับได้ จึงเป็น Revise ใน Lect 09 p.22 ชื่อเดียวกันคือ ใช้ ปรับ ยังไม่ใช่ ซึ่งต้องมีหลักฐาน ความเสี่ยง และแผนลดความเสี่ยงรองรับทุกทางเลือก",
+    distractor:
+      "Reject กับ Revise ต่างกันที่ว่าหลักฐานแก้ได้หรือไม่ ส่วน Lect 08 p.43 เตือนว่า Convergence ไม่เท่ากับความพร้อมใช้งาน",
+    slideRef: "Lect 07 p36 (Accept / Revise / Reject), Lect 09 p22 (ใช้ ปรับ ยังไม่ใช่), Lect 08 p43",
+    verification: V,
+  },
 ];
 
 export const questionsLect08: Question[] = [
@@ -991,6 +1072,25 @@ export const questionsLect08: Question[] = [
     slideRef: "Lect 08 จุดแข็ง (Inertia/WCSS optimization) และสูตร K-Means",
     verification: V,
   },
+  {
+    n: 34,
+    kind: "numeric",
+    lectures: ["Lect 08"],
+    prompt:
+      "สมมติจุด i หนึ่งจุดมีระยะเฉลี่ยถึงจุดอื่นในกลุ่มเดียวกัน a(i) = 2 และระยะเฉลี่ยถึงกลุ่มที่ใกล้ที่สุด b(i) = 6 จงคำนวณ Silhouette Score s(i) = (b(i) - a(i)) / max(a(i), b(i)) และตีความ",
+    options: [
+      { label: "a", text: "0.667 ใกล้ +1 แปลว่าจุดนี้อยู่ในกลุ่มที่เหมาะสม", correct: true },
+      { label: "b", text: "2.00 เกินช่วง [-1, +1] จึงแปลว่าจัดกลุ่มดีมาก", correct: false },
+      { label: "c", text: "0.500 เพราะหารด้วย a(i) + b(i)", correct: false },
+      { label: "d", text: "-0.667 แปลว่าจุดนี้น่าจะอยู่ผิดกลุ่ม", correct: false },
+    ],
+    explanation:
+      "s(i) = (6 - 2) / max(2, 6) = 4 / 6 = 0.667 ค่าอยู่ในช่วง -1 ถึง +1 (สไลด์ p.36) ค่าใกล้ 1 แปลว่ากลุ่มกระชับและแยกจากกลุ่มอื่นดี ค่าใกล้ -1 แปลว่าจัดกลุ่มไม่ดี สไลด์ p.38 ย้ำว่า Best K ไม่ใช่ Inertia ต่ำสุดหรือคะแนนอัตโนมัติ แต่ต้องดู Compactness, Separation, Stability, Simplicity และ Business Interpretability ร่วมกัน",
+    distractor:
+      "2.00 คือ (b - a) / a ซึ่งตัวส่วนผิด สูตรหารด้วยค่าที่มากกว่าระหว่าง a กับ b จึงไม่เกิน 1 ส่วน 0.500 เกิดจากหารด้วยผลบวก a + b",
+    slideRef: "Lect 08 p36 (Silhouette Score), p38 (เลือก K ด้วยหลักฐานและความหมาย) ตัวเลข a=2, b=6 เป็นตัวเลขสมมติเพื่อฝึกคำนวณ",
+    verification: V,
+  },
 ];
 
 export const allQuestions: Question[] = [
@@ -1005,9 +1105,9 @@ export const allQuestions: Question[] = [
 
 export const mockTestFull: MockTest = {
   id: "full",
-  title: "Comprehensive Final Exam (30 Questions)",
-  titleTh: "ชุดข้อสอบรวมทุกบท (30 ข้อ)",
-  description: "จำลองการสอบ Final ครบทุกเนื้อหา Lect 05 ถึง 09 รวม 30 ข้อ",
+  title: "Comprehensive Final Exam (35 Questions)",
+  titleTh: "ชุดข้อสอบรวมทุกบท (35 ข้อ)",
+  description: "จำลองการสอบ Final ครบทุกเนื้อหา Lect 05 ถึง 09 รวม 35 ข้อ",
   timeLimitSeconds: 45 * 60,
   questions: allQuestions,
 };
@@ -1015,27 +1115,27 @@ export const mockTestFull: MockTest = {
 export const mockTestLect09: MockTest = {
   id: "lect09",
   title: "Responsible Data Science",
-  titleTh: "Lect 09: Responsible Data Science (10 ข้อ)",
-  description: "XAI, SHAP, Bias, Data Privacy & กรณีศึกษาจริยธรรม",
-  timeLimitSeconds: 15 * 60,
+  titleTh: "Lect 09: Responsible Data Science (11 ข้อ)",
+  description: "XAI, SHAP, Bias, Data Privacy, Monitoring & กรณีศึกษาจริยธรรม",
+  timeLimitSeconds: 17 * 60,
   questions: questionsLect09,
 };
 
 export const mockTestLect0507: MockTest = {
   id: "lect0507",
   title: "EDA, Modeling & Decision Tree",
-  titleTh: "Lect 05–07: EDA, Modeling & Decision Tree (10 ข้อ)",
-  description: "Boxplot Fences, CRISP-DS, Gini Impurity & Confusion Matrix",
-  timeLimitSeconds: 15 * 60,
+  titleTh: "Lect 05–07: EDA, Modeling & Decision Tree (14 ข้อ)",
+  description: "Boxplot Fences, CRISP-DS, Gini Impurity, Confusion Matrix, HW#2 & Decision Gates",
+  timeLimitSeconds: 21 * 60,
   questions: questionsLect0507,
 };
 
 export const mockTestLect08: MockTest = {
   id: "lect08",
   title: "K-Means Clustering",
-  titleTh: "Lect 08: K-Means Clustering (10 ข้อ)",
-  description: "Centroid Updates, Manhattan vs Euclidean, Stopping Criteria & WCSS",
-  timeLimitSeconds: 15 * 60,
+  titleTh: "Lect 08: K-Means Clustering (11 ข้อ)",
+  description: "Centroid Updates, Manhattan vs Euclidean, Stopping Criteria, WCSS & Silhouette",
+  timeLimitSeconds: 17 * 60,
   questions: questionsLect08,
 };
 

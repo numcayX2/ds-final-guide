@@ -108,7 +108,7 @@ const TOTAL_QUESTIONS = allMockTests.reduce(
 const FEATURED_TOOL: Tool = {
   href: "/mock-test",
   title: "ข้อสอบจำลอง",
-  desc: "ชุดเต็ม 30 ข้อแบบจับเวลา และชุดย่อยรายหัวข้อ มีโหมดฝึกที่ตรวจคำตอบทันทีพร้อมคำใบ้ทุกข้อ",
+  desc: "ชุดเต็ม 35 ข้อแบบจับเวลา และชุดย่อยรายหัวข้อ มีโหมดฝึกที่ตรวจคำตอบทันทีพร้อมคำใบ้ทุกข้อ",
   meta: "45 นาที",
   icon: CheckCircledIcon,
 };

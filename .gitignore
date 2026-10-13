@@ -42,3 +42,6 @@ next-env.d.ts
 
 # tooling & diagnostics
 .archify/
+# local scratch / temp files
+/scratch/
+UPGRADING_HANDOFF.md
