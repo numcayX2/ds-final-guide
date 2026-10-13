@@ -1243,7 +1243,7 @@ function MatrixPanel({ visual, step }: PanelProps<"confusion-matrix">) {
           {showNumbers ? (isChurn ? (k === "tp" ? 3 : k === "fp" ? 2 : k === "fn" ? 2 : 3) : visual[k]) : "–"}
         </p>
         <span className="mt-1 block text-[10px] text-accent-ink opacity-0 group-hover:opacity-100 transition-opacity">
-          คลิกดู BQ 💡
+          คลิกดู BQ
         </span>
       </button>
     );
@@ -1265,7 +1265,7 @@ function MatrixPanel({ visual, step }: PanelProps<"confusion-matrix">) {
                   : "text-ink-muted hover:text-ink"
               }`}
             >
-              ⚽ เคส FIFA (สไลด์)
+              เคส FIFA (สไลด์)
             </button>
             <button
               type="button"
@@ -1276,13 +1276,13 @@ function MatrixPanel({ visual, step }: PanelProps<"confusion-matrix">) {
                   : "text-ink-muted hover:text-ink"
               }`}
             >
-              👥 BQ ลูกค้า Inactive (HW01)
+              BQ ลูกค้า Inactive (HW01)
             </button>
           </div>
         }
       />
 
-      {/* 2x2 Table */}
+      {/* 2×2 Table */}
       <div className="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] gap-2 text-xs">
         <span />
         <span className="text-center font-medium text-ink-subtle">ทาย {pos}</span>
@@ -1376,7 +1376,7 @@ function MatrixPanel({ visual, step }: PanelProps<"confusion-matrix">) {
                 </div>
                 <p className="mt-1 text-ink-muted leading-relaxed">{item.desc}</p>
                 <span className="mt-1.5 inline-block text-[10px] font-medium text-ink-subtle">
-                  💼 ผลลัพธ์: {item.impact}
+                  ผลลัพธ์: {item.impact}
                 </span>
               </div>
             );
@@ -1386,7 +1386,7 @@ function MatrixPanel({ visual, step }: PanelProps<"confusion-matrix">) {
         {/* Decision & Trade-off Rule */}
         <div className="rounded-lg bg-surface-hover p-3 text-xs text-ink space-y-1.5 border border-rule/60">
           <p className="font-semibold text-ink">
-            ⚖️ กฎการตัดสินใจเลือก Metric ตามโจทย์ธุรกิจ (Lect 07 Slide 35):
+            กฎการตัดสินใจเลือก Metric ตามโจทย์ธุรกิจ (Lect 07 Slide 35):
           </p>
           <ul className="list-disc pl-4 space-y-1 text-ink-muted">
             <li>
@@ -1573,12 +1573,14 @@ function ShapForcePanel({ visual, step }: PanelProps<"shap-force">) {
   const base = visual.baseValue;
   const allContributions = visual.contributions.length >= 3 ? visual.contributions : EP05_FEATURES;
 
-  let run = base;
-  const rows = allContributions.map((c) => {
-    const from = run;
-    run += c.value;
-    return { ...c, from, to: run };
-  });
+  const rows = allContributions.reduce<Array<(typeof allContributions)[number] & { from: number; to: number }>>(
+    (acc, c) => {
+      const prevTo = acc.length > 0 ? acc[acc.length - 1].to : base;
+      acc.push({ ...c, from: prevTo, to: prevTo + c.value });
+      return acc;
+    },
+    []
+  );
   const ends = [base, ...rows.map((r) => r.to)];
 
   // Stable scale bounds across all steps so the track and Base Value guideline
@@ -1781,7 +1783,9 @@ export function EpisodePlayer({ episodes }: { episodes: Episode[] }) {
     const want = new URLSearchParams(window.location.search).get("ep");
     if (!want) return;
     const i = episodes.findIndex((e) => e.id === want);
-    if (i >= 0) setEpIdx(i);
+    if (i >= 0) {
+      window.setTimeout(() => setEpIdx(i), 0);
+    }
   }, [episodes]);
 
   useEffect(() => {
@@ -1844,7 +1848,7 @@ export function EpisodePlayer({ episodes }: { episodes: Episode[] }) {
               <span className="inline-flex items-center gap-1 rounded-full bg-accent-wash px-2.5 py-0.5 text-xs font-semibold text-accent-ink">
                 Interactive Workshop
               </span>
-              <h3 className="mt-1 text-lg font-semibold text-ink">🔬 Gini Impurity Formula Workbench</h3>
+              <h3 className="mt-1 text-lg font-semibold text-ink">Gini Impurity Formula Workbench</h3>
               <p className="text-xs text-ink-subtle">
                 ทดลองคิดและคำนวณสูตร Gini ทีละสเต็ปใน Sandbox แบบโต้ตอบ ก่อนเข้าสู่บทเรียน Step-by-Step ด้านล่าง
               </p>

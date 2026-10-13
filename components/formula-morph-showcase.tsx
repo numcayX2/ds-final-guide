@@ -42,10 +42,10 @@ const STEP_LABELS = [
 ];
 
 const TOPICS: { key: FormulaTopic; label: string }[] = [
-  { key: "tukey", label: "📊 1. Tukey's Outlier (Lect 05)" },
-  { key: "gini", label: "🌿 2. Decision Tree Gini (Lect 07)" },
-  { key: "confusion", label: "🎯 3. Confusion Matrix & F1 (Lect 08)" },
-  { key: "kmeans", label: "📍 4. K-Means Distance (Lect 08-09)" },
+  { key: "tukey", label: "1. Tukey's Outlier (Lect 05)" },
+  { key: "gini", label: "2. Decision Tree Gini (Lect 07)" },
+  { key: "confusion", label: "3. Confusion Matrix & F1 (Lect 08)" },
+  { key: "kmeans", label: "4. K-Means Distance (Lect 08-09)" },
 ];
 
 // Exam dataset (Lect 08): 10 actual-positive + 10 actual-negative scores.
@@ -277,12 +277,12 @@ export function FormulaMorphShowcase() {
                   {step === 0 && "สูตรเชิงสัญลักษณ์พร้อม Color Tokens"}
                   {step === 1 && (
                     topic === "tukey"
-                      ? (anatomySubstep === 0 ? "🔵 ลำดับ 1: อธิบาย Q₃" : "🟠 ลำดับ 2: อธิบาย IQR")
+                      ? (anatomySubstep === 0 ? "ลำดับ 1: อธิบาย Q₃" : "ลำดับ 2: อธิบาย IQR")
                       : topic === "gini"
-                      ? (anatomySubstep === 0 ? "🟢 ลำดับ 1: อธิบาย p(Active)" : "🔴 ลำดับ 2: อธิบาย p(Inactive)")
+                      ? (anatomySubstep === 0 ? "ลำดับ 1: อธิบาย p(Active)" : "ลำดับ 2: อธิบาย p(Inactive)")
                       : topic === "confusion"
-                      ? (anatomySubstep === 0 ? "🟢 ลำดับ 1: ผลบวกจริง TP" : anatomySubstep === 1 ? "🟠 ลำดับ 2: ผลบวกลวง FP" : "🔴 ลำดับ 3: ผลลบลวง FN")
-                      : (anatomySubstep === 0 ? "🔵 ลำดับ 1: พิกัดจุดข้อมูล" : "🟠 ลำดับ 2: พิกัด Centroid")
+                      ? (anatomySubstep === 0 ? "ลำดับ 1: ผลบวกจริง TP" : anatomySubstep === 1 ? "ลำดับ 2: ผลบวกลวง FP" : "ลำดับ 3: ผลลบลวง FN")
+                      : (anatomySubstep === 0 ? "ลำดับ 1: พิกัดจุดข้อมูล" : "ลำดับ 2: พิกัด Centroid")
                   )}
                   {step === 2 && "Morph สัญลักษณ์กลายเป็นตัวเลขจริง"}
                   {step === 3 && "คำนวณตัดทอนจนได้ผลลัพธ์สุทธิ"}
@@ -477,7 +477,7 @@ export function FormulaMorphShowcase() {
           <div className="lg:col-span-4 flex flex-col justify-between space-y-6 rounded-2xl border border-rule bg-surface p-6 shadow-xs">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-rule">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-ink">🎛️ Live Parameter Sensitivity</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-ink">Live Parameter Sensitivity</h3>
                 <span className="text-xs text-ink-subtle">ปรับค่าสด</span>
               </div>
 
@@ -549,7 +549,7 @@ export function FormulaMorphShowcase() {
                       </span>
                     </div>
                     <p className="mt-1.5 text-[11px] text-ink-subtle leading-relaxed">
-                      🔒 <strong>กับดักข้อสอบ:</strong> ใช้ 1.5 (Inner Fence) เสมอ — อย่าหยิบ 3.0 (Outer Fence ไม่ออกสอบ)
+                      <strong>กับดักข้อสอบ:</strong> ใช้ 1.5 (Inner Fence) เสมอ — อย่าหยิบ 3.0 (Outer Fence ไม่ออกสอบ)
                     </p>
                   </div>
 
@@ -637,7 +637,7 @@ export function FormulaMorphShowcase() {
                     reducedMotion={reducedMotion}
                   />
 
-                  {/* 2x2 Matrix Table Mini Diagram */}
+                  {/* 2×2 Matrix Table Mini Diagram */}
                   <div className="mt-4 rounded-xl border border-rule bg-surface-hover p-3.5 text-xs">
                     <p className="text-[11px] font-semibold uppercase text-ink-muted pb-2 border-b border-rule">
                       Confusion Matrix (N = 20)
@@ -663,7 +663,7 @@ export function FormulaMorphShowcase() {
                       </div>
                     </div>
                     <p className="mt-2 text-[11px] leading-relaxed text-ink-subtle">
-                      🎯 <strong>กับดัก:</strong> T ต่ำ → จับคนป่วยครบ (Recall↑) แต่ทายผิดเยอะ (Precision↓) — F1 คือ
+                      <strong>กับดัก:</strong> T ต่ำ → จับคนป่วยครบ (Recall↑) แต่ทายผิดเยอะ (Precision↓) — F1 คือ
                       harmonic mean ไม่ใช่ค่าเฉลี่ยธรรมดา
                     </p>
                   </div>
@@ -735,7 +735,7 @@ export function FormulaMorphShowcase() {
                             : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
                         }`}
                       >
-                        📐 Euclidean (L2)
+                        Euclidean (L2)
                       </button>
                       <button
                         type="button"
@@ -746,7 +746,7 @@ export function FormulaMorphShowcase() {
                             : "border-rule bg-surface text-ink-muted hover:bg-surface-hover"
                         }`}
                       >
-                        🏙️ Manhattan (L1)
+                        Manhattan (L1)
                       </button>
                     </div>
                   </div>
@@ -910,40 +910,40 @@ const TukeyAxisDiagram = memo(function TukeyAxisDiagram({
 
   return (
     <div className="mt-6 rounded-xl border border-rule bg-surface-hover p-4">
-      <p className="text-[11px] font-semibold uppercase text-ink-muted">แผนภาพระนาบ 1 มิติ (Mini Axis)</p>
-      <div className="relative mt-7 h-10 flex items-center" role="img" aria-label={`แกน 1 มิติ รั้วบน ${upperFence.toFixed(1)} จุดทดสอบ ${testPoint.toFixed(1)}`}>
+      <p className="text-xs font-semibold uppercase text-ink-muted">แผนภาพระนาบ 1 มิติ (Mini Axis)</p>
+      <div className="relative mt-8 mb-4 h-12 flex items-center" role="img" aria-label={`แกน 1 มิติ รั้วบน ${upperFence.toFixed(1)} จุดทดสอบ ${testPoint.toFixed(1)}`}>
         <div className="w-full h-1 bg-rule-strong rounded-full" />
         {/* Tick marks at 20 / 30 / 40 / 50 */}
         {TUKEY_TICKS.map((t) => (
           <div key={t} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${pos(t)}%` }} aria-hidden="true">
             <div className="w-px h-2.5 bg-ink-subtle/60 mx-auto" />
-            <span className="absolute top-3 -translate-x-1/2 left-1/2 text-[9px] font-mono text-ink-subtle tabular-nums">
+            <span className="absolute top-3.5 -translate-x-1/2 left-1/2 text-xs font-mono text-ink-subtle tabular-nums">
               {t}
             </span>
           </div>
         ))}
         {/* IQR box */}
         <div
-          className="absolute h-4 rounded border border-accent bg-accent/20"
-          style={{ left: `${pos(q1)}%`, width: `${Math.max(1.5, pos(q3) - pos(q1))}%` }}
+          className="absolute h-5 rounded border border-accent bg-accent/20"
+          style={{ left: `${pos(q1)}%`, width: `${Math.max(2, pos(q3) - pos(q1))}%` }}
           title={`IQR Box: [${q1}, ${q3}]`}
         >
-          <span className="absolute -bottom-4 left-0 -translate-x-1/2 text-[9px] font-mono font-bold text-accent">
+          <span className="absolute -top-5 left-0 -translate-x-1/2 text-xs font-mono font-bold text-accent">
             Q1
           </span>
-          <span className="absolute -bottom-4 right-0 translate-x-1/2 text-[9px] font-mono font-bold text-accent">
+          <span className="absolute -top-5 right-0 translate-x-1/2 text-xs font-mono font-bold text-accent">
             Q3
           </span>
         </div>
         {/* Glowing fence boundary */}
         <div
-          className="absolute -top-1.5 w-0.5 h-7 bg-warn z-10 rounded-full"
+          className="absolute -top-2 w-0.5 h-8 bg-warn z-10 rounded-full"
           style={{
             left: `${pos(upperFence)}%`,
             boxShadow: "0 0 14px 2px color-mix(in srgb, var(--color-warn) 65%, transparent)",
           }}
         >
-          <span className="absolute -top-4 -translate-x-1/2 text-[9px] font-mono text-warn font-bold whitespace-nowrap tabular-nums">
+          <span className="absolute -top-5 -translate-x-1/2 text-xs font-mono text-warn font-bold whitespace-nowrap tabular-nums">
             Fence {upperFence.toFixed(1)}
           </span>
         </div>
@@ -1032,7 +1032,7 @@ const GiniPopulationPanel = memo(function GiniPopulationPanel({ active, total, g
             />
           )}
         </div>
-        <div className="mt-1 flex justify-between text-[9px] font-mono text-ink-subtle tabular-nums">
+        <div className="mt-1 flex justify-between text-xs font-mono text-ink-subtle tabular-nums">
           <span>0 (Pure)</span>
           <span>0.25</span>
           <span>0.5 (ปนครึ่งๆ = สูงสุด)</span>
@@ -1133,7 +1133,7 @@ const ThresholdStripDiagram = memo(function ThresholdStripDiagram({
             </div>
           </div>
         ))}
-        <div className="absolute bottom-0 flex justify-between text-[9px] font-mono text-ink-subtle tabular-nums" style={{ left: 0, right: 0 }}>
+        <div className="absolute bottom-0 flex justify-between text-xs font-mono text-ink-subtle tabular-nums" style={{ left: 0, right: 0 }}>
           <span>0.1</span>
           <span className="font-bold text-accent">T = {threshold.toFixed(2)}</span>
           <span>1.0</span>
@@ -1690,7 +1690,7 @@ function TukeyMorphFormula({
                 <span>:</span>
                 {isOutlier ? (
                   <span className="font-bold text-bad bg-bad-wash px-2 py-0.5 rounded tabular-nums">
-                    {testPoint.toFixed(1)} &gt; {upperFence.toFixed(1)} → 🚨 จัดเป็น Outlier!
+                    {testPoint.toFixed(1)} &gt; {upperFence.toFixed(1)} → จัดเป็น Outlier!
                   </span>
                 ) : (
                   <span className="font-bold text-good bg-good-wash px-2 py-0.5 rounded tabular-nums">

@@ -18,14 +18,14 @@ import { ChapterBody, highlight } from "@/components/content-blocks";
 import { Reveal } from "@/components/reveal";
 import { EmptyState } from "@/components/ui";
 
-type ChapterEstimate = { minutes: number; icon: string; focus: string };
+type ChapterEstimate = { minutes: number; focus: string };
 
 const CHAPTER_ESTIMATES: Record<string, ChapterEstimate> = {
-  "01": { minutes: 8, icon: "🧮", focus: "ตรวจจับ Outlier" },
-  "02": { minutes: 12, icon: "🌲", focus: "Gini & Information Gain" },
-  "03": { minutes: 10, icon: "🎯", focus: "Confusion Matrix & F1" },
-  "04": { minutes: 10, icon: "📍", focus: "K-Means Distance" },
-  "05": { minutes: 8, icon: "⚖️", focus: "SHAP Force & Ethics" },
+  "01": { minutes: 8, focus: "ตรวจจับ Outlier" },
+  "02": { minutes: 12, focus: "Gini & Information Gain" },
+  "03": { minutes: 10, focus: "Confusion Matrix & F1" },
+  "04": { minutes: 10, focus: "K-Means Distance" },
+  "05": { minutes: 8, focus: "SHAP Force & Ethics" },
 };
 
 const shortTitle = (title: string) => title.split(":")[0].trim();
@@ -547,11 +547,9 @@ export default function ChaptersPage() {
                         {est && (
                           <>
                             <span className="bento-pill border border-accent/40 bg-accent-wash/30 text-accent-ink font-semibold">
-                              <span aria-hidden="true">⏱️ </span>
                               {est.minutes} นาทีอ่าน
                             </span>
                             <span className="text-xs text-ink-subtle">
-                              <span aria-hidden="true">{est.icon} </span>
                               {highlight(est.focus, query)}
                             </span>
                           </>
@@ -559,8 +557,7 @@ export default function ChaptersPage() {
                         {CALC_CHAPTERS[ch.index] && (
                           <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 rounded-md border border-warn/50 bg-warn-wash px-2 py-1 text-xs font-semibold text-warn">
                             <ExclamationTriangleIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                            <span className="font-mono font-bold">[WARN]</span>
-                            นำเครื่องคิดเลขเข้าห้องสอบสำหรับบทนี้
+                            <span>นำเครื่องคิดเลขเข้าห้องสอบสำหรับบทนี้</span>
                           </span>
                         )}
                         {isRead && (

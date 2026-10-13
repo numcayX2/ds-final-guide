@@ -113,7 +113,9 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
   }, [timed]);
 
   useEffect(() => {
-    if (timed && remaining === 0) submit();
+    if (timed && remaining === 0) {
+      window.setTimeout(() => submit(), 0);
+    }
   }, [timed, remaining, submit]);
 
   useEffect(() => {

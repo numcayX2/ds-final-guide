@@ -163,7 +163,7 @@ const FORMULAS: FormulaCard[] = [
       { sym: "Q_3", meaning: "ควอร์ไทล์ที่ 3 (เปอร์เซ็นไทล์ที่ 75)" },
     ],
     example:
-      "Q_1 = 20,\\; Q_3 = 35 \\;\\Rightarrow\\; \\mathrm{IQR} = 35 - 20 = \\colorbox{var(--color-mark)}{15}",
+      "Q_1 = 20,\\; Q_3 = 35 \\;\\Rightarrow\\; \\mathrm{IQR} = 35 - 20 = \\boxed{15}",
     pitfall: "IQR วัดเฉพาะข้อมูล 50% ตรงกลาง ไม่ใช่ max − min",
   },
   {
@@ -178,7 +178,7 @@ const FORMULAS: FormulaCard[] = [
       },
     ],
     example:
-      "[\\,20 - 22.5,\\; 35 + 22.5\\,] = \\colorbox{var(--color-mark)}{[-2.5,\\; 57.5]}",
+      "[\\,20 - 22.5,\\; 35 + 22.5\\,] = \\boxed{[-2.5,\\; 57.5]}",
     pitfall: "ต้องบวก/ลบจาก Q₁ และ Q₃ ไม่ใช่จาก Median",
   },
   {
@@ -190,7 +190,7 @@ const FORMULAS: FormulaCard[] = [
       { sym: "p_-", meaning: "สัดส่วนคลาสลบในโหนด" },
     ],
     example:
-      "p_+ = 0.6,\\; p_- = 0.4 \\;\\Rightarrow\\; 1 - (0.36 + 0.16) = \\colorbox{var(--color-mark)}{0.48}",
+      "p_+ = 0.6,\\; p_- = 0.4 \\;\\Rightarrow\\; 1 - (0.36 + 0.16) = \\boxed{0.48}",
     pitfall: "ยกกำลังสองที่สัดส่วน ไม่ใช่จำนวนนับ — ค่าสูงสุดคือ 0.5",
   },
   {
@@ -202,7 +202,7 @@ const FORMULAS: FormulaCard[] = [
       { sym: "R", meaning: "Recall = TP / (TP + FN)" },
     ],
     example:
-      "P = 0.8,\\; R = 0.5 \\;\\Rightarrow\\; 2 \\cdot \\tfrac{0.40}{1.30} \\approx \\colorbox{var(--color-mark)}{0.615}",
+      "P = 0.8,\\; R = 0.5 \\;\\Rightarrow\\; 2 \\cdot \\tfrac{0.40}{1.30} \\approx \\boxed{0.615}",
     pitfall: "เป็น Harmonic Mean — ถ้าเฉลี่ยธรรมดาจะได้ 0.65 ซึ่งผิด",
   },
 ];
@@ -305,7 +305,7 @@ function WorkedExample() {
           <span className="mb-0.5 block font-mono text-xs text-ink-subtle">
             ขั้น 3 · คำนวณ
           </span>
-          <Tex tex="= 1 - (0.36 + 0.16) = \colorbox{var(--color-mark)}{0.48}" />
+          <Tex tex="= 1 - (0.36 + 0.16) = \boxed{0.48}" />
         </li>
       </ol>
 

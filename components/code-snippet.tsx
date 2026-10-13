@@ -7,7 +7,6 @@ export function CodeSnippet({
   code,
   language = "python",
   title,
-  highlightLines,
 }: {
   code: string;
   language?: string;

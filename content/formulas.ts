@@ -15,7 +15,6 @@ import type { Formula } from "./types";
 
 const VERIFIED_BY_PRINCIPLE = "verified-by-principle" as const;
 const VERIFIED = "verified-by-principle" as const;
-const NEEDS_CHECK = "needs-slide-check" as const;
 
 export const formulas: Formula[] = [
   /* ---------------- Lect 05 — EDA ---------------- */

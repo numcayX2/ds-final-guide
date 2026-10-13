@@ -6,13 +6,9 @@ import {
   ArrowLeftIcon,
   CalendarIcon,
   CheckCircledIcon,
-  ClockIcon,
   CodeIcon,
   ExclamationTriangleIcon,
-  FileTextIcon,
   LaptopIcon,
-  Pencil2Icon,
-  RocketIcon,
 } from "@radix-ui/react-icons";
 
 export const metadata = {
@@ -246,7 +242,7 @@ print(export_text(model, feature_names=list(X.columns)))`}
             />
 
             <div className="mt-3 rounded-lg border border-rule bg-paper p-3 text-xs text-ink-muted">
-              <strong className="text-ink font-semibold">💡 ข้อสังเกต:</strong> ฟีเจอร์ที่มีค่า <code>feature_importances_</code> สูงสุด คือฟีเจอร์ที่ลดค่า Impurity ได้มากที่สุด และมักถูกเลือกเป็น Root Node ของต้นไม้
+              <strong className="text-ink font-semibold">ข้อสังเกต:</strong> ฟีเจอร์ที่มีค่า <code>feature_importances_</code> สูงสุด คือฟีเจอร์ที่ลดค่า Impurity ได้มากที่สุด และมักถูกเลือกเป็น Root Node ของต้นไม้
             </div>
           </div>
 
@@ -353,7 +349,7 @@ print("\nกลุ่มของข้อมูล 5 แถวแรก:", labe
             />
 
             <div className="mt-3 rounded-lg border border-rule bg-paper p-3 text-xs text-ink-muted">
-              <strong className="text-ink font-semibold">💡 ข้อสังเกต:</strong> ใน K-Means เป็นการเรียนรู้แบบไม่มีผู้สอน (Unsupervised) ดังนั้นคำสั่งคือ <code>kmeans.fit(X)</code> <strong>ไม่ต้องมี y</strong> เหมือน Classification
+              <strong className="text-ink font-semibold">ข้อสังเกต:</strong> ใน K-Means เป็นการเรียนรู้แบบไม่มีผู้สอน (Unsupervised) ดังนั้นคำสั่งคือ <code>kmeans.fit(X)</code> <strong>ไม่ต้องมี y</strong> เหมือน Classification
             </div>
           </div>
         </div>

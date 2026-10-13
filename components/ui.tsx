@@ -87,11 +87,20 @@ type NumberFieldProps = {
   integer?: boolean;
   /** iOS decimal keypads have no minus key — use a text keypad when negatives are valid. */
   allowNegative?: boolean;
+  inputMode?: "text" | "numeric" | "decimal" | "none" | "tel" | "search" | "email" | "url";
   size?: "md" | "sm";
 };
 
 export function NumberField({
-  id, label, hint, value, onChange, onBlur, error, integer, allowNegative, size = "md",
+  id,
+  label,
+  hint,
+  value,
+  onChange,
+  onBlur,
+  error,
+  inputMode = "decimal",
+  size = "md",
 }: NumberFieldProps) {
   const hintId = hint ? `${id}-hint` : undefined;
   const errId = error ? `${id}-err` : undefined;
@@ -108,7 +117,7 @@ export function NumberField({
       <input
         id={id}
         type="text"
-        inputMode={allowNegative ? "text" : integer ? "numeric" : "decimal"}
+        inputMode={inputMode ?? "decimal"}
         autoComplete="off"
         spellCheck={false}
         value={value}

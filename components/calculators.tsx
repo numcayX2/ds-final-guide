@@ -415,7 +415,7 @@ export function MetricCalculator() {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-rule pb-3">
           <div>
             <h3 className="text-sm font-semibold text-ink">
-              💼 มุมมองโจทย์ธุรกิจ (Business Question - BQ): การตามลูกค้า Inactive / Churn
+              มุมมองโจทย์ธุรกิจ (Business Question - BQ): การตามลูกค้า Inactive / Churn
             </h3>
             <p className="text-xs text-ink-muted mt-0.5">
               ตัวอย่างข้อสอบและการบ้าน Lect 07 Slide 26 &amp; 35 — กำหนด Positive class คือ Inactive = Yes
@@ -451,7 +451,7 @@ export function MetricCalculator() {
         </div>
 
         <div className="rounded-lg bg-surface-hover p-3 text-xs text-ink-muted leading-relaxed border border-rule/60">
-          💡 <strong>การเลือก Model ตามโจทย์ธุรกิจ (Trade-off):</strong> หากธุรกิจกลัวเสียลูกค้าที่สุด (Cost of Lost Customer สูงมาก) ต้องเลือกโมเดลที่มี <strong>Recall สูง</strong> (เช่น Model B = 90%) แต่ถ้างบประมาณแคมเปญจำกัดมาก (Cost of Campaign สูงมาก) ต้องเลือกโมเดลที่มี <strong>Precision สูง</strong> (เช่น Model A = 89%)
+          <strong>การเลือก Model ตามโจทย์ธุรกิจ (Trade-off):</strong> หากธุรกิจกลัวเสียลูกค้าที่สุด (Cost of Lost Customer สูงมาก) ต้องเลือกโมเดลที่มี <strong>Recall สูง</strong> (เช่น Model B = 90%) แต่ถ้างบประมาณแคมเปญจำกัดมาก (Cost of Campaign สูงมาก) ต้องเลือกโมเดลที่มี <strong>Precision สูง</strong> (เช่น Model A = 89%)
         </div>
       </div>
     </div>

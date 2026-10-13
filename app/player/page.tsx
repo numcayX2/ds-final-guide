@@ -39,13 +39,22 @@ export default function PlayerPage() {
           </p>
         </Reveal>
         <Reveal delay={180}>
-          <dl className="mt-10 grid grid-cols-3 gap-x-6 gap-y-4 border-t border-rule pt-5 max-w-xl">
+          <dl className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4 border-t border-rule pt-5 max-w-2xl">
             <div>
               <dt className="sr-only">Episodes</dt>
               <dd className="index text-3xl text-ink">
                 {episodes.length}
                 <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
-                  ตอน
+                  ตอน Scrollytelling
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="sr-only">Morph Topics</dt>
+              <dd className="index text-3xl text-ink">
+                4
+                <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
+                  สูตร Morph Player
                 </span>
               </dd>
             </div>
@@ -54,7 +63,7 @@ export default function PlayerPage() {
               <dd className="index text-3xl text-ink">
                 {totalSteps}
                 <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
-                  ขั้นตอน
+                  ขั้นตอนคิด
                 </span>
               </dd>
             </div>
@@ -63,7 +72,7 @@ export default function PlayerPage() {
               <dd className="index text-3xl text-ink">
                 {lectureCount}
                 <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
-                  บรรยาย
+                  บทบรรยาย
                 </span>
               </dd>
             </div>

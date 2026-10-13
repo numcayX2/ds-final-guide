@@ -75,7 +75,6 @@ export function ContentBlockView({ block, hl = "" }: { block: ContentBlock; hl?:
         <div className="max-w-prose rounded-r-xl border-l-4 border-warn bg-warn-wash px-5 py-4">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <ExclamationTriangleIcon className="h-4 w-4 shrink-0 text-warn" aria-hidden />
-            <span className="font-mono text-xs font-bold text-warn">[WARN]</span>
             <span className="text-sm font-semibold text-ink">
               ระวังในข้อสอบ: {highlight(block.title, hl)}
             </span>

@@ -5,6 +5,7 @@ import {
   TukeyCalculator,
 } from "@/components/calculators";
 import { Reveal } from "@/components/reveal";
+import { ToolsNav } from "@/components/tools-nav";
 
 const TOOLS = [
   {
@@ -19,7 +20,7 @@ const TOOLS = [
   },
   {
     id: "confusion-matrix",
-    name: "Confusion Matrix 2x2",
+    name: "Confusion Matrix 2×2",
     lectures: "Lect 08",
   },
   {
@@ -50,22 +51,9 @@ export default function ToolsPage() {
           </p>
         </Reveal>
 
-        {/* Quick Tool Jump Tabs */}
+        {/* Quick Tool Jump Tabs with Active State */}
         <Reveal delay={140}>
-          <div className="flex flex-wrap gap-2 mt-8">
-            {TOOLS.map((t, i) => (
-              <a
-                key={t.id}
-                href={`#${t.id}`}
-                className="px-3.5 py-2 text-xs font-semibold border border-rule bg-surface text-ink-muted hover:text-ink hover:border-rule-strong transition-colors"
-              >
-                <span className="font-mono text-ink-subtle mr-1.5">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                {t.name}
-              </a>
-            ))}
-          </div>
+          <ToolsNav tools={TOOLS} />
         </Reveal>
       </section>
 

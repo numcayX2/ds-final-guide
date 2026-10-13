@@ -85,7 +85,7 @@ function parseModelSelection(text: string) {
       detail:
         rawCases[0] ||
         "แนะนำ Model C เพราะได้ Accuracy สูงสุด (85%) และ F1 สูงสุด (0.81) โดยมี Precision 82% และ Recall 80% สูงทั้งสองด้าน",
-      highlight: "🏆 ตัวเลือกแนะนำสูงสุดสำหรับระบบทั่วไป",
+      highlight: "ตัวเลือกแนะนำสูงสุดสำหรับระบบทั่วไป",
     },
     {
       title: "กรณีที่ 2: กลัวลูกค้าหลุดที่สุด (High Churn Cost)",
@@ -95,7 +95,7 @@ function parseModelSelection(text: string) {
       detail:
         rawCases[1] ||
         "หากธุรกิจกลัวลูกค้าหลุดที่สุด (ต้นทุนเสียลูกค้าสูงมาก) แนะนำ Model B เพราะได้ Recall สูงสุดถึง 90%",
-      highlight: "🛡️ Churn Defender: เก็บลูกค้าจะเลิกได้ 36 จาก 40 คน",
+      highlight: "Churn Defender: เก็บลูกค้าจะเลิกได้ 36 จาก 40 คน",
     },
     {
       title: "กรณีที่ 3: งบประมาณแคมเปญจำกัดมาก (Tight Campaign Budget)",
@@ -105,7 +105,7 @@ function parseModelSelection(text: string) {
       detail:
         rawCases[2] ||
         "หากงบประมาณแคมเปญจำกัดมาก (ต้นทุนต่อคนสูง) แนะนำ Model A เพราะได้ Precision สูงสุดถึง 89%",
-      highlight: "🎯 Precision Focus: โปรโมชั่นแม่น ไม่ตำน้ำพริกละลายแม่น้ำ",
+      highlight: "Precision Focus: โปรโมชั่นแม่น ไม่ตำน้ำพริกละลายแม่น้ำ",
     },
   ];
 }
@@ -154,21 +154,21 @@ function ModelCalculationCard({
   const modelConfig = {
     A: {
       badgeBg: "border-series-1/40 bg-series-1/10 text-series-1",
-      tag: "🎯 เด่นด้าน Precision (88.89%)",
+      tag: "เด่นด้าน Precision (88.89%)",
       summary:
         "เหมาะเมื่องบประมาณแคมเปญจำกัดมาก ยิงโปรโมชั่นตรงเป้า แต่ Recall ต่ำสุด (60.00%)",
       winners: ["Precision"],
     },
     B: {
       badgeBg: "border-series-2/40 bg-series-2/10 text-series-2",
-      tag: "🛡️ เด่นด้าน Recall (90.00%)",
+      tag: "เด่นด้าน Recall (90.00%)",
       summary:
         "เหมาะเมื่อต้นทุนการเสียลูกค้าสูงมาก ดักจับลูกค้าเลิกได้เกือบหมด แต่ Precision ต่ำสุด (66.67%)",
       winners: ["Recall"],
     },
     C: {
       badgeBg: "border-good/40 bg-good-wash text-good",
-      tag: "🏆 สมดุลสูงสุด — แนะนำทั่วไป",
+      tag: "สมดุลสูงสุด — แนะนำทั่วไป",
       summary:
         "Accuracy 85.00% และ F1 81.01% สูงสุดทั้งคู่ Precision (82%) และ Recall (80%) สูงสม่ำเสมอ",
       winners: ["Accuracy", "F1"],
@@ -234,7 +234,7 @@ function ModelCalculationCard({
           </div>
         </div>
 
-        {/* 2x2 Metric Grid */}
+        {/* 2×2 Metric Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {metrics.map((met) => {
             const isWinner = modelConfig.winners.includes(met.name);
@@ -268,7 +268,6 @@ function ModelCalculationCard({
                     </div>
                     {isWinner && (
                       <span className="shrink-0 whitespace-nowrap inline-flex items-center gap-1 rounded bg-good px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
-                        <span>🏆</span>
                         <span>สูงสุด</span>
                       </span>
                     )}
@@ -309,7 +308,7 @@ function ModelCalculationCard({
 
         {/* Bottom Insight Bar */}
         <div className="flex items-center gap-2 rounded-lg bg-surface-hover/80 px-3 py-2 text-xs text-ink-muted">
-          <span className="shrink-0 font-medium text-ink">💡 สรุป:</span>
+          <span className="shrink-0 font-medium text-ink">สรุป:</span>
           <span>{modelConfig.summary}</span>
         </div>
       </div>
@@ -355,7 +354,7 @@ function RetentionImpactCard({
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-warn/50 bg-warn-wash px-2.5 py-1 text-xs font-mono font-bold text-warn">
-                  <span>⚠️</span> False Positive (FP)
+                  False Positive (FP)
                 </span>
                 <span className="text-[11px] font-mono text-ink-subtle">
                   Type I Error
@@ -374,7 +373,7 @@ function RetentionImpactCard({
                 ผลกระทบทางธุรกิจ (Business Cost)
               </div>
               <p className="text-xs sm:text-sm font-medium text-ink leading-relaxed">
-                💸 {data.fp.impact}
+                {data.fp.impact}
               </p>
               <div className="mt-2 inline-block rounded bg-paper/80 px-2 py-0.5 text-[11px] font-medium text-ink-muted border border-rule/50">
                 สถานะ: สิ้นเปลืองงบการตลาด แต่ยังไม่เสียลูกค้า
@@ -387,7 +386,7 @@ function RetentionImpactCard({
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-bad/50 bg-bad-wash px-2.5 py-1 text-xs font-mono font-bold text-bad">
-                  <span>🚨</span> False Negative (FN)
+                  False Negative (FN)
                 </span>
                 <span className="text-[11px] font-mono text-ink-subtle">
                   Type II Error
@@ -406,7 +405,7 @@ function RetentionImpactCard({
                 ผลกระทบทางธุรกิจ (Business Cost)
               </div>
               <p className="text-xs sm:text-sm font-medium text-ink leading-relaxed">
-                🔥 {data.fn.impact}
+                {data.fn.impact}
               </p>
               <div className="mt-2 inline-block rounded bg-bad-wash px-2 py-0.5 text-[11px] font-bold text-bad border border-bad/30">
                 สถานะ: ร้ายแรงที่สุดใน Churn! ลูกค้าหลุดไปหาคู่แข่งถาวร
@@ -625,11 +624,9 @@ function MultiSegmentCard({
  * K-Means Point Distance Calculation Step
  */
 function KMeansDistanceCard({
-  text,
   index,
   headerMatch,
 }: {
-  text: string;
   index: number;
   headerMatch: RegExpMatchArray;
 }) {
@@ -737,7 +734,7 @@ export function HomeworkStepItem({ text, index }: { text: string; index: number 
   // 1. K-Means Point Distance
   const kMeansMatch = text.match(/^(A\d)\((\d+,\s*\d+)\)\s*ถึง\s+(.*)$/);
   if (kMeansMatch) {
-    return <KMeansDistanceCard text={text} index={index} headerMatch={kMeansMatch} />;
+    return <KMeansDistanceCard index={index} headerMatch={kMeansMatch} />;
   }
 
   // 2. Model Calculation (HW2, Steps 1-3)
