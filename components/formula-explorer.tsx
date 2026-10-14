@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import type { Formula } from "@/content/types";
 import { Tex } from "./math-formula";
-import { Note } from "./ui";
+import { NumberField, Note } from "./ui";
 
 const LECTURE_TABS = [
   { id: "all", label: "ทั้งหมด" },
@@ -21,45 +22,162 @@ const STUDY_MODES: { id: StudyMode; label: string; hint: string }[] = [
   { id: "practice-example", label: "ฝึกทำโจทย์", hint: "ซ่อนวิธีทำและคำตอบของตัวอย่าง" },
 ];
 
-const STORAGE_KEY = "ds-saved-formulas";
+/* ───────────── "ต้องทบทวน" store: bookmarks ↔ review filter ───────────── */
+
+/**
+ * The per-card bookmark and the "ต้องทบทวน (N)" filter are the same concept,
+ * so both read and write this one key. Do not add a second review key.
+ */
+const SAVED_KEY = "ds-saved-formulas";
+const SAVED_EVENT = "ds-saved-formulas";
+
+function subscribeSaved(save: () => void) {
+  window.addEventListener("storage", save);
+  window.addEventListener(SAVED_EVENT, save);
+  return () => {
+    window.removeEventListener("storage", save);
+    window.removeEventListener(SAVED_EVENT, save);
+  };
+}
+
+function savedSnapshot(): string {
+  try {
+    return localStorage.getItem(SAVED_KEY) ?? "[]";
+  } catch {
+    return "[]";
+  }
+}
+
+/** Stable server snapshot: reading storage here would break hydration. */
+const savedServerSnapshot = () => "[]";
+
+/** Storage is user-writable; a malformed value must not break the page. */
+function parseSaved(raw: string): string[] {
+  try {
+    const value: unknown = JSON.parse(raw);
+    return Array.isArray(value) ? value.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function toggleSaved(id: string) {
+  const current = parseSaved(savedSnapshot());
+  const next = current.includes(id) ? current.filter((x) => x !== id) : [...current, id];
+  try {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(next));
+  } catch {
+    /* private mode: the bookmark will not persist */
+  }
+  window.dispatchEvent(new Event(SAVED_EVENT));
+}
+
+/* ───────────── Practice mode: checking a typed answer ───────────── */
+
+/** Thai codepoints — such strings must not be pushed onto the mono stack. */
+const THAI = /[\u0E00-\u0E7F]/;
+
+/** Latin/numeric tokens may be mono; Thai prose stays on the sans stack. */
+const monoClass = (text: string) => (THAI.test(text) ? "" : "font-mono");
+
+type Attempt = { input: string; status: "unchecked" | "correct" | "incorrect" | "invalid" };
+type Verdict = Exclude<Attempt["status"], "unchecked">;
+
+/** Shared default: a card the student has not answered yet. */
+const EMPTY_ATTEMPT: Attempt = { input: "", status: "unchecked" };
+
+/** Last figure written in a string. `null` = the string holds no figure. */
+function lastNumber(text: string): number | null {
+  const found = text.match(/-?\d[\d,]*(?:\.\d+)?/g);
+  if (!found || found.length === 0) return null;
+  const value = Number(found[found.length - 1].replace(/,/g, ""));
+  return Number.isFinite(value) ? value : null;
+}
+
+/**
+ * The figure a student has to produce for a worked example. Answers are written
+ * the way the slides write them ("ROOT(26) = 5.099", "70.00%", "เลือก A ที่ Gain
+ * 0.222"), so take the number after the last "=" when there is one, otherwise the
+ * last number written. `null` = the example has no numeric answer to drill.
+ */
+function expectedAnswer(result: string): { value: number; percent: boolean } | null {
+  const eq = result.lastIndexOf("=");
+  const tail = eq === -1 ? result : result.slice(eq + 1);
+  const value = lastNumber(tail) ?? lastNumber(result);
+  if (value === null) return null;
+  return { value, percent: result.includes("%") };
+}
+
+/** Accepts "0.278", "70", "70%", "-2.5", "4/5", ".5". `null` = not a number. */
+function parseAnswer(input: string): number | null {
+  const text = input.trim().replace(/[,\s]/g, "").replace(/%$/, "").replace(/^\+/, "");
+  if (text === "") return null;
+  const fraction = text.match(/^(-?(?:\d+\.?\d*|\.\d+))\/(-?(?:\d+\.?\d*|\.\d+))$/);
+  if (fraction) {
+    const divisor = Number(fraction[2]);
+    if (divisor === 0) return null;
+    const quotient = Number(fraction[1]) / divisor;
+    return Number.isFinite(quotient) ? quotient : null;
+  }
+  if (!/^-?(?:\d+\.?\d*|\.\d+)$/.test(text)) return null;
+  const value = Number(text);
+  return Number.isFinite(value) ? value : null;
+}
+
+/**
+ * Tolerance absorbs rounding, not guessing: 1% of the answer, or 0.01 for answers
+ * near zero. 0.278 → "0.28" counts; 0.278 → "0.3" does not.
+ */
+function checkAnswer(input: string, expected: { value: number; percent: boolean }): Verdict {
+  const value = parseAnswer(input);
+  if (value === null) return "invalid";
+  const tolerance = Math.max(0.01, Math.abs(expected.value) * 0.01);
+  // "70.00%" may legitimately be entered as 70 or as 0.7.
+  const targets = expected.percent ? [expected.value, expected.value / 100] : [expected.value];
+  return targets.some((target) => Math.abs(value - target) <= tolerance) ? "correct" : "incorrect";
+}
 
 export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
   const [lect, setLect] = useState<string>("all");
   const [query, setQuery] = useState("");
   const [studyMode, setStudyMode] = useState<StudyMode>("review");
   const [onlySaved, setOnlySaved] = useState(false);
-  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [attempts, setAttempts] = useState<Record<string, Attempt>>({});
   const [revealedFormulas, setRevealedFormulas] = useState<Record<string, boolean>>({});
   const [revealedExamples, setRevealedExamples] = useState<Record<string, boolean>>({});
 
-  // โหลดรายการสูตรที่บันทึกไว้จาก LocalStorage
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setSavedIds(JSON.parse(raw));
-      }
-    } catch {
-      // ข้ามหากใช้งานในโหมดที่ไม่รองรับ localStorage
-    }
-  }, []);
+  const reducedMotion = Boolean(useReducedMotion());
+  const rawSaved = useSyncExternalStore(subscribeSaved, savedSnapshot, savedServerSnapshot);
+  const savedIds = useMemo(() => parseSaved(rawSaved), [rawSaved]);
 
-  const toggleSaveFormula = (id: string) => {
-    setSavedIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch {
-        // ข้ามหากบันทึกไม่สำเร็จ
-      }
-      return next;
-    });
+  /**
+   * 180ms entry fade/scale for a reveal the student asked for. `initial: false`
+   * on the first paint keeps the content visible when JS never runs.
+   */
+  const revealStart = { opacity: 0, scale: reducedMotion ? 1 : 0.98 };
+  const revealAnimation = {
+    animate: { opacity: 1, scale: 1 },
+    transition: { duration: reducedMotion ? 0 : 0.18, ease: "easeOut" as const },
   };
 
   const handleModeChange = (mode: StudyMode) => {
     setStudyMode(mode);
     setRevealedFormulas({});
     setRevealedExamples({});
+    setAttempts({});
+  };
+
+  const submitAnswer = (id: string, result: string) => {
+    const expected = expectedAnswer(result);
+    if (!expected) return;
+    const input = attempts[id]?.input ?? "";
+    const status = checkAnswer(input, expected);
+    setAttempts((prev) => ({ ...prev, [id]: { input, status } }));
+  };
+
+  /** Typing again clears the previous verdict, so feedback is never stale. */
+  const setAnswerInput = (id: string, input: string) => {
+    setAttempts((prev) => ({ ...prev, [id]: { input, status: "unchecked" } }));
   };
 
   const toggleRevealFormula = (id: string) => {
@@ -201,7 +319,7 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                   : "border-rule bg-surface text-ink-muted hover:text-ink"
               }`}
             >
-              ต้องทบทวน ({savedIds.length})
+              ต้องทบทวน (<span className="num">{savedIds.length}</span>)
             </button>
           </div>
         </div>
@@ -213,7 +331,8 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
         <div className="mb-6 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm text-ink-subtle" aria-live="polite">
-              แสดง {filtered.length} จาก {formulas.length} สูตร
+              แสดง <span className="num">{filtered.length}</span> จาก{" "}
+              <span className="num">{formulas.length}</span> สูตร
               {studyMode !== "review" && (
                 <span className="ml-2 font-medium text-accent-ink">
                   ({STUDY_MODES.find((m) => m.id === studyMode)?.hint})
@@ -255,6 +374,9 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
         <div className="space-y-6">
           {filtered.map(({ f, no }) => {
             const isSaved = savedIds.includes(f.id);
+            const attempt = attempts[f.id] ?? EMPTY_ATTEMPT;
+            const example = f.example;
+            const expected = example ? expectedAnswer(example.result) : null;
             const isFormulaHidden =
               studyMode === "recall-formula" && !revealedFormulas[f.id];
             const isExampleHidden =
@@ -277,8 +399,13 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                     </span>
                     <button
                       type="button"
-                      onClick={() => toggleSaveFormula(f.id)}
+                      onClick={() => toggleSaved(f.id)}
                       aria-pressed={isSaved}
+                      aria-label={
+                        isSaved
+                          ? `เอาสูตร ${f.name} ออกจากรายการต้องทบทวน`
+                          : `บันทึกสูตร ${f.name} ไว้ทบทวน`
+                      }
                       className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-colors ${
                         isSaved
                           ? "border-warn bg-warn/15 text-ink font-semibold"
@@ -316,7 +443,11 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                         </span>
                       </button>
                     ) : (
-                      <>
+                      <motion.div
+                        className="space-y-4"
+                        initial={revealedFormulas[f.id] ? revealStart : false}
+                        {...revealAnimation}
+                      >
                         <div className="relative overflow-x-auto rounded-lg bg-accent-wash px-5 py-5 text-lg text-ink">
                           {studyMode === "recall-formula" && (
                             <button
@@ -330,7 +461,9 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                           {f.tex ? (
                             <Tex tex={f.tex} display />
                           ) : (
-                            <p className="text-center font-mono text-xl">{f.expression}</p>
+                            <p className={`text-center text-xl ${monoClass(f.expression)}`}>
+                              {f.expression}
+                            </p>
                           )}
                         </div>
 
@@ -354,13 +487,13 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                             </dl>
                           </div>
                         ) : null}
-                      </>
+                      </motion.div>
                     )}
                   </div>
 
                   {/* Right Column: Worked Example & Pitfalls */}
                   <div className="space-y-5">
-                    {f.example ? (
+                    {example ? (
                       <section className="rounded-xl border border-rule bg-surface-hover/30 p-4">
                         <div className="flex items-center justify-between pb-2.5 border-b border-rule">
                           <span className="text-xs font-semibold uppercase tracking-wider text-ink-subtle">
@@ -382,8 +515,78 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                           <span className="block text-[11px] font-semibold text-ink-subtle mb-1">
                             โจทย์กำหนด:
                           </span>
-                          <p className="font-mono text-sm text-ink">{f.example.given}</p>
+                          <p className={`text-sm text-ink ${monoClass(example.given)}`}>
+                            {example.given}
+                          </p>
                         </div>
+
+                        {/* Practice Mode: answer first, solution on request */}
+                        {studyMode === "practice-example" && expected ? (
+                          <form
+                            className="mt-3"
+                            onSubmit={(event) => {
+                              event.preventDefault();
+                              submitAnswer(f.id, example.result);
+                            }}
+                          >
+                            <div className="flex flex-wrap items-end gap-2">
+                              <div className="min-w-[11rem] flex-1">
+                                <NumberField
+                                  id={`answer-${f.id}`}
+                                  label="คำตอบของคุณ"
+                                  hint="พิมพ์ตัวเลข หรือเศษส่วน เช่น 4/5"
+                                  value={attempt.input}
+                                  onChange={(value) => setAnswerInput(f.id, value)}
+                                  error={
+                                    attempt.status === "invalid"
+                                      ? "ใส่เป็นตัวเลขก่อนตรวจคำตอบ"
+                                      : undefined
+                                  }
+                                  inputMode={expected.value < 0 ? "text" : "decimal"}
+                                  size="sm"
+                                />
+                              </div>
+                              <button
+                                type="submit"
+                                className="btn btn-primary"
+                              >
+                                ตรวจคำตอบ
+                              </button>
+                            </div>
+
+                            {attempt.status === "correct" || attempt.status === "incorrect" ? (
+                              <p
+                                role="status"
+                                className={`mt-2.5 rounded-lg border px-3.5 py-2.5 text-sm text-ink ${
+                                  attempt.status === "correct"
+                                    ? "border-good bg-good-wash"
+                                    : "border-bad bg-bad-wash"
+                                }`}
+                              >
+                                {attempt.status === "correct" ? (
+                                  <>
+                                    <span className="font-semibold">ถูกต้อง</span> — คำตอบของโจทย์ข้อนี้คือ{" "}
+                                    <span className={`answer num ${monoClass(example.result)}`}>
+                                      {example.result}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="font-semibold">ยังไม่ใช่</span> — ทวนการแทนค่าและลำดับการคำนวณอีกครั้ง
+                                    แล้วค่อยเปิดดูวิธีทำ
+                                  </>
+                                )}
+                              </p>
+                            ) : null}
+                          </form>
+                        ) : null}
+
+                        {studyMode === "practice-example" && !expected ? (
+                          <p className="mt-3 text-xs text-ink-muted">
+                            โจทย์ข้อนี้ไม่มีคำตอบเป็นตัวเลข — ลองสรุปหลักการตอบด้วยคำพูดก่อน
+                            แล้วเปิดวิธีทำเพื่อเทียบแนวคิด
+                          </p>
+                        ) : null}
 
                         {/* Steps & Answer (Supports Practice Mode) */}
                         {isExampleHidden ? (
@@ -400,13 +603,16 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                             </span>
                           </button>
                         ) : (
-                          <>
+                          <motion.div
+                            initial={revealedExamples[f.id] ? revealStart : false}
+                            {...revealAnimation}
+                          >
                             <div className="mt-3.5">
                               <span className="block text-[11px] font-semibold text-ink-subtle mb-2">
                                 วิธีทำทีละขั้น:
                               </span>
                               <ol className="space-y-2">
-                                {f.example.steps.map((s, k) => (
+                                {example.steps.map((s, k) => (
                                   <li
                                     key={k}
                                     className="grid grid-cols-[1.5rem_minmax(0,1fr)] items-baseline gap-x-2 text-sm text-ink-muted"
@@ -424,11 +630,13 @@ export function FormulaExplorer({ formulas }: { formulas: Formula[] }) {
                               <span className="text-xs font-semibold uppercase tracking-wider text-accent-ink">
                                 คำตอบสุทธิ
                               </span>
-                              <span className="answer num font-mono text-base font-bold text-ink">
-                                {f.example.result}
+                              <span
+                                className={`answer text-base font-bold text-ink ${monoClass(example.result)}`}
+                              >
+                                {example.result}
                               </span>
                             </div>
-                          </>
+                          </motion.div>
                         )}
                       </section>
                     ) : null}

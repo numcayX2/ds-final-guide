@@ -655,6 +655,7 @@ function KMeansPanel({ visual, step }: PanelProps<"kmeans">) {
                   onBlur={() => setHovered(null)}
                   onClick={() => togglePin(target)}
                   onKeyDown={(event) => handleKey(event, target)}
+                  className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent focus-visible:[filter:drop-shadow(0_0_3px_var(--color-accent))]"
                   initial={
                     reducedMotion
                       ? false
@@ -668,7 +669,7 @@ function KMeansPanel({ visual, step }: PanelProps<"kmeans">) {
                     duration: reducedMotion ? 0 : 0.75,
                     ease: "easeInOut",
                   }}
-                  style={{ cursor: "pointer", outline: "none" }}
+                  style={{ cursor: "pointer" }}
                 >
                   {isActive && (
                     <circle
@@ -740,11 +741,11 @@ function KMeansPanel({ visual, step }: PanelProps<"kmeans">) {
                 onBlur={() => setHovered(null)}
                 onClick={() => togglePin(target)}
                 onKeyDown={(event) => handleKey(event, target)}
+                className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent focus-visible:[filter:drop-shadow(0_0_3px_var(--color-accent))]"
                 style={{
                   cursor: "pointer",
                   opacity: dimmed ? 0.28 : 1,
                   transition: reducedMotion ? "none" : "opacity 180ms",
-                  outline: "none",
                 }}
               >
                 {(selected || memberOfFocusedCentroid) && (

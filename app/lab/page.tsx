@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CodeSnippet } from "@/components/code-snippet";
+import { CodeSnippet, CodeScroll } from "@/components/code-snippet";
 import { Reveal } from "@/components/reveal";
 import { Tex } from "@/components/tex";
 import {
@@ -27,7 +27,7 @@ export default function LabPage() {
             <div className="flex items-center gap-2">
               <Link
                 href="/"
-                className="inline-flex items-center gap-1 font-mono text-xs text-ink-muted hover:text-accent"
+                className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-accent"
               >
                 <ArrowLeftIcon className="h-3.5 w-3.5" />
                 หน้าแรก
@@ -120,8 +120,8 @@ export default function LabPage() {
               <p className="text-xs text-ink-muted leading-relaxed">
                 ทำตามคำสั่งใน Colab ทีละ Cell ตาม Instruction ตรวจสอบให้แน่ใจว่าไม่มี Error ค้าง และผลลัพธ์ DataFrame/Plot แสดงผลถูกต้อง
               </p>
-              <div className="rounded bg-paper p-2 font-mono text-[11px] text-ink-subtle">
-                Tip: กด Ctrl+Enter เพื่อรันเฉพาะ Cell นั้น หรือ Shift+Enter เพื่อรันและไปยัง Cell ถัดไป
+              <div className="rounded bg-paper p-2 text-[11px] text-ink-subtle">
+                Tip: กด <kbd>Ctrl</kbd>+<kbd>Enter</kbd> เพื่อรันเฉพาะ Cell นั้น หรือ <kbd>Shift</kbd>+<kbd>Enter</kbd> เพื่อรันและไปยัง Cell ถัดไป
               </div>
             </div>
 
@@ -133,8 +133,8 @@ export default function LabPage() {
               <p className="text-xs text-ink-muted leading-relaxed">
                 อาจารย์มักเว้น <code>___</code> หรือช่อง <code># TODO</code> ในส่วนสำคัญ เช่น ฟังก์ชันแบ่งข้อมูล, กำหนด Hyperparameters, การ Fit โมเดล และคำนวณ Metrics
               </p>
-              <div className="rounded bg-paper p-2 font-mono text-[11px] text-ink-subtle">
-                Tip: ระวังชื่อตัวแปรพิมพ์เล็ก-ใหญ่ (เช่น X_train vs x_train) และอย่าลืมใส่ random_state
+              <div className="rounded bg-paper p-2 text-[11px] text-ink-subtle">
+                Tip: ระวังชื่อตัวแปรพิมพ์เล็ก-ใหญ่ (เช่น <code>X_train</code> vs <code>x_train</code>) และอย่าลืมใส่ <code>random_state</code>
               </div>
             </div>
 
@@ -146,7 +146,7 @@ export default function LabPage() {
               <p className="text-xs text-ink-muted leading-relaxed">
                 บันทึกคำตอบลงใน Paper work (หรือ Text Cell ตามที่กำหนด) อธิบายว่าตัวเลขที่ได้หมายความว่าอย่างไร ทำไมถึงเลือกโมเดลนี้ และแปลผลเชิงธุรกิจ
               </p>
-              <div className="rounded bg-paper p-2 font-mono text-[11px] text-ink-subtle">
+              <div className="rounded bg-paper p-2 text-[11px] text-ink-subtle">
                 Tip: เขียนให้ตรงประเด็น อ้างอิงตัวเลขจากการรันจริง เช่น &quot;Model มี Recall 85% เพราะ...&quot;
               </div>
             </div>
@@ -181,6 +181,11 @@ export default function LabPage() {
 
             <CodeSnippet
               title="train_test_split template"
+              params={[
+                { token: "test_size", note: "สัดส่วนชุดทดสอบ ปรับตามโจทย์" },
+                { token: "stratify", note: "รักษาสัดส่วนคลาส (ถ้ามี)" },
+                { token: "random_state", note: "ใส่ค่าตามที่โจทย์ระบุ" },
+              ]}
               code={`import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -200,7 +205,10 @@ print(f"ขนาดข้อมูล Train: {X_train.shape}, Test: {X_test.sha
             />
 
             <div className="mt-3 rounded-lg border border-warn/30 bg-warn-wash/40 p-3 text-xs text-ink">
-              <strong className="text-warn font-semibold">⚠️ จุดระวัง:</strong> อย่าลืมใส่ <code>random_state=...</code> ตามที่โจทย์ระบุ หากไม่ใส่ ข้อมูลจะสุ่มใหม่ทุกครั้ง ทำให้ตัวเลขผลลัพธ์ใน Paper work ไม่ตรงกับตอนรัน!
+              <strong className="text-warn font-semibold">
+                <ExclamationTriangleIcon className="mr-1 inline h-3.5 w-3.5 align-[-2px]" />
+                จุดระวัง:
+              </strong>{" "}อย่าลืมใส่ <code>random_state=...</code> ตามที่โจทย์ระบุ หากไม่ใส่ ข้อมูลจะสุ่มใหม่ทุกครั้ง ทำให้ตัวเลขผลลัพธ์ใน Paper work ไม่ตรงกับตอนรัน!
             </div>
           </div>
 
@@ -218,6 +226,11 @@ print(f"ขนาดข้อมูล Train: {X_train.shape}, Test: {X_test.sha
 
             <CodeSnippet
               title="DecisionTreeClassifier template"
+              params={[
+                { token: "criterion", note: "สไลด์หลักใช้ gini" },
+                { token: "max_depth", note: "คุมความลึก กัน Overfitting" },
+                { token: "random_state", note: "ใส่ค่าตามที่โจทย์ระบุ" },
+              ]}
               code={`from sklearn.tree import DecisionTreeClassifier, export_text
 
 # 1. ประกาศโมเดล (จุดที่มักให้ออกเติมพารามิเตอร์)
@@ -260,6 +273,7 @@ print(export_text(model, feature_names=list(X.columns)))`}
 
             <CodeSnippet
               title="Metrics & Confusion Matrix template"
+              params={[{ token: "pos_label", note: "กำหนดตามโจทย์" }]}
               code={`from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -299,14 +313,16 @@ print(classification_report(y_test, y_pred))`}
               <p className="leading-relaxed">
                 ใน scikit-learn ผลลัพธ์ของ <code>confusion_matrix(y_test, y_pred)</code> จะเรียงแถวและคอลัมน์จากคลาสที่มีค่าน้อยไปมาก โดย Default:
               </p>
-              <div className="overflow-x-auto rounded bg-surface p-2.5 font-mono text-xs border border-rule">
-                <code>
-                  {`[ [ TN,  FP ],    <-- คลาส 0 (Negative / No / ใช้งานปกติ)
-  [ FN,  TP ] ]   <-- คลาส 1 (Positive / Yes / Inactive / ลาออก)`}
-                </code>
-              </div>
+              <CodeScroll
+                className="rounded border border-rule bg-surface p-2.5 font-mono text-xs"
+                label="ตัวอย่างโครงสร้าง Confusion Matrix"
+              >
+                <pre className="m-0 w-max">{`[ [ TN,  FP ],    <-- คลาส 0 (Negative / No / ใช้งานปกติ)
+  [ FN,  TP ] ]   <-- คลาส 1 (Positive / Yes / Inactive / ลาออก)`}</pre>
+              </CodeScroll>
               <p className="text-bad font-semibold">
-                ⚠️ อย่าจำสลับ: ในสไลด์ทฤษฎีบางหน้าอาจวาง Positive ไว้แถวแรก (TP มุมบนซ้าย) แต่ใน scikit-learn TP จะอยู่ที่มุมล่างขวา <code>cm[1, 1]</code> เสมอเมื่อคลาสบวกคือ 1!
+                <ExclamationTriangleIcon className="mr-1 inline h-3.5 w-3.5 align-[-2px]" />
+                อย่าจำสลับ: ในสไลด์ทฤษฎีบางหน้าอาจวาง Positive ไว้แถวแรก (TP มุมบนซ้าย) แต่ใน scikit-learn TP จะอยู่ที่มุมล่างขวา <code>cm[1, 1]</code> เสมอเมื่อคลาสบวกคือ 1!
               </p>
             </div>
           </div>
@@ -325,6 +341,12 @@ print(classification_report(y_test, y_pred))`}
 
             <CodeSnippet
               title="KMeans clustering template"
+              params={[
+                { token: "n_clusters", note: "จำนวนกลุ่ม k" },
+                { token: "init", note: "หรือเลือก k-means++" },
+                { token: "n_init", note: "จำนวนรอบที่สุ่มเริ่มต้น" },
+                { token: "random_state", note: "ใส่ค่าตามที่โจทย์ระบุ" },
+              ]}
               code={`from sklearn.cluster import KMeans
 
 # 1. กำหนดจำนวนกลุ่ม k (n_clusters)

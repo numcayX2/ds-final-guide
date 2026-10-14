@@ -37,7 +37,20 @@ function useFields<K extends string>(initial: Record<K, string>) {
     },
     isLoaded: (vals: Record<K, number>) =>
       (Object.keys(vals) as K[]).every((k) => raw[k] === String(vals[k])),
-    shown: (k: K, errors: Partial<Record<K, string>>) => (touched[k] ? errors[k] : undefined),
+    /** `force` bypasses the touched gate for errors caused by another field (e.g. wrong order). */
+    shown: (k: K, errors: Partial<Record<K, string>>, force = false) =>
+      force || touched[k] ? errors[k] : undefined,
+    /**
+     * Count fields hold non-negative integers. `min`/`step` attributes do nothing on the
+     * `type="text"` inputs these render (components/ui.tsx), so the keystroke is dropped:
+     * a value the metric maths cannot use never enters the field.
+     */
+    setCount: (k: K, v: string) => {
+      const next = v.trim();
+      if (!/^\d*$/.test(next)) return;
+      setRaw((s) => ({ ...s, [k]: next }) as Record<K, string>);
+      setTouched((t) => ({ ...t, [k]: true }));
+    },
   };
 }
 
@@ -84,25 +97,42 @@ type TukeyResult = Record<TukeyKey, number> & {
   iqr: number; lower: number; upper: number; lowOut: boolean; highOut: boolean;
 };
 
+/** A pair out of order, e.g. Q₁ below Min, kept whole so the warning can name both values. */
+type OrderIssue = {
+  key: TukeyKey; label: string; value: number; prevLabel: string; prevValue: number;
+};
+
 export function TukeyCalculator() {
   const uid = useId();
   const f = useFields<TukeyKey>({ min: "", q1: "", median: "", q3: "", max: "" });
 
-  const { values, errors } = useMemo(() => {
+  const { values, errors, orderIssues } = useMemo(() => {
     const values: Partial<Record<TukeyKey, number>> = {};
     const errors: Partial<Record<TukeyKey, string>> = {};
+    const orderIssues: OrderIssue[] = [];
     let prev: { label: string; value: number } | null = null;
     for (const field of TUKEY_FIELDS) {
       const p = parse(f.raw[field.key]);
       if (p.error) {
         errors[field.key] = p.error;
+        // Compare only neighbours: blaming Median for a blank Q₁ points at the wrong input.
+        prev = null;
         continue;
       }
-      if (prev && p.value! < prev.value) errors[field.key] = `ต้องไม่น้อยกว่า ${prev.label} (${fmt(prev.value)})`;
+      if (prev && p.value! < prev.value) {
+        errors[field.key] = `ค่า ${field.label} (${fmt(p.value!)}) ต้องไม่น้อยกว่า ${prev.label} (${fmt(prev.value)})`;
+        orderIssues.push({
+          key: field.key,
+          label: field.label,
+          value: p.value!,
+          prevLabel: prev.label,
+          prevValue: prev.value,
+        });
+      }
       values[field.key] = p.value!;
       prev = { label: field.label, value: p.value! };
     }
-    return { values, errors };
+    return { values, errors, orderIssues };
   }, [f.raw]);
 
   const r = useMemo<TukeyResult | null>(() => {
@@ -132,16 +162,33 @@ export function TukeyCalculator() {
             id={`${uid}-${field.key}`}
             label={field.label}
             hint={field.hint}
-            value={f.raw[field.key]}
             onChange={(v) => f.set(field.key, v)}
             onBlur={() => f.touch(field.key)}
-            error={f.shown(field.key, errors)}
+            error={f.shown(field.key, errors, orderIssues.some((o) => o.key === field.key))}
             allowNegative
           />
         ))}
       </fieldset>
 
-      {!r ? (
+      {orderIssues.length ? (
+        <div aria-live="polite">
+          <Note tone="bad" title="ลำดับ Five-Number Summary ยังไม่ถูกต้อง">
+            <ul className="num list-disc space-y-1 pl-5">
+              {orderIssues.map((o) => (
+                <li key={o.key}>
+                  ค่า {o.label} ({fmt(o.value)}) ต้องไม่น้อยกว่า {o.prevLabel} ({fmt(o.prevValue)})
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs">
+              แก้ให้เรียงเป็น Min ≤ Q₁ ≤ Median ≤ Q₃ ≤ Max ก่อน — เครื่องยังไม่วาด boxplot
+              เพราะ IQR ที่ติดลบทำให้รั้วและกราฟไม่มีความหมาย
+            </p>
+          </Note>
+        </div>
+      ) : null}
+
+      {orderIssues.length ? null : !r ? (
         <EmptyState>กรอกให้ครบ 5 ช่อง เรียงจากน้อยไปมาก: Min ≤ Q₁ ≤ Median ≤ Q₃ ≤ Max</EmptyState>
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
@@ -201,7 +248,8 @@ function FenceDiagram(r: TukeyResult) {
   const lo = Math.min(r.min, r.lower);
   const hi = Math.max(r.max, r.upper);
   const span = hi - lo || 1;
-  const W = 360, PAD = 24, MID = 58;
+  // PAD leaves room for the LF/UF label text, which is centred on a fence that can sit at the edge.
+  const W = 360, PAD = 34, MID = 58;
   const x = (v: number) => PAD + ((v - lo) / span) * (W - 2 * PAD);
   const wl = r.lowOut ? r.lower : r.min;
   const wr = r.highOut ? r.upper : r.max;
@@ -350,10 +398,11 @@ export function MetricCalculator() {
                         label={<span className="font-mono">{CELL_INFO[k].label}</span>}
                         hint={CELL_INFO[k].hint}
                         value={f.raw[k]}
-                        onChange={(v) => f.set(k, v)}
+                        onChange={(v) => f.setCount(k, v)}
                         onBlur={() => f.touch(k)}
                         error={f.shown(k, errors)}
                         integer
+                        inputMode="numeric"
                         size="sm"
                       />
                     </td>
@@ -521,8 +570,15 @@ export function GiniCalculator() {
         <div>
           <div className="mx-auto max-w-xs rounded-xl border border-rule bg-surface-hover px-4 py-3 text-center">
             <p className="text-xs text-ink-subtle">โหนดแม่ (รวมจากกิ่งลูก)</p>
-            <p className="num mt-1 font-mono text-sm text-ink">
-              {r ? `คลาส 1 = ${r.p1} · คลาส 2 = ${r.p2} · n = ${r.n}` : "–"}
+            <p className="mt-1 text-sm text-ink">
+              {r ? (
+                <>
+                  คลาส 1 = <span className="num font-mono">{r.p1}</span> · คลาส 2 ={" "}
+                  <span className="num font-mono">{r.p2}</span> · n = <span className="num font-mono">{r.n}</span>
+                </>
+              ) : (
+                "–"
+              )}
             </p>
           </div>
           <svg aria-hidden viewBox="0 0 100 12" preserveAspectRatio="none" className="mx-auto block h-6 w-1/2 text-rule-strong">
@@ -538,10 +594,11 @@ export function GiniCalculator() {
                     id={`${uid}-${k}`}
                     label={`คลาส ${i + 1}`}
                     value={f.raw[k]}
-                    onChange={(v) => f.set(k, v)}
+                    onChange={(v) => f.setCount(k, v)}
                     onBlur={() => f.touch(k)}
                     error={f.shown(k, errors)}
                     integer
+                    inputMode="numeric"
                     size="sm"
                   />
                 ))}
@@ -723,14 +780,17 @@ export function KMeansCalculator() {
           </div>
         </section>
 
-        <Panel title="Centroid ใหม่ = ค่าเฉลี่ยของสมาชิก" meta={`รอบ ${iter}`}>
+        <Panel
+          title="Centroid ใหม่ = ค่าเฉลี่ยของสมาชิก"
+          meta={<span className="font-sans">รอบ <span className="num">{iter}</span></span>}
+        >
           <ul className="space-y-5">
             {res.next.map((c, i) => (
               <li key={c.id}>
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="font-mono font-semibold text-ink">
                     {c.id}
-                    {iter === 1 && centroids[i].seed ? <span className="ml-1 font-normal text-ink-subtle">(เริ่มที่ {centroids[i].seed})</span> : null}
+                    {iter === 1 && centroids[i].seed ? <span className="ml-1 font-sans font-normal text-ink-subtle">(เริ่มที่ {centroids[i].seed})</span> : null}
                   </span>
                   <span className="text-xs text-ink-subtle">{c.members.map((m) => m.id).join(", ") || "ไม่มีสมาชิก"}</span>
                 </div>

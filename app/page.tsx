@@ -378,7 +378,7 @@ export default function Home() {
               className="flex flex-col-reverse bg-surface px-5 py-4 last:col-span-2 sm:last:col-span-1"
             >
               <dt className="mt-0.5 text-xs text-ink-subtle">{s.label}</dt>
-              <dd className="num font-mono text-2xl font-medium text-ink tabular-nums">
+              <dd className="num font-mono text-2xl font-medium text-ink">
                 {s.n}
               </dd>
             </div>
@@ -550,7 +550,7 @@ export default function Home() {
               <span className="text-xs text-ink-subtle">ข้อทั้งหมดในคลัง</span>
             </span>
 
-            <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-accent-ink">
+            <span className="mt-auto inline-flex items-center gap-2 self-start rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-on-accent transition-colors group-hover:bg-accent-ink">
               เริ่มทำข้อสอบ
               <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>
@@ -568,8 +568,14 @@ export default function Home() {
                   >
                     <span className="flex items-center justify-between">
                       <Icon className="h-4 w-4 text-accent" aria-hidden />
-                      <span className="font-mono text-xs text-ink-subtle">
-                        {t.meta}
+                      <span className="flex items-center gap-2">
+                        <span className="font-mono text-xs text-ink-subtle">
+                          {t.meta}
+                        </span>
+                        <ArrowRightIcon
+                          aria-hidden
+                          className="h-3.5 w-3.5 text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
+                        />
                       </span>
                     </span>
                     <span className="mt-4 font-semibold text-ink group-hover:text-accent-ink">

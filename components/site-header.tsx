@@ -63,10 +63,18 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-rule bg-paper/90 backdrop-blur">
       <div className="mx-auto flex h-[var(--header-h)] w-full max-w-5xl items-center gap-6 px-5 sm:px-8">
-        <Link href="/" className="flex shrink-0 items-baseline gap-2">
-          <span className="font-semibold tracking-tight text-ink">DS Final Guide</span>
-          <span className="hidden font-mono text-xs text-ink-subtle sm:inline">10301351</span>
-        </Link>
+        <div className="flex shrink-0 items-baseline gap-2">
+          <Link href="/" className="font-semibold tracking-tight text-ink">
+            DS Final Guide
+          </Link>
+          <Link
+            href="/#exam-notice"
+            className="hidden rounded text-xs text-ink-subtle underline-offset-4 hover:text-ink hover:underline sm:inline"
+            title="ดูขอบเขตและกำหนดการสอบปลายภาค"
+          >
+            วิชา 10301351
+          </Link>
+        </div>
 
         <nav aria-label="เมนูหลัก" className="hidden lg:block">
           <ul
@@ -120,7 +128,7 @@ export function SiteHeader() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "ปิดเมนู" : "เปิดเมนู"}
-            className="flex h-9 w-9 items-center justify-center rounded-md text-ink transition-colors hover:bg-surface-hover lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-md text-ink transition-colors hover:bg-surface-hover lg:hidden"
           >
             {open ? <Cross2Icon className="h-4 w-4" /> : <HamburgerMenuIcon className="h-4 w-4" />}
           </button>

@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState, type KeyboardEvent } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { RangeField, type RangeTick } from "./range-field";
 import {
   CheckCircledIcon,
   ChevronLeftIcon,
@@ -56,6 +57,12 @@ const SUBSTITUTION_PHASES: { phase: SubstitutionPhase; label: string }[] = [
   { phase: 0, label: "1. สัญลักษณ์" },
   { phase: 1, label: "2. เศษส่วน" },
   { phase: 2, label: "3. ทศนิยม" },
+];
+
+const GINI_SPLIT_TICKS: RangeTick[] = [
+  { value: 0, label: "0" },
+  { value: 3, label: "3" },
+  { value: 6, label: "6" },
 ];
 
 const CONTROL_BTN =
@@ -332,7 +339,7 @@ export function GiniWorkbench({
               })}
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-4 text-xs font-medium">
+            <div className="mt-4 flex flex-wrap gap-4 text-xs font-medium num">
               <span className="inline-flex items-center gap-1.5 text-good">
                 <span className="size-2 rounded-full bg-good" /> A · Active ({(activeProb * 100).toFixed(0)}%)
               </span>
@@ -345,9 +352,11 @@ export function GiniWorkbench({
             <div className="mt-4 border-t border-rule pt-3 space-y-1.5">
               <div className="flex justify-between text-xs">
                 <span className="text-ink-muted">ระดับความปนเปื้อน (Gini):</span>
-                <span className="font-mono font-bold tabular-nums text-ink">
-                  {showGiniValue ? gini.toFixed(3) : "? (เลือกคำตอบด้านขวา)"}
-                </span>
+                {showGiniValue ? (
+                  <span className="num font-mono font-bold text-ink">{gini.toFixed(3)}</span>
+                ) : (
+                  <span className="text-xs font-medium text-ink-subtle">? เลือกคำตอบด้านขวาก่อน</span>
+                )}
               </div>
               <div
                 role="meter"
@@ -363,9 +372,13 @@ export function GiniWorkbench({
                   className="h-full rounded-full bg-accent"
                 />
               </div>
-              <div className="flex justify-between font-mono text-[10px] text-ink-subtle tabular-nums">
-                <span>0.000 (บริสุทธิ์)</span>
-                <span>0.500 (ปนกันสูงสุด)</span>
+              <div className="flex justify-between gap-2 text-[10px] leading-tight text-ink-subtle">
+                <span className="min-w-0 [overflow-wrap:anywhere]">
+                  <span className="num font-mono">0.000</span> บริสุทธิ์
+                </span>
+                <span className="min-w-0 text-right [overflow-wrap:anywhere]">
+                  <span className="num font-mono">0.500</span> ปนกันสูงสุด
+                </span>
               </div>
             </div>
           </div>
@@ -443,7 +456,7 @@ export function GiniWorkbench({
                             </span>
                           )}
                           {showAsCorrectHint && (
-                            <span className="text-xs font-mono font-semibold text-good shrink-0">
+                            <span className="text-xs font-semibold text-good shrink-0">
                               คำตอบที่ถูก
                             </span>
                           )}
@@ -461,7 +474,7 @@ export function GiniWorkbench({
                           : "border-warn/40 bg-warn/10 text-ink"
                       }`}
                     >
-                      <p className="font-bold flex items-center gap-1.5">
+                      <p className="font-bold flex items-center gap-1.5 num">
                         {prediction === correctPredictionIndex ? (
                           <>
                             <CheckCircledIcon className="size-4 text-good shrink-0" />
@@ -757,30 +770,29 @@ export function GiniWorkbench({
                   </div>
 
                   <div className="rounded-xl border border-rule bg-surface-hover p-4 space-y-3">
-                    <label
-                      htmlFor={`${id}-active`}
-                      className="flex justify-between text-xs sm:text-sm font-medium"
-                    >
-                      <span>จำนวนลูกค้า Active (จาก 6 คน)</span>
-                      <span className="font-mono font-bold text-good tabular-nums">
-                        {active} Active / {inactive} Inactive
-                      </span>
-                    </label>
-                    <input
+                    <RangeField
                       id={`${id}-active`}
-                      type="range"
+                      label="จำนวนลูกค้า Active (จาก 6 คน)"
+                      labelClass="text-good"
+                      value={sandboxActive}
+                      onChange={setSandboxActive}
                       min={0}
                       max={6}
                       step={1}
-                      value={sandboxActive}
-                      onChange={(e) => setSandboxActive(Number(e.target.value))}
-                      className="w-full accent-good cursor-pointer"
+                      valueText={(v) => `Active ${v} จาก 6 คน · Inactive ${6 - v} คน · Gini ${(1 - (v / 6) ** 2 - ((6 - v) / 6) ** 2).toFixed(3)}`}
+                      ticks={GINI_SPLIT_TICKS}
+                      badge={
+                        <span className="text-[11px] text-ink-subtle">
+                          Inactive <span className="num font-semibold text-bad">{6 - sandboxActive}</span>
+                        </span>
+                      }
+                      hint={
+                        <>
+                          0A · 6I = Pure (<span className="num font-mono">0.000</span>) · 3A · 3I = ปนกันสูงสุด (
+                          <span className="num font-mono">0.500</span>) · 6A · 0I = Pure (<span className="num font-mono">0.000</span>)
+                        </>
+                      }
                     />
-                    <div className="flex justify-between font-mono text-[11px] text-ink-subtle tabular-nums">
-                      <span>0A : 6I (Pure = 0.000)</span>
-                      <span>3A : 3I (Mixed = 0.500)</span>
-                      <span>6A : 0I (Pure = 0.000)</span>
-                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 text-center font-mono tabular-nums">
@@ -788,7 +800,7 @@ export function GiniWorkbench({
                       <span className="block font-sans text-xs text-ink-muted">Gini Impurity</span>
                       <output
                         aria-live="polite"
-                        className="mt-1 block text-xl sm:text-2xl font-bold text-accent-ink"
+                        className="num mt-1 block text-xl sm:text-2xl font-bold text-accent-ink"
                       >
                         {gini.toFixed(3)}
                       </output>
@@ -805,10 +817,10 @@ export function GiniWorkbench({
                       <span className="block font-sans text-xs text-ink-muted">
                         Information Gain (เทียบกับ 0.500)
                       </span>
-                      <strong className="mt-1 block text-xl sm:text-2xl text-good">
+                      <strong className="num mt-1 block text-xl sm:text-2xl text-good">
                         +{informationGain.toFixed(3)}
                       </strong>
-                      <span className="mt-1 block font-sans text-[11px] text-ink-subtle">
+                      <span className="num mt-1 block font-sans text-[11px] text-ink-subtle">
                         {informationGain === 0.5
                           ? "แยกคลาสได้สมบูรณ์"
                           : informationGain === 0

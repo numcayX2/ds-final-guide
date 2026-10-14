@@ -274,8 +274,8 @@ function ModelCalculationCard({
                   </div>
 
                   {labelInfo.theory && (
-                    <p className="text-[11px] font-mono text-ink-subtle">
-                      สูตร: {labelInfo.theory}
+                    <p className="text-[11px] text-ink-subtle">
+                      สูตร: <span className="font-mono">{labelInfo.theory}</span>
                     </p>
                   )}
                 </div>
@@ -287,9 +287,11 @@ function ModelCalculationCard({
 
                 {/* Final Value & Percentage */}
                 <div className="flex items-center justify-between pt-2.5 mt-auto border-t border-rule/50">
-                  <div className="text-xs font-mono text-ink-muted">
+                  <div className="text-xs text-ink-muted">
                     <span className="text-ink-subtle">ทศนิยม: </span>
-                    <strong className="text-ink font-semibold">{met.decimal}</strong>
+                    <strong className="font-mono font-semibold text-ink tabular-nums">
+                      {met.decimal}
+                    </strong>
                   </div>
                   <span
                     className={`rounded-lg px-2.5 py-0.5 text-base sm:text-lg font-bold font-mono tracking-tight tnum ${
@@ -448,7 +450,7 @@ function ModelRecommendationCard({
               </p>
             </div>
           </div>
-          <span className="rounded-full bg-accent-wash px-2.5 py-0.5 text-xs font-mono font-bold text-accent-ink">
+          <span className="rounded-full bg-accent-wash px-2.5 py-0.5 text-xs font-bold text-accent-ink tabular-nums">
             3 สถานการณ์ธุรกิจ
           </span>
         </div>
@@ -486,7 +488,7 @@ function ModelRecommendationCard({
                       {c.title}
                     </span>
                   </div>
-                  <span className="text-xs font-mono font-semibold text-ink-subtle">
+                  <span className="text-xs font-semibold text-ink-subtle tabular-nums">
                     {c.metrics}
                   </span>
                 </div>
@@ -570,9 +572,9 @@ function CentroidCalculationCard({
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 font-mono">
+        <div className="flex items-center gap-1.5">
           <span className="text-xs text-ink-subtle">พิกัดใหม่:</span>
-          <span className="rounded-lg bg-good-wash px-2.5 py-1 text-xs sm:text-sm font-bold text-good border border-good/30 tnum">
+          <span className="rounded-lg bg-good-wash px-2.5 py-1 text-xs sm:text-sm font-bold text-good border border-good/30 font-mono tabular-nums">
             {data.result}
           </span>
         </div>
@@ -609,7 +611,7 @@ function MultiSegmentCard({
           {segments.map((seg, i) => (
             <div
               key={i}
-              className="rounded-lg border border-rule bg-paper px-3 py-1.5 text-xs font-mono text-ink leading-relaxed"
+              className="rounded-lg border border-rule bg-paper px-3 py-1.5 text-xs text-ink leading-relaxed tabular-nums"
             >
               {seg}
             </div>
@@ -698,11 +700,11 @@ function KMeansDistanceCard({
                 }`}
               >
                 <span
-                  className={`shrink-0 font-mono font-semibold ${
+                  className={`shrink-0 font-semibold ${
                     isPicked ? "text-good" : "text-ink-subtle"
                   }`}
                 >
-                  ถึง {d.target}:
+                  ถึง <span className="font-mono">{d.target}</span>:
                 </span>
                 <span className="text-right overflow-x-auto no-scrollbar text-ink py-0.5">
                   <Tex tex={texFormula} />
@@ -716,7 +718,7 @@ function KMeansDistanceCard({
         {decisionText ? (
           <div className="mt-2.5 flex items-center justify-between rounded-lg bg-surface-hover/70 px-3 py-1.5 text-xs">
             <span className="text-ink-subtle">เกณฑ์การตัดสิน:</span>
-            <span className="font-mono font-medium text-ink">
+            <span className="font-medium text-ink tabular-nums">
               {decisionText}
             </span>
           </div>

@@ -8,6 +8,13 @@ import { Tex } from "./math-formula";
 const NUMERIC = /^[\s+-]?[\d.,]+\s*%?$/;
 
 /**
+ * Thai codepoints. The mono stack is for Latin/numeric tokens only — a string
+ * that carries Thai prose is set on the sans stack so the script keeps one face
+ * instead of mixing Plex Mono with the Thai fallback mid-line.
+ */
+const THAI = /[\u0E00-\u0E7F]/;
+
+/**
  * Wrap every case-insensitive occurrence of `query` in a `<mark>`.
  * Thai has no case, so a plain lowercase compare is enough; the length guard
  * skips highlighting when lowercasing would shift indices (locale edge cases).
@@ -91,7 +98,7 @@ export function ContentBlockView({ block, hl = "" }: { block: ContentBlock; hl?:
               <Tag className="border-rule bg-paper text-ink-subtle">ตัวอย่างโจทย์</Tag>
               <span className="font-semibold text-ink">{highlight(block.title, hl)}</span>
             </span>
-            <span className="font-mono text-xs text-ink-subtle">ทีละขั้น</span>
+            <span className="text-xs text-ink-subtle">ทีละขั้น</span>
           </figcaption>
           <ol className="space-y-3.5 px-5 py-4">
             {block.steps.map((s, i) => (
@@ -108,7 +115,9 @@ export function ContentBlockView({ block, hl = "" }: { block: ContentBlock; hl?:
           </ol>
           <div className="flex items-baseline justify-between gap-3 border-t border-rule px-5 py-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-ink-subtle">คำตอบ</span>
-            <span className="answer num font-mono text-lg font-semibold text-ink">
+            <span
+              className={`answer num text-lg font-semibold text-ink ${THAI.test(block.answer) ? "" : "font-mono"}`}
+            >
               {highlight(block.answer, hl)}
             </span>
           </div>
@@ -178,7 +187,11 @@ export function ContentBlockView({ block, hl = "" }: { block: ContentBlock; hl?:
             <span className="shrink-0 text-xs text-ink-subtle">คลังสูตร →</span>
           </div>
           <div className="mt-2 overflow-x-auto text-ink">
-            {f.tex ? <Tex tex={f.tex} display /> : <p className="font-mono">{f.expression}</p>}
+            {f.tex ? (
+              <Tex tex={f.tex} display />
+            ) : (
+              <p className={THAI.test(f.expression) ? "" : "font-mono"}>{f.expression}</p>
+            )}
           </div>
         </Link>
       );

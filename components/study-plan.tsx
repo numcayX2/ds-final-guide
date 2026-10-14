@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 export interface PlanStep {
@@ -59,16 +59,39 @@ export function StudyPlan({ steps }: { steps: PlanStep[] }) {
   const toggle = (id: string) => writeDone(done.includes(id) ? done.filter((x) => x !== id) : [...done, id]);
   const count = steps.filter((s) => done.includes(s.step)).length;
 
+  // Clearing wipes the whole plan, so the previous state is kept reachable for
+  // a few seconds instead of asking the student to confirm every time.
+  const [undoSnapshot, setUndoSnapshot] = useState<string[] | null>(null);
+  const undoTimer = useRef<number | null>(null);
+  const stopUndoTimer = () => {
+    if (undoTimer.current !== null) window.clearTimeout(undoTimer.current);
+    undoTimer.current = null;
+  };
+  useEffect(() => stopUndoTimer, []);
+
+  const clearAll = () => {
+    stopUndoTimer();
+    setUndoSnapshot(done);
+    writeDone([]);
+    undoTimer.current = window.setTimeout(() => setUndoSnapshot(null), 12000);
+  };
+
+  const undoClear = () => {
+    stopUndoTimer();
+    if (undoSnapshot) writeDone(undoSnapshot);
+    setUndoSnapshot(null);
+  };
+
   return (
     <div>
-      <div className="mb-6 flex items-center gap-4">
+      <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
         <div
           role="progressbar"
           aria-label="ความคืบหน้าแผน 3 วัน"
           aria-valuemin={0}
           aria-valuemax={steps.length}
           aria-valuenow={count}
-          className="h-1.5 flex-1 overflow-hidden rounded-full bg-rule"
+          className="h-1.5 min-w-40 flex-1 overflow-hidden rounded-full bg-rule"
         >
           <div
             className="h-full rounded-full bg-accent transition-[width] duration-300"
@@ -78,8 +101,20 @@ export function StudyPlan({ steps }: { steps: PlanStep[] }) {
         <span className="num font-mono text-sm text-ink-muted">
           {count}/{steps.length}
         </span>
-        {count > 0 ? (
-          <button type="button" onClick={() => writeDone([])} className="text-link text-sm">
+        {undoSnapshot ? (
+          <span role="status" className="flex items-center gap-2 text-sm text-ink-muted">
+            ล้างความคืบหน้าแล้ว
+            <button type="button" onClick={undoClear} className="text-link font-medium">
+              เลิกทำ
+            </button>
+          </span>
+        ) : count > 0 ? (
+          <button
+            type="button"
+            onClick={clearAll}
+            aria-label="ล้างความคืบหน้าของแผนทบทวน 3 วัน"
+            className="text-link text-sm"
+          >
             ล้าง
           </button>
         ) : null}
@@ -98,7 +133,7 @@ export function StudyPlan({ steps }: { steps: PlanStep[] }) {
             >
               <div className="flex items-baseline justify-between gap-3">
                 <span className="font-mono text-sm text-accent">{s.day}</span>
-                <span className="font-mono text-xs text-ink-subtle">{s.time}</span>
+                <span className="num text-xs text-ink-subtle">{s.time}</span>
               </div>
               <h3 className="mt-2 text-lg font-semibold leading-snug text-ink">{s.title}</h3>
               <p className="mt-0.5 text-xs text-ink-subtle">{s.tag}</p>

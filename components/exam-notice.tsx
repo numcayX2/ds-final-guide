@@ -34,7 +34,7 @@ export function ExamNoticeCard() {
       {/* ── Masthead ─────────────────────────────────────────────── */}
       <header className="border-b border-rule p-6 sm:p-8">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent-wash px-3 py-1 font-mono text-xs font-semibold text-accent-ink">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent-wash px-3 py-1 text-xs font-semibold text-accent-ink">
             <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
             ประกาศทางการจากคาบเรียน
           </span>
@@ -68,13 +68,13 @@ export function ExamNoticeCard() {
               <FileTextIcon className="h-4.5 w-4.5 text-accent" aria-hidden />
               ข้อสอบทฤษฎี (ข้อเขียน)
             </h3>
-            <span className="rounded-full bg-accent-wash px-2.5 py-1 font-mono text-[11px] font-semibold text-accent-ink">
+            <span className="rounded-full bg-accent-wash px-2.5 py-1 text-[11px] font-semibold text-accent-ink">
               ออกสอบ 5 บท
             </span>
           </div>
 
           <div className="flex-1 px-6 py-5 sm:px-8">
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-widest text-ink-subtle">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
               บทที่ออกสอบ · Lecture 05–09
             </p>
 
@@ -86,7 +86,7 @@ export function ExamNoticeCard() {
                     aria-hidden
                   />
                   <span className="text-sm text-ink">
-                    <span className="font-mono text-xs font-semibold text-accent-ink">
+                    <span className="text-xs font-semibold text-accent-ink">
                       {ch.no}
                     </span>{" "}
                     <span className="font-medium">{ch.title}</span>
@@ -99,7 +99,7 @@ export function ExamNoticeCard() {
                   aria-hidden
                 />
                 <span className="text-sm text-ink-muted">
-                  <span className="font-mono text-xs font-semibold text-bad">
+                  <span className="text-xs font-semibold text-bad">
                     บทที่ 10
                   </span>{" "}
                   <strong className="font-semibold text-bad">ไม่ออกสอบ</strong>{" "}
@@ -181,7 +181,7 @@ export function ExamNoticeCard() {
           </div>
 
           <div className="flex-1 px-6 py-5 sm:px-8">
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-widest text-ink-subtle">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
               กำหนดการ &amp; สถานที่
             </p>
 
@@ -194,7 +194,7 @@ export function ExamNoticeCard() {
                 <ClockIcon className="h-4 w-4 shrink-0 text-ink-subtle" aria-hidden />
                 <span>
                   13.00 – 15.00 น.
-                  <span className="ml-1.5 font-mono text-xs text-ink-subtle">2 ชม.</span>
+                  <span className="ml-1.5 text-xs text-ink-subtle">2 ชม.</span>
                 </span>
               </p>
               <p className="mt-1.5 text-sm text-ink">
@@ -205,7 +205,7 @@ export function ExamNoticeCard() {
               </p>
             </div>
 
-            <p className="mt-5 font-mono text-[11px] font-semibold uppercase tracking-widest text-ink-subtle">
+            <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
               รูปแบบข้อสอบ · Colab + Paper work (Hybrid)
             </p>
             <div className="mt-3 space-y-2.5">

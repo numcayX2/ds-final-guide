@@ -6,10 +6,13 @@ import {
   ArrowRightIcon,
   ArrowUpIcon,
   CheckIcon,
+  ChevronDownIcon,
   Cross2Icon,
   ExclamationTriangleIcon,
+  ListBulletIcon,
   MagnifyingGlassIcon,
 } from "@radix-ui/react-icons";
+import { useLenis } from "lenis/react";
 
 import { chapters } from "@/content/chapters";
 import type { Chapter, ContentBlock } from "@/content/types";
@@ -174,38 +177,39 @@ export default function ChaptersPage() {
   const [activeId, setActiveId] = useState<string>(chapters[0]?.slug ?? "");
   const [progress, setProgress] = useState(0);
   const [showTop, setShowTop] = useState(false);
+  const [tocOpen, setTocOpen] = useState(false);
+  const lenis = useLenis();
 
   const rawRead = useSyncExternalStore(subscribeRead, readSnapshot, readServerSnapshot);
   const readSet = useMemo(() => new Set(parseSlugs(rawRead)), [rawRead]);
   const readCount = chapters.filter((ch) => readSet.has(ch.slug)).length;
 
   const filtering = query.trim() !== "" || kind !== "all";
+  const trimmedQuery = query.trim();
+  const activeFilterCount = (trimmedQuery !== "" ? 1 : 0) + (kind !== "all" ? 1 : 0);
+  const kindLabel = KIND_FILTERS.find((f) => f.id === kind)?.label ?? "";
   const view = useMemo(() => filterChapters(query, kind), [query, kind]);
   const matchedBlocks = useMemo(
     () => view.reduce((n, v) => n + v.sections.reduce((m, s) => m + s.body.length, 0), 0),
     [view],
   );
 
+  const clearFilters = () => {
+    setQuery("");
+    setKind("all");
+  };
+
   const mainRef = useRef<HTMLElement | null>(null);
 
-  /* ScrollSpy + reading progress (rAF-throttled) */
+  /* Reading progress + back-to-top (rAF-throttled scroll listener) */
   useEffect(() => {
     let raf = 0;
-    const OFFSET = 112; // sticky header (~56) + mobile wayfinding bar (~56)
     const measure = () => {
       raf = 0;
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
       setProgress(max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0);
       setShowTop(window.scrollY > 480);
-      const root = mainRef.current;
-      if (!root) return;
-      const marks = root.querySelectorAll<HTMLElement>("[data-track]");
-      let current = "";
-      for (const el of marks) {
-        if (el.getBoundingClientRect().top <= OFFSET) current = el.dataset.track ?? "";
-      }
-      if (current) setActiveId(current);
     };
     const onScroll = () => {
       if (!raf) raf = window.requestAnimationFrame(measure);
@@ -220,8 +224,90 @@ export default function ChaptersPage() {
     };
   }, [view]);
 
+  /*
+   * Scroll-spy via IntersectionObserver. The reading band sits just under the
+   * sticky chrome, so a heading counts as current the moment it reaches that
+   * band — no rect sampling that trails a Lenis-smoothed scroll. Chapters and
+   * their sections are both observed and the *last* mark in document order
+   * wins, which resolves to the deepest section while `activeChapterSlug`
+   * still lights up its chapter through the id prefix.
+   */
+  useEffect(() => {
+    const root = mainRef.current;
+    if (!root) return;
+    const marks = Array.from(root.querySelectorAll<HTMLElement>("[data-track], section[id]"));
+    if (marks.length === 0) return;
+    const seen = new Set<Element>();
+    const sync = () => {
+      for (let i = marks.length - 1; i >= 0; i--) {
+        const el = marks[i];
+        if (seen.has(el)) {
+          const id = el.dataset.track ?? el.id;
+          if (id) setActiveId(id);
+          return;
+        }
+      }
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) seen.add(entry.target);
+          else seen.delete(entry.target);
+        }
+        sync();
+      },
+      { rootMargin: "-104px 0px -60% 0px", threshold: 0 },
+    );
+    for (const el of marks) io.observe(el);
+    return () => io.disconnect();
+  }, [view]);
+
+  /* Escape dismisses the mobile TOC drawer from anywhere, not just inside it. */
+  useEffect(() => {
+    if (!tocOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setTocOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [tocOpen]);
+
+  /**
+   * Jump to an anchor through Lenis when it is driving the page, so the smooth
+   * scroll and the spy agree instead of fighting each other. Without Lenis it
+   * falls back to native scrolling; reduced motion always lands instantly.
+   */
+  const scrollToId = (id: string) => {
+    const inDrawer = tocOpen;
+    setTocOpen(false);
+    const el = document.getElementById(id);
+    if (!el) return;
+    setActiveId(id);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Clears the sticky header (~56px) plus the mobile TOC bar when it is shown.
+    const offset = window.innerWidth >= 1024 ? -104 : -128;
+    window.history.replaceState(null, "", `#${id}`);
+    if (lenis) {
+      lenis.scrollTo(el, { offset, immediate: reduce, duration: reduce ? 0 : 0.9 });
+    } else {
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+    if (inDrawer) {
+      // The drawer link that fired this unmounts with the drawer; hand focus to
+      // the chapter heading so keyboard users keep their place.
+      const chapter = el.closest<HTMLElement>("[data-track]");
+      const heading =
+        chapter && document.getElementById(`${chapter.dataset.track ?? chapter.id}-title`);
+      heading?.focus({ preventScroll: true });
+    }
+  };
+
   const scrollToTop = () => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: reduce, duration: reduce ? 0 : 0.9 });
+      return;
+    }
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
   };
 
@@ -359,12 +445,56 @@ export default function ChaptersPage() {
             </div>
           </div>
 
+          {filtering && (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-ink-subtle">กำลังกรองด้วย</span>
+              {trimmedQuery !== "" && (
+                <button
+                  type="button"
+                  className="chip min-h-11 border-accent/40 bg-accent-wash text-accent-ink"
+                  onClick={() => setQuery("")}
+                  aria-label={`ล้างตัวกรองคำค้นหา ${trimmedQuery}`}
+                >
+                  คำค้นหา “{trimmedQuery}”
+                  <Cross2Icon className="ml-1 h-3.5 w-3.5" aria-hidden />
+                </button>
+              )}
+              {kind !== "all" && (
+                <button
+                  type="button"
+                  className="chip min-h-11 border-accent/40 bg-accent-wash text-accent-ink"
+                  onClick={() => setKind("all")}
+                  aria-label={`ล้างตัวกรองหมวด ${kindLabel}`}
+                >
+                  หมวด {kindLabel}
+                  <Cross2Icon className="ml-1 h-3.5 w-3.5" aria-hidden />
+                </button>
+              )}
+              <button
+                type="button"
+                className="chip min-h-11 border-rule-strong font-semibold text-ink"
+                onClick={clearFilters}
+              >
+                ล้างตัวกรองทั้งหมด
+              </button>
+            </div>
+          )}
+
           <p id="ch-q-status" role="status" aria-live="polite" className="mt-3 text-sm text-ink-muted">
-            {filtering
-              ? view.length === 0
-                ? "ไม่พบเนื้อหาที่ค้นหา — ลองคำค้นอื่น หรือล้างตัวกรอง"
-                : `พบ ${matchedBlocks} รายการใน ${view.length} บท`
-              : ""}
+            {!filtering ? null : view.length === 0 ? (
+              <>ไม่พบเนื้อหาที่ตรงกับตัวกรองที่เลือก — กด “ล้างตัวกรองทั้งหมด” เพื่อเริ่มใหม่</>
+            ) : (
+              <>
+                พบ <span className="num">{matchedBlocks}</span> รายการ ใน{" "}
+                <span className="num">{view.length}</span> บท
+                {activeFilterCount > 1 && (
+                  <>
+                    {" "}
+                    — ใช้ตัวกรอง <span className="num">{activeFilterCount}</span> อย่างพร้อมกัน
+                  </>
+                )}
+              </>
+            )}
           </p>
         </div>
       </section>
@@ -375,29 +505,111 @@ export default function ChaptersPage() {
         className="sticky top-14 z-30 border-b border-rule bg-paper/95 backdrop-blur lg:hidden"
       >
         <div className="shell relative">
-          <ul className="no-scrollbar flex gap-2 overflow-x-auto py-2">
-            {view.map(({ ch }) => {
-              const isActive = activeChapterSlug === ch.slug;
-              const isRead = readSet.has(ch.slug);
-              return (
-                <li key={ch.slug} className="shrink-0">
-                  <a
-                    href={`#${ch.slug}`}
-                    aria-current={isActive ? "true" : undefined}
-                    className={`inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 text-sm font-semibold transition-colors ${
-                      isActive
-                        ? "border-accent bg-accent-wash text-accent-ink"
-                        : "border-rule bg-surface text-ink-muted"
-                    }`}
-                  >
-                    <span className="num text-xs text-ink-subtle">{ch.index}</span>
-                    {shortTitle(ch.title)}
-                    {isRead && <CheckIcon className="h-3.5 w-3.5 text-good" aria-hidden />}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="flex items-center gap-2 py-2">
+            <button
+              type="button"
+              aria-expanded={tocOpen}
+              aria-controls="ch-toc-drawer"
+              onClick={() => setTocOpen((open) => !open)}
+              className="chip min-h-11 shrink-0 border-rule-strong font-semibold text-ink"
+            >
+              <ListBulletIcon className="mr-1.5 h-4 w-4" aria-hidden />
+              สารบัญ
+              <ChevronDownIcon
+                className={`ml-1 h-4 w-4 transition-transform ${tocOpen ? "rotate-180" : ""}`}
+                aria-hidden
+              />
+            </button>
+            <ul className="no-scrollbar flex min-w-0 flex-1 gap-2 overflow-x-auto">
+              {view.map(({ ch }) => {
+                const isActive = activeChapterSlug === ch.slug;
+                const isRead = readSet.has(ch.slug);
+                return (
+                  <li key={ch.slug} className="shrink-0">
+                    <a
+                      href={`#${ch.slug}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToId(ch.slug);
+                      }}
+                      aria-current={isActive ? "true" : undefined}
+                      className={`inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 text-sm font-semibold transition-colors ${
+                        isActive
+                          ? "border-accent bg-accent-wash text-accent-ink"
+                          : "border-rule bg-surface text-ink-muted"
+                      }`}
+                    >
+                      <span className="num text-xs text-ink-subtle">{ch.index}</span>
+                      {shortTitle(ch.title)}
+                      {isRead && <CheckIcon className="h-3.5 w-3.5 text-good" aria-hidden />}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Drawer: full TOC (chapters + sections); a selection closes it. */}
+          <div
+            id="ch-toc-drawer"
+            hidden={!tocOpen}
+            className="absolute inset-x-0 top-full z-40 max-h-[70vh] overflow-y-auto border-y border-rule-strong bg-paper shadow-xl"
+          >
+            <div className="shell py-4">
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-ink-subtle">
+                สารบัญทั้งหมด
+              </p>
+              <ol className="space-y-1">
+                {view.map(({ ch, sections }) => (
+                  <li key={ch.slug}>
+                    <a
+                      href={`#${ch.slug}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToId(ch.slug);
+                      }}
+                      aria-current={activeChapterSlug === ch.slug ? "location" : undefined}
+                      className={`flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold ${
+                        activeChapterSlug === ch.slug ? "bg-accent-wash text-accent-ink" : "text-ink"
+                      }`}
+                    >
+                      <span className="num text-xs text-ink-subtle">{ch.index}</span>
+                      {shortTitle(ch.title)}
+                      {readSet.has(ch.slug) && (
+                        <CheckIcon className="h-3.5 w-3.5 text-good" aria-hidden />
+                      )}
+                    </a>
+                    {sections.length > 0 && (
+                      <ul className="ml-3 border-l border-rule pl-2">
+                        {sections.map((s) => {
+                          const id = `${ch.slug}-sec-${s.index}`;
+                          const on = activeId === id;
+                          return (
+                            <li key={s.index}>
+                              <a
+                                href={`#${id}`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  scrollToId(id);
+                                }}
+                                aria-current={on ? "location" : undefined}
+                                className={`flex min-h-11 items-center rounded-lg px-3 text-sm ${
+                                  on ? "bg-accent-wash font-semibold text-accent-ink" : "text-ink-muted"
+                                }`}
+                              >
+                                {s.heading}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-0.5 bg-rule">
             <div
               className="h-full bg-accent transition-[width] duration-150"
@@ -448,6 +660,10 @@ export default function ChaptersPage() {
                   <li key={ch.slug}>
                     <a
                       href={`#${ch.slug}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToId(ch.slug);
+                      }}
                       aria-current={isActive ? "location" : undefined}
                       className={`group -ml-px flex gap-3 border-l-2 py-2.5 pl-4 pr-2 transition-colors ${
                         isActive
@@ -484,6 +700,10 @@ export default function ChaptersPage() {
                             <li key={s.index}>
                               <a
                                 href={`#${id}`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  scrollToId(id);
+                                }}
                                 aria-current={on ? "location" : undefined}
                                 className={`block rounded px-2 py-1 text-xs leading-snug transition-colors ${
                                   on
@@ -509,16 +729,17 @@ export default function ChaptersPage() {
         <div className="space-y-20 sm:space-y-24">
           {view.length === 0 ? (
             <EmptyState>
-              ไม่พบเนื้อหาที่ตรงกับ “{query.trim()}”{" "}
-              <button
-                type="button"
-                className="text-link font-semibold underline underline-offset-4"
-                onClick={() => {
-                  setQuery("");
-                  setKind("all");
-                }}
-              >
-                ล้างตัวกรอง
+              <span className="block">
+                {trimmedQuery !== "" && kind !== "all" ? (
+                  <>ไม่พบเนื้อหาที่ตรงกับ “{trimmedQuery}” ในหมวด “{kindLabel}”</>
+                ) : trimmedQuery !== "" ? (
+                  <>ไม่พบเนื้อหาที่ตรงกับ “{trimmedQuery}”</>
+                ) : (
+                  <>ไม่พบเนื้อหาในหมวด “{kindLabel}”</>
+                )}
+              </span>
+              <button type="button" className="btn btn-secondary mt-4" onClick={clearFilters}>
+                ล้างตัวกรองทั้งหมด
               </button>
             </EmptyState>
           ) : (
@@ -532,7 +753,7 @@ export default function ChaptersPage() {
                   id={ch.slug}
                   data-track={ch.slug}
                   aria-labelledby={`${ch.slug}-title`}
-                  className="scroll-mt-24 border-t-2 border-ink pt-6"
+                  className="scroll-mt-32 border-t-2 border-ink pt-6 lg:scroll-mt-24"
                 >
                   <header className="mb-10 grid gap-x-6 gap-y-4 border-b border-rule pb-8 sm:grid-cols-[auto_minmax(0,1fr)]">
                     {/* Big index */}
@@ -570,6 +791,7 @@ export default function ChaptersPage() {
                       {/* Titles */}
                       <h2
                         id={`${ch.slug}-title`}
+                        tabIndex={-1}
                         className="mt-3 text-2xl sm:text-4xl font-extrabold tracking-tight text-ink leading-tight text-balance"
                       >
                         {highlight(ch.title, query)}

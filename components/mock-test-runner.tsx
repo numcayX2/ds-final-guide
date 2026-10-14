@@ -7,7 +7,11 @@ import {
   BookmarkFilledIcon,
   BookmarkIcon,
   CheckIcon,
+  ClockIcon,
   Cross2Icon,
+  ExclamationTriangleIcon,
+  PauseIcon,
+  PlayIcon,
 } from "@radix-ui/react-icons";
 import type { MockTest, Question } from "@/content/types";
 import { EmptyState, Note, Segmented } from "./ui";
@@ -71,10 +75,17 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
   const [now, setNow] = useState(0);
   const [confirming, setConfirming] = useState(false);
   const [filter, setFilter] = useState<"all" | "missed">("all");
+  /** Retry-incorrect runs a subset of the paper; null means the whole paper. */
+  const [pool, setPool] = useState<Question[] | null>(null);
+  /** Time budget of the current run, in seconds (subset runs scale it down). */
+  const [limit, setLimit] = useState(0);
+  const [paused, setPaused] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  /** Milliseconds left when the timer was paused, so resume is exact. */
+  const residualRef = useRef(0);
 
   const t = list[testIdx];
-  const questions = useMemo(() => t?.questions ?? [], [t]);
+  const questions = useMemo(() => pool ?? t?.questions ?? [], [pool, t]);
   const q = questions[idx];
 
   const results = useMemo<Result[]>(
@@ -93,24 +104,32 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
   const checked = results.filter((r) => r.gradable && r.mine !== undefined).length;
   const missing = gradable - checked;
 
-  const timed = phase === "running" && mode === "exam" && (t?.timeLimitSeconds ?? 0) > 0;
+  const timed = phase === "running" && mode === "exam" && limit > 0;
+  const counting = timed && !paused;
   const remaining = timed ? Math.max(0, Math.ceil((deadline - now) / 1000)) : 0;
+  // Amber under five minutes, red under one. Colour is always paired with an
+  // icon and a text label so the warning is not colour-only.
+  const warnLevel: "none" | "soon" | "urgent" = !timed ? "none" : remaining <= 60 ? "urgent" : remaining <= 300 ? "soon" : "none";
+  const timerTone = paused ? "text-ink-subtle" : warnLevel === "urgent" ? "text-bad" : warnLevel === "soon" ? "text-warn" : "text-ink";
 
   const focusHeading = () => requestAnimationFrame(() => headingRef.current?.focus());
 
   const submit = useCallback(() => {
     setConfirming(false);
+    setPaused(false);
     setFilter("all");
     setPhase("review");
     window.scrollTo({ top: 0 });
     requestAnimationFrame(() => headingRef.current?.focus());
   }, []);
 
+  const cancelConfirm = useCallback(() => setConfirming(false), []);
+
   useEffect(() => {
-    if (!timed) return;
+    if (!counting) return;
     const id = window.setInterval(() => setNow(Date.now()), 500);
     return () => window.clearInterval(id);
-  }, [timed]);
+  }, [counting]);
 
   useEffect(() => {
     if (timed && remaining === 0) {
@@ -125,19 +144,47 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
     return () => window.removeEventListener("beforeunload", warn);
   }, [timed]);
 
-  function start() {
+  /**
+   * Starts a run. With no argument the whole paper runs; pass a subset (the
+   * retry-incorrect drill) and the time limit is scaled to the subset size so
+   * the pace per question stays the same.
+   */
+  function start(subset?: Question[]) {
     if (!t) return;
+    const picked = subset?.length ? subset : null;
+    const seconds = picked
+      ? Math.max(60, Math.round((t.timeLimitSeconds * picked.length) / Math.max(1, t.questions.length)))
+      : t.timeLimitSeconds;
+    setPool(picked);
+    setLimit(seconds);
     setAnswers({});
     setShown({});
     setHints({});
     setFlags({});
     setIdx(0);
     setConfirming(false);
+    setPaused(false);
     const n = Date.now();
     setNow(n);
-    setDeadline(n + t.timeLimitSeconds * 1000);
+    setDeadline(n + seconds * 1000);
     setPhase("running");
     focusHeading();
+  }
+
+  /** Freezes the countdown by dropping the interval; `deadline` stays put. */
+  function pauseTimer() {
+    if (!timed || paused) return;
+    residualRef.current = Math.max(0, deadline - Date.now());
+    setPaused(true);
+  }
+
+  /** Re-anchors the deadline to the exact time that was left when paused. */
+  function resumeTimer() {
+    if (!paused) return;
+    const n = Date.now();
+    setNow(n);
+    setDeadline(n + residualRef.current);
+    setPaused(false);
   }
 
   function go(i: number) {
@@ -163,7 +210,7 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
   const onKey = useRef<(e: KeyboardEvent) => void>(() => {});
   useEffect(() => {
     onKey.current = (e) => {
-      if (phase !== "running" || !q) return;
+      if (phase !== "running" || !q || confirming) return;
       if (e.metaKey || e.ctrlKey || e.altKey || isTypingTarget(e.target)) return;
       const k = e.key.toLowerCase();
       if (k === "arrowright" || k === "arrowleft") {
@@ -201,7 +248,7 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
             <legend className="mb-3 text-sm font-semibold text-ink">เลือกชุดข้อสอบ</legend>
             <div className="grid gap-3 sm:grid-cols-2">
               {list.map((x, i) => (
-                <ChoiceCard key={x.id ?? x.title} name="mock-test" checked={i === testIdx} onChange={() => setTestIdx(i)} title={x.titleTh}>
+                <ChoiceCard key={x.id ?? x.title} name="mock-test" checked={i === testIdx} onChange={() => { setTestIdx(i); setPool(null); }} title={x.titleTh}>
                   {x.description ? <span className="block">{x.description}</span> : null}
                   <span className="num mt-1 block font-mono text-xs text-ink-subtle">
                     {x.questions.length} ข้อ · {Math.round(x.timeLimitSeconds / 60)} นาที
@@ -219,14 +266,14 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
               เฉลยทันทีหลังตอบ ขอคำใบ้ได้ ไม่จับเวลา — เหมาะกับช่วงทบทวน
             </ChoiceCard>
             <ChoiceCard name="mock-mode" checked={mode === "exam"} onChange={() => setMode("exam")} title="จำลองสอบ">
-              จับเวลา {minutes} นาที ไม่มีคำใบ้ ดูเฉลยหลังส่ง — เหมาะกับวันก่อนสอบ
+              จับเวลา <span className="num">{minutes}</span> นาที ไม่มีคำใบ้ ดูเฉลยหลังส่ง — เหมาะกับวันก่อนสอบ
             </ChoiceCard>
           </div>
         </fieldset>
 
         <div className="flex flex-wrap items-center gap-4">
-          <button type="button" className="btn btn-primary" onClick={start}>
-            เริ่มทำ {t.questions.length} ข้อ
+          <button type="button" className="btn btn-primary" onClick={() => start()}>
+            เริ่มทำ <span className="num">{t.questions.length}</span> ข้อ
             <ArrowRightIcon aria-hidden />
           </button>
           <p className="text-sm text-ink-subtle">
@@ -263,19 +310,53 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
         <section className="rounded-xl border border-rule bg-surface p-6 sm:p-8">
           <p className="text-sm text-ink-subtle">
             {t.titleTh} · {mode === "exam" ? "จำลองสอบ" : "ฝึกทีละข้อ"}
+            {pool ? (
+              <>
+                {" · "}ทำเฉพาะข้อที่ผิด <span className="num">{questions.length}</span> ข้อ
+              </>
+            ) : null}
           </p>
           <h2 ref={headingRef} tabIndex={-1} className="mt-1 text-2xl font-semibold text-ink outline-none sm:text-3xl">
             ได้ <span className="num font-mono">{score}</span> จาก <span className="num font-mono">{gradable}</span> ข้อ{" "}
-            <span className="text-ink-subtle">({pct}%)</span>
+            <span className="num text-ink-subtle">({pct}%)</span>
           </h2>
           <p className="mt-2 text-ink-muted">
             {verdict} · เป้าหมาย 80% คือ <span className="num">{target}</span> ข้อขึ้นไป
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <button type="button" className="btn btn-primary" onClick={start}>
-              ทำชุดนี้อีกครั้ง
+            {missed.length > 0 ? (
+              <button type="button" className="btn btn-primary" onClick={() => start(missed.map((r) => r.q))}>
+                ทำเฉพาะข้อที่ผิด (<span className="num">{missed.length}</span> ข้อ)
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className={missed.length > 0 ? "btn btn-secondary" : "btn btn-primary"}
+              onClick={() => start(pool ?? undefined)}
+            >
+              {pool ? (
+                <>
+                  ทำชุดย่อยนี้อีกครั้ง (<span className="num">{questions.length}</span> ข้อ)
+                </>
+              ) : (
+                <>
+                  ทำชุดนี้อีกครั้ง (<span className="num">{t.questions.length}</span> ข้อ)
+                </>
+              )}
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => setPhase("setup")}>
+            {pool ? (
+              <button type="button" className="btn btn-secondary" onClick={() => start()}>
+                กลับไปทำชุดเต็ม (<span className="num">{t.questions.length}</span> ข้อ)
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                setPool(null);
+                setPhase("setup");
+              }}
+            >
               เลือกชุดหรือโหมดอื่น
             </button>
           </div>
@@ -309,8 +390,22 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
               value={filter}
               onChange={setFilter}
               options={[
-                { value: "all", label: `ทั้งหมด ${results.length}` },
-                { value: "missed", label: `ผิดหรือไม่ได้ตอบ ${missed.length}` },
+                {
+                  value: "all",
+                  label: (
+                    <>
+                      ทั้งหมด <span className="num">{results.length}</span>
+                    </>
+                  ),
+                },
+                {
+                  value: "missed",
+                  label: (
+                    <>
+                      ผิดหรือไม่ได้ตอบ <span className="num">{missed.length}</span>
+                    </>
+                  ),
+                },
               ]}
             />
           </div>
@@ -349,12 +444,51 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-ink">{t.titleTh}</p>
-            <p className="text-xs text-ink-subtle">{mode === "exam" ? "จำลองสอบ" : "ฝึกทีละข้อ"}</p>
+            <p className="text-xs text-ink-subtle">
+              {mode === "exam" ? "จำลองสอบ" : "ฝึกทีละข้อ"}
+              {pool ? (
+                <>
+                  {" · "}เฉพาะข้อที่ผิด <span className="num">{questions.length}</span> ข้อ
+                </>
+              ) : null}
+              {timed ? (
+                <>
+                  {" · "}
+                  <span className="num">{Math.round(limit / 60)}</span> นาที
+                </>
+              ) : null}
+            </p>
           </div>
           {timed ? (
-            <p role="timer" aria-label={`เวลาที่เหลือ ${clock(remaining)}`} className={`num font-mono text-xl ${remaining <= 300 ? "text-bad" : "text-ink"}`}>
-              {clock(remaining)}
-            </p>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <p
+                role="timer"
+                aria-label={paused ? `หยุดเวลาไว้ที่ ${clock(remaining)}` : `เวลาที่เหลือ ${clock(remaining)}`}
+                className={`num flex items-center gap-1.5 font-mono text-xl ${timerTone}`}
+              >
+                {warnLevel === "urgent" ? (
+                  <ExclamationTriangleIcon aria-hidden />
+                ) : warnLevel === "soon" ? (
+                  <ClockIcon aria-hidden />
+                ) : null}
+                {paused ? <PauseIcon aria-hidden /> : null}
+                {clock(remaining)}
+              </p>
+              {warnLevel === "none" ? null : (
+                <span className={`text-xs font-semibold ${warnLevel === "urgent" ? "text-bad" : "text-warn"}`}>
+                  {warnLevel === "urgent" ? "เหลือไม่ถึง 1 นาที" : "เหลือไม่ถึง 5 นาที"}
+                </span>
+              )}
+              <button
+                type="button"
+                aria-pressed={paused}
+                onClick={() => (paused ? resumeTimer() : pauseTimer())}
+                className="chip gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                {paused ? <PlayIcon aria-hidden /> : <PauseIcon aria-hidden />}
+                {paused ? "ทำต่อ" : "พักเวลา"}
+              </button>
+            </div>
           ) : (
             <p className="text-sm text-ink-muted">
               ถูก <span className="num font-mono text-ink">{score}</span> จาก <span className="num font-mono">{checked}</span>
@@ -368,20 +502,8 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
           </button>
         </div>
 
-        {confirming ? (
-          <div role="alert" className="mt-3 flex flex-wrap items-center gap-3 border-t border-rule pt-3 text-sm">
-            <span className="text-ink">ยังไม่ได้ตอบ {missing} ข้อ ต้องการส่งเลยไหม?</span>
-            <button type="button" className="btn btn-primary h-9" onClick={submit}>
-              ส่งเลย
-            </button>
-            <button type="button" className="btn btn-secondary h-9" onClick={() => setConfirming(false)}>
-              ทำต่อ
-            </button>
-          </div>
-        ) : null}
-
-        <p aria-live="polite" className="text-xs text-bad empty:hidden">
-          {timeWarn}
+        <p aria-live="polite" className={`text-xs empty:hidden ${warnLevel === "urgent" ? "text-bad" : "text-warn"}`}>
+          {paused ? "หยุดเวลาไว้ชั่วคราว กดทำต่อเพื่อนับเวลาต่อ" : timeWarn}
         </p>
       </div>
 
@@ -443,7 +565,7 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
                 onClick={nextHint}
                 className="rounded-md px-2 py-1 text-warn transition-colors hover:bg-warn-wash"
               >
-                ขอคำใบ้ {hintLevel + 1}/{maxHint(q)}
+                ขอคำใบ้ <span className="num">{hintLevel + 1}</span>/<span className="num">{maxHint(q)}</span>
               </button>
             ) : null}
           </span>
@@ -569,6 +691,119 @@ export function MockTestRunner({ test, tests }: { test?: MockTest; tests?: MockT
           )}
         </footer>
       </article>
+
+      {confirming ? (
+        <ConfirmDialog
+          missing={missing}
+          unanswered={results.filter((r) => r.gradable && r.mine === undefined).map((r) => r.q)}
+          onJump={(n) => {
+            const target = questions.findIndex((x) => x.n === n);
+            cancelConfirm();
+            if (target >= 0) go(target);
+          }}
+          onCancel={cancelConfirm}
+          onSubmit={submit}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * Blocking confirmation for an early submit. It is a real dialog: focus moves
+ * inside and is restored on close, Tab cycles within the panel, Escape cancels,
+ * and each unanswered question is a pill that jumps straight to it.
+ */
+function ConfirmDialog({
+  missing,
+  unanswered,
+  onJump,
+  onCancel,
+  onSubmit,
+}: {
+  missing: number;
+  unanswered: Question[];
+  onJump: (n: number) => void;
+  onCancel: () => void;
+  onSubmit: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const restore = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    headingRef.current?.focus();
+    return () => restore?.focus();
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCancel();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const panel = panelRef.current;
+      if (!panel) return;
+      const items = [
+        ...panel.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])',
+        ),
+      ];
+      if (!items.length) return;
+      const at = items.indexOf(document.activeElement as HTMLElement);
+      // `at === -1` means focus sits on the panel heading: only wrap backwards.
+      if (e.shiftKey ? at <= 0 : at === items.length - 1) {
+        e.preventDefault();
+        (e.shiftKey ? items[items.length - 1] : items[0]).focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onCancel]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-16 sm:items-center sm:pt-4">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mock-submit-title"
+        className="w-full max-w-lg rounded-xl border border-rule bg-surface p-6 shadow-lg"
+      >
+        <h2 id="mock-submit-title" ref={headingRef} tabIndex={-1} className="text-lg font-semibold text-ink outline-none">
+          ยังไม่ได้ตอบ <span className="num">{missing}</span> ข้อ ต้องการส่งเลยไหม?
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-ink-muted">ข้อที่ยังไม่ได้ตอบจะนับเป็นข้อที่ผิดในผลคะแนน</p>
+        {unanswered.length ? (
+          <>
+            <p className="mt-5 text-xs font-semibold text-ink-subtle">กดเลขข้อเพื่อกลับไปตอบข้อนั้นก่อน</p>
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {unanswered.map((u) => (
+                <li key={u.n}>
+                  <button
+                    type="button"
+                    onClick={() => onJump(u.n)}
+                    aria-label={`ไปยังข้อ ${u.n}`}
+                    className="chip h-11 min-w-11 justify-center px-0 font-mono focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  >
+                    {u.n}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+        <div className="mt-6 flex flex-wrap justify-end gap-3">
+          <button type="button" className="btn btn-secondary" onClick={onCancel}>
+            ทำต่อ
+          </button>
+          <button type="button" className="btn btn-primary" onClick={onSubmit}>
+            ส่งเลย
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

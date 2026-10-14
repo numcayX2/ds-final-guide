@@ -1093,11 +1093,16 @@ export const questionsLect08: Question[] = [
   },
 ];
 
+/**
+ * The comprehensive paper. Question numbers are stable (explanations and
+ * cross-references use them), but the lecture arrays that own them are not in
+ * numeric order, so the merge is sorted by `n` — the paper must read 1..35.
+ */
 export const allQuestions: Question[] = [
   ...questionsLect09,
   ...questionsLect0507,
   ...questionsLect08,
-];
+].sort((a, b) => a.n - b.n);
 
 /* ------------------------------------------------------------------ */
 /* Test Papers                                                        */
@@ -1124,7 +1129,7 @@ export const mockTestLect09: MockTest = {
 export const mockTestLect0507: MockTest = {
   id: "lect0507",
   title: "EDA, Modeling & Decision Tree",
-  titleTh: "Lect 05–07: EDA, Modeling & Decision Tree (14 ข้อ)",
+  titleTh: "Lect 05–07: EDA, Modeling & Decision Tree (13 ข้อ)",
   description: "Boxplot Fences, CRISP-DS, Gini Impurity, Confusion Matrix, HW#2 & Decision Gates",
   timeLimitSeconds: 21 * 60,
   questions: questionsLect0507,

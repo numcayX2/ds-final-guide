@@ -30,18 +30,18 @@ export default function FormulasPage() {
           <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-rule pt-5 max-w-md">
             <div>
               <dt className="sr-only">Total</dt>
-              <dd className="index text-3xl text-ink">
+              <dd className="num text-3xl text-ink">
                 {formulas.length}
-                <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
+                <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle font-semibold">
                   สูตรทั้งหมด
                 </span>
               </dd>
             </div>
             <div>
               <dt className="sr-only">Verified</dt>
-              <dd className="index text-3xl text-ink">
+              <dd className="num text-3xl text-ink">
                 {formulas.length - unverified}
-                <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle" style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
+                <span className="block mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-subtle font-semibold">
                   ตรวจสอบแล้ว
                 </span>
               </dd>

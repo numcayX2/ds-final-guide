@@ -403,3 +403,60 @@ considered done. Re-derive any number you are about to ship.
   state rather than hiding content.
 - Minimum 44×44px touch targets; verified visually hidden rather than asserted.
 - When you verify a number, recompute it yourself before writing it down.
+
+---
+
+## 10. External UX audit fixes (2026-10-14, uncommitted)
+
+- 24-item external audit against the Vercel site. 18 true and implemented,
+  6 false/already-satisfied and reported with evidence (F-02 review toggle
+  already in all modes; C-03 `ds-ch-read-v1` already drives the counter;
+  T-03 no clipping at 375px measured; Tool 04 has no coordinate inputs;
+  P-02 label toggle pre-existed; mono-stack premise fixed at the root).
+- Global: `--font-mono` now falls back to Plex Thai after Plex Mono
+  (G-01/L-01/H-03/F-03 root cause); coarse-pointer 44px sizing for
+  `.chip`/`.field-sm`/new `.touch-target` (G-03); header `10301351` badge
+  is now a link labelled `วิชา 10301351` to `/#exam-notice` (G-02).
+- Mock test: `allQuestions` sorted by `n` (E-01 was real: grid read
+  1–10, 35, 11–20 …); `mockTestLect0507` label fixed 14 → 13 ข้อ;
+  retry-incorrect subset quiz with scaled time limit (E-02); pause/resume
+  with exact residual re-anchor + amber/red two-tier low-time cue (E-03);
+  real focus-trapped `ConfirmDialog` with jumping pills replacing the inline
+  alert (E-04).
+- Player: new shared `components/range-field.tsx` (numeric input + ticks +
+  `aria-valuetext`) drives all 5 sliders in showcase/workbench (P-01);
+  0.5×/1×/1.5× speed pills, speed-blind typewriter fixed (P-02); slider and
+  meter label rows un-crowded at 320px (P-03).
+- Formulas: practice mode is now a real answer form with tolerance
+  `max(0.01, 1%)` and never-leaking verdicts (F-01); saved-formula store
+  hardened to `useSyncExternalStore` + JSON validation (F-02 was false).
+- Tools: Tukey order errors name the pair + `aria-live` banner, blank-field
+  blame fixed (T-01); count inputs reject non-integer/negative keystrokes
+  (T-02); boxplot `PAD` 24 → 34 fixes 5-digit fence-label clipping (T-03
+  otherwise measured clean).
+- Chapters: filter chips + clear-all + named empty state (C-01);
+  IntersectionObserver spy over chapters AND sections + mobile `สารบัญ`
+  drawer with Lenis-offset anchor jumps (C-02; drawer is NEW UI — confirm);
+  C-03 already satisfied, untouched.
+- Homework: per-problem bottom prev/next nav (H-01); one always-visible
+  expand/collapse-all disclosure working in review mode too (H-02 was
+  partial); Thai off `font-mono` in live segments (H-03).
+- Lab: `CodeSnippet` rewritten — line numbers, data-driven `params`
+  highlight (quote-aware, no comment false-positives), measured overflow
+  fade, `<kbd>` tips; dead `highlightLines` prop removed (L-01..L-03).
+- Verified on `next start` + Chromium: tsc clean, build clean, 0 console
+  errors and 0 page-level overflow on all 8 routes at 1440; behaviour
+  exercised at 375 — grid 1→35, timer 44:59→freeze→resume,
+  submit dialog with 37 pills + Escape, M-01 undo, F-01 wrong/right
+  verdicts, P-01 slider↔input sync, drawer open/select/close, lab
+  highlights, homework nav links.
+- NOT in this commit (left in the tree, yours): `content/chapters.ts`,
+  `content/episodes.ts`, `content/homework.ts` rewrites; `app/homework/page.tsx`
+  (your study-mode work + H-items on top — merge carefully);
+  `components/homework-workbench.tsx` (orphan, nothing imports it).
+- Open findings for you: `.eyebrow`/`.index` dead classes (FormulasRoute
+  patched its page locally to `.num`); most of `homework-step-item.tsx`
+  card parsers never match current content prefixes (22/34 steps fall to
+  `MultiSegmentCard`, 12 to plain fallback); Tukey preset/keystroke console
+  error from the earlier session STILL reproduces on the base content and is
+  unrelated to this change set — needs its own bug pass.

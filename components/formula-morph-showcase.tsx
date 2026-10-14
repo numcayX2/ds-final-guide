@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { motion, AnimatePresence, MotionConfig, useReducedMotion } from "motion/react";
+import { RangeField, type RangeTick } from "./range-field";
 import {
   PlayIcon,
   PauseIcon,
@@ -79,11 +80,40 @@ const TUKEY_MAX = 55;
 const TUKEY_TICKS = [20, 30, 40, 50];
 const COLOR_AMBER = "var(--token-amber, #92400e)";
 
+const AUTOPLAY_SPEEDS = [0.5, 1, 1.5] as const;
+
+const TUKEY_POINT_TICKS: RangeTick[] = [
+  { value: 20, label: "20" },
+  { value: 30, label: "30" },
+  { value: 40, label: "40" },
+  { value: 50, label: "50" },
+  { value: 55, label: "55" },
+];
+const TUKEY_Q3_TICKS: RangeTick[] = [
+  { value: 25, label: "25" },
+  { value: 30, label: "30" },
+  { value: 35, label: "35" },
+];
+const GINI_SPLIT_TICKS: RangeTick[] = [
+  { value: 0, label: "0" },
+  { value: 3, label: "3" },
+  { value: 6, label: "6" },
+];
+const THRESHOLD_TICKS: RangeTick[] = [
+  { value: 0.2, label: "0.20" },
+  { value: 0.35, label: "0.35" },
+  { value: 0.5, label: "0.50" },
+  { value: 0.65, label: "0.65" },
+  { value: 0.8, label: "0.80" },
+];
+
 export function FormulaMorphShowcase() {
   const [topic, setTopic] = useState<FormulaTopic>("tukey");
   const [step, setStep] = useState<number>(0);
   const [anatomySubstep, setAnatomySubstep] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [speed, setSpeed] = useState<number>(1);
+  const speedRef = useRef(1);
   const [hoveredToken, setHoveredToken] = useState<string | null>(null);
 
   // 1. Tukey State
@@ -202,14 +232,16 @@ export function FormulaMorphShowcase() {
 
   useEffect(() => {
     if (!isPlaying || step === 1) return;
+    // speedRef, not `speed`: picking a new speed must not restart the current step's timer.
+    const delay = AUTOPLAY_MS / speedRef.current;
     if (step >= TOTAL_STEPS - 1) {
-      const timer = setTimeout(() => setIsPlaying(false), AUTOPLAY_MS);
+      const timer = setTimeout(() => setIsPlaying(false), delay);
       return () => clearTimeout(timer);
     }
     const timer = setTimeout(() => {
       setAnatomySubstep(0);
       setStep((s) => s + 1);
-    }, AUTOPLAY_MS);
+    }, delay);
     return () => clearTimeout(timer);
   }, [isPlaying, step]);
 
@@ -282,6 +314,7 @@ export function FormulaMorphShowcase() {
                   onAdvanceAnatomySubstep={setAnatomySubstep}
                   onNextStep={handleAdvanceToStep2}
                   isPlaying={isPlaying}
+                  speed={speed}
                   q1={q1}
                   q3={q3}
                   iqr={tukey.iqr}
@@ -303,6 +336,7 @@ export function FormulaMorphShowcase() {
                   onAdvanceAnatomySubstep={setAnatomySubstep}
                   onNextStep={handleAdvanceToStep2}
                   isPlaying={isPlaying}
+                  speed={speed}
                   active={activeCustomers}
                   inactive={giniCalc.inactive}
                   total={totalCustomers}
@@ -324,6 +358,7 @@ export function FormulaMorphShowcase() {
                   onAdvanceAnatomySubstep={setAnatomySubstep}
                   onNextStep={handleAdvanceToStep2}
                   isPlaying={isPlaying}
+                  speed={speed}
                   tp={cm.tp}
                   fp={cm.fp}
                   fn={cm.fn}
@@ -343,6 +378,7 @@ export function FormulaMorphShowcase() {
                   onAdvanceAnatomySubstep={setAnatomySubstep}
                   onNextStep={handleAdvanceToStep2}
                   isPlaying={isPlaying}
+                  speed={speed}
                   pt={km.pt}
                   c={km.c}
                   dx={km.dx}
@@ -367,7 +403,7 @@ export function FormulaMorphShowcase() {
                     className="h-full w-full origin-left bg-accent"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
-                    transition={{ duration: AUTOPLAY_MS / 1000, ease: "linear" }}
+                    transition={{ duration: AUTOPLAY_MS / speed / 1000, ease: "linear" }}
                   />
                 ) : (
                   <div
@@ -379,31 +415,60 @@ export function FormulaMorphShowcase() {
 
               {/* Playback Buttons */}
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!isPlaying && step >= TOTAL_STEPS - 1) {
-                      setStep(0);
-                      setAnatomySubstep(0);
-                    }
-                    setIsPlaying((p) => !p);
-                  }}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent-wash px-3 py-1.5 text-xs sm:text-sm font-semibold text-accent-ink hover:bg-accent/15 transition-all"
-                >
-                  {isPlaying ? (
-                    <>
-                      <PauseIcon className="size-3.5" /> หยุดชั่วคราว
-                    </>
-                  ) : (
-                    <>
-                      <PlayIcon className="size-3.5" /> เล่นอัตโนมัติ
-                    </>
-                  )}
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    aria-pressed={isPlaying}
+                    onClick={() => {
+                      if (!isPlaying && step >= TOTAL_STEPS - 1) {
+                        setStep(0);
+                        setAnatomySubstep(0);
+                      }
+                      setIsPlaying((p) => !p);
+                    }}
+                    className="touch-target inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent-wash px-3 py-1.5 text-xs sm:text-sm font-semibold text-accent-ink hover:bg-accent/15 transition-all"
+                  >
+                    {isPlaying ? (
+                      <>
+                        <PauseIcon className="size-3.5" /> หยุดชั่วคราว
+                      </>
+                    ) : (
+                      <>
+                        <PlayIcon className="size-3.5" /> เล่นอัตโนมัติ
+                      </>
+                    )}
+                  </button>
+
+                  <div
+                    role="group"
+                    aria-label="ความเร็วการเล่นอัตโนมัติ"
+                    className="flex flex-wrap items-center gap-1"
+                  >
+                    <span className="hidden text-[11px] text-ink-subtle sm:inline">ความเร็ว</span>
+                    {AUTOPLAY_SPEEDS.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        aria-pressed={speed === s}
+                        aria-label={`ความเร็ว ${s} เท่า`}
+                        onClick={() => {
+                          speedRef.current = s;
+                          setSpeed(s);
+                        }}
+                        className="chip"
+                      >
+                        <span className="tabular-nums">{s}</span>×
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
                 <div className="flex items-center gap-1.5">
-                  <span className="font-mono text-xs text-ink-muted mr-1 hidden sm:inline">
-                    ขั้นที่ {step + 1} / {TOTAL_STEPS}
+                  <span className="mr-1 hidden text-xs text-ink-muted sm:inline">
+                    ขั้นที่{" "}
+                    <span className="num font-mono">
+                      {step + 1} / {TOTAL_STEPS}
+                    </span>
                   </span>
                   <button
                     type="button"
@@ -474,50 +539,56 @@ export function FormulaMorphShowcase() {
             {/* Topic 1 Controls: Tukey */}
             {topic === "tukey" && (
               <div className="space-y-5">
-                <div>
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-accent-ink font-semibold">จุดทดสอบ x (Data Point)</span>
+                <RangeField
+                  id="morph-tukey-point"
+                  label="จุดทดสอบ x (Data Point)"
+                  value={testPoint}
+                  onChange={setTestPoint}
+                  min={TUKEY_MIN}
+                  max={TUKEY_MAX}
+                  step={0.5}
+                  decimals={1}
+                  valueText={(v) =>
+                    `จุดทดสอบ x = ${v.toFixed(1)} ${v > tukey.upperFence ? "เกินรั้วบน" : "อยู่ในรั้ว"} รั้วบน ${tukey.upperFence.toFixed(1)}`
+                  }
+                  ticks={TUKEY_POINT_TICKS}
+                  marker={{ value: tukey.upperFence, tone: tukey.isOutlier ? "bad" : "accent" }}
+                  badge={
                     <span
-                      className={`font-mono font-bold px-2 py-0.5 rounded tabular-nums ${
-                        tukey.isOutlier ? "bg-bad-wash text-bad" : "bg-surface-hover text-ink"
+                      className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+                        tukey.isOutlier ? "bg-bad-wash text-bad" : "bg-good-wash text-good"
                       }`}
                     >
-                      <AnimatedNumber value={testPoint} decimals={1} reducedMotion={reducedMotion} />
+                      {tukey.isOutlier ? "เป็น Outlier" : "อยู่ในรั้ว"}
                     </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={TUKEY_MIN}
-                    max={TUKEY_MAX}
-                    step={0.5}
-                    value={testPoint}
-                    onChange={(e) => setTestPoint(Number(e.target.value))}
-                    className="mt-2 w-full accent-accent cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] text-ink-subtle">
-                    <span>20.0 (ในรั้ว)</span>
-                    <span className="font-semibold text-accent tabular-nums">
-                      รั้ว = <AnimatedNumber value={tukey.upperFence} decimals={1} reducedMotion={reducedMotion} />
-                    </span>
-                    <span>55.0 (นอกรั้ว)</span>
-                  </div>
-                </div>
+                  }
+                  hint={
+                    <>
+                      เส้นบนแถบสไลด์ = รั้วบน (Upper Fence) = Q₃ + 1.5 × IQR ={" "}
+                      <span className="num font-semibold text-accent">{tukey.upperFence.toFixed(1)}</span> · IQR ={" "}
+                      <span className="num">{tukey.iqr.toFixed(1)}</span> · ช่วงที่ปรับได้ 20–55
+                    </>
+                  }
+                />
 
-                <div>
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-ink">Q₃ (ควอร์ไทล์ที่ 3)</span>
-                    <span className="font-mono font-bold text-ink tabular-nums">{q3}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={25}
-                    max={35}
-                    step={1}
-                    value={q3}
-                    onChange={(e) => setQ3(Number(e.target.value))}
-                    className="mt-2 w-full accent-accent cursor-pointer"
-                  />
-                </div>
+                <RangeField
+                  id="morph-tukey-q3"
+                  label="Q₃ (ควอร์ไทล์ที่ 3)"
+                  value={q3}
+                  onChange={setQ3}
+                  min={25}
+                  max={35}
+                  step={1}
+                  valueText={(v) => `ควอร์ไทล์ที่ 3 = ${v} คะแนน (IQR = ${(v - q1).toFixed(1)})`}
+                  ticks={TUKEY_Q3_TICKS}
+                  hint={
+                    <>
+                      รั้วบนขยับตาม Q₃: Q₃ + 1.5 × IQR ={" "}
+                      <span className="num font-semibold text-accent">{tukey.upperFence.toFixed(1)}</span> · Q₁ ={" "}
+                      <span className="num">{q1}</span> (คงที่)
+                    </>
+                  }
+                />
 
                 <div className="rounded-xl border border-rule bg-surface-hover/80 p-3 text-xs">
                   <div className="flex items-center justify-between">
@@ -545,28 +616,34 @@ export function FormulaMorphShowcase() {
             {/* Topic 2 Controls: Gini */}
             {topic === "gini" && (
               <div className="space-y-5">
-                <div>
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-good font-semibold">ลูกค้ากลุ่ม Active</span>
-                    <span className="font-mono font-bold text-good tabular-nums">
-                      {activeCustomers} / {totalCustomers}
+                <RangeField
+                  id="morph-gini-active"
+                  label="ลูกค้ากลุ่ม Active"
+                  labelClass="text-good"
+                  value={activeCustomers}
+                  onChange={setActiveCustomers}
+                  min={0}
+                  max={totalCustomers}
+                  step={1}
+                  accentClass="accent-good"
+                  valueText={(v) =>
+                    `Active ${v} จาก ${totalCustomers} คน · Inactive ${totalCustomers - v} คน · Gini ${giniCalc.gini.toFixed(3)}`
+                  }
+                  ticks={GINI_SPLIT_TICKS}
+                  badge={
+                    <span className="text-[11px] text-ink-subtle">
+                      Inactive{" "}
+                      <span className="num font-semibold text-bad">{totalCustomers - activeCustomers}</span>
                     </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={6}
-                    step={1}
-                    value={activeCustomers}
-                    onChange={(e) => setActiveCustomers(Number(e.target.value))}
-                    className="mt-2 w-full accent-good cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] text-ink-subtle">
-                    <span>0 (Pure I)</span>
-                    <span>3 (ปนกันครึ่งๆ = 0.5)</span>
-                    <span>6 (Pure A)</span>
-                  </div>
-                </div>
+                  }
+                  hint={
+                    <>
+                      0 = Pure Inactive · 3 = ปนกันครึ่งต่อครึ่ง (Gini{" "}
+                      <span className="num font-semibold">0.500</span> สูงสุด) · 6 = Pure Active — ปลายทั้งสองข้างให้ Gini{" "}
+                      <span className="num font-semibold">0.000</span>
+                    </>
+                  }
+                />
 
                 <GiniPopulationPanel
                   active={activeCustomers}
@@ -580,27 +657,25 @@ export function FormulaMorphShowcase() {
             {/* Topic 3 Controls: Confusion Matrix */}
             {topic === "confusion" && (
               <div className="space-y-5">
-                <div>
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-accent-ink font-semibold">เกณฑ์ตัดสินใจ (Threshold T)</span>
-                    <span className="font-mono font-bold text-accent px-2 py-0.5 rounded bg-accent/10 tabular-nums">
-                      T = <AnimatedNumber value={threshold} decimals={2} reducedMotion={reducedMotion} />
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0.2}
-                    max={0.8}
-                    step={0.05}
-                    value={threshold}
-                    onChange={(e) => setThreshold(Number(e.target.value))}
-                    className="mt-2 w-full accent-accent cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] text-ink-subtle">
-                    <span>0.20 (เน้น Recall สูง)</span>
-                    <span>0.80 (เน้น Precision สูง)</span>
-                  </div>
-                </div>
+                <RangeField
+                  id="morph-threshold"
+                  label="เกณฑ์ตัดสินใจ (Threshold T)"
+                  value={threshold}
+                  onChange={setThreshold}
+                  min={0.2}
+                  max={0.8}
+                  step={0.05}
+                  decimals={2}
+                  valueText={(v) =>
+                    `เกณฑ์ตัดสินใจ T = ${v.toFixed(2)} · ตรวจพบผู้ป่วย ${cm.tp} จาก ${cm.tp + cm.fn} คน · Precision ${(cm.precision * 100).toFixed(1)}% · Recall ${(cm.recall * 100).toFixed(1)}%`
+                  }
+                  ticks={THRESHOLD_TICKS}
+                  hint={
+                    <>
+                      T ต่ำ → Recall สูง (จับผู้ป่วยได้ครบ แต่ทายผิดเพิ่ม) · T สูง → Precision สูง (ลดการทายผิด แต่พลาดผู้ป่วย)
+                    </>
+                  }
+                />
 
                 <ThresholdStripDiagram
                   posScores={POS_SCORES}
@@ -829,7 +904,7 @@ const AnimatedNumber = memo(function AnimatedNumber({
 }: AnimatedNumberProps) {
   const v = useTweenedNumber(value, reducedMotion);
   return (
-    <span className={className} style={style}>
+    <span className={`tabular-nums ${className ?? ""}`} style={style}>
       {v.toFixed(decimals)}
     </span>
   );
@@ -993,10 +1068,14 @@ const GiniPopulationPanel = memo(function GiniPopulationPanel({
             />
           )}
         </div>
-        <div className="mt-1 flex justify-between text-[11px] font-mono text-ink-subtle tabular-nums">
-          <span>0.00 (บริสุทธิ์)</span>
-          <span>0.25</span>
-          <span>0.50 (ปนกันสูงสุด)</span>
+        <div className="mt-1 flex justify-between gap-2 text-[10px] leading-tight text-ink-subtle">
+          <span className="min-w-0 [overflow-wrap:anywhere]">
+            <span className="num font-mono">0.00</span> บริสุทธิ์
+          </span>
+          <span className="num shrink-0 font-mono">0.25</span>
+          <span className="min-w-0 text-right [overflow-wrap:anywhere]">
+            <span className="num font-mono">0.50</span> ปนกันสูงสุด
+          </span>
         </div>
       </div>
     </div>
@@ -1255,6 +1334,7 @@ interface TypewriterSubtitleOverlayProps {
   chapterIndex: number;
   onSelectChapter: (idx: number) => void;
   autoAdvance: boolean;
+  speed: number;
   onComplete: () => void;
   reducedMotion: boolean;
 }
@@ -1264,6 +1344,7 @@ function TypewriterSubtitleOverlay({
   chapterIndex,
   onSelectChapter,
   autoAdvance,
+  speed,
   onComplete,
   reducedMotion,
 }: TypewriterSubtitleOverlayProps) {
@@ -1284,6 +1365,12 @@ function TypewriterSubtitleOverlay({
     onCompleteRef.current = onComplete;
   });
 
+  // Read through a ref: switching speed must not restart the typing or the current step.
+  const speedRef = useRef(speed);
+  useEffect(() => {
+    speedRef.current = speed;
+  });
+
   useEffect(() => {
     const handleVisibility = () => {
       if (document.hidden) setIsPaused(true);
@@ -1297,7 +1384,7 @@ function TypewriterSubtitleOverlay({
     if (charCount < graphemes.length) {
       const timer = setTimeout(() => {
         setCharCount((prev) => Math.min(prev + 1, graphemes.length));
-      }, 28);
+      }, Math.round(28 / speedRef.current));
       return () => clearTimeout(timer);
     }
   }, [isPaused, charCount, graphemes.length, reducedMotion]);
@@ -1311,7 +1398,7 @@ function TypewriterSubtitleOverlay({
 
     const timer = setTimeout(() => {
       onCompleteRef.current();
-    }, delay);
+    }, Math.round(delay / speedRef.current));
     return () => clearTimeout(timer);
   }, [isPaused, autoAdvance, isTypingDone, reducedMotion, chapterIndex]);
 
@@ -1410,6 +1497,7 @@ interface TukeyMorphProps {
   onAdvanceAnatomySubstep: (idx: number) => void;
   onNextStep: () => void;
   isPlaying: boolean;
+  speed: number;
   q1: number;
   q3: number;
   iqr: number;
@@ -1430,6 +1518,7 @@ function TukeyMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  speed,
   q1,
   q3,
   iqr,
@@ -1573,6 +1662,7 @@ function TukeyMorphFormula({
           chapterIndex={anatomySubstep}
           onSelectChapter={onSelectAnatomySubstep}
           autoAdvance={isPlaying}
+          speed={speed}
           onComplete={() => {
             if (!isPlaying) return;
             if (anatomySubstep < chapters.length - 1) {
@@ -1598,6 +1688,7 @@ interface GiniMorphProps {
   onAdvanceAnatomySubstep: (idx: number) => void;
   onNextStep: () => void;
   isPlaying: boolean;
+  speed: number;
   active: number;
   inactive: number;
   total: number;
@@ -1618,6 +1709,7 @@ function GiniMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  speed,
   active,
   inactive,
   total,
@@ -1768,6 +1860,7 @@ function GiniMorphFormula({
           chapterIndex={anatomySubstep}
           onSelectChapter={onSelectAnatomySubstep}
           autoAdvance={isPlaying}
+          speed={speed}
           onComplete={() => {
             if (!isPlaying) return;
             if (anatomySubstep < chapters.length - 1) {
@@ -1793,6 +1886,7 @@ interface ConfusionMorphProps {
   onAdvanceAnatomySubstep: (idx: number) => void;
   onNextStep: () => void;
   isPlaying: boolean;
+  speed: number;
   tp: number;
   fp: number;
   fn: number;
@@ -1811,6 +1905,7 @@ function ConfusionMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  speed,
   tp,
   fp,
   fn,
@@ -2012,6 +2107,7 @@ function ConfusionMorphFormula({
           chapterIndex={anatomySubstep}
           onSelectChapter={onSelectAnatomySubstep}
           autoAdvance={isPlaying}
+          speed={speed}
           onComplete={() => {
             if (!isPlaying) return;
             if (anatomySubstep < chapters.length - 1) {
@@ -2037,6 +2133,7 @@ interface KMeansMorphProps {
   onAdvanceAnatomySubstep: (idx: number) => void;
   onNextStep: () => void;
   isPlaying: boolean;
+  speed: number;
   pt: { x: number; y: number; label: string };
   c: { x: number; y: number; label: string };
   dx: number;
@@ -2056,6 +2153,7 @@ function KMeansMorphFormula({
   onAdvanceAnatomySubstep,
   onNextStep,
   isPlaying,
+  speed,
   pt,
   c,
   dx,
@@ -2233,6 +2331,7 @@ function KMeansMorphFormula({
           chapterIndex={anatomySubstep}
           onSelectChapter={onSelectAnatomySubstep}
           autoAdvance={isPlaying}
+          speed={speed}
           onComplete={() => {
             if (!isPlaying) return;
             if (anatomySubstep < chapters.length - 1) {
@@ -2290,8 +2389,9 @@ const TokenPill = memo(function TokenPill({
     : `color-mix(in srgb, ${color} ${isSpotlight ? "18%" : "10%"}, transparent)`;
 
   return (
-    <span
-      className={`relative inline-flex flex-col items-center cursor-pointer outline-none transition-opacity duration-200 ${
+    <button
+      type="button"
+      className={`touch-target relative inline-flex flex-col items-center cursor-pointer transition-opacity duration-200 ${
         dimmed ? "opacity-40 grayscale" : "opacity-100"
       }`}
       onClick={onClick}
@@ -2299,7 +2399,8 @@ const TokenPill = memo(function TokenPill({
       onMouseLeave={() => onHoverToken(null)}
       onFocus={() => onHoverToken(tokenKey)}
       onBlur={() => onHoverToken(null)}
-      tabIndex={0}
+      aria-label={label}
+      aria-pressed={isSpotlight}
       title={label}
     >
       <motion.span
@@ -2347,6 +2448,6 @@ const TokenPill = memo(function TokenPill({
           )}
         </AnimatePresence>
       </span>
-    </span>
+    </button>
   );
 });
