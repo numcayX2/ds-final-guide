@@ -1,28 +1,25 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-
-// Strict Safety Guard: Free models only
-const ALLOWED_FREE_MODELS = [
-  'fish-audio/s2.1-pro-free:free',
-  'meta-llama/llama-3.2-3b-instruct:free',
-  'google/gemini-2.0-flash-exp:free'
-];
+import * as googleTTS from 'google-tts-api';
+import { allFormulas } from '../src/data/formulas/index';
 
 interface ManifestEntry {
   hash: string;
   formulaId: string;
   stepIndex: number;
   text: string;
+  filePath: string;
   generatedAt: string;
   provider: string;
+  fileSizeBytes: number;
 }
 
-const MANIFEST_PATH = path.resolve('public/audio/tts/manifest.json');
 const AUDIO_DIR = path.resolve('public/audio/tts');
+const MANIFEST_PATH = path.resolve('public/audio/tts/manifest.json');
 const LEXICON_PATH = path.resolve('scripts/phonetic-lexicon.json');
 
-// Ensure output directory exists
+// Ensure directory exists
 if (!fs.existsSync(AUDIO_DIR)) {
   fs.mkdirSync(AUDIO_DIR, { recursive: true });
 }
@@ -45,82 +42,94 @@ if (fs.existsSync(LEXICON_PATH)) {
   }
 }
 
-function phoneticNormalize(text: string): string {
-  let result = text;
-  for (const [key, val] of Object.entries(lexicon)) {
-    const regex = new RegExp(`\\b${key}\\b`, 'gi');
-    result = result.replace(regex, val);
+function applyPhoneticLexicon(text: string): string {
+  let res = text;
+  for (const [enTerm, thPhonetic] of Object.entries(lexicon)) {
+    const escaped = enTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+    res = res.replace(regex, thPhonetic);
   }
-  return result;
+  return res;
 }
 
-function calculateHash(text: string): string {
+function computeHash(text: string): string {
   return crypto.createHash('sha256').update(text).digest('hex').substring(0, 16);
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function main() {
-  console.log('🎙️ Starting Data Science TTS Pre-generator (100% Free Engine Enforcement)');
-  
-  const apiKey = process.env.OPENROUTER_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN || '';
-  if (!apiKey) {
-    console.warn('⚠️ No OpenRouter API key found in env. Client-side Web Speech API will handle runtime narration seamlessly.');
-    return;
-  }
+  console.log('🎙️ ========================================================');
+  console.log('🎙️ STARTING 100% FREE THAI TTS PREGENERATION PIPELINE');
+  console.log('🎙️ Target Directory:', AUDIO_DIR);
+  console.log('🎙️ Total Formulas to process:', allFormulas.length);
+  console.log('🎙️ ========================================================\n');
 
-  // Import formulas from central registry
-  const { allFormulas } = await import('../src/data/formulas/index.js');
-  console.log(`Found ${allFormulas.length} formulas for audio verification.`);
-
-  let totalProcessed = 0;
-  let skipped = 0;
+  let generatedCount = 0;
+  let skippedCount = 0;
+  let totalSteps = 0;
 
   for (const formula of allFormulas) {
     for (const step of formula.steps) {
-      const scriptText = step.phoneticScript || step.explanation;
-      const normalizedText = phoneticNormalize(scriptText);
-      const textHash = calculateHash(normalizedText);
-      const fileKey = `${formula.id}_step_${step.stepIndex}`;
-      const targetFilePath = path.join(AUDIO_DIR, `${fileKey}.mp3`);
+      totalSteps++;
+      const baseText = step.phoneticScript || step.explanation;
+      const normalizedText = applyPhoneticLexicon(baseText);
+      const textHash = computeHash(normalizedText);
 
-      // Check if already generated in manifest
+      const fileKey = `${formula.id}_step_${step.stepIndex}`;
+      const fileName = `${fileKey}.mp3`;
+      const targetFilePath = path.join(AUDIO_DIR, fileName);
+
+      // Check if file already exists with same hash
       if (manifest[fileKey]?.hash === textHash && fs.existsSync(targetFilePath)) {
-        skipped++;
+        skippedCount++;
         continue;
       }
 
-      console.log(`⏳ Generating TTS for [${formula.id} - Step ${step.stepIndex}]...`);
-
-      // Rate limit enforcement: wait 3.5s (<= 18 reqs/min)
-      await sleep(3500);
+      console.log(`🔊 [${formula.id}] Step ${step.stepIndex}: "${normalizedText.substring(0, 45)}..."`);
 
       try {
-        // Enforce 100% free model endpoint
-        const targetModel = 'fish-audio/s2.1-pro-free:free';
-        if (!targetModel.endsWith(':free')) {
-          throw new Error('SECURITY HALT: Paid model call forbidden! Only :free models are permitted.');
-        }
+        // Enforce 100% free TTS generation (Rate-limited, zero API billing)
+        const base64 = await googleTTS.getAudioBase64(normalizedText, {
+          lang: 'th',
+          slow: false,
+          host: 'https://translate.google.com',
+          timeout: 15000,
+        });
 
-        // Mock/fetch fallback placeholder or actual OpenRouter audio generation
+        const buffer = Buffer.from(base64, 'base64');
+        fs.writeFileSync(targetFilePath, buffer);
+
         manifest[fileKey] = {
           hash: textHash,
           formulaId: formula.id,
           stepIndex: step.stepIndex,
           text: normalizedText,
+          filePath: `/audio/tts/${fileName}`,
           generatedAt: new Date().toISOString(),
-          provider: targetModel,
+          provider: 'free-neural-tts-engine',
+          fileSizeBytes: buffer.length,
         };
-        totalProcessed++;
+
+        generatedCount++;
+
+        // Friendly sleep to avoid rate limiting
+        await sleep(600);
       } catch (err: any) {
-        console.error(`Failed to generate TTS for ${fileKey}:`, err?.message);
+        console.error(`❌ Failed to generate audio for ${fileKey}:`, err?.message);
       }
     }
   }
 
-  // Save updated manifest
+  // Save manifest
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
-  console.log(`✅ TTS Generation complete! Skipped: ${skipped}, Processed: ${totalProcessed}. Manifest saved to ${MANIFEST_PATH}`);
+
+  console.log('\n========================================================');
+  console.log(`✅ TTS GENERATION COMPLETED!`);
+  console.log(`📊 Total Steps: ${totalSteps} | Generated: ${generatedCount} | Skipped: ${skippedCount}`);
+  console.log(`📁 Audio Files Location: ${AUDIO_DIR}`);
+  console.log(`📄 Manifest File: ${MANIFEST_PATH}`);
+  console.log('========================================================\n');
 }
 
 main().catch(console.error);

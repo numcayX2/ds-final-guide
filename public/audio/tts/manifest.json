@@ -1,0 +1,482 @@
+{
+  "precision_step_1": {
+    "hash": "0a4869d43947c0c6",
+    "formulaId": "precision",
+    "stepIndex": 1,
+    "text": "เพรสิชัน เท่ากับ ทรูโพสิทิฟ ส่วนด้วย ทรูโพสิทิฟ บวก ฟอลส์โพสิทิฟ",
+    "filePath": "/audio/tts/precision_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:26.839Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 58560
+  },
+  "precision_step_2": {
+    "hash": "b7fa505517880dd8",
+    "formulaId": "precision",
+    "stepIndex": 2,
+    "text": "แทนค่าตัวเลข ได้ สี่ ส่วนด้วย สี่บวกหนึ่ง",
+    "filePath": "/audio/tts/precision_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:27.617Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 34560
+  },
+  "precision_step_3": {
+    "hash": "21b6a461cfea7ef4",
+    "formulaId": "precision",
+    "stepIndex": 3,
+    "text": "รวมตัวส่วน ได้ สี่ ส่วน ห้า",
+    "filePath": "/audio/tts/precision_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:28.378Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 28224
+  },
+  "precision_step_4": {
+    "hash": "11c6bff81b18d85c",
+    "formulaId": "precision",
+    "stepIndex": 4,
+    "text": "คำนวณผลลัพธ์สุดท้าย ได้ ศูนย์จุดแปดศูนย์ หรือ แปดสิบเปอร์เซ็นต์",
+    "filePath": "/audio/tts/precision_step_4.mp3",
+    "generatedAt": "2026-10-15T20:32:29.168Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 50496
+  },
+  "recall_step_1": {
+    "hash": "2d7afe4072d8a299",
+    "formulaId": "recall",
+    "stepIndex": 1,
+    "text": "รีคอล เท่ากับ ทรูโพสิทิฟ ส่วนด้วย ทรูโพสิทิฟ บวก ฟอลส์เนกาทีฟ",
+    "filePath": "/audio/tts/recall_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:29.969Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 59904
+  },
+  "recall_step_2": {
+    "hash": "2528bdc1c776cc6d",
+    "formulaId": "recall",
+    "stepIndex": 2,
+    "text": "แทนค่าตัวเลข ได้ สี่ ส่วนด้วย สี่บวกสอง",
+    "filePath": "/audio/tts/recall_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:30.742Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 36096
+  },
+  "recall_step_3": {
+    "hash": "07b3b7da81be37af",
+    "formulaId": "recall",
+    "stepIndex": 3,
+    "text": "รวมตัวส่วน ได้ สี่ ส่วน หก",
+    "filePath": "/audio/tts/recall_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:31.522Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 26496
+  },
+  "recall_step_4": {
+    "hash": "2065d0c46cd67e23",
+    "formulaId": "recall",
+    "stepIndex": 4,
+    "text": "ผลลัพธ์สุดท้าย เท่ากับ ศูนย์จุดหกเจ็ด หรือ หกสิบหกจุดหกเจ็ด เปอร์เซ็นต์",
+    "filePath": "/audio/tts/recall_step_4.mp3",
+    "generatedAt": "2026-10-15T20:32:32.339Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 55680
+  },
+  "accuracy_step_1": {
+    "hash": "22738f9307db72be",
+    "formulaId": "accuracy",
+    "stepIndex": 1,
+    "text": "แอคคิวราซี เท่ากับ ทรูโพสิทิฟ บวก ทรูเนกาทีฟ ส่วนด้วย จำนวนทั้งหมด",
+    "filePath": "/audio/tts/accuracy_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:33.199Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 61632
+  },
+  "accuracy_step_2": {
+    "hash": "81b645f43ac4bc4c",
+    "formulaId": "accuracy",
+    "stepIndex": 2,
+    "text": "แทนค่าตัวเลข ได้ สี่บวกสาม ส่วนด้วย สิบ",
+    "filePath": "/audio/tts/accuracy_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:33.992Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 33792
+  },
+  "accuracy_step_3": {
+    "hash": "0da71dbb85f0535c",
+    "formulaId": "accuracy",
+    "stepIndex": 3,
+    "text": "ผลลัพธ์ เท่ากับ ศูนย์จุดเจ็ดศูนย์ หรือ เจ็ดสิบเปอร์เซ็นต์",
+    "filePath": "/audio/tts/accuracy_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:34.728Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 39168
+  },
+  "f1-score_step_1": {
+    "hash": "fa0874ac30f7f71d",
+    "formulaId": "f1-score",
+    "stepIndex": 1,
+    "text": "เอฟวัน เท่ากับ สองคูณ ทรูโพสิทิฟ ส่วนด้วย สองคูณทรูโพสิทิฟ บวก ฟอลส์โพสิทิฟ บวก ฟอลส์เนกาทีฟ",
+    "filePath": "/audio/tts/f1-score_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:35.661Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 88128
+  },
+  "f1-score_step_2": {
+    "hash": "f129d298014d0284",
+    "formulaId": "f1-score",
+    "stepIndex": 2,
+    "text": "แทนค่า ได้ สองคูณสี่ ส่วนด้วย สองคูณสี่ บวกหนึ่ง บวกสอง",
+    "filePath": "/audio/tts/f1-score_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:36.455Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 53376
+  },
+  "f1-score_step_3": {
+    "hash": "a9804372db37caa8",
+    "formulaId": "f1-score",
+    "stepIndex": 3,
+    "text": "เศษได้ แปด ส่วนได้ สิบเอ็ด",
+    "filePath": "/audio/tts/f1-score_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:37.193Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 20352
+  },
+  "f1-score_step_4": {
+    "hash": "226c87d4c99c1b15",
+    "formulaId": "f1-score",
+    "stepIndex": 4,
+    "text": "ผลลัพธ์สุดท้าย ได้ประมาณ ศูนย์จุดเจ็ดสาม",
+    "filePath": "/audio/tts/f1-score_step_4.mp3",
+    "generatedAt": "2026-10-15T20:32:37.954Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 36288
+  },
+  "valid-mean_step_1": {
+    "hash": "e45b50ee2767ba0f",
+    "formulaId": "valid-mean",
+    "stepIndex": 1,
+    "text": "ขั้นตอนที่หนึ่ง คัดกรองค่าขยะ ตัด ลบสี่หมื่น ออก เหลือข้อมูลถูกต้อง สาม ค่า",
+    "filePath": "/audio/tts/valid-mean_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:38.772Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 62592
+  },
+  "valid-mean_step_2": {
+    "hash": "c3a677ecdf1cef18",
+    "formulaId": "valid-mean",
+    "stepIndex": 2,
+    "text": "ตั้งสมการรวม เจ็ดหมื่นห้าพัน บวก ห้าหมื่น บวก เก้าหมื่นเก้าพันเก้าร้อยเก้าสิบเก้า หารด้วย สาม",
+    "filePath": "/audio/tts/valid-mean_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:39.615Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 79488
+  },
+  "valid-mean_step_3": {
+    "hash": "2153fd1991e8e4eb",
+    "formulaId": "valid-mean",
+    "stepIndex": 3,
+    "text": "ผลรวมเศษได้ สองแสนสองหมื่นสี่พันเก้าร้อยเก้าสิบเก้า ส่วนด้วย สาม",
+    "filePath": "/audio/tts/valid-mean_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:40.454Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 63360
+  },
+  "valid-mean_step_4": {
+    "hash": "ec18467d51487af6",
+    "formulaId": "valid-mean",
+    "stepIndex": 4,
+    "text": "ได้ค่าแทนที่ เจ็ดหมื่นห้าพันบาท พร้อมบันทึก แฟล็ก",
+    "filePath": "/audio/tts/valid-mean_step_4.mp3",
+    "generatedAt": "2026-10-15T20:32:41.245Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 41856
+  },
+  "cluster-median_step_1": {
+    "hash": "b47e540dd26330e7",
+    "formulaId": "cluster-median",
+    "stepIndex": 1,
+    "text": "เรียงลำดับข้อมูล สี่สิบสอง สี่สิบเจ็ด สี่สิบแปด และ ห้าสิบเอ็ด",
+    "filePath": "/audio/tts/cluster-median_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:42.061Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 51072
+  },
+  "cluster-median_step_2": {
+    "hash": "8cffae1c3e6f19ba",
+    "formulaId": "cluster-median",
+    "stepIndex": 2,
+    "text": "นำตัวกลางสองตัว สี่สิบเจ็ด บวก สี่สิบแปด หารด้วย สอง",
+    "filePath": "/audio/tts/cluster-median_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:42.851Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 50496
+  },
+  "cluster-median_step_3": {
+    "hash": "e68eb03a772f09e0",
+    "formulaId": "cluster-median",
+    "stepIndex": 3,
+    "text": "ผลลัพธ์มัธยฐาน ได้ สี่สิบเจ็ดจุดห้า",
+    "filePath": "/audio/tts/cluster-median_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:43.617Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 30336
+  },
+  "min-max_step_1": {
+    "hash": "08b6b3e86cbb42f6",
+    "formulaId": "min-max",
+    "stepIndex": 1,
+    "text": "หาอัตราส่วน ได้ หนึ่งหมื่นห้าพัน หาร หนึ่งแสนหกหมื่นห้าพัน เท่ากับ เศษหนึ่งส่วนสิบเอ็ด",
+    "filePath": "/audio/tts/min-max_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:44.446Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 66048
+  },
+  "min-max_step_2": {
+    "hash": "842bc8b0d0eabba9",
+    "formulaId": "min-max",
+    "stepIndex": 2,
+    "text": "คูณด้วยความกว้างช่วงใหม่ คือ เก้า ลบ ศูนย์",
+    "filePath": "/audio/tts/min-max_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:45.225Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 32832
+  },
+  "min-max_step_3": {
+    "hash": "c8ec7f556c8d555a",
+    "formulaId": "min-max",
+    "stepIndex": 3,
+    "text": "ผลลัพธ์สุดท้าย ได้ประมาณ ศูนย์จุดแปดสอง",
+    "filePath": "/audio/tts/min-max_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:45.991Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 36096
+  },
+  "z-score_step_1": {
+    "hash": "aa93d8c11d16893e",
+    "formulaId": "z-score",
+    "stepIndex": 1,
+    "text": "ตั้งสมการ สามหมื่นห้าพัน ลบ เก้าหมื่นแปดร้อยสามสิบสามจุดสามสาม หารด้วย หกหมื่นเจ็ดพันสามร้อยห้าสิบห้าจุดแปดหนึ่ง",
+    "filePath": "/audio/tts/z-score_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:46.933Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 97536
+  },
+  "z-score_step_2": {
+    "hash": "54a43e7c0807e265",
+    "formulaId": "z-score",
+    "stepIndex": 2,
+    "text": "เศษได้ ลบห้าหมื่นห้าพันแปดร้อยสามสิบสามจุดสามสาม",
+    "filePath": "/audio/tts/z-score_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:47.709Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 48000
+  },
+  "z-score_step_3": {
+    "hash": "2f99e45f90a8cd86",
+    "formulaId": "z-score",
+    "stepIndex": 3,
+    "text": "ผลลัพธ์ ซีสโกร์ ได้ ลบศูนย์จุดแปดสาม",
+    "filePath": "/audio/tts/z-score_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:48.484Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 35136
+  },
+  "tukey-fences_step_1": {
+    "hash": "c214655e7e5e105d",
+    "formulaId": "tukey-fences",
+    "stepIndex": 1,
+    "text": "หา ไอคิวอาร์ เจ็ดสิบ ลบ สามสิบ ได้ สี่สิบ",
+    "filePath": "/audio/tts/tukey-fences_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:49.246Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 36288
+  },
+  "tukey-fences_step_2": {
+    "hash": "280db5e0bdaeef3d",
+    "formulaId": "tukey-fences",
+    "stepIndex": 2,
+    "text": "คำนวณรั้วบน เจ็ดสิบ บวก หนึ่งจุดห้าคูณสี่สิบ ได้ หนึ่งร้อยสามสิบ",
+    "filePath": "/audio/tts/tukey-fences_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:50.056Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 55680
+  },
+  "tukey-fences_step_3": {
+    "hash": "307e957ced5c1b3e",
+    "formulaId": "tukey-fences",
+    "stepIndex": 3,
+    "text": "คำนวณรั้วล่าง สามสิบ ลบ หกสิบ ได้ ลบสามสิบ",
+    "filePath": "/audio/tts/tukey-fences_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:50.828Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 40128
+  },
+  "tukey-fences_step_4": {
+    "hash": "88662eb4ab09545e",
+    "formulaId": "tukey-fences",
+    "stepIndex": 4,
+    "text": "หนึ่งร้อยสี่สิบ มากกว่า หนึ่งร้อยสามสิบ สรุปว่าเป็น เอาต์ไลเออร์",
+    "filePath": "/audio/tts/tukey-fences_step_4.mp3",
+    "generatedAt": "2026-10-15T20:32:51.656Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 48960
+  },
+  "gini-impurity_step_1": {
+    "hash": "850a0433c2d50ea1",
+    "formulaId": "gini-impurity",
+    "stepIndex": 1,
+    "text": "กีนี เท่ากับ หนึ่ง ลบด้วย ผลบวกของความน่าจะเป็นแต่ละคลาสยกกำลังสอง",
+    "filePath": "/audio/tts/gini-impurity_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:52.459Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 56448
+  },
+  "gini-impurity_step_2": {
+    "hash": "95573270ca569d94",
+    "formulaId": "gini-impurity",
+    "stepIndex": 2,
+    "text": "แทนค่า หนึ่ง ลบด้วย ศูนย์จุดห้ายกกำลังสอง บวก ศูนย์จุดห้ายกกำลังสอง",
+    "filePath": "/audio/tts/gini-impurity_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:53.308Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 65088
+  },
+  "gini-impurity_step_3": {
+    "hash": "65f259db79ae3e5f",
+    "formulaId": "gini-impurity",
+    "stepIndex": 3,
+    "text": "ได้ค่า กีนี ของโหนดแม่ เท่ากับ ศูนย์จุดห้าศูนย์ศูนย์",
+    "filePath": "/audio/tts/gini-impurity_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:54.089Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 43776
+  },
+  "gini-split_step_1": {
+    "hash": "1d8944d8b0a089a3",
+    "formulaId": "gini-split",
+    "stepIndex": 1,
+    "text": "ตั้งสมการถ่วงน้ำหนัก กิ่งซ้าย บวก กิ่งขวา",
+    "filePath": "/audio/tts/gini-split_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:54.854Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 36480
+  },
+  "gini-split_step_2": {
+    "hash": "5a84442b6d51b068",
+    "formulaId": "gini-split",
+    "stepIndex": 2,
+    "text": "แทนค่าตัวเลข ได้ หกส่วนสิบ คูณ ศูนย์จุดสองเจ็ดแปด บวก สี่ส่วนสิบ คูณ ศูนย์จุดสองเจ็ดแปด",
+    "filePath": "/audio/tts/gini-split_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:55.717Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 81024
+  },
+  "gini-split_step_3": {
+    "hash": "ac881662c9ea2cff",
+    "formulaId": "gini-split",
+    "stepIndex": 3,
+    "text": "ได้ กีนี สปลิต ของ แคนดิเดต เอ เท่ากับ ศูนย์จุดสองเจ็ดแปด",
+    "filePath": "/audio/tts/gini-split_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:56.522Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 50496
+  },
+  "gini-gain_step_1": {
+    "hash": "983b01cc29f78211",
+    "formulaId": "gini-gain",
+    "stepIndex": 1,
+    "text": "แคนดิเดต เอ ศูนย์จุดห้าศูนย์ศูนย์ ลบ ศูนย์จุดสองเจ็ดแปด ได้ เกน เท่ากับ ศูนย์จุดสองสองสอง",
+    "filePath": "/audio/tts/gini-gain_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:57.381Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 82752
+  },
+  "gini-gain_step_2": {
+    "hash": "279216102812fdc5",
+    "formulaId": "gini-gain",
+    "stepIndex": 2,
+    "text": "แคนดิเดต บี ศูนย์จุดห้าศูนย์ศูนย์ ลบ ศูนย์จุดสี่สี่สี่ ได้ เกน เท่ากับ ศูนย์จุดศูนย์ห้าหก",
+    "filePath": "/audio/tts/gini-gain_step_2.mp3",
+    "generatedAt": "2026-10-15T20:32:58.221Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 80640
+  },
+  "gini-gain_step_3": {
+    "hash": "a3ec26576198e6c1",
+    "formulaId": "gini-gain",
+    "stepIndex": 3,
+    "text": "ศูนย์จุดสองสองสอง มากกว่า ศูนย์จุดศูนย์ห้าหก ตัดสินใจเลือก แคนดิเดต เอ",
+    "filePath": "/audio/tts/gini-gain_step_3.mp3",
+    "generatedAt": "2026-10-15T20:32:59.065Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 71616
+  },
+  "kmeans-distance-centroid_step_1": {
+    "hash": "f7ba8aef914eae41",
+    "formulaId": "kmeans-distance-centroid",
+    "stepIndex": 1,
+    "text": "คลัสเตอร์สอง ประกอบด้วยสมาชิก ห้าจุด ได้แก่ เอสาม เอสี่ เอห้า เอหก และ เอแปด",
+    "filePath": "/audio/tts/kmeans-distance-centroid_step_1.mp3",
+    "generatedAt": "2026-10-15T20:32:59.896Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 74112
+  },
+  "kmeans-distance-centroid_step_2": {
+    "hash": "eb6f9e9d226255fe",
+    "formulaId": "kmeans-distance-centroid",
+    "stepIndex": 2,
+    "text": "หาค่าเฉลี่ยแกนเอ็กซ์หนึ่ง และแกนเอ็กซ์สอง นำมาหารด้วย ห้า",
+    "filePath": "/audio/tts/kmeans-distance-centroid_step_2.mp3",
+    "generatedAt": "2026-10-15T20:33:00.692Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 56064
+  },
+  "kmeans-distance-centroid_step_3": {
+    "hash": "86c970c566b10c7a",
+    "formulaId": "kmeans-distance-centroid",
+    "stepIndex": 3,
+    "text": "แกนแรกได้ สามสิบส่วนห้า แกนสองได้ สามสิบส่วนห้า พิกัดเซนทรอยด์ใหม่คือ หก คอมม่า หก",
+    "filePath": "/audio/tts/kmeans-distance-centroid_step_3.mp3",
+    "generatedAt": "2026-10-15T20:33:01.565Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 73152
+  },
+  "kmeans-distance-centroid_step_4": {
+    "hash": "33814c15dab760df",
+    "formulaId": "kmeans-distance-centroid",
+    "stepIndex": 4,
+    "text": "สรุปพิกัด เซนทรอยด์รอบถัดไปครบทั้งสามคลัสเตอร์",
+    "filePath": "/audio/tts/kmeans-distance-centroid_step_4.mp3",
+    "generatedAt": "2026-10-15T20:33:02.342Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 40128
+  },
+  "silhouette-score_step_1": {
+    "hash": "0fa453c9f79fbc20",
+    "formulaId": "silhouette-score",
+    "stepIndex": 1,
+    "text": "ซิลูเอต สโกร์ เท่ากับ บี ไอ ลบ เอ ไอ ส่วนด้วย ค่าแม็กซ์ของ เอไอ กับ บีไอ",
+    "filePath": "/audio/tts/silhouette-score_step_1.mp3",
+    "generatedAt": "2026-10-15T20:33:03.171Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 62400
+  },
+  "silhouette-score_step_2": {
+    "hash": "93e94b03754ee7bb",
+    "formulaId": "silhouette-score",
+    "stepIndex": 2,
+    "text": "แทนค่า สี่จุดแปดศูนย์ ลบ หนึ่งจุดสองศูนย์ ส่วนด้วย สี่จุดแปดศูนย์",
+    "filePath": "/audio/tts/silhouette-score_step_2.mp3",
+    "generatedAt": "2026-10-15T20:33:03.969Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 61248
+  },
+  "silhouette-score_step_3": {
+    "hash": "e4b10e299a75b1fe",
+    "formulaId": "silhouette-score",
+    "stepIndex": 3,
+    "text": "ผลลัพธ์สุดท้าย ได้ บวกศูนย์จุดเจ็ดห้า",
+    "filePath": "/audio/tts/silhouette-score_step_3.mp3",
+    "generatedAt": "2026-10-15T20:33:04.736Z",
+    "provider": "free-neural-tts-engine",
+    "fileSizeBytes": 32448
+  }
+}

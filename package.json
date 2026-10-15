@@ -12,11 +12,13 @@
     "pregenerate-tts": "tsx scripts/pregenerate-tts.ts"
   },
   "dependencies": {
-    "astro": "^5.4.1",
     "@tailwindcss/vite": "^4.0.9",
+    "astro": "^5.4.1",
     "canvas-confetti": "^1.9.4",
+    "google-tts-api": "^2.0.2",
     "gsap": "^3.12.7",
     "katex": "^0.16.21",
+    "msedge-tts": "^2.1.0",
     "tailwindcss": "^4.0.9"
   },
   "devDependencies": {
