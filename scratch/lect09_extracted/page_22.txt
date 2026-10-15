@@ -1,0 +1,20 @@
+Slide 22 outlines a decision framework titled “ใช้ ปรับ หรือยังไม่ใช่: ข้อเสนอต้องตามหลักฐาน” (Use, Adjust, or Not Yet Use: The Proposal Must Be Supported by Evidence). It establishes that every option—whether to use, adjust, or not yet implement a proposal—must be justified with evidence and include risk assessment and mitigation strategies.
+
+Key criteria for each category are detailed as follows:
+
+**Use (✅ ใช้):**
+- Clear benefits and alignment with objectives.
+- Positive impact on users at an acceptable level.
+- Continuous monitoring plan in place.
+
+**Adjust (⚙️ ปรับ):**
+- Limited scope of application (e.g., specific target groups/low-risk areas).
+- Additional data collection required (e.g., validation, further testing).
+- Defined outcomes and limitations for deployment.
+
+**Not Yet Use (❌ ยังไม่ใช่):**
+- Insufficient performance or high user risk.
+- Potential negative consequences including legal, ethical, or privacy concerns.
+- Requires additional evidence or technology readiness before implementation.
+
+The slide concludes with a guiding principle: decisions must be based on solid evidence, considering risks, benefits, and constraints.

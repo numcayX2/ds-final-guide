@@ -1,0 +1,10 @@
+<summary>
+The slide titled "Deeper Trees Fit Training Data More Closely" illustrates how increasing tree depth improves the model's fit to training data, but does not guarantee better performance on unseen customers.
+
+Key points:
+- **Same Training Customers, More Tree Depth**: As max_depth increases from 1 to 3 to unrestricted, the number of branches and leaves in the decision tree grows, allowing for a more detailed fit of known examples.
+- **Training Accuracy**: The text mentions that with an unrestricted max_depth, the training accuracy can reach 1.00, indicating perfect fit for the training data.
+- **Unseen Customers**: Despite achieving perfect training fit, the model may not generalize well to unseen customers, as it might overfit to the training data.
+
+This summary captures the essence of the slide without adding any new information or comments.
+</summary>

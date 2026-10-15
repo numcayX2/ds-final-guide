@@ -1,0 +1,12 @@
+AI / AutoML Suggests Candidate Classifiers
+
+Human Verifies
+- Problem + Target
+- Data Leakage
+- Assumptions + Constraints
+- Interpretability
+
+Documented Recommendation
+เลือก Candidate ที่ตรวจสอบและอธิบายเหตุผลได้
+
+Takeaway: AI may suggest the candidate; you must defend the choice.

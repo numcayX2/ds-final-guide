@@ -1,0 +1,10 @@
+The most important fact is that decision trees grow through recursive splitting, where each branch learns from its own subset of observations.
+
+Key points in descending order of importance:
+- Decision Tree เติบโตเมื่อ Local Split Process เกิดขึ้นกับ Observations ที่มาถึงแต่ละ Child Node
+- First Local Split: Training Data แยกเป็นสอง Child Subsets (shown with blue circles, green triangles, and purple squares)
+- Each Child Becomes a New Local Problem
+  - Left Child เรียนรู้จาก Observations ของตนเอง อาจเลือก purchases_last_90_days
+  - Right Child เรียนรู้จาก Observations ของตนเอง อาจเลือก spending_last_90_days
+- Recursive Splitting: แต่ละ Branch เปรียบเทียบ Candidate Splits จากข้อมูลที่มาถึง Branch นั้น
+- Takeaway: แต่ละ Branch เรียนรู้จาก Subset ของลูกค้าที่มาถึงตนเอง

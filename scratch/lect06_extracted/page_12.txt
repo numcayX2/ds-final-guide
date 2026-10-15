@@ -1,0 +1,9 @@
+The slide presents a conceptual overview of the machine learning training process. It illustrates how an algorithm is transformed into a trained model through exposure to data. Key components include:
+
+- **Training Examples**: A table containing features, known targets or similarity structures, and corresponding labels (represented by shapes like circles, squares, triangles).
+- **Learning Algorithm**: The mechanism that processes the training examples using an objective or loss function.
+- **Training Process**: A cyclical operation where the algorithm learns from the data.
+- **Learned Parameters or Decision Rules**: Outputs derived during training, such as sliders representing parameter values and tree structures for decision rules.
+- **Trained Model**: The final product capable of making predictions or assignments on new observations.
+
+This framework outlines the transition from raw algorithms to functional models via structured learning phases.

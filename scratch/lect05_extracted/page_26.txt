@@ -1,0 +1,9 @@
+Exploratory and Explanatory Visualizations Serve Different Purposes.
+
+Data is the same, but objectives differ:
+- **Exploratory Visualization**: For the Analyst. Many questions, many perspectives, very detailed. Used to find Candidate Evidence.
+- **Explanatory Visualization**: For the Audience. One main message, selected evidence, Context that is necessary. Used to communicate clearly.
+
+The process moves from Explore to Explain: Select → Simplify → Contextualize → Refine.
+
+Takeaway: Explore broadly for yourself, then explain selectively for the Audience.

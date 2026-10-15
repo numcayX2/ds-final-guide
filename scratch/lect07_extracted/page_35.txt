@@ -1,0 +1,25 @@
+**Homework #2: Select a Classifier Model for Customer Inactivity, where the chosen Metric aligns with Retention Decision outcomes.**
+
+*   **Evaluation Context:** Same Evaluation Set of 100 Customers.
+*   **Positive Class:** Customer Inactive = Yes.
+*   **Analytics Question:** Which customers are likely to be Inactive?
+
+**Confusion Matrices (Predicted Class vs Actual Class):**
+
+*   **Model A:**
+    *   Actual: Yes | Predicted: Yes = 24 | Predicted: No = 16
+    *   Actual: No | Predicted: Yes = 3 | Predicted: No = 57
+*   **Model B:**
+    *   Actual: Yes | Predicted: Yes = 36 | Predicted: No = 4
+    *   Actual: No | Predicted: Yes = 18 | Predicted: No = 42
+*   **Model C:**
+    *   Actual: Yes | Predicted: Yes = 32 | Predicted: No = 8
+    *   Actual: No | Predicted: Yes = 7 | Predicted: No = 53
+
+**Required Tasks:**
+
+1.  **Calculate Metrics for all Models:** Accuracy, Precision, Recall, and F-measure (F1-score). Show formulas, substitutions, and final values.
+2.  **Select Primary Metric:** Justify based on the impact of False Positive and False Negative errors on the Retention Decision.
+3.  **Select Candidate Model:** Use the Primary Metric selected in Step 2 to support the choice.
+
+**Note:** Answers may differ; however, the chosen Metric must logically justify the selected Model.

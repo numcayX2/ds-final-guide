@@ -1,0 +1,7 @@
+K-means Clustering uses the Partition principle to divide n objects in a data set D into k groups (where the researcher determines the value of k). The algorithm partitions objects into k groups by replacing each group with its mean, which is used as the centroid for measuring distances between objects within the same group.
+
+The Method involves:
+1) Initializing k values called cluster centers (centroid);
+2) Finding the distance between data and centroids; if data is closest to a specific centroid, move it to that group;
+3) Calculating the Mean of each group to become the new centroid;
+4) Returning to step 2 until the means in each group no longer change or there are no members in any group left to change groups.

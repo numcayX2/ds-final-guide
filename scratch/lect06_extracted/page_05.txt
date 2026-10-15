@@ -1,0 +1,8 @@
+The intended output defines the modeling question.
+
+A single dataset of E-commerce customer behavior can support many different tasks because the question defines the output.
+
+Specific examples include:
+*   **Classification or probability:** "Will the customer stop buying within 60 days?" (Output type)
+*   **Regression/Forecasting:** "How much will the customer spend next month?" (Output value: $12,450)
+*   **Clustering:** "Do customers have similar behaviors?" (Grouping by similarity)

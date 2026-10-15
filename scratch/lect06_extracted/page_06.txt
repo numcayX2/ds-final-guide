@@ -1,0 +1,15 @@
+### Summary of Slide 6: Problem, Setting, Task, Algorithm, and Model Are Different Levels
+
+#### Key Points:
+1. **Problem**: This level addresses the core question or issue at hand. For example, "ลูกค้าคนใดจะหยุดซื้อ" (Which customer will stop buying).
+
+2. **Learning Setting**: Defines the type of learning based on available data. For instance, "Supervised Learning" is mentioned as a setting where labeled data is used to learn.
+
+3. **Modeling Task**: Specifies the specific task within the learning setting. An example given is "Classification," which involves predicting categories or labels.
+
+4. **Algorithm**: Describes the method or process used to achieve the modeling task. Here, "Decision Tree" is cited as an algorithm for classification tasks.
+
+5. **Trained Model**: Represents the final output after applying the algorithm to the data. In this case, it's the "Fitted Decision Tree," which has been trained on the dataset.
+
+#### Takeaway:
+The levels are interconnected but not interchangeable. Each level plays a distinct role in the modeling process, from defining the problem to selecting the appropriate algorithm and finally arriving at a trained model. Understanding these distinctions is crucial for effective machine learning practices.

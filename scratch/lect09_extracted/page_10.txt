@@ -1,0 +1,48 @@
+Of course. Here is the detailed extraction and transcription of all concepts, headings, formulas, numbers, tables, diagrams, legal cases, SHAP/XAI explanations, and takeaways from slide 10.
+
+### Slide 10: Historical Bias in Data Science Models
+
+**Core Concept:**
+The slide illustrates how historical data can introduce bias into machine learning models. This occurs when the training data does not represent a fair or random distribution of outcomes across different groups, leading the model to learn incorrect patterns.
+
+**Key Takeaway:**
+Historical data is often not neutral. If opportunities were not distributed equally in the past (e.g., some customer groups received more attention than others), the model will learn these biases instead of true underlying patterns.
+
+---
+
+### Detailed Breakdown of Concepts & Formulas
+
+#### 1. The Problem with "Old" Data
+*   **Heading:** Historical Bias: โมเดลอาจเรียนรู้โอกาสที่ไม่เท่ากัน (Historical Bias: Models may learn unequal opportunities)
+*   **Sub-heading:** ข้อมูลอดีตสะท้อนทั้งพฤติกรรมลูกค้าและวิธีที่องค์กรเคยปฏิบัติ (Past data reflects both customer behavior and how the organization used to operate)
+
+#### 2. VIP Customer Group Analysis
+*   **Label:** ลูกค้า VIP (VIP Customers)
+*   **Contact Rate:** ถูกติดต่อ 80% (Contacted 80%)
+*   **Interpretation:** In the past, 8 out of 10 VIP customers were contacted about an offer. This high contact rate might be misinterpreted by the model as a sign of higher propensity to respond.
+
+#### 3. New Customer Group Analysis
+*   **Label:** ลูกค้าใหม่ (New Customers)
+*   **Contact Rate:** ถูกติดต่อ 20% (Contacted 20%)
+*   **Interpretation:** Only 2 out of 10 new customers were contacted. The model might see this low contact rate and incorrectly assume new customers are less likely to engage, reinforcing the bias.
+
+#### 4. Model's Misinterpretation (SHAP/XAI Perspective)
+*   **Concept:** ความน่าจะเป็นในการตอบรับข้อเสนอ (P(Respond = Yes))
+*   **Model's View:** The model learns that VIP customers have a much higher probability of responding to offers compared to new customers.
+*   **Reasoning Flaw:** The model attributes this difference to inherent customer preference rather than recognizing it as a result of unequal historical treatment (bias).
+
+#### 5. Conclusion on Data Neutrality
+*   **Statement:** ข้อมูลอดีตไม่เป็นกลาง หากโอกาสในอดีตไม่เท่ากัน (Past data is not neutral if opportunities in the past were unequal)
+*   **Implication:** Models trained on such data will inherit and perpetuate these biases, leading to unfair predictions or decisions.
+
+---
+
+### Summary Formula Representation
+
+The relationship can be summarized mathematically as:
+
+`Bias_Model = f(Historical_Data)`
+
+Where:
+*   `Historical_Data` contains records where certain groups (like VIPs) had disproportionately higher exposure to marketing efforts.
+*   `f()` represents the model's learning function, which mistakenly interprets the correlation between group membership and response rate as causation or preference, rather than acknowledging the external factor of differential treatment.

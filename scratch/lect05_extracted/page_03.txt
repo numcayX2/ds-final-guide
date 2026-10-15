@@ -1,0 +1,12 @@
+**EDA Is an Iterative Checkpoint**
+
+*   **Core Concept:** EDA (Exploratory Data Analysis) is an iterative checkpoint in the workflow. It moves forward when foundations are clear and loops back to revisit when questions, meanings, or data issues are found.
+*   **Forward Path (Green):** When moving forward ("เดินหน้า"), EDA produces:
+    *   "หลักฐานน่าเชื่อถือ" (Credible evidence)
+    *   "Pattern และ Insight" (Patterns and Insights)
+    *   "การวิเคราะห์ขั้นต่อไป" (Further analysis)
+*   **Loop Back Path (Red):** When looping back ("ย้อนกลับไปทบทวน"), EDA addresses:
+    *   "คำถามไม่ชัด" (Unclear questions) → leads to **Analytical Question**
+    *   "ความหมายคลุมเครือ" (Ambiguous meanings) → leads to **Data Understanding**
+    *   "ข้อมูลหรือ Feature มีปัญหา" (Data or Feature problems) → leads to **Data Preparation**
+*   **Takeaway:** "เมื่อ EDA พบจุดอ่อน ต้องย้อนกลับก่อนเดินหน้าต่อ" (When EDA finds weaknesses, you must loop back before moving forward.)

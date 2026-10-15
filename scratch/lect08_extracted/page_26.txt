@@ -1,0 +1,40 @@
+**Slide 26: Example K-Mean Clustering (แก้ไข)**
+
+**Step 2:** Find the distance between data points, i.e., find the distance from the data.
+*   **Data Point A:** $A = (x1, x2)$
+*   **Centroid Y:** $Y = (y1, y2)$
+
+**Solution Formula:**
+$$Distance_{manhattan}(A, Y) = |x1 - y1| + |x2 - y2| + ... + |xn - yn|$$
+
+**Iteration 1 Setup:**
+
+*   **Initial Centroids (Cases):**
+    *   C1(2, 10)
+    *   C2(5, 8)
+    *   C3(1, 2)
+
+*   **Data Points (Points):**
+    *   A1 (2, 10)
+    *   A2 (2, 5)
+    *   A3 (8, 4)
+    *   A4 (5, 8)
+    *   A5 (7, 5)
+    *   A6 (6, 4)
+    *   A7 (1, 2)
+    *   A8 (4, 9)
+
+**Table Structure for Calculation:**
+The slide presents a table to calculate distances and assign clusters based on the Manhattan Distance formula.
+
+| | | C1(2, 10) | C2(5, 8) | C3(1, 2) | |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| | **Point** | **Dist Mean 1** | **Dist Mean 2** | **Dist Mean 3** | **Cluster** |
+| | A1 (2, 10) | | | | |
+| | A2 (2, 5) | | | | |
+| | A3 (8, 4) | | | | |
+| | A4 (5, 8) | | | | |
+| | A5 (7, 5) | | | | |
+| | A6 (6, 4) | | | | |
+| | A7 (1, 2) | | | | |
+| | A8 (4, 9) | | | | |

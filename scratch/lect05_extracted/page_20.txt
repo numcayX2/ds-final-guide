@@ -1,0 +1,35 @@
+The slide is titled "Choose a Chart by the Analytical Question."
+
+**Main Concept:**
+The central premise is to select a chart based on the analytical question and the relationship of data that needs to be shown, rather than solely on the Data Type. The process begins with the question: "What does the viewer need to see?"
+
+**Chart Selection Guide:**
+Five categories of analytical questions are presented, each linked to specific chart types:
+
+1.  **Distribution**
+    *   **Question:** How is the data distributed? (ข้อมูลกระจายอย่างไร?)
+    *   **Recommended Charts:** Histogram / Boxplot
+    *   **Visuals:** A bar chart representing frequency distribution and a box-and-whisker plot.
+
+2.  **Comparison**
+    *   **Question:** How do groups differ? (กลุ่มแตกต่างกันอย่างไร?)
+    *   **Recommended Charts:** Bar / Dot Plot
+    *   **Visuals:** A vertical bar chart comparing heights and a dot plot showing discrete values.
+
+3.  **Relationship**
+    *   **Question:** How do variables move together? (Variables เคลื่อนไปด้วยกันอย่างไร?)
+    *   **Recommended Chart:** Scatterplot
+    *   **Visuals:** A graph plotting individual data points to show correlation between two variables.
+
+4.  **Composition**
+    *   **Question:** What parts make up the whole image? (ส่วนย่อยประกอบเป็นภาพรวมอย่างไร?)
+    *   **Recommended Chart:** Stacked Bar
+    *   **Visuals:** Vertical bars segmented into different colored sections to represent proportions of a total.
+
+5.  **Time**
+    *   **Question:** How does the value change over time? (ค่าเปลี่ยนตามลำดับเวลาอย่างไร?)
+    *   **Recommended Chart:** Line Chart
+    *   **Visuals:** A line graph connecting data points to illustrate trends over a period.
+
+**Takeaway:**
+Select a chart that displays the relationship which answers the required question. (เลือก Chart ที่เผยความสัมพันธ์ซึ่งคำถามต้องการคำตอบ)

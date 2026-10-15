@@ -1,0 +1,12 @@
+**Question + Target + Output identifies the modeling task.**
+
+*   **Process to Identify Task:**
+    1.  **Question (ถาม):** ต้องการคำตอบเพื่ออะไร?
+    2.  **Target (ตรวจสอบ):** มีหรือไม่? ถ้ามี เป็น Categorical หรือ Numerical?
+    3.  **Intended Output (ระบุ):** ต้องการ Class, Estimated Value, Candidate Groups หรือ Summary?
+
+*   **Task Classification based on Target and Intended Output:**
+    *   **Classification:** Target is Categorical → Intended Output is Class / Probability.
+    *   **Regression:** Target is Numerical → Intended Output is Estimated Value.
+    *   **Clustering:** No Labeled Target → Intended Output is Candidate Groups.
+    *   **No Machine Learning:** No Learned Output Needed → Intended Output is Summary / Visualization.

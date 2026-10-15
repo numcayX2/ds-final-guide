@@ -1,0 +1,17 @@
+**Slide 32: K-Means Learning with Centroid Stabilization**
+
+**Core Concept:**
+K-Means alternates between **Assign** and **Update** steps until the **Centroid** is almost stationary.
+
+**The Iterative Process:**
+1.  **Assign:** Assign points to the group of the nearest Centroid.
+2.  **Update:** Calculate new values (centroid).
+3.  **Check movement:** Determine how much the Centroid has changed.
+
+**Convergence Definition:**
+*   Defined as "the position that stabilizes after setting a value."
+*   **Crucial Note:** Convergence does not prove that the group is useful.
+
+**Stabilization Condition:**
+*   If there is very little change, the **Centroids stabilize**.
+*   If there is still enough change, the process continues ("ให้ทำซ้ำต่อ").

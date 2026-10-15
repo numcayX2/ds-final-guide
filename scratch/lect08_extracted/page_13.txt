@@ -1,0 +1,13 @@
+Euclidean Distance measures similarity using straight-line distance.
+
+Data points with smaller Euclidean distances are considered more similar.
+
+The formula for calculating straight-line distance using Euclidean Distance (L2) is:
+d(p, q) = √Σᵢ(pᵢ - qᵢ)²
+
+In the two-dimensional feature space diagram:
+- Observation 1 is point p = (x₁, y₁).
+- Observation 2 is point q = (x₂, y₂).
+- The x-axis represents Feature 1 (x₁).
+- The y-axis represents Feature 2 (x₂).
+- The dashed line between them represents the Euclidean Distance.

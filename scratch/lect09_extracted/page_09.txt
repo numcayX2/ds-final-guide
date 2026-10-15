@@ -1,0 +1,25 @@
+**SHAP (Local Explanation) demonstrates the specific directional impact of each feature on Customer A’s prediction relative to the Base Value.**
+
+Key points in descending order of importance:
+
+*   **Overall Feature Importance:**
+    *   Provides a general ranking of which features are most important for the model overall, but does not indicate directionality (increase or decrease).
+    *   Relative Importance values:
+        *   ไม่ซื้อนาน (No purchase for long time): 0.32
+        *   ยอดใช้จ่าย (Spending amount): 0.25
+        *   อายุสมาชิก (Member age): 0.18
+        *   ประเภทสินค้า (Product type): 0.12
+        *   ช่องทางการซื้อ (Purchase channel): 0.08
+
+*   **SHAP Analysis for Customer A (Model Output: P(Inactive = Yes)):**
+    *   Explains how each feature specifically impacts the prediction when compared to the Base Value.
+    *   **Base Value:** 32%
+    *   **Final Prediction:** 65%
+    *   **Calculation:** 32% + 29 + 12 - 8 = 65%
+    *   **Feature Contributions:**
+        *   ไม่ซื้อนาน (+29 points): Pushes toward Inactive = Yes (Increases probability).
+        *   อายุสมาชิก (+12 points): Pushes toward Inactive = Yes (Increases probability).
+        *   ยอดใช้จ่ายสูง (-8 points): Pushes away from Inactive = Yes (Decreases probability).
+
+*   **Conclusion:**
+    *   The explanation helps understand the model but does not prove causation or normality.

@@ -1,0 +1,22 @@
+**Most Important Fact:**
+Evaluation results may lead the candidate model forward or send the workflow back to adjust the Question, Data, Preparation, Features, or Model.
+
+**Key Points in Descending Order of Importance:**
+
+*   **Slide Title:** Modeling and Evaluation Form a Feedback Loop
+*   **Core Concept:** The process is defined as a loop where "Evaluation" acts as a decision point.
+    *   If standards are sufficient ("เพียงพอ"), the workflow proceeds to the next phase.
+    *   If standards are not yet sufficient ("ยังไม่เพียงพอ"), the workflow loops back for revision.
+*   **The Workflow Sequence (Left to Right):**
+    1.  **Input Stage:** Labeled "Question + Data + Preparation + Features". Represented by an icon containing a question mark symbol (?) and a database cylinder symbol.
+    2.  **Modeling Stage:** Labeled "Modeling". Represented by an orange circle containing two gear icons.
+    3.  **Candidate Model Stage:** Labeled "Candidate Model". Represented by a blue circle containing a node diagram with one top node connected to two bottom nodes.
+    4.  **Evaluation Stage:** Labeled "Evaluation". Represented by a green square icon containing a clipboard with a checkmark.
+*   **Feedback Loops (Outcomes of Evaluation):**
+    *   **Forward Path:** An arrow points from "Evaluation" to a green box labeled "Proceed to the next phase" (Thai: "เพียงพอ"). This box contains a bar chart icon showing three vertical bars of increasing height.
+    *   **Backward Path:** An arrow points from "Evaluation" to an orange box labeled "Revise → Build → Evaluate again" (Thai: "ยังไม่เพียงพอ"). This box contains a circular refresh/loop icon. A long orange arrow connects this box back to the initial "Question + Data..." stage.
+*   **Takeaway Section:**
+    *   Located at the bottom left in a dark blue box labeled "Takeaway".
+    *   Text states that the project may loop back based on Evaluation to proceed forward appropriately (Thai: "โครงการย้อนกลับ เพื่อให้เดินหน้าต่ออย่างรับผิดชอบ").
+*   **Footer Information:**
+    *   Page number: 3

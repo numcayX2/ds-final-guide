@@ -1,0 +1,6 @@
+Slide 17 of lecture (lect08) presents the types of Clustering, titled "ประเภทของ Clustering" in Thai.
+
+The slide details two main algorithm categories:
+
+*   **Partitional algorithms**: These construct various partitions and then evaluate them by some criterion. This is illustrated with an image labeled "Partitional" showing characters from The Simpsons separated into two distinct groups.
+*   **Hierarchical algorithms**: These create a hierarchical decomposition of the set of objects using some criterion. This is illustrated with a diagram labeled "Hierarchical" that shows a tree-like structure grouping characters from The Simpsons.

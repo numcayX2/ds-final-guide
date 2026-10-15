@@ -1,0 +1,31 @@
+### Slide 36: Internal Evaluation (ใช้ข้อมูลภายใน cluster เอง)
+
+#### Key Concepts and Headings:
+- **Internal Evaluation**: This section focuses on evaluating the quality of clustering using internal data without relying on external labels.
+- **Compactness**: Refers to how closely related points are within a cluster.
+- **Separation**: Indicates how distinct or clearly separated different clusters are from each other.
+
+#### Formulas:
+- **Silhouette Score Formula**:
+  \[
+  s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}
+  \]
+  Where:
+  - \(a(i)\): Average distance between point \(i\) and all other points in its own cluster (intra-cluster similarity).
+  - \(b(i)\): Nearest cluster mean distance (inter-cluster similarity).
+
+#### Detailed Explanation:
+- **Intra-cluster Similarity (\(a(i)\))**: Measures the compactness of a cluster by calculating the average distance between a point and all other points within the same cluster.
+- **Inter-cluster Similarity (\(b(i)\))**: Evaluates the separation of a cluster by determining the nearest cluster mean distance, indicating how distinct the cluster is from others.
+
+#### Numerical Example:
+- For a well-separated and compact cluster:
+  - \(a(i)\) should be small (indicating high intra-cluster similarity).
+  - \(b(i)\) should be large (indicating high inter-cluster similarity).
+
+#### Takeaways:
+- **Silhouette Score Range**: The score ranges from -1 to 1. A value close to 1 indicates good clustering, while a value close to -1 suggests poor clustering.
+- **Advantages**: Does not require true labels, making it useful for unsupervised learning scenarios.
+- **Disadvantages**: Can be biased if datasets have significantly different cluster sizes.
+
+This summary captures the essential concepts, formulas, and evaluations presented on slide 36 of the lecture, focusing on internal evaluation methods for assessing clustering quality.

@@ -1,0 +1,16 @@
+Boxplot + IQR = Screening ไม่ใช่ Verdict
+
+IQR = Q3 - Q1
+ช่วงของข้อมูลกึ่งกลาง 50%
+
+กฎที่ใช้บ่อยสำหรับการ Flag
+Lower Fence = Q1 - 1.5 × IQR
+Upper Fence = Q3 + 1.5 × IQR
+
+Fence เป็นเกณฑ์ส่วน Whisker เส้นสุดท้ายที่ค่าจริงสุดท้ายซึ่งยังอยู่ภายใน Fence
+
+Observation นอก Fence → Potential Outlier ที่ควรตรวจสอบต่อ
+
+Potential Outlier ≠ Error
+
+Takeaway: Outlier Detection ตั้งคำถาม ไม่ได้ตัดสินคำตอบ

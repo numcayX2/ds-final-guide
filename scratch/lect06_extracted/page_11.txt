@@ -1,0 +1,15 @@
+**The target—not a watching human—separates supervised from unsupervised learning.**
+
+*   **Supervised Learning**: Defined by the presence of a "Target ที่ทราบค่า" (Known Target).
+    *   **Decision Logic**: Answered by the question "มี Target ที่ทราบค่า ให้เรียนรู้หรือไม่?" (Is there a Known Target to learn from?). The condition is "มี" (Yes).
+    *   **Process**: Uses "Features + Known Target → Prediction".
+    *   **Example**: "ตัวอย่าง: ทำนายว่าลูกค้าจะหยุดซื้อหรือไม่" (Example: Predict whether a customer will stop buying).
+
+*   **Unsupervised Learning**: Defined by the absence of a labeled target.
+    *   **Definition**: "ค้นหาโครงสร้างโดยไม่มี Labeled Target" (Find structure without a Labeled Target).
+    *   **Decision Logic**: The condition for this path is "ไม่มี" (No).
+    *   **Process**: Uses "Features only → Candidate Structure".
+    *   **Example**: "ตัวอย่าง: ค้นหากกลุ่มพฤติกรรมลูกค้าที่คล้ายกัน" (Example: Find groups of similar customer behaviors).
+
+*   **Clarification on Terminology**:
+    *   The slide explicitly states: "Supervised ≠ มีคนเฝ้าระหว่าง Training" (Supervised does not equal having someone watching during training).

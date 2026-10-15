@@ -1,0 +1,3 @@
+An Interesting Pattern Is Only a Candidate Insight
+
+The slide presents a process for validating patterns into defensible insights. It begins with an "Interesting Pattern," which is then investigated through several key steps: Data Quality & Missingness, Sample Size, Group Composition, Scale & Data Collection, and Alternative Explanations. This investigative process transforms the initial pattern into a "Defensible Insight." The final takeaway emphasizes that any interesting pattern must be rigorously questioned and validated before it can be considered a reliable insight, ensuring its defensibility in data science analysis.

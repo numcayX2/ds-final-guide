@@ -1,0 +1,6 @@
+The most important fact is that having data does not imply consent for all purposes.
+
+Key points:
+- Purpose Limitation must be checked when changing how data is used.
+- Consent alone is not a sufficient legal basis.
+- Other bases like Legitimate Interest may apply, but impacts on rights must be considered.

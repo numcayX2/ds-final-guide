@@ -1,0 +1,45 @@
+### Summary of Slide 23: Responsible Handoff Concept
+
+**Title:**
+Responsible Handoff ต้องระบุเจ้าของและจุดตรวจสอบของมนุษย์
+
+**Subtitle:**
+ส่งต่องานได้ แต่ส่งต่อความรับผิดชอบให้ระบบไม่ได้
+
+---
+
+#### Key Points:
+
+1. **Data Scientist (นักวิทยาศาสตร์ข้อมูล):**
+   - ตรวจสอบคุณภาพข้อมูล
+   - จัดการข้อมูลผิดปกติ
+   - ยืนยันพร้อมใช้งาน
+
+2. **Marketing Manager (ผู้จัดการการตลาด):**
+   - ตรวจสอบความเหมาะสมของเนื้อหาและกลุ่มเป้าหมาย
+   - ประเมินคุณค่าและความเสี่ยง
+   - ยืนยันว่าอนุมัติให้ดำเนินการ
+
+3. **Privacy Officer (เจ้าหน้าที่ความเป็นส่วนตัว):**
+   - ตรวจสอบการปฏิบัติตามกฎหมาย
+   - ตรวจสอบขอบเขตและสิทธิการใช้ข้อมูล
+   - ยืนยันว่าอนุญาตให้ใช้ข้อมูลได้
+
+4. **ระบบ (System):**
+   - ประมวลผลตามที่กำหนด
+   - สร้างรายชื่อผู้รับ
+   - ไม่ส่งข้อความอัตโนมัติ
+
+5. **จุดตรวจสอบสำคัญ (Human Approval Checkpoint):**
+   - ห้ามส่งข้อความอัตโนมัติโดยไม่มีการอนุมัติจากมนุษย์
+   - ต้องมีผู้อำนวยก่อนทุกครั้ง
+
+6. **ติดต่อลูกค้า (Customer Communication):**
+   - ส่งข้อความและติดตามผลโดยทีมการตลาด
+
+---
+
+### Conclusion:
+ทุกการกระทำสำคัญต้องมี Owner และ Human Checkpoint
+
+This summary captures the essential elements and flow of the slide, focusing on the roles and responsibilities involved in a responsible handoff process, emphasizing the importance of human oversight and approval at critical checkpoints.

@@ -1,0 +1,165 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GsapMorphPlayer from '../components/player/GsapMorphPlayer.astro';
+import { allFormulas } from '../data/formulas/index';
+---
+
+<Layout title="10301351 Data Science - แอนิเมชัน 14 สูตรคำนวณ KaTeX + GSAP" activeTab="formulas">
+  <!-- Page Header (Zone A) -->
+  <div class="border-2 border-[#171719] bg-[#171719] text-[#F4F1EA] p-6 mb-8 shadow-[5px_5px_0px_#A3E635]">
+    <div class="flex flex-wrap justify-between items-start gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2">SPEC 11 & SPEC 14</span>
+          <span class="text-xs font-mono uppercase tracking-wider text-gray-300">CLINICAL DERIVATION ZONE</span>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-black font-['Space_Grotesk'] text-white">
+          แอนิเมชัน 14 สูตรคำนวณข้อสอบ FINAL
+        </h1>
+        <p class="text-xs sm:text-sm text-gray-300 font-mono mt-1">
+          ระบบแอนิเมชัน KaTeX Ghost Clone: ลอยตัวเลขจริงจากตารางเข้าสู่สมการทีละขั้นตอน พร้อมเสียงพากย์ภาษาไทย
+        </p>
+      </div>
+
+      <!-- Quick Formula Jump Selector -->
+      <div class="border border-gray-600 bg-[#222226] p-2 text-xs font-mono">
+        <label for="formula-jump-select" class="block text-gray-400 text-[10px] uppercase mb-1">
+          เลือกกระโดดไปยังสูตร:
+        </label>
+        <select
+          id="formula-jump-select"
+          class="bg-[#171719] text-[#A3E635] border border-[#A3E635] px-2 py-1 text-xs font-bold font-mono outline-none cursor-pointer"
+        >
+          {allFormulas.map((f, i) => (
+            <option value={f.id}>
+              {String(i + 1).padStart(2, '0')}. {f.name} ({f.category})
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formula Category Filter Pills -->
+  <div class="flex flex-wrap items-center gap-2 mb-6 font-mono text-xs">
+    <button
+      type="button"
+      data-cat-filter="all"
+      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-[#A3E635] text-[#171719] font-black shadow-[2px_2px_0px_#171719] cursor-pointer"
+    >
+      ทั้งหมด (14 สูตร)
+    </button>
+    <button
+      type="button"
+      data-cat-filter="evaluation"
+      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+    >
+      Confusion Matrix & Metrics (4)
+    </button>
+    <button
+      type="button"
+      data-cat-filter="tree"
+      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+    >
+      Decision Tree Gini (3)
+    </button>
+    <button
+      type="button"
+      data-cat-filter="clustering"
+      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+    >
+      K-Means & Silhouette (2)
+    </button>
+    <button
+      type="button"
+      data-cat-filter="eda"
+      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+    >
+      EDA Outliers (1)
+    </button>
+    <button
+      type="button"
+      data-cat-filter="scaling"
+      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+    >
+      Feature Scaling (2)
+    </button>
+    <button
+      type="button"
+      data-cat-filter="cleaning"
+      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+    >
+      Data Cleaning (2)
+    </button>
+  </div>
+
+  <!-- Formula Players List -->
+  <div class="space-y-12" id="formulas-list">
+    {allFormulas.map((formula, idx) => (
+      <section
+        id={formula.id}
+        class="formula-section scroll-mt-20"
+        data-category={formula.category}
+        data-focus={formula.isFinalFocus ? 'true' : 'false'}
+      >
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-6 h-6 bg-[#171719] text-[#A3E635] flex items-center justify-center font-mono font-bold text-xs">
+            {idx + 1}
+          </span>
+          <span class="text-xs font-mono font-bold text-gray-500 uppercase">
+            สูตรที่ {idx + 1} จาก 14 • หมวด {formula.category.toUpperCase()}
+          </span>
+        </div>
+
+        <GsapMorphPlayer formula={formula} />
+      </section>
+    ))}
+  </div>
+</Layout>
+
+<script>
+  // Formula Category Filters
+  const filterBtns = document.querySelectorAll<HTMLElement>('.cat-filter-btn');
+  const formulaSections = document.querySelectorAll<HTMLElement>('.formula-section');
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
+        b.classList.add('bg-white', 'font-bold');
+      });
+      btn.classList.add('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
+      btn.classList.remove('bg-white');
+
+      const targetCat = btn.getAttribute('data-cat-filter');
+      formulaSections.forEach((sec) => {
+        if (targetCat === 'all' || sec.getAttribute('data-category') === targetCat) {
+          sec.classList.remove('hidden');
+        } else {
+          sec.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // Jump to formula select
+  const jumpSelect = document.getElementById('formula-jump-select') as HTMLSelectElement;
+  jumpSelect?.addEventListener('change', () => {
+    const targetId = jumpSelect.value;
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  // Check URL hash on load
+  if (window.location.hash) {
+    const hashId = window.location.hash.substring(1);
+    const targetEl = document.getElementById(hashId);
+    if (targetEl) {
+      setTimeout(() => {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }
+</script>

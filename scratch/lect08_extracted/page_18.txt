@@ -1,0 +1,1 @@
+K-Means clustering replaces each cluster with its centroid, which is the average position of all points in that cluster.

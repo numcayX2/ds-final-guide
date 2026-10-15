@@ -1,0 +1,13 @@
+The slide "EDA Evidence Guides Machine Learning Selection" (Slide 28) outlines a process for selecting machine learning approaches based on data insights rather than algorithm popularity.
+
+**Key Concepts and Flow:**
+*   **Core Principle:** The selection of a machine learning approach should be guided by the problem and EDA evidence, not by the commonality or popularity of an algorithm.
+*   **Process:** Descriptive/Diagnostic Evidence informs Predictive Decision-making.
+*   **Analytics Hierarchy:** The diagram illustrates a progression from:
+    *   Descriptive Analytics
+    *   Diagnostic Analytics
+    *   Predictive Analytics
+    *   Prescriptive Analytics
+    *   AI-assisted / Agentic Analytics
+*   **Decision Point:** A central question mark indicates a decision point where one must determine if Machine Learning is necessary, if the model type aligns with the target, and if further preparation or checking is required.
+*   **Takeaway:** EDA "informs modeling decisions" but does not "automatically select an algorithm."

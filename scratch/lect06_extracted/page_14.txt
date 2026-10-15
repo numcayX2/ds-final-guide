@@ -1,0 +1,10 @@
+**1. Supervised Learning**
+
+*   **“Learn to label”**
+*   Learning how to classify objects from labeled examples
+*   Model: criteria of classification
+*   Ex: classifying apples from limes
+
+---
+
+**Source:** Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec (Slide 14)

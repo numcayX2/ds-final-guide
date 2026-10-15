@@ -1,0 +1,6 @@
+**K-means Clustering: Iteration 2**
+
+1. **Initialize k cluster centers (centroids).**
+2. **Assign each data point to the nearest centroid.**
+3. **Recalculate centroids as the mean of points in each cluster.**
+4. **Repeat steps 2 and 3 until centroids no longer change or no points change clusters.**

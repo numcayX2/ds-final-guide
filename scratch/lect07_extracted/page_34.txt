@@ -1,0 +1,26 @@
+**Homework #1: Customer Churn Prediction Evaluation Metrics**
+
+*   **Objective:** Calculate Evaluation metrics for "Customer Churn prediction" data (from page 26) using the same method as page 30.
+*   **Positive Class Definition:** Inactive = Yes.
+
+**Task 1: Count TP, TN, FP, and FN (Page 26 Data)**
+*   **Model:** Classifier Model for Customer Inactivity Prediction.
+*   **Data Sample:** 10 rows of customer data (Customers 01–10).
+*   **Instructions:** Determine Positive Class first, then read Actual vs. Predicted for each row to count True Positives (TP), True Negatives (TN), False Positives (FP), and False Negatives (FN).
+
+**Task 2: Calculation of Classification Metrics (Page 30 Example)**
+*   **Context:** FIFA W-Cup 2026.
+*   **Positive Class:** play.
+*   **Confusion Matrix Values:**
+    *   TP = 4
+    *   FN = 2
+    *   FP = 1
+    *   TN = 3
+*   **Metrics Formulas and Results:**
+    *   **Recall:** $TP / (TP + FN) = 4 / (4 + 2) = 0.67$ (The model found 67% of actual players).
+    *   **Precision:** $TP / (TP + FP) = 4 / (4 + 1) = 0.80$ (When the model predicted play, it was correct 80% of the time).
+    *   **Accuracy:** $(TP + TN) / (TP + TN + FP + FN) = (4 + 3) / 10 = 0.70$ (The model was correct 7 out of 10 times).
+    *   **F-measure (F1-score):** $2TP / (2TP + FP + FN) = 8 / (8 + 1 + 2) = 0.73$ (Summary metric combining Precision and Recall).
+
+**Takeaway**
+*   Each Metric is a component of the Confusion Matrix; therefore, answers differ based on the specific calculation.

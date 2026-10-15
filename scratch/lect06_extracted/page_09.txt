@@ -1,0 +1,13 @@
+**Slide 9 of lect06: Modeling Techniques**
+
+The single most important fact is that there are two main categories of modeling techniques in data science.
+
+1.  **Descriptive/Unsupervised Modeling:** This type involves finding relationships (Association) or grouping data (Clustering), without a specific prediction goal.
+    *   Description (เชิงสถิติ)
+    *   Association
+    *   Clustering
+
+2.  **Predictive/Supervised Modeling:** This type uses inference from current data to predict future outcomes.
+    *   Classification
+    *   Estimation
+    *   Prediction

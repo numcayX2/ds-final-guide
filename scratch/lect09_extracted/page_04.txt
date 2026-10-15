@@ -1,0 +1,11 @@
+**Most Important Fact:** An 84% Accuracy rate does not guarantee the model is ready for use.
+
+**Key Points:**
+*   **Overall Metrics:** The model achieved an "Accuracy (รวม)" of 84%, meaning it correctly predicted 84% of all cases ("ทำนายถูกต้องโดยรวม 84% ของทั้งหมด"). However, the "Recall ลูกค้ากลุ่มใหม่" (Recall for new customers) was only 54%, indicating it found new customers in just 54% of cases.
+*   **Model Basis:** The standard used was an E-commerce Machine Learning model designed to target inactive customers who do not return to buy ("ลูกค้าที่ไม่กลับมาซื้อ (Inactive)").
+*   **Current Status:** The proposal to send automatic discounts is currently paused or not yet started ("ส่งส่วนลดอัตโนมัติ (ยังไม่เริ่มใช้งาน)").
+*   **Pre-deployment Evaluation:** Before making a decision, three critical questions must be answered:
+    1.  **Interpretability:** Can the results be explained? Does the model provide credible reasons ("อธิบายผลได้หรือไม่ โมเดลให้เหตุผลที่เชื่อถือได้หรือไม่")?
+    2.  **Impact:** Who is affected? How does it impact customer groups and what are the side effects ("กระทบใครบ้าง ส่งผลต่อกลุ่มลูกค้าอย่างไร และมีผลข้างเคียงอะไรบ้าง")?
+    3.  **Data Suitability:** Is the data appropriate? Are the stored, used, and protected data consistent with regulations ("ใช้ข้อมูลเหมาะสมหรือไม่ เก็บ ใช้ และปกป้องข้อมูล สอดคล้องกับข้อกำหนดหรือไม่")?
+*   **Conclusion:** The project is currently "Not Yet Approved" ("ยังไม่อนุมัติ"), requiring further investigation into Explain, Evaluate, and Communicate aspects.

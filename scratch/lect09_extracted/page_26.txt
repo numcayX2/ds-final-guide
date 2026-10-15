@@ -1,0 +1,23 @@
+Health-risk Algorithm: Costs do not equal care needs.
+
+Proxy selection error causes models to target non-standard goals.
+
+Target: Care needs (sick patients requiring care).
+Proxy Selected: Health costs (costs incurred in past/present).
+
+Model Bias Example (Proxy / Label Bias):
+- White Patient Group: Risk Score 0.8, Cost ≈ 12,000 Baht/year. Conditions: High blood pressure.
+- Black Patient Group: Risk Score 0.8, Cost ≈ 12,000 Baht/year. Conditions: High blood pressure, diabetes, heart disease.
+
+Research Findings:
+- Scores are identical.
+- Black patients have higher morbidity than white patients despite the same proxy score.
+- Correction Results: The percentage of black patients receiving assistance increased from 17.7% to 46.5%.
+
+Solution Direction:
+- Select Target and Proxy so they align with actual desired outcomes.
+
+Key Takeaway:
+- Using a Proxy accurately does not imply that resource allocation is normal/fair.
+
+Source: Obermeyer et al., Science, 2019.

@@ -1,0 +1,8 @@
+The image presents a slide titled "Segmentation ก้าวไปตาม Analytics Continuum" (Segmentation moves along the Analytics Continuum), numbered 42. It outlines four stages of analytics, progressing from left to right:
+
+1.  **Descriptive Analytics**: Characterized by a bar chart icon and the question "เกิดอะไรขึ้นกับกลุ่มลูกค้าของเรา?" (What is happening with our customer segments?). The takeaway is "อธิบายสิ่งที่เกิดขึ้น" (Describe what happened).
+2.  **Diagnostic Analytics**: Marked by a magnifying glass icon and the question "ทำไมบางกลุ่ม จึงไม่กลับมา?" (Why don't some groups come back?). The action is "ค้นหาสาเหตุ" (Find the cause).
+3.  **Predictive Analytics**: Represented by an upward-trending graph icon and the question "ลูกค้าใหม่คนใดมี Profile นี้?" (Which new customers have this profile?). The prediction is "คาดการณสิ่งที่จะเกิดขึ้น" (Forecast what will happen).
+4.  **Prescriptive Analytics**: Illustrated with a target and arrow icon, asking "ควรทำ Retention แบบใด?" (What kind of Retention should we do?). The recommendation is "เสนอแนวทางและลงมือทำ" (Suggest a course of action and implement it).
+
+A central circular element labeled "Customer Segmentation กลุ่มที่ค้นพบ" (Customer Segmentation Group Found) sits between Diagnostic and Predictive Analytics, indicating that segmentation is the foundation for more advanced questions. The bottom banner states, "Segmentation เป็นฐานของคำถามที่สำคัญ ไม่ใช่คำตอบสุดท้าย" (Segmentation is the basis for important questions, not the final answer).

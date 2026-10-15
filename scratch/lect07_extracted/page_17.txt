@@ -1,0 +1,25 @@
+A Decision Path Ends in a Leaf Prediction
+
+Observation ใหม่เดินทางตาม Learned Rules ไปยัง Leaf จุด ซึ่ง Training Class Distribution ภายใน Leaf สนับสนุน Model Output
+
+New Customer
+days_since_last_purchase = 70
+purchases_last_90_days = 1
+
+Decision Path
+days_since_last_purchase <= 45? ผล: ไม่ใช่
+purchases_last_90_days <= 2? ผล: ใช่
+
+Reached Leaf
+4 Inactive, 1 Active
+
+Model Output
+Predicted Class: Inactive = Yes
+Estimated P(Inactive) = 4/5 = 0.80
+
+Interpretation
+0.80 มาจากสัดส่วน Training Samples ใน Leaf ที่ Customer เดินทางมาถึง
+ไม่ใช่ Calibrated Confidence โดยอัตโนมัติ
+
+Takeaway
+Prediction คือหนึ่ง Learned Path ที่จบด้วยหลักฐานภายใน Leaf

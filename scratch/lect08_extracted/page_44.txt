@@ -1,0 +1,18 @@
+**Assignment Instructions: K-Mean Clustering on Data from Page 25**
+
+**1. Execution for K = 2**
+*   **Task:** Perform the **K-mean Clustering** process following the order of the example on pages 25-31 one more time using data from page 25.
+*   **Goal:** Calculate the new centroid and the new location of the centroid for round 2.
+*   **Parameters:** Set value **K = 2**.
+*   **Initial Centroids:** Let **Centroid C1 be point A3** and **C2 be A6**.
+
+**2. Execution for K = 3**
+*   **Task:** Perform the **K-mean Clustering** process following the order of the example on pages 25-31 one more time using data from page 25.
+*   **Goal:** Calculate the new centroid and the new location of the centroid for round 2.
+*   **Parameters:** Set value **K = 3**.
+*   **Method:** Use **Euclidean distance**.
+*   **Initial Centroids:** Let initial centroids be **A2, A5, A8**.
+
+**Note on Tie-Breaking (Greedy Algorithm)**
+*   If calculated distances are equal when selecting a member for a cluster, choose the cluster with the lowest index number (**Greedy algorithm**).
+*   Example: If entering **Cluster1** or **Cluster2**, choose to enter **Cluster 1**.

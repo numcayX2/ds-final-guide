@@ -1,0 +1,9 @@
+The most important fact is the core principle stated at the bottom of slide 21: "สื่อสารให้เข้าใจได้ง่ายโดยไม่ทำให้ความจริงง่ายเกินไป" (Communicate so it is easy to understand without making the truth too simple).
+
+This principle is supported by the following key points, in descending order of importance:
+
+*   **Evidence from Model:** The foundational data point is for Customer A, where Inactive = 65%. This is accompanied by a warning that Concept Drift still needs to be checked.
+*   **Unified Data Basis:** The same underlying data ("ข้อมูลหลักฐานเดียวกัน") serves as the basis for three different communication strategies tailored to specific audiences:
+    *   **Technical Team (ทีมเทคนิค):** For technical details, using Feature values, SHAP, and Drift analysis.
+    *   **Marketing Managers (ผู้จัดการการตลาด):** For decision-making and business impact, focusing on Risk, Conditions, and Pilot programs.
+    *   **Customers (ลูกค้า):** For understandable explanations, detailing Causes and Channels of complaint.

@@ -1,0 +1,32 @@
+Example 1: Data Classification Results
+
+Football WC 2026 Team England has collected training data to build an analysis system and decide whether to send players to compete or rest.
+The system's output is the player's performance on the field, with 2 classes:
+C1 = Player will have good performance (ready to play) (play), C2 = Player will have poor performance (should rest) (rest).
+
+If we have the results of a classification model tested on 10 football players, comparing the predicted performance with the actual performance in the stadium, it is as follows:
+
+| Instance | Actual Class | Predicted Class |
+| :--- | :--- | :--- |
+| 1 | rest | rest |
+| 2 | rest | rest |
+| 3 | play | rest |
+| 4 | play | play |
+| 5 | play | rest |
+| 6 | rest | play |
+| 7 | play | play |
+| 8 | rest | rest |
+| 9 | play | play |
+| 10 | play | play |
+
+*   Number of players where the system said **Ready to Play** and actually they were **Ready to Play** =
+    If Class Positive is Play
+    *   True Positive (TP) =
+*   Number of players where the system said **Should Rest** and actually they were **Should Rest** =
+    *   True Negative (TN) =
+*   Number of players where the system said **Ready to Play** but actually they were **Should Rest** =
+    *   False Positive (FP) =
+*   Number of players where the system said **Should Rest** but actually they were **Ready to Play** =
+    *   False Negative (FN) =
+
+Note: In this part, other attributes of the players are not taken into consideration.

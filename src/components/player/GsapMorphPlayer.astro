@@ -1,0 +1,235 @@
+---
+import type { FormulaAnimation } from '../../types/study';
+
+interface Props {
+  formula: FormulaAnimation;
+}
+
+const { formula } = Astro.props;
+---
+
+<div
+  class="gsap-morph-player border-2 border-[#171719] bg-white shadow-[4px_4px_0px_#171719] flex flex-col my-6 select-none"
+  data-formula-id={formula.id}
+  data-formula-json={JSON.stringify(formula)}
+>
+  <!-- Player Top Bar (Zone A / Technical Header) -->
+  <div class="bg-[#171719] text-[#F4F1EA] px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b-2 border-[#171719]">
+    <div class="flex items-center gap-3">
+      <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2">
+        {formula.category.toUpperCase()}
+      </span>
+      <h3 class="font-['Space_Grotesk'] font-bold text-base sm:text-lg tracking-tight text-white">
+        {formula.name}: <span class="text-[#A3E635]">{formula.thaiName}</span>
+      </h3>
+    </div>
+    <div class="flex items-center gap-2 text-xs font-mono">
+      <span class="bg-[#222226] px-2 py-1 text-gray-300 border border-[#333338]">
+        {formula.lectureRef}
+      </span>
+      <button
+        type="button"
+        data-audio-toggle
+        class="flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold border border-[#A3E635] text-[#A3E635] hover:bg-[#A3E635] hover:text-[#171719] transition-all cursor-pointer"
+      >
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <span>ฟังคำอธิบายเสียงไทย (Free)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Body: Clinical Dual-Zone Grid (Zone B) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 border-b-2 border-[#171719]">
+    <!-- Left: Authentic Data Source Table (Monospace & Tabular) -->
+    <div class="lg:col-span-5 p-4 bg-[#F4F1EA] border-b-2 lg:border-b-0 lg:border-r-2 border-[#171719] overflow-x-auto">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#171719] flex items-center gap-1.5">
+          <span class="w-2 h-2 bg-[#171719] inline-block"></span>
+          ข้อมูลตั้งต้น (Evidence Table)
+        </span>
+        <span class="text-[10px] font-mono text-gray-500">Zero Translation Grid</span>
+      </div>
+
+      <table class="w-full text-left text-xs font-mono border-collapse border border-[#171719] bg-white">
+        <thead>
+          <tr class="bg-[#171719] text-white">
+            {formula.dataset.headers.map((h) => (
+              <th class="p-2 border border-[#171719] font-bold text-[11px] tracking-tight">{h.label}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {formula.dataset.rows.map((row) => (
+            <tr class="border-b border-[#171719]/40 hover:bg-[#F4F1EA] transition-colors">
+              {formula.dataset.headers.map((h) => {
+                const cell = row.cells[h.key];
+                return (
+                  <td
+                    class="p-2 border border-[#171719]/30 zone-b-cell tabular-nums font-semibold"
+                    data-source-cell-id={cell?.id}
+                    data-semantic={cell?.semantic || 'neutral'}
+                  >
+                    {cell?.value ?? '-'}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <!-- Base Formula reference snippet -->
+      <div class="mt-3 p-2 bg-[#EAE6DC] border border-[#171719] text-[11px] font-mono">
+        <span class="font-bold text-[#171719]">สมการตั้งต้น:</span>
+        <code class="ml-1 text-black font-semibold">{formula.baseFormulaLatex}</code>
+      </div>
+    </div>
+
+    <!-- Right: KaTeX Animated Derivation Display (Zone B) -->
+    <div class="lg:col-span-7 p-6 bg-white flex flex-col justify-center items-center min-h-[220px] relative">
+      <div class="absolute top-2 right-2 text-[10px] font-mono uppercase text-gray-400">
+        KaTeX Derivation Stage
+      </div>
+      
+      <!-- KaTeX Equation Mount Point -->
+      <div
+        data-katex-mount
+        class="w-full py-4 px-2 flex justify-center items-center text-xl sm:text-2xl text-[#171719] font-mono tabular-nums overflow-x-auto min-h-[90px]"
+      >
+        <!-- Injected via FormulaMorphEngine -->
+      </div>
+
+      <!-- Current Step Explanation Box -->
+      <div class="w-full mt-4 p-3 bg-[#F4F1EA] border border-[#171719] text-xs sm:text-sm">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="px-1.5 py-0.2 bg-[#171719] text-[#A3E635] text-[10px] font-mono font-bold">
+            สเต็ป <span data-step-indicator>1</span> / {formula.steps.length}
+          </span>
+          <h4 data-step-title class="font-bold text-[#171719]">
+            {formula.steps[0].title}
+          </h4>
+        </div>
+        <p data-step-explanation class="text-[#171719] opacity-90 leading-relaxed text-xs">
+          {formula.steps[0].explanation}
+        </p>
+
+        <!-- Exam Trap Warning (Hazard Crimson) -->
+        <div
+          data-trap-box
+          class="hidden mt-2 p-2 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-xs font-mono text-[#BE123C]"
+        >
+          <span class="font-bold">⚠️ กับดักข้อสอบอาจารย์:</span>
+          <span data-trap-text class="ml-1"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Controls (Zone B Monospace Controls) -->
+  <div class="bg-[#F4F1EA] p-3 flex flex-wrap justify-between items-center gap-3 border-t border-[#171719]">
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        data-prev-step
+        class="px-3 py-1.5 text-xs font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+      >
+        ← สเต็ปก่อนหน้า
+      </button>
+      <button
+        type="button"
+        data-next-step
+        class="px-3 py-1.5 text-xs font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+      >
+        สเต็ปถัดไป →
+      </button>
+    </div>
+
+    <!-- Step Scrubber Dots -->
+    <div class="flex items-center gap-1.5">
+      {formula.steps.map((_, idx) => (
+        <button
+          type="button"
+          data-step-dot={idx + 1}
+          class:list={[
+            'w-7 h-7 text-xs font-mono font-bold border border-[#171719] flex items-center justify-center transition-all cursor-pointer',
+            idx === 0 ? 'bg-[#A3E635] text-[#171719] shadow-[1px_1px_0px_#171719]' : 'bg-white text-gray-700 hover:bg-gray-100',
+          ]}
+        >
+          {idx + 1}
+        </button>
+      ))}
+    </div>
+
+    <!-- 1-Line Memory Rule (Bottom right) -->
+    <div class="text-[11px] font-mono text-[#171719] bg-white px-2.5 py-1 border border-[#171719] shadow-[1px_1px_0px_#171719]">
+      <span class="font-bold text-[#E11D48]">💡 สูตรจำ 1 บรรทัด:</span>
+      <span class="ml-1">{formula.oneLineRule}</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { FormulaMorphEngine } from './morph-engine';
+  import type { FormulaAnimation } from '../../types/study';
+
+  document.querySelectorAll<HTMLElement>('.gsap-morph-player').forEach((playerEl) => {
+    const rawJson = playerEl.getAttribute('data-formula-json');
+    if (!rawJson) return;
+
+    try {
+      const formula: FormulaAnimation = JSON.parse(rawJson);
+
+      const stepIndicator = playerEl.querySelector<HTMLElement>('[data-step-indicator]');
+      const stepTitle = playerEl.querySelector<HTMLElement>('[data-step-title]');
+      const stepExplanation = playerEl.querySelector<HTMLElement>('[data-step-explanation]');
+      const trapBox = playerEl.querySelector<HTMLElement>('[data-trap-box]');
+      const trapText = playerEl.querySelector<HTMLElement>('[data-trap-text]');
+      const stepDots = playerEl.querySelectorAll<HTMLElement>('[data-step-dot]');
+
+      const engine = new FormulaMorphEngine(playerEl, formula, (stepIdx) => {
+        const step = formula.steps.find((s) => s.stepIndex === stepIdx);
+        if (!step) return;
+
+        if (stepIndicator) stepIndicator.textContent = String(stepIdx);
+        if (stepTitle) stepTitle.textContent = step.title;
+        if (stepExplanation) stepExplanation.textContent = step.explanation;
+
+        // Trap Warning
+        if (trapBox && trapText) {
+          if (step.examTrapWarning) {
+            trapText.textContent = step.examTrapWarning;
+            trapBox.classList.remove('hidden');
+          } else {
+            trapBox.classList.add('hidden');
+          }
+        }
+
+        // Update Dots
+        stepDots.forEach((dot) => {
+          const dotIdx = Number(dot.getAttribute('data-step-dot'));
+          if (dotIdx === stepIdx) {
+            dot.className = 'w-7 h-7 text-xs font-mono font-bold border border-[#171719] flex items-center justify-center bg-[#A3E635] text-[#171719] shadow-[1px_1px_0px_#171719] cursor-pointer';
+          } else {
+            dot.className = 'w-7 h-7 text-xs font-mono font-bold border border-[#171719] flex items-center justify-center bg-white text-gray-700 hover:bg-gray-100 cursor-pointer';
+          }
+        });
+      });
+
+      engine.init();
+
+      // Controls
+      playerEl.querySelector('[data-prev-step]')?.addEventListener('click', () => engine.prevStep());
+      playerEl.querySelector('[data-next-step]')?.addEventListener('click', () => engine.nextStep());
+      playerEl.querySelector('[data-audio-toggle]')?.addEventListener('click', () => engine.playAudio());
+
+      stepDots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+          const idx = Number(dot.getAttribute('data-step-dot'));
+          engine.goToStep(idx, true);
+        });
+      });
+    } catch (err) {
+      console.error('Failed to init formula player:', err);
+    }
+  });
+</script>

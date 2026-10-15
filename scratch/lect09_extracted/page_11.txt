@@ -1,0 +1,14 @@
+**Most Important Fact:**
+Concept Drift occurs when the relationship between Feature and Target changes due to shifts in world conditions or data, rendering old rules or code obsolete.
+
+**Key Points (Descending Order of Importance):**
+
+*   **Definition of Concept Drift:** When the environment changes, old models change; the relationship between Feature and Target may not be the same as during the modeling period.
+*   **Three Stages of Change (Subscription Model Example):**
+    1.  **Past (Modeling Period):** Old environment: Normal purchase behavior. Rule learned: "No purchase for >45 days." Result: Customer is Inactive 68%. Customers buy occasionally without membership.
+    2.  **Event that Changed:** Opened Subscription service.
+    3.  **Present (After Opening Subscription):** New environment: Automatic ordering exists. Old rule used: "No purchase for >45 days." Result: Inactive 31%. Customers may not order themselves but receive goods automatically. The old rule makes more mistakes.
+*   **Historical Bias vs. Concept Drift:**
+    *   **Historical Bias:** How was the past built? Data in the past reflects past behaviors under existing rules. Models learn relationships from that historical data.
+    *   **Concept Drift:** Can the past still be used today? When the environment or behavior changes, the relationship between Feature and Target also changes. Rules may no longer be correct even if the model and Code remain the same.
+*   **Conclusion:** A modern model can work even without anyone changing the Code because the world changes, data changes, and the relationship between Feature and Target changes accordingly.

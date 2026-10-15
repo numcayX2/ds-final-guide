@@ -1,0 +1,10 @@
+Evaluation of classification models begins with comparing Actual Classes ($y\_true$) and Predicted Classes ($y\_pred$) for each observation.
+
+**Row-level Evidence (Customer A–D):**
+*   **Agreements:** Customer A and B match the model’s predictions, indicated by green checkmarks and the Thai word "ตรงกัน" (Correct).
+*   **Disagreements:** Customer C and D do not match, marked by red crosses and the Thai phrase "ไม่ตรงกัน" (Incorrect).
+
+**From Rows to Metrics:**
+Metrics summarize these agreements and disagreements across all customers to produce an evaluation score.
+
+**Takeaway:** Every Evaluation Score originates from the Actual and Predicted Outcomes of each individual Observation.

@@ -1,0 +1,8 @@
+Bias-Variance: ทำไมความซับซ้อนของ Tree จึงสำคัญ
+
+- Bias บอกความคลาดจาก Pattern จริง ส่วน Variance บอกความไวต่อ Training Sample ที่เปลี่ยนไป
+- Shallow Tree: Bias สูงกว่า · Variance ต่ำกว่า เสี่ยง Underfitting
+- Moderate Tree: ใช้ Validation หา Balance ที่เหมาะกับข้อมูล
+- Very Deep Tree: Training Bias ลดลง · Variance สูงขึ้น เสี่ยง Overfitting
+
+Takeaway: Tree Complexity เปลี่ยนทั้ง Bias และ Variance จึงต้องเลือกด้วย Validation Evidence

@@ -1,0 +1,9 @@
+**Most Important Fact:**
+Slide 19 details a framework for transforming data insights into actionable decisions, highlighting specific performance metrics and risks like Concept Drift.
+
+**Key Points (Descending Order of Importance):**
+*   **Performance Metrics (Results Found):** The model achieved an Accuracy of 84% and a Recall of 54% for the new group.
+*   **Interpretation:** The findings indicate that the system is "Not yet ready for use by all groups."
+*   **Risk Identification:** A key limitation identified is "Concept Drift" occurring after the Subscription phase.
+*   **Recommendations:** The slide proposes to "Collect more data before Pilot."
+*   **Overall Strategy:** The final takeaway is to report knowns, unknowns, and propose actions before execution ("Tell what we know, what we don't know, and suggest before taking action").

@@ -1,0 +1,63 @@
+Based on the provided slide, here is a detailed extraction and transcription of all concepts, headings, formulas, numbers, tables, diagrams, SHAP/XAI explanations, and takeaways:
+
+**Main Title:**
+ระบบที่รับผิดชอบต้องหยุด ทบทวน และย้อนกลับได้ (Responsible Systems Must Stop, Review, and Loop Back)
+
+**Subtitle/Theme:**
+Monitoring and Stop Conditions make acceptance not an endpoint.
+
+**Process Flow Diagram:**
+1.  **CRISP-DS Phase:**
+    *   Icon: Document with magnifying glass.
+    *   Text: ทำความเข้าใจปัญหาและข้อมูล (Understand Problem and Data).
+2.  **Pilot Phase:**
+    *   Icon: Flask.
+    *   Text: ทดลองใช้งานในวงจำกัด (Trial Use in Limited Scope).
+3.  **Monitor Phase:**
+    *   Icon: Computer screen with graph and clock.
+    *   Text: ติดตามผลและตรวจสอบสัญญาณ (Track Results and Check Signals).
+4.  **Decision Diamond:**
+    *   Text: ผลเป็นอย่างไร? (What is the result?)
+5.  **Action Outcomes:**
+    *   Green Arrow: ▶ ทำต่อ (Continue) -> ผลลัพธ์เป็นไปตามเป้าหมาย (Outcome as per target).
+    *   Orange Arrow: 🔍 ทบทวน (Review) -> ทบทวนโมเดล/ข้อมูล/เงื่อนไข (Review Model/Data/Conditions).
+    *   Red Arrow: ■ หยุด (Stop) -> หยุดการติดต่อหรือการใช้งานชั่วคราว (Suspend contact or use temporarily).
+6.  **Feedback Loop:**
+    *   Blue curved arrow pointing back to CRISP-DS.
+    *   Text: ย้อนกลับไปปรับปรุง (Loop back to improve).
+
+**Detailed Breakdown Sections:**
+
+*   **Section 1: ตัวอย่างสัญญาณที่ต้องจับตา (Examples of Signals to Watch)**
+    *   **Recall กลุ่มใหม่ต่ำกว่าเกณฑ์:** New Group Recall Below Threshold.
+        *   Visual: Bar chart showing decline.
+        *   Description: ประสิทธิภาพในการพบลูกค้ากลุ่มใหม่ลดลง (Decreased effectiveness in finding new customers).
+    *   **ข้อร้องเรียนเพิ่ม:** Increased Complaints.
+        *   Visual: Speech bubble with exclamation mark.
+        *   Description: มีข้อร้องเรียนจากลูกค้าเกี่ยวกับการติดต่อที่ไม่เหมาะสม หรือทกวนมากเกินไป (Customer complaints about inappropriate contact or excessive interruption).
+    *   **นโยบาย Subscription เปลี่ยน:** Policy Change in Subscriptions.
+        *   Visual: Document with warning triangle.
+        *   Description: ข้อกำหนัดให้การยินยอม หรือกฎระเบียบมีการเปลี่ยนแปลง (Changes in consent provisions or regulations).
+
+*   **Section 2: การตอบสนองที่เหมาะสม (Appropriate Responses)**
+    *   **ทบทวนโมเดล:** Review Model.
+        *   Action: ตรวจสอบข้อมูล ฝึกปรับโมเดล และประเมินประสิทธิภาพใหม่ (Check data, train-adjust model, and re-evaluate performance).
+    *   **หยุดการติดต่อ:** Suspend Contact.
+        *   Action: หยุดส่งข้อความหรือข้อเสนอ จนกว่าจะหาสาเหตุและแก้ไขได้ (Stop sending messages or offers until cause and fix are found).
+    *   **กลับไป Data Understanding:** Return to Data Understanding.
+        *   Action: ทบทวนบริบททางธุรกิจ ข้อมูล และข้อกำหนดใหม่ (Review business context, data, and new requirements).
+
+*   **Final Takeaway Box:**
+    *   **Text:** บทตัดไป: Agentic AI + Human Oversight
+    *   **Description:** ผสานพลัง AI อัตโนมัติกับการกำกับดูแลโดยมนุษย์ (Combine the power of automated AI with human oversight).
+
+**Summary Table Structure:**
+| Phase | Icon | Action | Outcome/Condition |
+| :--- | :--- | :--- | :--- |
+| CRISP-DS | Document/Magnifier | Understand Problem & Data | Initial Setup |
+| Pilot | Flask | Trial in Limited Scope | Testing Ground |
+| Monitor | Screen/Clock | Track Results & Signals | Real-time Observation |
+| Decision | Diamond | What is the Result? | Branching Logic |
+| Continue | Green Play | Proceed | Target Met |
+| Review | Orange Search | Adjust Model/Data | Optimization Needed |
+| Stop | Red Square | Suspend Temporarily | Critical Issue Found |

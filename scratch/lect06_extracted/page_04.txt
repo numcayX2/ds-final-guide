@@ -1,0 +1,7 @@
+**Not Every Data Problem Needs Machine Learning**
+
+**Decision Framework:**
+*   **Descriptive Analytics:** Used for questions like "What was the total sales value last month?" (เดือนที่แล้ว มูลค่าคำสั่งซื้อรวมเท่าไร?). This approach concludes that Machine Learning is not required (ไม่จำเป็นต้องใช้ Machine Learning).
+*   **Predictive Analytics:** Used for questions like "Which customers are likely to churn next month?" (ลูกค้าคนใดมีแนวโน้มไม่กลับมาซื้อในเดือนหน้า?). This approach leads to a Prediction and suggests considering the use of Machine Learning (พิจารณาใช้ Machine Learning).
+
+**Key Takeaway:** Start with the decision need—not with Machine Learning.

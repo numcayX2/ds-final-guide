@@ -1,0 +1,3 @@
+The most important fact is that the slide contrasts **Supervised Learning** (Chapter 7) with **Unsupervised Learning** (Chapter 8), specifically regarding how they handle customer data when a target variable `y` is present versus absent.
+
+When there is a target variable `y`, the goal is to predict known classes for customers, leading to classification. When there is no target variable `y`, the objective shifts to discovering potential customer groups through clustering.

@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+@theme {
+  --color-paper: #F4F1EA;
+  --color-paper-muted: #EAE6DC;
+  --color-paper-subtle: #DFDACF;
+  
+  --color-asphalt: #171719;
+  --color-asphalt-card: #222226;
+  --color-asphalt-border: #333338;
+  
+  --color-acid-green: #A3E635;
+  --color-acid-green-dark: #84CC16;
+  
+  --color-signal-amber: #F59E0B;
+  --color-signal-amber-dark: #D97706;
+  
+  --color-hazard-crimson: #E11D48;
+  --color-hazard-crimson-dark: #BE123C;
+  
+  --color-blueprint-cobalt: #2563EB;
+  --color-blueprint-cobalt-dark: #1D4ED8;
+  
+  --font-display: "Space Grotesk", "Syne", sans-serif;
+  --font-body: "Plus Jakarta Sans", "IBM Plex Sans Thai", "Prompt", sans-serif;
+  --font-mono: "JetBrains Mono", "Space Mono", monospace;
+}
+
+:root {
+  --canvas-bg: #F4F1EA;
+  --canvas-ink: #171719;
+  --border-hairline: #171719;
+  --shadow-brutal: 3px 3px 0px #171719;
+  --shadow-brutal-sm: 2px 2px 0px #171719;
+  --shadow-brutal-lg: 5px 5px 0px #171719;
+}
+
+.dark {
+  --canvas-bg: #171719;
+  --canvas-ink: #F4F1EA;
+  --border-hairline: #333338;
+  --shadow-brutal: 3px 3px 0px #A3E635;
+  --shadow-brutal-sm: 2px 2px 0px #A3E635;
+  --shadow-brutal-lg: 5px 5px 0px #A3E635;
+}
+
+body {
+  background-color: var(--canvas-bg);
+  color: var(--canvas-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular figures for clinical study math/data */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Brutalist chamfered clip-path button */
+.btn-chamfer {
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
+/* Industrial Tape Badge (Zone A) */
+.tape-label {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid #171719;
+  box-shadow: 2px 2px 0px #171719;
+}
+
+/* Zone B Zero Translation Rule: hover only changes color wash */
+.zone-b-cell {
+  transition: background-color 100ms ease;
+  transform: none !important;
+}
+
+/* Ghost Clone animation styling */
+.ghost-clone-element {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

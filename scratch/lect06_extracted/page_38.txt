@@ -1,0 +1,12 @@
+**Begin with a Simple Baseline and a Purposeful Alternative**
+
+*   **Baseline สร้างจุดอ้างอิง ส่วน Alternative ต้องมีเหตุผลว่าช่วยทดสอบ Capability หรือ Assumption ไหน**
+*   **Customer Inactivity Classification**
+
+    *   **Simple Baseline: Logistic Regression**
+        *   จุดอ้างอิงที่เรียบง่ายและอธิบายได้
+    *   **Purposeful Alternative: Decision Tree**
+        *   ทดสอบ Nonlinear, Rule-based Splits
+
+*   **คำถามสำคัญ:** Alternative นี้ช่วยทดสอบสิ่งที่ Baseline ยังไม่ครอบคลุม?
+*   **Takeaway:** Start simple, then add complexity only for a defensible reason.

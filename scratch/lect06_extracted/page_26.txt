@@ -1,0 +1,9 @@
+Classification predicts categories, assigning observations to groups and often providing probability estimates. The target variable is categorical.
+
+Key concepts include:
+- **Binary Classification**: Distinguishes between two classes (e.g., Active / Inactive).
+- **Multiclass Classification**: Distinguishes among three or more classes (e.g., Active / At Risk / Inactive).
+
+The output consists of the Predicted Class plus Estimated Probability.
+
+Takeaway: Classification predicts categories—and categories can be binary or multiclass.

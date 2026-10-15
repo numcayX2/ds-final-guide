@@ -1,0 +1,5 @@
+**Meta Housing Ads: Algorithm Determines Who Sees Opportunities**
+
+The fairness of housing advertisements must be measured from the actual recipients who saw the ads. The U.S. Department of Justice (DOJ) highlighted that the algorithm selects users based on characteristics protected by law, leading to a settlement in 2022. As part of this settlement, Meta developed a Variance Reduction System (VRS), with an adjustment cost of $115,054.
+
+Fairness requires verifying whether everyone received equal opportunities, not just ensuring the system is unbiased. This involves comparing the Eligible Audience (those legally allowed to see the ad) with the Actual Audience (those who actually saw it).

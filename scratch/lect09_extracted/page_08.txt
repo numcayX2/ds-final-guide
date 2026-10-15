@@ -1,0 +1,4 @@
+The slide contrasts Model-Specific and Model-Agnostic explanations.
+
+• **Model-Specific** uses the model's internal structure (e.g., Decision Tree) to explain predictions. It directly shows feature importance (days_since_last_purchase, spending_last_90_days, customer_tenure), decision paths, and clear causal relationships.
+• **Model-Agnostic** treats the model as a black box, explaining predictions via Input-Output behavior. Methods like SHAP and LIME can be applied across various models (Tree-based, Linear Model, Deep Learning). SHAP explains each feature’s impact on prediction, while LIME creates local surrogate models for explanation. This approach is suitable for comparing multiple models.

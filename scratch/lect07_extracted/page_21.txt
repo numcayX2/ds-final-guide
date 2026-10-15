@@ -1,0 +1,22 @@
+A New Customer Traverses the Final Decision Tree: Unknown Target at Prediction Time. Model reads Feature at each Node and follows Learned Branches to Leaf that gives Predicted Class. Illustrative Model Mockup — used to explain Prediction Path.
+
+New Customer data:
+- Actual Target: Unknown
+- days_since_last_purchase = 70 วัน
+- purchases_last_90_days = 1 ครั้ง
+- spending_last_90_days = 2,100 บาท
+- customer_tenure = 120 วัน
+- discount_use_rate = 0.20
+
+Decision Tree Path:
+1. days_since_last_purchase <= 45? → 70 <= 45 ผล: ไม่ใช่ → go right branch (> 45 วัน)
+2. spending_last_90_days <= 1,500 บาท? → 2,100 <= 1,500 ผล: ไม่ใช่ → go right branch (> 1,500 บาท)
+3. customer_tenure <= 180 วัน? → 120 <= 180 ผล: ใช่ → go left branch (<= 180 วัน)
+
+Leaf Evidence: Inactive distribution มากกว่า Active
+Predicted Class: Inactive = Yes
+
+Retention Attention: ควรพิจารณาจัดลำดับความสำคัญ
+Actual Target ยังไม่ทราบจนกว่า Future Outcome Window จะสิ้นสุด
+
+Prediction ใช้ Features ที่ทราบ ณ เวลาทำนาย ส่วน Actual Target จะทราบภายหลัง

@@ -1,0 +1,17 @@
+**Statistics and Visualizations Are Complementary Evidence**
+
+*   **Summary Statistics:**
+    *   Summarizes size and helps compare accurately.
+    *   Thai text: "สรุปขนาดและช่วยเปรียบเทียบอย่างแม่นยำ"
+
+*   **Visualization:**
+    *   Shows Distribution Shape and what numerical values may hide.
+    *   Thai text: "เผย Distribution Shape และสิ่งที่ค่าตัวเลขอาจซ่อนไว้"
+
+*   **Interpret Together:**
+    *   Numbers tell "how much," images help see "how it is distributed."
+    *   Thai text: "ตัวเลขบอกว่า “เท่าไร” ภาพช่วยให้เห็นวา “กระจายอย่างไร”"
+
+*   **Takeaway:**
+    *   Use Statistics for accuracy; use Visualization to see structure.
+    *   Thai text: "ใช้ Statistics เพื่อความแม่นยำ ใช้ Visualization เพื่อดูโครงสร้าง"

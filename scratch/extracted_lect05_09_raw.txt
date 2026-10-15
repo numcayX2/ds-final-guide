@@ -1,0 +1,30 @@
+[P36] 4. Exploratory Data Analysis (EDA) & Outlier Detection (Lect 05)
+
+[P37] EDA ทำหน้าที่ 'ชี้แนะแนวทาง' (informs modeling decisions) ไม่ใช่เลือกอัลกอริทึมอัตโนมัติ (not automatically selects algorithm)
+
+[P40] 5. Modeling Framework & การแบ่งชุดข้อมูล (Lect 06, Lect 07 p07, p32)
+
+[P41] ตระกูล Candidate Models ในสไลด์ (Lect07 p33): Decision Tree, 5-NN (K-Nearest Neighbors), Naive Bayes, Neural Network
+กฎ 3-Way Data Partitioning & การปกป้อง Test Set (Protect the Test Set - Lect07 p32):
+
+[P43] 6. Decision Tree Classifier: Gini Impurity & Gini Gain (Lect 07 p11-12)
+
+[P44] ในสไลด์ของวิชานี้ใช้ Gini Index (Gini Impurity) เป็นเกณฑ์หลักในการเลือกจุดตัดกิ่ง (Splitting Criterion):
+
+[P47] Bias-Variance 2x2 Matrix & max_depth Selection (Lect07 p19, p31)
+
+[P49] 7. Confusion Matrix & Evaluation Metrics (Lect 07 p22-35)
+
+[P50] กฎข้อที่หนึ่งก่อนแตะสูตร: เขียนบรรทัด 'Positive Class = ...' เสมอ! และระวังแกนตาราง (สไลด์วิชานี้ใช้ แถว = Actual, คอลัมน์ = Predicted)
+
+[P55] 8. K-Means Clustering: การคำนวณและการประเมิน (Lect 08)
+
+[P56] เป้าหมาย: Maximize Intra-Cluster Similarity (ในกลุ่มชิดกันที่สุด) และ Minimize Inter-Cluster Similarity (ต่างกลุ่มแยกกันที่สุด)
+
+[P61] 9. Responsible Data Science (Lect 09)
+
+[P62] แม้โมเดลจะมี Accuracy สูงถึง 84% ก็ไม่ได้แปลว่าโมเดลพร้อมใช้งานหากละเลยจริยธรรมและการกำกับดูแล
+
+[P64] 10. คลังสูตรเร่งด่วนสำหรับ 10 นาทีก่อนเข้าห้องสอบ (Cheat Sheet Table)
+
+[P66] ขอให้โชคดีในการสอบ Final วิชา 10301351 Data Science และคว้าเกรด A มาครองครับ!

@@ -1,0 +1,43 @@
+The slide titled "Responsible Group Comparison" presents a framework for evaluating whether it is appropriate to report differences between groups in data analysis. The central message is that just because group comparisons are possible does not mean they should be reported without caution.
+
+Key concepts and components include:
+
+1. **Main Title**: "Responsible Group Comparison"
+   - This sets the theme of responsibly handling group-based analyses.
+
+2. **Central Statement**: 
+   - "เปรียบเทียบได้ ≠ ควรรายงานได้ทันที" which translates to "Comparable ≠ Should Report Immediately."
+   - Emphasizes that comparability alone does not justify immediate reporting.
+
+3. **Four Evaluation Criteria**:
+   Each criterion addresses a specific concern before deciding to report group comparisons:
+
+   a. **Sufficient Data**
+      - Question: "แต่ละกลุ่มมีจำนวนข้อมูลเพียงพอหรือไม่?" (Does each group have sufficient data?)
+      - Visual representation shows two circles with varying numbers of people icons, indicating uneven data distribution.
+
+   b. **Differential Missingness**
+      - Question: "Missingness แตกต่างกันระหว่างกลุ่มหรือไม่?" (Is there differential missingness between groups?)
+      - Illustrated by unequal dot patterns within group circles, suggesting disparities in data completeness.
+
+   c. **Representation**
+      - Question: "กลุ่มตัวอย่างเป็นตัวแทนประชากรหรือไม่?" (Are the sample groups representative of the population?)
+      - Shown with dotted outlines around subsets of people icons, questioning representativeness.
+
+   d. **Privacy**
+      - Question: "กลุ่มย่อยเสี่ยงเปิดเผยข้อมูลส่วนบุคคลหรือไม่?" (Do subgroups risk exposing personal information?)
+      - Represented by a shield icon over people icons, highlighting privacy concerns.
+
+4. **Outcome Indicators**:
+   - A green checkmark indicates approval if all criteria are met.
+   - An orange cross suggests disapproval or issues if any criterion fails.
+
+5. **Takeaway**:
+   - "ตรวจสอบความน่าเชื่อถือและความเสี่ยง ก่อนรายงานความต่างระหว่างกลุ่ม"
+     - Translation: "Verify reliability and risks before reporting differences between groups."
+   - Reinforces the importance of thorough evaluation before drawing conclusions from group comparisons.
+
+6. **Slide Number**:
+   - Marked as "11," likely part of a larger presentation.
+
+This structured approach ensures responsible and ethical data analysis practices when comparing groups.

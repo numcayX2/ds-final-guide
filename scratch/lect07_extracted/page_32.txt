@@ -1,0 +1,28 @@
+**Summary of Slide 32 (lect07): Final Test Evidence Estimates Generalization**
+
+The slide presents a structured framework for understanding how final test evidence supports generalization in data science models, while clearly delineating its limitations.
+
+**Most Important Fact:**
+Final Test Evidence provides an estimate of Generalization but does NOT guarantee future Performance.
+
+**Key Points (in descending order of importance):**
+
+1. **What the Evidence Supports:**
+   - The Final Test Set estimates performance on unseen customers with characteristics similar to those in the test sample.
+   - It validates that modeling decisions and metric meanings are consistent during development.
+
+2. **Process Flow:**
+   - Before the Final Test: Modeling Decisions, Metric/Decision Meaning, and Final Test Set are established — all unused in prior development.
+   - Use Protected Evidence Once: A Selected Customer Tree is evaluated on the Final Test Set.
+   - What the Evidence Supports: Performance estimation for similar unseen customers.
+
+3. **What Limits the Conclusion:**
+   - Sample Quality and Representativeness affect validity.
+   - Leakage Risk and Uncertainty constrain confidence in extrapolation.
+
+4. **Claim Boundary:**
+   - Final Test Evidence serves as foundational knowledge for this study only.
+   - It explicitly does not serve as a warranty or guarantee of future performance under different conditions or populations.
+
+5. **Takeaway:**
+   - The Test Set gives an estimate of Generalization — it is not a promise about future outcomes.

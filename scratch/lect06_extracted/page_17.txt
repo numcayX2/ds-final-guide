@@ -1,0 +1,16 @@
+**1. Supervised Learning**
+
+*   **“Learn to label”**
+*   **Learning how to classify objects from labeled examples**
+*   **Model: criteria of classification**
+*   **Ex: classifying apples from limes**
+
+**Step 1: Training**
+
+*   **Input:** A labeled example image of an **apple**.
+*   **Process:** The system (depicted by a robot) analyzes the input.
+*   **Output (MODEL):** A model that defines classification criteria based on **shape** and **color**.
+    *   **What is apple?:** Defined by specific **shape** and **color** criteria.
+    *   **What is lime?:** Defined by different **shape** and **color** criteria.
+
+**Source:** Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec

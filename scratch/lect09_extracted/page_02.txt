@@ -1,0 +1,20 @@
+CRISP-DS: จากผลโมเดลสู่การตัดสินใจที่รับผิดชอบ
+
+ผลโมเดลต้องผ่านการอธิบาย ตรวจสอบ และสื่อสาร ก่อนนำไปสร้างคุณค่า
+
+Business Understanding
+Data Understanding
+Data Preparation
+Modeling
+Evaluation
+Deploy & Communicate
+
+Decision Tree
+Customer Cluster
+
+ข้อมูลเชิงลึก นำไปสู่การปรับปรุงอย่างต่อเนื่อง
+
+โครงการ E-commerce
+ยังไม่อนุญาตให้ใช้จริง
+
+ความรับผิดชอบเป็นเงื่อนไขของทุกขั้นใน Data Science

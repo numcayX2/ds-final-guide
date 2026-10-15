@@ -1,0 +1,321 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { allModules } from '../data/modules/index';
+---
+
+<Layout title="10301351 Data Science Final Exam Guide - 9 บทเรียนเข้มข้น" activeTab="modules">
+  <!-- Hero Section (Zone A: Expressive Editorial) -->
+  <section class="border-2 border-[#171719] bg-[#171719] text-[#F4F1EA] p-6 sm:p-10 mb-8 shadow-[6px_6px_0px_#A3E635] relative overflow-hidden">
+    <div class="relative z-10 max-w-4xl">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2 font-black -rotate-1">
+          FINAL EXAM ACCREDITED
+        </span>
+        <span class="tape-label bg-[#E11D48] text-white text-xs py-0.5 px-2 font-bold">
+          100% SLIDE VERIFIED
+        </span>
+        <span class="text-xs font-mono text-gray-400">10301351 DATA SCIENCE</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-['Space_Grotesk'] tracking-tight leading-none text-white mb-4">
+        คู่มือพิชิตสอบ FINAL <br />
+        <span class="text-[#A3E635]">10301351 DATA SCIENCE</span>
+      </h1>
+
+      <p class="text-sm sm:text-base font-mono text-gray-300 leading-relaxed max-w-2xl mb-6">
+        รวบรวมเนื้อหา 100% ครบทุกสไลด์ ทุกสูตรคำนวณ ตัวอย่างจริง และข้อสอบอาจารย์ 
+        ตั้งแต่ CRISP-DS 8 ขั้นตอน จนถึง Responsible AI พร้อมระบบแอนิเมชันสูตร KaTeX เคลื่อนที่แบบ Ghost Clone
+      </p>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <a
+          href="/formulas"
+          class="btn-chamfer px-5 py-3 bg-[#A3E635] text-[#171719] font-mono font-black text-sm uppercase border border-[#171719] shadow-[3px_3px_0px_#171719] hover:bg-[#84CC16] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+        >
+          🚀 ดูแอนิเมชัน 14 สูตรคำนวณ →
+        </a>
+        <a
+          href="/exam"
+          class="btn-chamfer px-5 py-3 bg-white text-[#171719] font-mono font-bold text-sm uppercase border border-[#171719] shadow-[3px_3px_0px_#171719] hover:bg-[#EAE6DC] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+        >
+          📝 เข้าสู่ห้องสอบจำลอง 14 ข้อ
+        </a>
+      </div>
+    </div>
+
+    <!-- Background Brutalist Accent Shape -->
+    <div class="absolute -bottom-10 -right-10 text-[180px] font-black font-['Space_Grotesk'] text-white/[0.04] select-none pointer-events-none">
+      FINAL
+    </div>
+  </section>
+
+  <!-- Section 2: Study Modules List (Zone A Editorial Cards) -->
+  <section class="space-y-6">
+    <div class="flex flex-wrap justify-between items-end gap-4 border-b-2 border-[#171719] pb-3">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-3 h-3 bg-[#A3E635] border border-[#171719]"></span>
+          <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#171719]">
+            CURRICULUM MODULES
+          </span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-[#171719]">
+          บทเรียน 9 บทสำหรับเตรียมสอบ
+        </h2>
+      </div>
+
+      <!-- Chapter Filter Pills -->
+      <div class="flex items-center gap-2 font-mono text-xs">
+        <button
+          type="button"
+          id="filter-all-btn"
+          class="px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer transition-all"
+        >
+          ทั้งหมด (9 บท)
+        </button>
+        <button
+          type="button"
+          id="filter-focus-btn"
+          class="px-3 py-1 border border-[#171719] bg-[#A3E635] text-[#171719] font-black shadow-[2px_2px_0px_#171719] cursor-pointer transition-all"
+        >
+          Final Focus (Lect 05–09)
+        </button>
+      </div>
+    </div>
+
+    <!-- Modules Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="modules-grid">
+      {allModules.map((mod) => (
+        <article
+          class:list={[
+            'module-card border-2 border-[#171719] bg-white p-5 shadow-[4px_4px_0px_#171719] flex flex-col justify-between transition-all hover:-translate-y-0.5',
+            mod.isFinalFocus ? 'is-focus-module' : 'is-foundation-module',
+          ]}
+          data-focus={mod.isFinalFocus ? 'true' : 'false'}
+        >
+          <div>
+            <!-- Card Header -->
+            <div class="flex justify-between items-start gap-2 mb-3">
+              <span class="w-8 h-8 bg-[#171719] text-[#A3E635] font-['Space_Grotesk'] font-bold text-sm flex items-center justify-center border border-[#171719]">
+                {mod.moduleNumber}
+              </span>
+              <div class="flex flex-wrap items-center gap-1.5 justify-end">
+                <span class="tape-label bg-[#F4F1EA] text-[#171719] text-[10px] py-0 px-1.5">
+                  {mod.lectureCode}
+                </span>
+                {mod.isFinalFocus ? (
+                  <span class="tape-label bg-[#A3E635] text-[#171719] text-[10px] py-0 px-1.5 font-black">
+                    CORE FINAL
+                  </span>
+                ) : (
+                  <span class="tape-label bg-gray-200 text-gray-700 text-[10px] py-0 px-1.5">
+                    FOUNDATION
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <h3 class="font-['Space_Grotesk'] font-bold text-lg text-[#171719] leading-snug mb-2">
+              {mod.title}
+            </h3>
+
+            <p class="text-xs text-gray-700 leading-relaxed font-['Plus_Jakarta_Sans'] mb-4">
+              {mod.quickSummary}
+            </p>
+
+            <!-- Exam Trap Box (Hazard Crimson) -->
+            {mod.examTraps && mod.examTraps.length > 0 && (
+              <div class="p-2.5 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-[11px] font-mono text-[#BE123C] mb-4">
+                <div class="font-bold flex items-center gap-1">
+                  <span>⚠️ กับดักข้อสอบ:</span>
+                  <span>{mod.examTraps[0].trapTitle}</span>
+                </div>
+                <p class="text-gray-700 mt-1 leading-normal line-clamp-2">
+                  {mod.examTraps[0].correctApproach}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <!-- Card Bottom Actions -->
+          <div class="pt-3 border-t border-[#171719] flex justify-between items-center text-xs font-mono">
+            {mod.coreFormulas && mod.coreFormulas.length > 0 ? (
+              <a
+                href={`/formulas#${mod.coreFormulas[0]}`}
+                class="font-bold text-[#2563EB] hover:underline flex items-center gap-1"
+              >
+                <span>สูตรคำนวณ ({mod.coreFormulas.length})</span>
+                <span>→</span>
+              </a>
+            ) : (
+              <span class="text-gray-400">เนื้อหาเชิงทฤษฎี/จริยธรรม</span>
+            )}
+
+            <button
+              type="button"
+              class="module-mark-btn px-2 py-0.5 border border-[#171719] text-[10px] font-bold bg-[#F4F1EA] hover:bg-[#A3E635] transition-colors cursor-pointer"
+              data-mod-id={mod.id}
+            >
+              อ่านจบแล้ว ✓
+            </button>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Section 3: 10-Minute Cheat Sheet Table (Zone B Clinical Grid) -->
+  <section class="mt-12 border-2 border-[#171719] bg-white p-6 shadow-[5px_5px_0px_#171719]">
+    <div class="border-b-2 border-[#171719] pb-3 mb-4 flex flex-wrap justify-between items-center gap-2">
+      <div>
+        <span class="tape-label bg-[#171719] text-[#A3E635] text-xs">10-MINUTE CHEAT SHEET</span>
+        <h2 class="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-[#171719] mt-1">
+          คลังสูตรเร่งด่วนสำหรับ 10 นาทีก่อนเข้าห้องสอบ
+        </h2>
+      </div>
+      <span class="text-xs font-mono text-gray-500">14 Core Formulas Reference</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs font-mono border-collapse border border-[#171719]">
+        <thead>
+          <tr class="bg-[#171719] text-white text-[11px]">
+            <th class="p-2 border border-[#171719]">ชื่อสูตร</th>
+            <th class="p-2 border border-[#171719]">สมการคำนวณ</th>
+            <th class="p-2 border border-[#171719]">วัตถุประสงค์ & คีย์เวิร์ดในข้อสอบ</th>
+            <th class="p-2 border border-[#171719] text-center">ลิงก์แอนิเมชัน</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#171719]/30">
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Min-Max Scaling</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">x' = [(x - min)/(max - min)] * (new_max - new_min) + new_min</td>
+            <td class="p-2 border border-[#171719]/30">แปลงค่าเข้ากรอบ เช่น [0, 9] (ตัวอย่าง Rachel ได้ 0.82)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#min-max" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Z-Score</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">z = (x - μ) / σ</td>
+            <td class="p-2 border border-[#171719]/30">ข้อมูลอยู่ห่างจาก Mean กี่เท่าของ SD (ไม่เปลี่ยน Shape เดิม)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#z-score" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Tukey's Fences</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">IQR = Q3 - Q1, Upper = Q3 + 1.5*IQR</td>
+            <td class="p-2 border border-[#171719]/30">ตรวจจับ Outlier (Upper 130, จุด 140 หลุดรั้วบน)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#tukey-fences" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Gini Impurity</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">Gini = 1 - ∑ (p_i)^2</td>
+            <td class="p-2 border border-[#171719]/30">วัดความไม่บริสุทธิ์ (Pure node = 0, คละ 50:50 = 0.500)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#gini-impurity" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Gini Gain</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">Gain = Gini(Parent) - Gini_split</td>
+            <td class="p-2 border border-[#171719]/30">เลือกกิ่งที่ให้ Gain สูงสุด (Candidate A 0.222 ชนะ B 0.056)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#gini-gain" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Precision</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">TP / (TP + FP)</td>
+            <td class="p-2 border border-[#171719]/30">เน้นลด False Positive เมื่อการทายผิดมีต้นทุนสูง (FIFA 0.80)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#precision" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Recall (Sensitivity)</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">TP / (TP + FN)</td>
+            <td class="p-2 border border-[#171719]/30">เน้นลด False Negative เมื่อการพลาดเคสบวกเป็นหายนะ (FIFA 0.67)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#recall" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">F1-Score</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">2*TP / (2*TP + FP + FN)</td>
+            <td class="p-2 border border-[#171719]/30">Harmonic Mean สมดุลความแม่นยำ (FIFA 0.73, HW#1 0.60)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#f1-score" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">K-Means Centroid Update</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">C_k = (∑ x1 / m, ∑ x2 / m)</td>
+            <td class="p-2 border border-[#171719]/30">เฉลี่ยพิกัดจุดสมาชิกในคลัสเตอร์ (C2_new = (6, 6))</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#kmeans-distance-centroid" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+          <tr class="hover:bg-[#F4F1EA]">
+            <td class="p-2 font-bold border border-[#171719]/30">Silhouette Score</td>
+            <td class="p-2 border border-[#171719]/30 tabular-nums">s(i) = [b(i) - a(i)] / max(a(i), b(i))</td>
+            <td class="p-2 border border-[#171719]/30">ประเมินคุณภาพคลัสเตอร์ [-1, +1] (+1 สมบูรณ์, ติดลบคือผิดกลุ่ม)</td>
+            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#silhouette-score" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { ProgressStore } from '../lib/progress-store';
+
+  const filterAllBtn = document.getElementById('filter-all-btn');
+  const filterFocusBtn = document.getElementById('filter-focus-btn');
+  const moduleCards = document.querySelectorAll<HTMLElement>('.module-card');
+
+  // Filter handlers
+  filterAllBtn?.addEventListener('click', () => applyFilter(false));
+  filterFocusBtn?.addEventListener('click', () => applyFilter(true));
+
+  // Listen to global focus change from header toggle
+  window.addEventListener('final-focus-change', ((e: CustomEvent) => {
+    applyFilter(e.detail.isFocus);
+  }) as EventListener);
+
+  function applyFilter(isFocus: boolean) {
+    if (isFocus) {
+      filterFocusBtn?.classList.add('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
+      filterFocusBtn?.classList.remove('bg-white', 'font-normal');
+      filterAllBtn?.classList.remove('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
+      filterAllBtn?.classList.add('bg-white');
+
+      moduleCards.forEach((card) => {
+        if (card.getAttribute('data-focus') === 'true') {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    } else {
+      filterAllBtn?.classList.add('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
+      filterAllBtn?.classList.remove('bg-white');
+      filterFocusBtn?.classList.remove('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
+      filterFocusBtn?.classList.add('bg-white');
+
+      moduleCards.forEach((card) => card.classList.remove('hidden'));
+    }
+  }
+
+  // Load progress and mark completed
+  const progress = ProgressStore.load();
+  document.querySelectorAll<HTMLElement>('.module-mark-btn').forEach((btn) => {
+    const modId = btn.getAttribute('data-mod-id');
+    if (modId && progress.completedModuleIds.includes(modId)) {
+      btn.textContent = 'อ่านแล้ว ✓✓';
+      btn.classList.add('bg-[#A3E635]', 'text-[#171719]');
+    }
+
+    btn.addEventListener('click', () => {
+      if (!modId) return;
+      const isDone = ProgressStore.toggleModuleCompleted(modId);
+      if (isDone) {
+        btn.textContent = 'อ่านแล้ว ✓✓';
+        btn.classList.add('bg-[#A3E635]', 'text-[#171719]');
+      } else {
+        btn.textContent = 'อ่านจบแล้ว ✓';
+        btn.classList.remove('bg-[#A3E635]', 'text-[#171719]');
+      }
+    });
+  });
+
+  // Init filter based on localStorage
+  const savedFocus = localStorage.getItem('ds_final_focus');
+  applyFilter(savedFocus !== null ? savedFocus === 'true' : true);
+</script>

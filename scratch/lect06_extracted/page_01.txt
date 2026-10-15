@@ -1,0 +1,6 @@
+Lecture 1 of "Data Science: Modeling in Data Science Framework" (Course Code 10301351, Chapter 6) introduces the concept of modeling within a data science framework.
+
+Key Points:
+- The slide is titled "Modeling in Data Science Framework."
+- It specifies that this content corresponds to Chapter 6 ("คาบบรรยายที่ 6").
+- The course code provided is 10301351.

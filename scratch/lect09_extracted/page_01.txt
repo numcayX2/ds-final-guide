@@ -1,0 +1,7 @@
+The provided input text is an instruction to act as a Data Science professor and extract detailed content from "slide 1." The actual content of slide 1 is a title page for a course.
+
+**Course Title:** Responsible Data Science: Explain, Evaluate & Communicate
+**Course Code:** Data Science 10301351
+**Instructor:** อ.ดร.พาสน์ ปราโมกข์ชุน (Asst. Prof. Dr. Pasan Pramokkhachun)
+**Affiliation:** วิทยาลัยคอมพิวเตอร์ แม่โจ้ (College of Computing, Maejo University)
+**Session Details:** บรรยายที่ 9 วันที่ ___________ (Lecture 9, Date ___________)

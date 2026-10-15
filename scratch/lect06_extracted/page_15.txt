@@ -1,0 +1,24 @@
+**Slide 15: Supervised Learning**
+
+- **Heading**: "1. Supervised Learning"
+- **Key Concept**: “Learn to label”
+- **Step 1: Training**
+  - Example of labeled data: An apple is shown with a green leaf.
+  - Process: The labeled example (apple) is fed into a model represented by a robot-like figure.
+  - Outcome: The model learns criteria for classification based on the labeled examples.
+
+- **Model Details**:
+  - The model uses specific features like shape and color to classify objects.
+  - Two categories are presented: "What is apple?" and "What is lime?".
+    - For "What is apple?": Shape and color are used as criteria.
+    - For "What is lime?": Similarly, shape and color are considered.
+
+- **Learning Objective**:
+  - The primary goal is to learn how to classify objects from labeled examples.
+  - Example given: Classifying apples from limes.
+
+- **Source Information**:
+  - Lecture Title: Introduction to Machine Learning
+  - Author: Prachya Boonkwan
+  - Institution: LST Lab, Nectec
+  - Slide Number: 15

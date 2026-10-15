@@ -1,0 +1,15 @@
+The provided image is a slide from a Data Science lecture, specifically slide 6, which illustrates the concept of "Feature Importance" within the context of Decision Trees.
+
+**Most Important Fact/Outcome:**
+*   The slide explains that **Feature Importance** in a Decision Tree model indicates the relative contribution of each input feature to the model's predictive power, rather than reflecting real-world causal relationships or absolute truths.
+
+**Key Points (in descending order of importance):**
+
+1.  **Global Explanation of Decision Tree:** The slide presents a global explanation for how a Decision Tree model functions by analyzing the overall importance of its features.
+2.  **Input Features and Their Values:**
+    *   `days_since_last_purchase`: 0.42
+    *   `spending_last_90_days`: 0.33
+    *   `customer_tenure`: 0.25
+3.  **Model Interpretation:** The Decision Tree model uses these weighted features to make predictions, with higher weights indicating greater influence on the outcome.
+4.  **Shapley Additive Explanations (SHAP/XAI):** The slide mentions SHAP values as a method for explaining individual predictions, though it does not detail the specific SHAP explanations shown.
+5.  **Limitations of Feature Importance:** It highlights that while Feature Importance provides a global view, it may not accurately represent the true underlying reality or causality for individual cases.

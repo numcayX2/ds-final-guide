@@ -1,0 +1,8 @@
+The most important fact is that the slide illustrates the concept of "Supervised Learning" as a process to "Learn to label". This involves using labeled examples (like images of apples and limes) to train a model, which then uses learned rules (such as an IF-else statement based on shape and color) to classify new, unseen data.
+
+Key points from the slide include:
+*   The training phase uses "LABELED EXAMPLES" of fruits (e.g., apple, lime).
+*   A robot character named "WALL-E" represents the machine learning model being trained.
+*   After training, the model can classify new items. For example, it learns to identify a "lime" by checking if its shape is "circle" and its color is "green".
+*   The slide shows a simple code snippet for this classification: `if shape == "circle" and color == "green": return "lime"`.
+*   The overall goal is to construct a model that can automatically assign labels to new data based on patterns learned from previous examples.

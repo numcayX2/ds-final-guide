@@ -1,0 +1,15 @@
+**A Decision Node Uses One Feature and Threshold**
+
+*   **Decision Node Structure:**
+    *   Uses one feature: `days_since_last_purchase`
+    *   Uses one threshold: `45 วัน` (45 days)
+    *   Evaluates the question: `days_since_last_purchase <= 45?`
+
+*   **Branching Logic:**
+    *   **Left Branch: Yes**
+        *   Sends observations where value `<= 45`.
+    *   **Right Branch: No**
+        *   Sends observations where value `> 45`.
+
+*   **Takeaway:**
+    *   One Tree Node asks one Learned Question about one Feature.

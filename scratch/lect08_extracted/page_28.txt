@@ -1,0 +1,40 @@
+Example: K-Mean Clustering
+
+**Distance Calculation (Manhattan):**
+*   Formula: $Distance_{manhattan}(A, Y) = |x1 - y1| + |x2 - y2|$
+*   Variables: Case ข้อมูล (V1, V2); A ($x1, x2$), Y ($y1, y2$)
+
+**Step-by-Step Distance Examples:**
+*   **point mean1:**
+    *   point ($x1, x2$): (2, 5)
+    *   mean1 ($y1, y2$): (2, 10)
+    *   distance(point, mean1) = $|x1 - y1| + |x2 - y2|$
+    *   $= |2 - 2| + |5 - 10|$
+    *   $= 0 + 5 = 5$
+*   **point mean2:**
+    *   point ($x1, x2$): (2, 5)
+    *   mean2 ($y1, y2$): (5, 8)
+    *   distance(point, mean2) = $|x1 - y1| + |x2 - y2|$
+    *   $= |2 - 5| + |5 - 8|$
+    *   $= 3 + 3 = 6$
+*   **point mean3:**
+    *   point ($x1, x2$): (2, 5)
+    *   mean3 ($y1, y2$): (1, 2)
+    *   distance(point, mean3) = $|x1 - y1| + |x2 - y2|$
+    *   $= |2 - 1| + |5 - 2|$
+    *   $= 1 + 3 = 4$
+
+**Cluster Assignment Table:**
+*   Columns: Point, Dist Mean 1, Dist Mean 2, Dist Mean 3, Cluster
+*   Rows:
+    *   **A1:** (2, 10) -> Distances: 0, 5, 9 -> Cluster: 1
+    *   **A2:** (2, 5) -> Distances: 5, 6, 4 -> Cluster: 3
+    *   **A3:** (8, 4) -> Distances: $|8-2|+|4-10|=12$, $|8-5|+|4-8|=7$, $|8-1|+|4-2|=9$ -> Cluster: 2
+    *   **A4:** [Empty] -> Distances: [Empty], [Empty], [Empty] -> Cluster: 2
+    *   **A5:** [Empty] -> Distances: 10, 5, 9 -> Cluster: 2
+    *   **A6:** [Empty] -> Distances: 10, 5, 7 -> Cluster: 2
+    *   **A7:** [Empty] -> Distances: 9, 10, 0 -> Cluster: 3
+    *   **A8:** [Empty] -> Distances: 3, 2, 10 -> Cluster: 2
+
+**Conclusion:**
+*   "หลังจากนี้ก็คำนวณกับทุก ๆ ข้อมูล" (After this, calculate for all data).

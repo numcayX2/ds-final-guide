@@ -1,0 +1,24 @@
+The most important fact is that slide 10 presents a hierarchical classification of modeling techniques, distinguishing between Descriptive (Unsupervised) and Predictive (Supervised) modeling.
+
+Key points include:
+- **DS Techniques** are categorized into two main branches:
+    - **Descriptive or Unsupervised Modeling**, which includes:
+        - 1. Description
+        - 2. Associations
+        - 3. Clustering
+    - **Predictive or Supervised Modeling**, which includes:
+        - 4. Classification
+        - 5. Estimation/ Regression
+        - 6. Prediction
+
+Under each category, specific examples are provided with visual representations:
+- For **Descriptive**:
+    - Bar Histogram, Line Histogram, Scatter Plot under "Chart" for Descriptive.
+    - Association rules visualization under "Machine Learning Algorithms" for Unsupervised.
+    - Clustering visualization showing grouped data points under "Clustering" for Unsupervised.
+- For **Predictive**:
+    - Classification using scatter plots to separate classes under "Classification" for Supervised.
+    - Regression analysis depicted through line graphs fitting data trends under "Regression" for Supervised.
+    - Forecasting illustrated by projecting future values based on historical patterns under "Prediction" for Supervised.
+
+Additionally, the slide mentions **Data Mining Algorithms** such as Basket Market Analysis and Apriori algorithm, along with Anomaly Detection techniques involving supervised or unsupervised methods.

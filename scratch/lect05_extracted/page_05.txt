@@ -1,0 +1,23 @@
+**Inspection of Data Context Before Summarizing**
+
+The most critical step in data analysis is inspecting the context of data before summarizing it. This ensures that statistical or graphical representations are meaningful by understanding what the data measures, from whom, using which units, and how much usable data exists.
+
+**Key Concepts for Inspection:**
+
+1.  **Observation (หนึ่งแถวแทน ใครหรืออะไร?):**
+    *   Identify what a single row represents.
+    *   Determine if the observation refers to a person ("ใคร") or an item/concept ("อะไร").
+
+2.  **Meaning & Unit (ตัวแปรหมายถึงอะไร และใช้หน่วยใด?):**
+    *   Clarify the meaning of the variables involved.
+    *   Specify the measurement units used.
+
+3.  **Usable Data (มีข้อมูลทั้งหมด ข้อมูลที่ใช้ได้ และ Missing เท่าไร?):**
+    *   Assess the total volume of available data.
+    *   Distinguish between usable data and missing data points.
+
+4.  **Relevant Groups (กลุ่มใดเกี่ยวข้องกับ Analytical Question?):**
+    *   Identify specific groups relevant to the analytical question being addressed.
+
+**Takeaway:**
+Always understand what the data represents before trusting any summaries derived from it.

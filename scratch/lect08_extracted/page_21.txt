@@ -1,0 +1,9 @@
+The image displays slide 21 from a lecture on K-means Clustering, titled "K-means Clustering: Iteration 1". It visually explains the algorithm’s first iteration using a scatter plot with axes ranging from 0 to 5. The diagram shows data points (red and blue diamonds) being assigned to clusters based on proximity to initial centroids labeled k₁, k₂, and k₃. Orange lines indicate decision boundaries for cluster assignment.
+
+On the right side, under the heading “Method,” four steps are listed in Thai script, detailing the iterative process of K-means clustering:
+1) Initialize k cluster centers (centroids).
+2) Assign each data point to the nearest centroid.
+3) Recalculate the centroid as the mean of all points in the cluster.
+4) Repeat steps 2–3 until no points change clusters or convergence is reached.
+
+This slide serves as an introductory explanation of how K-means clustering operates during its first iteration, emphasizing initialization, distance-based assignment, and iterative refinement via centroid updates.

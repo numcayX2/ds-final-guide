@@ -1,0 +1,59 @@
+Based on the provided slide 28, here is a detailed summary of the concepts and information presented:
+
+**Main Topic:** Rite Aid: False Positive กลายเป็นความเสี่ยงในร้านค้า (Rite Aid: False Positives Become Risks in Stores)
+
+**Problem Statement:**
+ความผิดพลาดของโมเดลรุนแรงขึ้น เมื่อ Workflow เปลี่ยน Alert เป็นการกระทำทันที
+(The model's errors become more severe when the workflow changes alerts into immediate actions.)
+
+**Consequences of False Positives:**
+ระบบแจ้งเตือนว่าตรงกับบุคคลที่ถูกระบุว่าเป็นผู้ต้องสงสัย โดยไม่มีการตรวจสอบเพิ่มเติม
+(The system alerts that it matches a person identified as a suspect without further verification.)
+
+พนักงานติดตาม / ตรวจค้น / จับกุม / เรียกตัว
+(Employees follow up / search / arrest / summon.)
+
+ผู้บริโภคได้รับความเสี่ยง
+(Consumers receive risks.)
+
+เสียเวลา เสียความเป็นส่วนตัว ถูกเลือกปฏิบัติ และกระทบชื่อเสียง
+(Lost time, lost privacy, discrimination, and reputational damage.)
+
+**FTC Findings & Concerns:**
+FTC กล่าวว่าหากระบบในร้านค้าหลายร้อยแห่งช่วงปี 2012–2020
+(FTC stated that if systems were used in hundreds of stores during 2012–2020)
+
+เกิด False Positive หลายพันครั้ง
+(Multiple thousands of false positives occurred.)
+
+ผู้บริโภคจำนวนมากถูกจับตัวผิดผลาด
+(Many consumers were wrongly detained.)
+
+มีความเสี่ยงที่จะถูกตรวจจับผิดอย่างมีนัยสำคัญ
+(Significant risk of being falsely detected.)
+
+**Preventive Measures:**
+ห้ามใช้ Facial Recognition เพื่อความปลอดภัยและเฝ้าระวัง 5 ปี
+(Prohibition on using facial recognition for safety and monitoring for 5 years.)
+
+ตามคำสั่งของ FTC
+(According to FTC orders.)
+
+Human Checkpoint ก่อนลงมือ
+(Human checkpoint before taking action.)
+
+ให้มนุษย์ตรวจสอบข้อมูลก่อนดำเนินการใด ๆ
+(Have humans verify data before proceeding with any actions.)
+
+ติดตาม False Positive และหยุดระบบเมื่อมีความเสี่ยงสูง
+(Monitor false positives and stop the system when high risk is detected.)
+
+มีการประเมินความเสี่ยงอย่างต่อเนื่อง
+(Continuous risk assessment.)
+
+**Conclusion:**
+Responsible AI ต้องควบคุมทั้ง Model, Workflow และการกระทำของมนุษย์หลังได้รับ Alert
+(Responsible AI must control both the Model, Workflow, and human actions after receiving an alert.)
+
+บทสรุป: Agentic AI + Human Oversight
+(Conclusion: Agentic AI + Human Oversight.)

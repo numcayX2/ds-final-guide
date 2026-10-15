@@ -1,0 +1,27 @@
+Data Minimization: Necessary or Not
+
+Use, disclose, and collect only data necessary for the purpose.
+
+Customer Data (Example Fields):
+- Customer ID แบบแทนรหัส
+- Recency
+- Frequency
+- Exact Address
+- หมายเลขโทรศัพท์
+- ข้อมูลอ่อนไหว (เช่น สุขภาพ ศาสนา การเมือง)
+
+Process:
+1. Determine if necessary for analysis? → Keep (via filtering).
+2. Use specifically at a later time? → Filter out specific data that is not necessary.
+
+Filtered Out Data (Kept via Filtering):
+- Customer ID แบบแทนรหัส
+- Recency
+- Frequency
+
+Filtered In Data (Discarded/Removed):
+- Exact Address
+- หมายเลขโทรศัพท์
+- ข้อมูลอ่อนไหว
+
+Key Takeaway: The best data is not the most data, but data that is necessary and can be explained.

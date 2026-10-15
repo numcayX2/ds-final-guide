@@ -1,0 +1,5 @@
+The most important fact is that slide 35 presents **Inertia** as an internal evaluation metric for clustering, defined by the formula:
+
+**Inertia / WCSS = Σ (from i=1 to n) || x_i - Centroid_c(i) ||²**
+
+This measures the sum of squared distances from each data point to its assigned cluster centroid. The slide explains that lower Inertia indicates tighter, more compact clusters, while higher Inertia indicates more dispersed clusters. It also shows two diagrams: one with points tightly grouped around a centroid (low Inertia), and another with points spread out (high Inertia). A key takeaway is that although increasing K reduces Inertia, this alone does not determine the optimal number of clusters — thus, “Inertia ต่ำอย่างเดียวไม่ได้บอก K ที่ดีที่สุด” (Low Inertia alone doesn’t indicate the best K).

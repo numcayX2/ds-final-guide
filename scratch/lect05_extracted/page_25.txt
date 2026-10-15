@@ -1,0 +1,7 @@
+The most important fact is: **Visualization that can be understood must convey meaning with more than color alone.**
+
+If color is lost, the meaning must still remain.
+
+Key points include:
+- Redundant Encoding using Color + Label, Color + Shape, or Color + Pattern/Line Style ensures clarity.
+- Accessibility Check requires verifying for Color Vision Deficiency and Grayscale readability.

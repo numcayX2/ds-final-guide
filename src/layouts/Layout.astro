@@ -1,0 +1,195 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  activeTab?: 'modules' | 'formulas' | 'business-lab' | 'exam' | 'dashboard';
+}
+
+const {
+  title = '10301351 Data Science Final Exam Intensive Study Guide',
+  description = 'Webapp ทบทวนสอบ Final วิชา 10301351 Data Science ครบถ้วนทุกสูตร ตัวอย่างจริง และกับดักข้อสอบ',
+  activeTab = 'modules',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="th" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+
+    <!-- Google Fonts: Space Grotesk, Syne, Plus Jakarta Sans, Prompt, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-[#F4F1EA] text-[#171719] min-h-screen flex flex-col font-['Plus_Jakarta_Sans',_'IBM_Plex_Sans_Thai',_sans-serif]">
+    <!-- Top Announcement Tape Bar -->
+    <div class="bg-[#171719] text-[#F4F1EA] text-xs font-mono py-1.5 px-4 flex justify-between items-center border-b border-[#171719] select-none">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-[#A3E635] animate-pulse"></span>
+        <span class="tracking-wider uppercase font-semibold">10301351 DATA SCIENCE • FINAL EXAM PREPARATION CORE</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4 text-xs opacity-80">
+        <span>CRISP-DS 8 STEPS</span>
+        <span>•</span>
+        <span>14 FORMULA DERIVATIONS</span>
+        <span>•</span>
+        <span>AUTH SLIDE ACCREDITED</span>
+      </div>
+    </div>
+
+    <!-- Main Navigation Header (Zone A: Expressive Editorial) -->
+    <header class="border-b-2 border-[#171719] bg-[#F4F1EA] sticky top-0 z-40 backdrop-blur-sm bg-opacity-95">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+        <!-- Logo / Brand -->
+        <a href="/" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 bg-[#171719] text-[#A3E635] flex items-center justify-center font-black font-['Space_Grotesk'] text-xl border border-[#171719] shadow-[3px_3px_0px_#A3E635] group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform">
+            DS
+          </div>
+          <div>
+            <div class="font-['Space_Grotesk'] font-extrabold text-lg leading-tight tracking-tight flex items-center gap-2">
+              <span>DATA SCIENCE 10301351</span>
+              <span class="tape-label bg-[#A3E635] text-[#171719] text-[10px] py-0 px-1.5 -rotate-2">FINAL v2.0</span>
+            </div>
+            <p class="text-xs text-[#171719] opacity-70 font-mono">Clinical Derivations & Urban Editorial Guide</p>
+          </div>
+        </a>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex items-center gap-1 sm:gap-2">
+          <a
+            href="/"
+            class:list={[
+              'px-3 py-1.5 text-xs sm:text-sm font-bold border border-[#171719] transition-all',
+              activeTab === 'modules'
+                ? 'bg-[#171719] text-[#F4F1EA] shadow-[2px_2px_0px_#171719]'
+                : 'bg-transparent text-[#171719] hover:bg-[#EAE6DC]',
+            ]}
+          >
+            01. บทเรียน (9 บท)
+          </a>
+          <a
+            href="/formulas"
+            class:list={[
+              'px-3 py-1.5 text-xs sm:text-sm font-bold border border-[#171719] transition-all',
+              activeTab === 'formulas'
+                ? 'bg-[#171719] text-[#F4F1EA] shadow-[2px_2px_0px_#171719]'
+                : 'bg-transparent text-[#171719] hover:bg-[#EAE6DC]',
+            ]}
+          >
+            02. แอนิเมชัน 14 สูตร
+          </a>
+          <a
+            href="/business-lab"
+            class:list={[
+              'px-3 py-1.5 text-xs sm:text-sm font-bold border border-[#171719] transition-all',
+              activeTab === 'business-lab'
+                ? 'bg-[#171719] text-[#F4F1EA] shadow-[2px_2px_0px_#171719]'
+                : 'bg-transparent text-[#171719] hover:bg-[#EAE6DC]',
+            ]}
+          >
+            03. Business Lab
+          </a>
+          <a
+            href="/exam"
+            class:list={[
+              'px-3 py-1.5 text-xs sm:text-sm font-bold border border-[#171719] transition-all',
+              activeTab === 'exam'
+                ? 'bg-[#171719] text-[#F4F1EA] shadow-[2px_2px_0px_#171719]'
+                : 'bg-transparent text-[#171719] hover:bg-[#EAE6DC]',
+            ]}
+          >
+            04. ห้องสอบจำลอง
+          </a>
+          <a
+            href="/dashboard"
+            class:list={[
+              'px-3 py-1.5 text-xs sm:text-sm font-bold border border-[#171719] transition-all',
+              activeTab === 'dashboard'
+                ? 'bg-[#171719] text-[#F4F1EA] shadow-[2px_2px_0px_#171719]'
+                : 'bg-transparent text-[#171719] hover:bg-[#EAE6DC]',
+            ]}
+          >
+            05. Mastery
+          </a>
+        </nav>
+
+        <!-- Final Focus Mode Toggle (Spec 1: default ON) -->
+        <div class="flex items-center gap-2 border-2 border-[#171719] px-2.5 py-1 bg-white shadow-[2px_2px_0px_#171719]">
+          <span class="text-xs font-mono font-bold tracking-tight">FINAL FOCUS:</span>
+          <button
+            id="focus-toggle-btn"
+            type="button"
+            class="px-2 py-0.5 text-xs font-mono font-extrabold uppercase bg-[#A3E635] text-[#171719] border border-[#171719] cursor-pointer hover:opacity-90 active:scale-95 transition-all"
+            data-active="true"
+          >
+            ON (Lect 05–09)
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t-2 border-[#171719] bg-[#EAE6DC] py-6 px-4 mt-auto">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono text-[#171719]">
+        <div>
+          <span class="font-bold">10301351 DATA SCIENCE EXAM GUIDE</span> — Verified against authentic lecture slides (Lect 01–09).
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-[#E11D48] font-bold">100% Free AI Engine</span>
+          <span>•</span>
+          <span>Astro + GSAP + KaTeX</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Global Final Focus Mode Script & KaTeX Setup -->
+    <script>
+      // Load saved state or default to true
+      const savedFocus = localStorage.getItem('ds_final_focus');
+      const isFocus = savedFocus !== null ? savedFocus === 'true' : true;
+      
+      const toggleBtn = document.getElementById('focus-toggle-btn');
+      if (toggleBtn) {
+        updateFocusUI(isFocus);
+        toggleBtn.addEventListener('click', () => {
+          const current = toggleBtn.getAttribute('data-active') === 'true';
+          const next = !current;
+          localStorage.setItem('ds_final_focus', String(next));
+          updateFocusUI(next);
+          // Broadcast custom event
+          window.dispatchEvent(new CustomEvent('final-focus-change', { detail: { isFocus: next } }));
+        });
+      }
+
+      function updateFocusUI(active: boolean) {
+        if (!toggleBtn) return;
+        toggleBtn.setAttribute('data-active', String(active));
+        if (active) {
+          toggleBtn.textContent = 'ON (Lect 05–09)';
+          toggleBtn.className = 'px-2 py-0.5 text-xs font-mono font-extrabold uppercase bg-[#A3E635] text-[#171719] border border-[#171719] cursor-pointer hover:opacity-90 active:scale-95 transition-all';
+          document.body.classList.add('final-focus-active');
+        } else {
+          toggleBtn.textContent = 'OFF (All 9 Lects)';
+          toggleBtn.className = 'px-2 py-0.5 text-xs font-mono font-extrabold uppercase bg-gray-200 text-gray-700 border border-gray-500 cursor-pointer hover:opacity-90 active:scale-95 transition-all';
+          document.body.classList.remove('final-focus-active');
+        }
+      }
+    </script>
+  </body>
+</html>

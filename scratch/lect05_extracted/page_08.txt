@@ -1,0 +1,12 @@
+The most important fact is that interpreting data requires analyzing the entire distribution shape, not just its center and spread.
+
+Key concepts from Slide 8 include:
+
+*   **Summary vs. Distribution Shape:** Summary statistics may appear identical while the underlying distribution shapes differ.
+*   **Distribution Shapes:** The slide identifies four specific types of distributions:
+    *   **Symmetric:** Data is distributed evenly around the center.
+    *   **Skewed:** The long tail extends to one side of the center.
+    *   **Multiple Peaks:** There may be multiple hidden groups within the data.
+    *   **Gaps / Long Tail:** A gap may result from grouping structure or data collection; a long tail is a characteristic of the distribution.
+*   **Interpretation Formula:** Interpret data using "Center + Spread + Shape + Context."
+*   **Takeaway:** Trust the summary only after observing the distribution behind it.

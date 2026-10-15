@@ -1,0 +1,17 @@
+**Prediction-Time Features and the Future Target**
+
+**Key Concept:**
+*   **Prediction-Time Features:** Must exist at the time of prediction.
+*   **Target:** Records what happens after the observation date.
+*   **Observation Date:** The specific date for which a prediction is being made for each customer.
+
+**Correct Approach (Before Observation Date):**
+*   Use historical data available prior to the observation date as features.
+*   Examples: `days_since_last_purchase`, `purchases_last_90_days`.
+
+**Incorrect Approach (Data Leakage):**
+*   Using future information (e.g., `purchases_next_60_days`) as a feature causes data leakage.
+*   This occurs when the target variable (`Inactive = Yes / No`) is determined using data from the "Future Outcome Window" (60 days after the observation date), which is not available at prediction time.
+
+**Takeaway:**
+*   Features used in prediction must be known at the time of making the prediction.

@@ -1,0 +1,11 @@
+The Elbow Method is a heuristic approach to identify the optimal number of clusters (K) in clustering analysis by locating the "elbow" point on a plot of Inertia versus K, where the rate of decrease in inertia begins to diminish significantly.
+
+Key points from slide 37:
+
+- The y-axis represents “Inertia” — a measure of within-cluster compactness.
+- The x-axis represents “K” — the number of clusters.
+- A steep initial drop in inertia indicates that adding more clusters substantially improves model fit (“การลดลงมาก”).
+- At the “Elbow candidate,” further increases in K yield diminishing returns (“ผลตอบแทนเริ่มลดลง”), meaning additional clusters add minimal improvement in grouping accuracy.
+- The recommended practice is to select K near this elbow point (“เลือก K ใกล้จุดหัก”).
+- This method relies on visual interpretation and heuristics; it does not provide an automatic or mathematically exact solution (“หลักฐานเชิง Heuristic ไม่ใช่คำตอบอัตโนมัติ”).
+- Slide number: 37.

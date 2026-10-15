@@ -1,0 +1,13 @@
+**Comments on K-Means (Slide 33)**
+
+*   **Strengths:**
+    *   Simple, easy to implement and debug.
+    *   Intuitive objective function: optimizes intra-cluster similarity.
+    *   Relatively efficient: O(tkn), where n is # objects, k is # clusters, and t is # iterations. Normally, k, t << n.
+    *   Performance depends on Big O: n = number of objects, t = number of iterations, k = number of desired clusters.
+
+*   **Weaknesses:**
+    *   Applicable only when mean is defined; problematic for categorical data (e.g., Thin=1, Middle=2, Fat=3).
+    *   Often terminates at a local optimum; initialization is important.
+    *   Need to specify K, the number of clusters, in advance.
+    *   Unable to handle noisy data and outliers (example: Outlier A9(1,345, 3,456)).

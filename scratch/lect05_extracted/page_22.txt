@@ -1,0 +1,7 @@
+Honest Visual Encoding Protects Meaning
+
+- Visualization that makes comparison clear without exaggerating, hiding, or altering the basis to change meaning.
+- Same data can create different understandings; check visual encoding before communicating.
+- Before vs After: A bar chart is shown with emphasis on context (title, labels, units), comparison (baseline, scale, ordering), and emphasis (color, annotation).
+- Goal: Clarity, no drama.
+- Takeaway: Charts should protect standards instead of creating tension.

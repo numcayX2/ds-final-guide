@@ -1,0 +1,26 @@
+**Slide 40: Cluster Profiles เปิดเผยรูปแบบพฤติกรรม (Cluster Profiles Reveal Behavioral Patterns)**
+
+**Core Concept:**
+*   **Cluster Profile:** Changes members into a pattern that is easy to understand by comparing the characteristics of each group.
+
+**Cluster Profile Table Comparison:**
+The slide presents a table comparing three clusters across three behavioral dimensions, using bar charts to indicate level ("High", "Medium", "Low").
+
+1.  **Purchase frequency – ความถี่การซื้อ (Frequency of Purchase):**
+    *   **Cluster 0:** High (**สูง**)
+    *   **Cluster 1:** Medium (**กลาง**)
+    *   **Cluster 2:** Low (**ต่ำ**)
+
+2.  **Spending – การใช้จ่าย (Spending):**
+    *   **Cluster 0:** Medium (**กลาง**)
+    *   **Cluster 1:** High (**สูง**)
+    *   **Cluster 2:** Low (**ต่ำ**)
+
+3.  **Engagement – การมีส่วนร่วม (Engagement):**
+    *   **Cluster 0:** Low (**ต่ำ**)
+    *   **Cluster 1:** Medium (**กลาง**)
+    *   **Cluster 2:** High (**สูง**)
+
+**Methodology Takeaway:**
+*   **Process:** Compare the patterns of each group (**เปรียบเทียบรูปแบบของแต่ละกลุ่ม**).
+*   **Rule:** **Profile first → interpret second**. Make the Profile first, then slowly interpret/understand it (**ทำ Profile ก่อน แล้วค่อยตีความ**).

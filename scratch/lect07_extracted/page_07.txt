@@ -1,0 +1,6 @@
+**Training, Validation, and Test Roles**
+
+*   **Training Data**: Used to learn Features, Thresholds, and the structure of the Decision Tree.
+*   **Validation Data**: Used to compare Candidate Models and select options such as `max_depth`.
+*   **Test Data**: Must be protected from use during model selection to ensure unbiased evaluation. Using Test Data to choose a Model weakens the final basis. It is used strictly for checking Generalization after Modeling Decisions are finalized.
+*   **Takeaway**: Each data subset answers different questions regarding the Model.

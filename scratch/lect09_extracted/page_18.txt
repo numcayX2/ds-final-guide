@@ -1,0 +1,6 @@
+The slide presents a comparison between Legal/Privacy and Responsible AI frameworks, emphasizing that both must be satisfied for compliance. 
+
+**Key Points:**
+- **Legal / Privacy**: Answers the question "ทำได้ตามกฎหมายหรือไม่?" (Is it legal?). It requires clear data usage purposes and adherence to laws like Consent or Public Interest. A case example shows Human Review without a defined Purpose is insufficient.
+- **Responsible AI**: Answers the question "ใช้แล้วเป็นธรรมหรือไม่?" (Is it fair?). It focuses on group impact (e.g., Recall rates) and Human Oversight in critical steps like auditing. A case example highlights that using data is not enough if Recall for new groups remains low.
+- **Intersection**: Both frameworks require passing dual checks: Legal compliance and Fairness. The summary states that Human Review alone does not guarantee fairness, nor does meeting legal standards ensure ethical treatment of all groups.

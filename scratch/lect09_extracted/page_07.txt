@@ -1,0 +1,34 @@
+### Summary
+
+**Most Important Fact or Outcome:**
+- The slide explains the decision path for "Customer A" using a decision tree, resulting in an "Inactive = Yes" classification.
+
+**Key Points:**
+1. **Local Explanation:**
+   - The slide provides a local explanation for Customer A's data points:
+     - `days_since_last_purchase` = 70 days
+     - `spending_last_90_days` = 2,100 Baht
+     - `customer_tenure` = 120 days
+
+2. **Decision Tree Structure:**
+   - The decision tree evaluates three conditions:
+     - `days_since_last_purchase > 45 days?`
+       - If true, it checks `spending_last_90_days < 3,000 Baht?`
+         - If true, it checks `customer_tenure > 90 days?`
+           - If true, the final output is "Inactive = Yes".
+
+3. **Global Context:**
+   - The global context indicates that this decision path is specific to Customer A, while other customers may have different paths based on their data.
+
+4. **Detailed Breakdown:**
+   - **Condition 1:** `days_since_last_purchase > 45 days`
+     - For Customer A, this condition is met (70 days > 45 days).
+   - **Condition 2:** `spending_last_90_days < 3,000 Baht`
+     - For Customer A, this condition is met (2,100 Baht < 3,000 Baht).
+   - **Condition 3:** `customer_tenure > 90 days`
+     - For Customer A, this condition is met (120 days > 90 days).
+
+5. **Final Classification:**
+   - Based on all conditions being met, Customer A is classified as "Inactive = Yes."
+
+This summary captures the essential details and structure of the decision path for Customer A as presented in the slide.

@@ -1,0 +1,27 @@
+**Weighted Gini Compares Candidate Splits**
+
+The slide illustrates how to select the best split for a decision tree using **Weighted Gini**.
+
+*   **Parent Node:**
+    *   Contains 6 Active and 6 Inactive observations.
+    *   **Gini(parent) = 0.500**
+
+*   **Candidate A:**
+    *   Condition: `days_since_last_purchase <= 45`
+    *   Left Child: 5 Active, 1 Inactive
+    *   Right Child: 1 Active, 5 Inactive
+    *   **Weighted Gini(A) = 0.278**
+    *   **Gini Gain(A) = 0.222**
+
+*   **Candidate B:**
+    *   Condition: `purchases_last_90_days <= 2`
+    *   Left Child: 2 Active, 4 Inactive
+    *   Right Child: 4 Active, 2 Inactive
+    *   **Weighted Gini(B) = 0.444**
+    *   **Gini Gain(B) = 0.056**
+
+*   **Preferred Candidate: A**
+    *   Reason: Has lower Weighted child impurity and higher Impurity reduction compared to Candidate B.
+
+*   **Takeaway:**
+    *   The best split adjusts both Child Nodes by weighting them according to the number of Observations in each node.

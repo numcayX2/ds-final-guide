@@ -1,0 +1,14 @@
+เมื่อไม่มี Ground Truth การทำ Clustering ต้องใช้หลักการร่วมกันเรื่องความกระชับ การแยกจากกัน และความหมายต่อธุรกิจ
+
+**Supervised Evaluation:**
+*   มี Target y
+*   Accuracy
+*   Confusion Matrix
+
+**Clustering Evaluation:**
+*   ข้อมูลลูกค้า (ไม่มีป้ายกำกับ)
+*   Compactness — สมาชิกในกลุ่มอยู่ใกล้กัน
+*   Separation — กลุ่มต่างกันชัดเจน
+*   Interpretability — สอดคล้องกับโจทย์ธุรกิจ
+
+**สรุป:** ไม่มีคะแนนเดียวที่พิสูจน์ว่ากลุ่มมีประโยชน์

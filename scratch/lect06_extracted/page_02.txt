@@ -1,0 +1,5 @@
+Hero: The Complete CRISP-DS Workflow (Chapter 06: Machine Learning Foundations; Big Question: How can computers learn from data?)
+
+The complete CRISP-DS workflow is a cyclical process comprising eight stages: Business Understanding, Data Understanding, Data Preparation, Exploratory Data Analysis, Modeling, Evaluation, Deployment & Communication, and AI-assisted Improvement.
+
+Modeling is highlighted as one component within the broader Data Science Journey. Takeaway: Modeling is part of the Data Science Journey—not the whole journey.

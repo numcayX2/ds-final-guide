@@ -1,0 +1,9 @@
+Regression is defined by a numerical target—not by a straight line.
+
+Key points:
+- Regression estimates numerical values and relationships that are not necessarily linear.
+- Target: Numerical (e.g., “How much will next month’s customer spend?”).
+- Process: Features → Regression → Estimated Value.
+- Output: Example given as “Estimated value of next month’s spending.”
+- Regression Task ≠ Linear Regression Algorithm — illustrated with both linear (straight line) and non-linear (curved line) examples.
+- Slide number: 27.

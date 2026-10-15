@@ -1,0 +1,1 @@
+You are an expert Data Science professor. Extract and transcribe all concepts, headings, formulas, numbers, tables, diagrams, worked examples, and takeaways from slide 16 of this lecture (lect08) in full detail.

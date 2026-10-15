@@ -1,0 +1,10 @@
+**Separate Data to Test Generalization**
+
+The single most important fact is the necessity of separating data to test generalization, as demonstrated by the slide's visual metaphor of a shield protecting "Test Data" from external threats.
+
+Key points:
+*   **Training Data**: Used to learn parameters or rules.
+*   **Validation Data**: Assists in making model development decisions.
+*   **Test Data**: Provides independent evidence for final evaluation.
+*   **Rule**: Keep Test Data separate until Major Modeling Decisions are finalized.
+*   **Takeaway**: Training fit is not proof; unseen data provides the real test.

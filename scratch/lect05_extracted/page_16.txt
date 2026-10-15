@@ -1,0 +1,10 @@
+The slide titled "Confirmation Bias Can Turn Patterns into Conclusions" illustrates how confirmation bias can distort the Exploratory Data Analysis (EDA) process. It shows that selectively focusing on patterns that support one’s preconceived notions leads to biased conclusions, rather than rigorous hypothesis testing.
+
+Key concepts and steps to mitigate confirmation bias in EDA are presented:
+
+1. **Question First** – Begin with a clear analytical question before examining data or results.
+2. **Seek Contrary Evidence** – Actively look for patterns or data points that contradict your initial hypothesis.
+3. **Check Stability** – Assess whether observed patterns hold across different subsets, time periods, or conditions.
+4. **Report Honestly** – Present all findings transparently, including those that do not support your expectations.
+
+The takeaway emphasizes conducting an open-minded review of evidence without selectively choosing only supporting data, thereby avoiding the trap of letting confirmation bias influence analysis outcomes.

@@ -1,0 +1,30 @@
+Observations, Features, and Targets Give Data Modeling Roles
+
+The slide defines the core components of a data modeling problem using a customer churn prediction scenario.
+
+**1. Observation:**
+*   Defined as: "1 แถว = ลูกค้า 1 คน ณ Observation Date" (1 row = 1 customer at the Observation Date).
+*   This represents the individual unit being analyzed—in this case, a single customer.
+
+**2. Features:**
+*   Described as: "ข้อมูลที่ใช้เป็น Input" (Data used as Input).
+*   Specific examples given include:
+    *   ความถี่การสั่งซื้อ (Purchase frequency)
+    *   มูลค่าคำสั่งซื้อเฉลี่ย (Average order value)
+    *   ระยะเวลาระหว่างการสั่งซื้อล่าสุด (Time since last purchase)
+*   These features are the variables derived from or describing the observation that will be used to train the model.
+
+**3. Target:**
+*   The outcome the model aims to predict.
+*   Example provided: "หยุดซื้อภายใน 60 วัน: ใช่ / ไม่ใช่" (Stop purchasing within 60 days: Yes / No).
+*   This binary classification question forms the basis for evaluating whether the customer will churn within the specified timeframe.
+
+**4. New Observation → Model → Output:**
+*   The process flow illustrates how new data is processed through the trained model to generate predictions.
+*   For instance, if a new customer’s behavior matches known patterns associated with stopping purchases within 60 days, the model outputs “Yes.” Otherwise, it outputs “No.”
+
+In summary, the slide explains that in data modeling:
+- Observations represent individual entities (e.g., customers).
+- Features describe aspects of those observations (such as purchase habits).
+- Targets define what we want to predict based on these features.
+- A clear example shows predicting whether a customer will stop buying within 60 days using their observed behaviors as input.

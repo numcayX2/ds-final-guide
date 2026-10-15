@@ -1,0 +1,9 @@
+**Slide 15: Distance Function (การวัดระยะห่าง)**
+
+*   **Definition**: Defines a distance function between two multivariate data points, $\mathbf{x}$ and $\mathbf{y}$.
+*   **Euclidean Distance Formula**:
+    $$d_{\text{Euclidean}}(\mathbf{x}, \mathbf{y}) = \sqrt{\sum_i (x_i - y_i)^2}$$
+*   **Manhattan or City-block Distance Formula**:
+    $$d_{\text{Manhattan}}(\mathbf{x}, \mathbf{y}) = \sum_i |x_i - y_i|$$
+*   **Minkowski Distance Formula**: Presented as the general case of both Euclidean and Manhattan distances.
+    $$d_{\text{Minkowski}}(\mathbf{x}, \mathbf{y}) = \left( \sum_i |x_i - y_i|^p \right)^{1/p}$$

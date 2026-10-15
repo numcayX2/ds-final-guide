@@ -1,0 +1,433 @@
+---
+import { examQuestions } from '../../data/exam-questions';
+---
+
+<div class="exam-arena-container space-y-8 select-none" data-questions={JSON.stringify(examQuestions)}>
+  <!-- Zone A: Exam Hero & Timer Bar -->
+  <div class="border-2 border-[#171719] bg-[#171719] text-[#F4F1EA] p-6 shadow-[5px_5px_0px_#E11D48]">
+    <div class="flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="tape-label bg-[#E11D48] text-white text-xs py-0.5 px-2">SIMULATED EXAM ARENA</span>
+          <span class="text-xs font-mono uppercase tracking-wider text-gray-300">14 ข้อสอบปรนัยคัดกรองกับดัก</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-white">
+          10301351 DATA SCIENCE FINAL EXAM
+        </h2>
+        <p class="text-xs text-gray-300 font-mono mt-1">
+          จำลองข้อสอบจริง ครอบคลุมทุกสูตร การคำนวณ ตาราง Bias-Variance และกับดักอาจารย์
+        </p>
+      </div>
+
+      <!-- Live Exam Controls -->
+      <div class="flex items-center gap-3">
+        <div class="border-2 border-[#F4F1EA] bg-[#222226] px-3 py-1.5 font-mono text-center">
+          <div class="text-[10px] text-gray-400 uppercase">เวลาสอบที่แนะนำ</div>
+          <div class="text-lg font-bold text-[#A3E635] tabular-nums" id="exam-timer">45:00</div>
+        </div>
+        <button
+          type="button"
+          id="submit-exam-btn"
+          class="btn-chamfer px-4 py-2 bg-[#A3E635] text-[#171719] font-bold font-mono text-xs uppercase border border-[#171719] shadow-[2px_2px_0px_#171719] hover:bg-[#84CC16] active:scale-95 transition-all cursor-pointer"
+        >
+          ส่งกระดาษคำตอบ (Submit)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Exam Arena Grid: Questions + Scratchpad + Bubble Sheet -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Left Column: Active Question + 10-Row Scratchpad (7 cols) -->
+    <div class="lg:col-span-8 space-y-6">
+      <!-- Question Display Card (Zone B Strict Clinical) -->
+      <div class="border-2 border-[#171719] bg-white p-6 shadow-[3px_3px_0px_#171719]">
+        <div class="flex justify-between items-center mb-4 border-b-2 border-[#171719] pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 bg-[#171719] text-[#A3E635] flex items-center justify-center font-mono font-bold text-sm">
+              <span id="current-q-num">1</span>
+            </span>
+            <div>
+              <span class="text-xs font-mono font-bold text-[#171719]" id="current-q-title">
+                {examQuestions[0].title}
+              </span>
+              <span class="ml-2 text-[10px] font-mono px-1.5 py-0.5 bg-[#EAE6DC] border border-[#171719]" id="current-q-slide">
+                {examQuestions[0].slideRef}
+              </span>
+            </div>
+          </div>
+          <span class="text-xs font-mono text-gray-500">ข้อ <span id="q-progress-text">1 / 14</span></span>
+        </div>
+
+        <!-- Scenario Text -->
+        <p id="current-q-scenario" class="text-sm font-['Plus_Jakarta_Sans'] leading-relaxed text-[#171719] mb-6">
+          {examQuestions[0].scenario}
+        </p>
+
+        <!-- 4 Options (A, B, C, D) -->
+        <div class="space-y-3" id="options-container">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="mt-6 pt-4 border-t border-[#171719] flex justify-between items-center">
+          <button
+            type="button"
+            id="prev-q-btn"
+            class="px-4 py-1.5 text-xs font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border border-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer"
+          >
+            ← ข้อก่อนหน้า
+          </button>
+          <button
+            type="button"
+            id="next-q-btn"
+            class="px-4 py-1.5 text-xs font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border border-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer"
+          >
+            ข้อถัดไป →
+          </button>
+        </div>
+      </div>
+
+      <!-- 10-Row Monospace Scratchpad (Zone B Paper Scratchpad) -->
+      <div class="border-2 border-[#171719] bg-[#F4F1EA] p-4 shadow-[3px_3px_0px_#171719]">
+        <div class="flex justify-between items-center mb-3 border-b border-[#171719] pb-2">
+          <div class="flex items-center gap-2">
+            <span class="tape-label bg-[#171719] text-[#A3E635] text-[10px]">SCRATCHPAD</span>
+            <span class="text-xs font-mono font-bold uppercase text-[#171719]">
+              กระดาษทดเลขในห้องสอบ (10 แถว Monospace)
+            </span>
+          </div>
+          <button
+            type="button"
+            id="clear-scratch-btn"
+            class="text-[10px] font-mono text-[#E11D48] hover:underline cursor-pointer"
+          >
+            ล้างกระดาษทด
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs font-mono border-collapse border border-[#171719] bg-white">
+            <thead>
+              <tr class="bg-[#171719] text-white text-[11px]">
+                <th class="p-1.5 border border-[#171719] w-12 text-center">แถว</th>
+                <th class="p-1.5 border border-[#171719] w-28">ตัวแปร / สูตร</th>
+                <th class="p-1.5 border border-[#171719]">การคำนวณทดเลข (Workings)</th>
+                <th class="p-1.5 border border-[#171719] w-28 text-right">ผลลัพธ์</th>
+              </tr>
+            </thead>
+            <tbody id="scratchpad-body">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <tr class="border-b border-[#171719]/30">
+                  <td class="p-1 border border-[#171719]/30 text-center font-bold text-gray-400 select-none">
+                    {String(i + 1).padStart(2, '0')}
+                  </td>
+                  <td class="p-1 border border-[#171719]/30">
+                    <input
+                      type="text"
+                      class="w-full bg-transparent border-none outline-none text-xs font-mono font-semibold text-[#171719]"
+                      placeholder="เช่น IQR, Gini_A"
+                    />
+                  </td>
+                  <td class="p-1 border border-[#171719]/30">
+                    <input
+                      type="text"
+                      class="w-full bg-transparent border-none outline-none text-xs font-mono tabular-nums text-gray-700"
+                      placeholder="เช่น 70 - 30 = 40"
+                    />
+                  </td>
+                  <td class="p-1 border border-[#171719]/30 text-right">
+                    <input
+                      type="text"
+                      class="w-full bg-transparent border-none outline-none text-xs font-mono font-bold text-right tabular-nums text-[#171719]"
+                      placeholder="40"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Bubble Sheet (OMR) & Scorecard (4 cols) -->
+    <div class="lg:col-span-4 space-y-6">
+      <!-- Bubble Sheet (OMR Card) -->
+      <div class="border-2 border-[#171719] bg-white p-5 shadow-[4px_4px_0px_#171719]">
+        <div class="border-b-2 border-[#171719] pb-3 mb-4 flex justify-between items-center">
+          <div>
+            <span class="tape-label bg-[#A3E635] text-[#171719] text-[10px]">OMR SHEET</span>
+            <h3 class="font-bold text-sm font-['Space_Grotesk'] text-[#171719] mt-0.5">
+              กระดาษฝนคำตอบ (Bubble Sheet)
+            </h3>
+          </div>
+          <span class="text-xs font-mono font-bold" id="answered-count">0 / 14 ข้อ</span>
+        </div>
+
+        <div class="space-y-2 max-h-[460px] overflow-y-auto pr-1">
+          {examQuestions.map((q) => (
+            <div
+              class="flex items-center justify-between p-2 border border-[#171719]/30 hover:bg-[#F4F1EA] transition-colors"
+              data-bubble-row={q.questionNumber}
+            >
+              <button
+                type="button"
+                class="font-mono text-xs font-bold text-[#171719] hover:underline cursor-pointer flex items-center gap-1.5"
+                data-jump-q={q.questionNumber}
+              >
+                <span class="w-5 h-5 bg-[#171719] text-white flex items-center justify-center text-[10px]">
+                  {q.questionNumber}
+                </span>
+                <span class="truncate max-w-[100px] text-[11px] text-gray-600">ข้อ {q.questionNumber}</span>
+              </button>
+
+              <div class="flex items-center gap-1.5 font-mono text-xs font-bold">
+                {(['A', 'B', 'C', 'D'] as const).map((opt) => (
+                  <button
+                    type="button"
+                    class="bubble-btn w-6 h-6 rounded-full border-2 border-[#171719] flex items-center justify-center text-[11px] hover:bg-gray-200 cursor-pointer transition-all"
+                    data-q-num={q.questionNumber}
+                    data-opt={opt}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Result Scorecard (Hidden until submit) -->
+      <div id="exam-result-card" class="hidden border-2 border-[#171719] bg-[#171719] text-white p-5 shadow-[4px_4px_0px_#A3E635]">
+        <div class="flex justify-between items-center mb-3 border-b border-gray-700 pb-2">
+          <span class="text-xs font-mono text-[#A3E635] uppercase font-bold">ผลการสอบจำลอง (Diagnostic Report)</span>
+          <span class="tape-label bg-[#A3E635] text-[#171719] text-[10px]" id="result-grade">GRADE A</span>
+        </div>
+
+        <div class="text-center my-4">
+          <div class="text-4xl font-black font-['Space_Grotesk'] text-[#A3E635]" id="result-score-text">
+            14 / 14
+          </div>
+          <div class="text-xs font-mono text-gray-300 mt-1" id="result-pct-text">
+            ความแม่นยำ 100% (Mastery Level)
+          </div>
+        </div>
+
+        <div class="space-y-2 text-xs font-mono mt-4" id="diagnostic-breakdown">
+          <!-- Populated dynamically -->
+        </div>
+
+        <button
+          type="button"
+          id="retake-exam-btn"
+          class="w-full mt-4 py-2 bg-white text-[#171719] font-bold font-mono text-xs uppercase border border-[#171719] hover:bg-gray-100 cursor-pointer"
+        >
+          ทำข้อสอบใหม่อีกครั้ง (Retake)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import confetti from 'canvas-confetti';
+  import type { ExamQuestion } from '../../types/study';
+
+  const container = document.querySelector<HTMLElement>('.exam-arena-container');
+  if (container) {
+    const rawData = container.getAttribute('data-questions');
+    const questions: ExamQuestion[] = rawData ? JSON.parse(rawData) : [];
+
+    let currentQIndex = 0;
+    const userAnswers: Record<number, 'A' | 'B' | 'C' | 'D'> = {};
+    let isSubmitted = false;
+
+    const qNumEl = document.getElementById('current-q-num');
+    const qTitleEl = document.getElementById('current-q-title');
+    const qSlideEl = document.getElementById('current-q-slide');
+    const qProgressEl = document.getElementById('q-progress-text');
+    const qScenarioEl = document.getElementById('current-q-scenario');
+    const optionsContainer = document.getElementById('options-container');
+    const answeredCountEl = document.getElementById('answered-count');
+    const resultCard = document.getElementById('exam-result-card');
+
+    function renderQuestion(idx: number) {
+      if (idx < 0 || idx >= questions.length) return;
+      currentQIndex = idx;
+      const q = questions[idx];
+
+      if (qNumEl) qNumEl.textContent = String(q.questionNumber);
+      if (qTitleEl) qTitleEl.textContent = q.title;
+      if (qSlideEl) qSlideEl.textContent = q.slideRef;
+      if (qProgressEl) qProgressEl.textContent = `${idx + 1} / ${questions.length}`;
+      if (qScenarioEl) qScenarioEl.textContent = q.scenario;
+
+      if (optionsContainer) {
+        optionsContainer.innerHTML = '';
+        q.options.forEach((opt) => {
+          const isSelected = userAnswers[q.questionNumber] === opt.id;
+          const optBtn = document.createElement('button');
+          optBtn.type = 'button';
+          optBtn.className = `w-full p-3 text-left border-2 border-[#171719] font-mono text-xs sm:text-sm flex items-start gap-3 transition-all cursor-pointer ${
+            isSelected
+              ? 'bg-[#171719] text-[#A3E635] shadow-[2px_2px_0px_#A3E635]'
+              : 'bg-white hover:bg-[#F4F1EA] text-[#171719]'
+          }`;
+
+          optBtn.innerHTML = `
+            <span class="w-6 h-6 rounded-full border border-current flex items-center justify-center font-bold text-xs shrink-0">
+              ${opt.id}
+            </span>
+            <span class="leading-relaxed">${opt.text}</span>
+          `;
+
+          optBtn.addEventListener('click', () => {
+            if (isSubmitted) return;
+            selectAnswer(q.questionNumber, opt.id);
+          });
+
+          optionsContainer.appendChild(optBtn);
+        });
+      }
+
+      // Highlight active row in bubble sheet
+      document.querySelectorAll('[data-bubble-row]').forEach((row) => {
+        row.classList.remove('bg-[#A3E635]/20', 'border-l-4', 'border-[#171719]');
+      });
+      const activeRow = document.querySelector(`[data-bubble-row="${q.questionNumber}"]`);
+      activeRow?.classList.add('bg-[#A3E635]/20', 'border-l-4', 'border-[#171719]');
+    }
+
+    function selectAnswer(qNum: number, optId: 'A' | 'B' | 'C' | 'D') {
+      userAnswers[qNum] = optId;
+
+      // Update Bubble UI
+      const bubbles = document.querySelectorAll(`.bubble-btn[data-q-num="${qNum}"]`);
+      bubbles.forEach((b) => {
+        if (b.getAttribute('data-opt') === optId) {
+          b.className = 'bubble-btn w-6 h-6 rounded-full border-2 border-[#171719] flex items-center justify-center text-[11px] bg-[#171719] text-[#A3E635] font-black cursor-pointer';
+        } else {
+          b.className = 'bubble-btn w-6 h-6 rounded-full border-2 border-[#171719] flex items-center justify-center text-[11px] bg-white text-[#171719] hover:bg-gray-200 cursor-pointer';
+        }
+      });
+
+      // Update count
+      const count = Object.keys(userAnswers).length;
+      if (answeredCountEl) answeredCountEl.textContent = `${count} / ${questions.length} ข้อ`;
+
+      renderQuestion(currentQIndex);
+    }
+
+    // Jump to question from bubble sheet
+    document.querySelectorAll('[data-jump-q]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetQ = Number(btn.getAttribute('data-jump-q'));
+        renderQuestion(targetQ - 1);
+      });
+    });
+
+    // Bubble button clicks
+    document.querySelectorAll('.bubble-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (isSubmitted) return;
+        const qNum = Number(btn.getAttribute('data-q-num'));
+        const opt = btn.getAttribute('data-opt') as 'A' | 'B' | 'C' | 'D';
+        selectAnswer(qNum, opt);
+      });
+    });
+
+    // Prev / Next
+    document.getElementById('prev-q-btn')?.addEventListener('click', () => {
+      if (currentQIndex > 0) renderQuestion(currentQIndex - 1);
+    });
+    document.getElementById('next-q-btn')?.addEventListener('click', () => {
+      if (currentQIndex < questions.length - 1) renderQuestion(currentQIndex + 1);
+    });
+
+    // Submit Exam
+    document.getElementById('submit-exam-btn')?.addEventListener('click', () => {
+      submitExam();
+    });
+
+    function submitExam() {
+      isSubmitted = true;
+      let score = 0;
+      const breakdownEl = document.getElementById('diagnostic-breakdown');
+      if (breakdownEl) breakdownEl.innerHTML = '';
+
+      questions.forEach((q) => {
+        const userChoice = userAnswers[q.questionNumber];
+        const correctOpt = q.options.find((o) => o.isCorrect);
+        const isCorrect = userChoice === correctOpt?.id;
+
+        if (isCorrect) score++;
+
+        if (breakdownEl && !isCorrect) {
+          const item = document.createElement('div');
+          item.className = 'p-2 bg-[#222226] border border-[#E11D48] text-[11px] text-gray-200';
+          item.innerHTML = `
+            <div class="font-bold text-[#E11D48]">ข้อ ${q.questionNumber}: ${q.title} (${q.slideRef})</div>
+            <div>คุณตอบ: <span class="text-red-400 font-bold">${userChoice || 'ไม่ได้ตอบ'}</span> | คำตอบที่ถูก: <span class="text-[#A3E635] font-bold">${correctOpt?.id}</span></div>
+            <div class="text-[10px] text-gray-400 mt-1">${correctOpt?.explanation}</div>
+          `;
+          breakdownEl.appendChild(item);
+        }
+      });
+
+      const scoreTextEl = document.getElementById('result-score-text');
+      const pctTextEl = document.getElementById('result-pct-text');
+      const gradeEl = document.getElementById('result-grade');
+
+      const pct = Math.round((score / questions.length) * 100);
+      if (scoreTextEl) scoreTextEl.textContent = `${score} / ${questions.length}`;
+      if (pctTextEl) pctTextEl.textContent = `ความแม่นยำ ${pct}% (${pct >= 80 ? 'Mastery Level' : 'ต้องทบทวนจุดอ่อน'})`;
+
+      if (gradeEl) {
+        if (pct >= 80) {
+          gradeEl.textContent = 'GRADE A';
+          gradeEl.className = 'tape-label bg-[#A3E635] text-[#171719] text-[10px]';
+        } else if (pct >= 60) {
+          gradeEl.textContent = 'GRADE B';
+          gradeEl.className = 'tape-label bg-[#F59E0B] text-[#171719] text-[10px]';
+        } else {
+          gradeEl.textContent = 'NEEDS REVIEW';
+          gradeEl.className = 'tape-label bg-[#E11D48] text-white text-[10px]';
+        }
+      }
+
+      resultCard?.classList.remove('hidden');
+
+      if (pct >= 80) {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }
+
+      // Save to localStorage
+      localStorage.setItem('ds_exam_last_score', String(score));
+      localStorage.setItem('ds_exam_total', String(questions.length));
+    }
+
+    // Retake
+    document.getElementById('retake-exam-btn')?.addEventListener('click', () => {
+      isSubmitted = false;
+      for (const k in userAnswers) delete userAnswers[k];
+      document.querySelectorAll('.bubble-btn').forEach((b) => {
+        b.className = 'bubble-btn w-6 h-6 rounded-full border-2 border-[#171719] flex items-center justify-center text-[11px] bg-white text-[#171719] hover:bg-gray-200 cursor-pointer';
+      });
+      if (answeredCountEl) answeredCountEl.textContent = `0 / ${questions.length} ข้อ`;
+      resultCard?.classList.add('hidden');
+      renderQuestion(0);
+    });
+
+    // Clear scratchpad
+    document.getElementById('clear-scratch-btn')?.addEventListener('click', () => {
+      document.querySelectorAll('#scratchpad-body input').forEach((inp) => {
+        (inp as HTMLInputElement).value = '';
+      });
+    });
+
+    // Init
+    renderQuestion(0);
+  }
+</script>

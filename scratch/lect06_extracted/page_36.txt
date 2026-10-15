@@ -1,0 +1,15 @@
+**Data Leakage Creates Misleading Success**
+
+**Leakage Test:** Does this data exist at the time of building the Prediction or not?
+
+**Legitimate Feature**
+*   Information available before Observation Date
+
+**Leaking Feature**
+*   Cancellation Date / Future Inactivity Status
+
+**Training: Looks very accurate**
+
+**Real Use: No future information available**
+
+**Takeaway:** If the model sees the future, its apparent success is not trustworthy.

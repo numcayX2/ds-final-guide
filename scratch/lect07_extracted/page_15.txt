@@ -1,0 +1,8 @@
+The image presents the anatomy of a Decision Tree, detailing its core components:
+
+- **Root Node**: The initial point where all Training Observations enter the tree.
+- **Internal Node**: A node that applies a Learned Split Rule to divide observations based on features and thresholds.
+- **Branch**: The path resulting from the application of a condition.
+- **Class Distribution**: The count or proportion of Target Classes within a specific node.
+- **Depth**: The number of split levels along a Root-to-Leaf Path.
+- **Takeaway**: Understanding each part is essential for reading a Decision Tree.

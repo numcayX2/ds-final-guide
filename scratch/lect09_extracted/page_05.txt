@@ -1,0 +1,20 @@
+The provided image is a slide from a presentation on Explainable AI (XAI), specifically focusing on the concept of "Global Explanation" versus "Local Explanation" in model interpretability. The slide is titled "Slide 5" and features two main sections: one labeled "Model" and the other labeled "Customer A."
+
+### **Global Explanation Section:**
+- **Title:** "โมเดลโดยรวมพึ่งพา Feature ไหน?" (Which Features does the overall Model rely on?)
+- **Content:** This section discusses the importance of understanding which features are most influential in a model's predictions. It highlights that different levels of questions require different explanations to fully comprehend the model's behavior.
+- **Key Points:**
+  - The global explanation aims to identify the most critical features for the entire model.
+  - It provides a comprehensive overview of how various features contribute to the model's decision-making process.
+  - Understanding these contributions helps in interpreting the model's overall logic and reliability.
+
+### **Local Explanation Section:**
+- **Title:** "อธิบายเฉพาะกรณีของลูกค้า" (Explain Specific Cases of Customers)
+- **Content:** This section focuses on providing detailed explanations for individual customer cases. It emphasizes the need for specific insights into why certain decisions were made for particular customers.
+- **Key Points:**
+  - Local explanations offer granular details about individual instances, helping users understand the rationale behind specific outcomes.
+  - They address the question of why a particular customer received a certain prediction or classification.
+  - These explanations are tailored to provide clarity on the factors influencing the model's decision for each case.
+
+### **Conclusion:**
+The slide underscores the distinction between global and local explanations in XAI. Global explanations focus on identifying the most significant features across the entire dataset, while local explanations delve into the specifics of individual cases. Both types of explanations play crucial roles in enhancing the transparency and trustworthiness of machine learning models.

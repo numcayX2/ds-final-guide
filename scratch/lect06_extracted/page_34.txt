@@ -1,0 +1,16 @@
+**The logic of Machine Learning is derived from data, not from the programmer.**
+
+*   **Traditional Programs:** Define algo/logic to compute output.
+    *   Inputs: Input and Algo (Logic).
+    *   Process: Traditional Program.
+    *   Output: Output.
+*   **Machine Learning:** Learn model/logic from data.
+    *   Training Phase:
+        *   Inputs: Training Input and Expected Output.
+        *   Process: ML Training.
+        *   Result: Model (Logic).
+    *   Inference Phase:
+        *   Inputs: Input and Model (Logic).
+        *   Process: ML Inference.
+        *   Output: Output.
+*   **Consequence:** Since all Logic comes from data, if the data has problems such as Data Leakage or poor Feature selection, the resulting Model will be flawed ("พังทันที").

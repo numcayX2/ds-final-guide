@@ -1,0 +1,16 @@
+Based on the provided image, here is a detailed summary of Slide 27:
+
+**Build an Honest Story from Evidence**
+
+The slide presents a framework for constructing data narratives that are honest and evidence-based. It emphasizes that a Data Story should not simply add language to embellish charts but should instead tell a compelling story grounded in facts, addressing key questions about what the data shows, why it matters, and what limitations exist.
+
+**Key Components:**
+*   **Context**: Defines the audience and business/analytics question being addressed.
+*   **Evidence**: Presents the supporting data through charts and graphs.
+*   **Insight**: Explains the meaning or conclusion drawn from the evidence.
+*   **Limitation**: Acknowledges any uncertainties or constraints in the data or analysis.
+*   **Implication**: Outlines the next steps or actions based on the insights derived.
+
+The visual elements include icons representing people (audience), bar charts, line graphs, magnifying glasses (analysis), warning signs (limitations), and branching arrows (implications). The takeaway reinforces that a good Data Story honestly communicates significance, supported by evidence, while acknowledging its own boundaries.
+
+Page number: 27

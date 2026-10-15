@@ -1,0 +1,12 @@
+Based on the scatter plots provided in slide 7 of lecture 08, here is a summary of the customer segmentation case study:
+
+**Case Study: Customer Segmentation**
+
+*   **Define number of clusters:** The analysis begins by establishing the total number of distinct groups to identify within the dataset.
+*   **Define features:** Specific variables are selected to characterize the data points for clustering purposes. These include:
+    *   Number of flights in the past year
+    *   Percent international
+    *   Advanced planning
+    *   Percent business class
+
+The visualizations show how these features correlate with "Percent business flights" against the "Number of flights per year." As the number of annual flights increases from 0 to 30, the distribution of business flight percentages changes, revealing patterns that help define the segments. Cluster 1 and Cluster 2 are specifically highlighted in the lower charts, showing distinct groupings based on flight frequency and business class usage.

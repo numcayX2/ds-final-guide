@@ -1,0 +1,10 @@
+Machine Learning learns from examples to build a Model that can be applied to new data.
+
+The process involves:
+- Population: ข้อมูลทั้งหมดของปัญหา (All data of the problem)
+- Sampling: การสุ่มตัวอย่าง (Sampling)
+- Sample Data: ตัวอย่างข้อมูลที่ใช้เรียนรู้ (Example data used for learning)
+- Learning Algorithm: ค้นหา Pattern จากตัวอย่าง (Find patterns from examples)
+- Trained Model: เรียนรู้ • รู้จัก • ตัดสินใจ (Learn • Recognize • Decide)
+- Unseen Data: คาดการณ์หรือตัดสินใจกับข้อมูลใหม่ (Predict or decide on new data)
+- Generalization: จาก Sample สู่ข้อมูลใหม่ใน Population (From sample to new data in population)

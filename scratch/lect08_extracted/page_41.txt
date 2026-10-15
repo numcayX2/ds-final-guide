@@ -1,0 +1,8 @@
+**Personas เชื่อม Profile เข้ากับบริบทการตัดสินใจ**
+
+*   **Definition:** A Persona is a data-driven observation of behavior, not a claim about the type of person.
+*   **Observation-to-Persona Mapping:**
+    *   High purchase frequency + high spending $\rightarrow$ **Loyal customers**
+    *   Low Engagement $\rightarrow$ **Disengaging customers**
+    *   Price-sensitive patterns $\rightarrow$ **Bargain-focused customers**
+*   **Guideline:** Names should be based on evidence, not replace it.

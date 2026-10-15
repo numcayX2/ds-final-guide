@@ -1,0 +1,6 @@
+**Recap: From Algorithm to Trained Model Candidate**
+
+- **Algorithm Definition**: An algorithm is a method for learning.
+- **Training Process**: Training involves applying the algorithm to data (features and known targets/similarity structures) to produce learned parameters or decision rules.
+- **Output of Training**: The result is a trained model, which can be used to make predictions or assignments on new observations.
+- **Key Takeaway**: Training generates the model; the algorithm and model are not interchangeable.

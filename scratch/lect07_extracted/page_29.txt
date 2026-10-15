@@ -1,0 +1,9 @@
+**Metric Selection Follows the Decision Context**
+
+*   **Decision Context Comes First**: Consider Class Balance, Error Consequences, and Operational Needs.
+*   **Accuracy**: Appropriate when overall accuracy and Class Balance are relatively balanced; may conceal Minority-class Failure.
+*   **Precision**: Appropriate when Contact Capacity is limited or FP has high cost; may miss customers who will be Inactive.
+*   **Recall**: Appropriate when FN has high impact and At-risk Customers need to be found; may increase Unnecessary Contacts.
+*   **F1-score**: Appropriate when a single summary metric balancing Precision and Recall is needed ($F1 = 2 \times Precision \times Recall / (Precision + Recall)$); does not show which Error is more important in reality.
+*   **Justify the Choice**: Identify what question the Metric answers, why it fits the Decision, and what the Metric does not show.
+*   **Takeaway**: Select a Metric that aligns with the Decision and identify what that Metric does not show.

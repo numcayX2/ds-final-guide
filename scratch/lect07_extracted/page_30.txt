@@ -1,0 +1,39 @@
+The image presents a detailed breakdown of classification metrics derived from a confusion matrix for the FIFA W-Cup 2026, specifically focusing on predicting whether players should "play" or "rest." The classifier model is tasked with identifying if a player should play or rest based on actual conditions.
+
+### Key Metrics and Values:
+1. **Recall**: 
+   - Formula: \( \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}} \)
+   - Calculation: \( \text{Recall} = \frac{4}{4 + 2} = 0.67 \)
+   - Interpretation: Out of all players who should play, the model correctly identifies 67% of them.
+
+2. **Precision**:
+   - Formula: \( \text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} \)
+   - Calculation: \( \text{Precision} = \frac{4}{4 + 1} = 0.80 \)
+   - Interpretation: When the model predicts "play," it is correct 80% of the time.
+
+3. **F-measure (F1-score)**:
+   - Formula: \( \text{F1} = \frac{2 \times \text{TP}}{2 \times \text{TP} + \text{FP} + \text{FN}} \)
+   - Calculation: \( \text{F1} = \frac{2 \times 4}{2 \times 4 + 1 + 2} = 0.73 \)
+   - Interpretation: F1-score balances Precision and Recall, providing a single metric that considers both false positives and false negatives.
+
+4. **Accuracy**:
+   - Formula: \( \text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{Total Predictions}} \)
+   - Calculation: \( \text{Accuracy} = \frac{4 + 3}{10} = 0.70 \)
+   - Interpretation: The model accurately predicts 70% of the total instances.
+
+### Summary:
+- **Positive Class (play)**:
+  - True Positives (TP): 4
+  - False Negatives (FN): 2
+  - Recall: 67%
+
+- **Negative Class (rest)**:
+  - True Negatives (TN): 3
+  - False Positives (FP): 1
+  - Precision: 80%
+
+- **Overall Accuracy**:
+  - Total Correct Predictions: 7 out of 10
+  - Accuracy: 70%
+
+This comprehensive analysis highlights the performance of the classifier model in distinguishing between "play" and "rest" categories, with specific focus on the Positive Class (play) and Negative Class (rest).

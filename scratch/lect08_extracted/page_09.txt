@@ -1,0 +1,7 @@
+The slide presents a visual demonstration of how clustering animals can be performed using different criteria. It highlights three distinct clustering approaches:
+
+1. **Species Cluster**: Animals are grouped by their species type (e.g., dogs vs. cats). This cluster includes the White Swiss Shepherd, Black German Shepherd, Brown Akita, Black Norwegian Forest cat, Brown Japanese Bobtail, and Grey Kurilian Bobtail.
+2. **Origin Cluster**: Animals are grouped by their geographical origin or place of discovery. The EU flag is used as a symbol for this category, including the White Swiss Shepherd, Black German Shepherd, and Black Norwegian Forest cat. A red dot represents other origins such as the Brown Akita, Brown Japanese Bobtail, and Grey Kurilian Bobtail.
+3. **Color Cluster**: Animals are grouped based on their coat color. This includes Black (Black Norwegian Forest, Black German Shepherd), Grey (Grey Kurilian Bobtail), White (White Swiss Shepherd), and Brown (Brown Japanese Bobtail, Brown Akita).
+
+The slide emphasizes that clustering is subjective, meaning the way animals are grouped depends on the chosen criterion (species, origin, or color) and can vary based on context or perspective.

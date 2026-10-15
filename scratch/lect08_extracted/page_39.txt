@@ -1,0 +1,6 @@
+Cluster IDs are labels, not descriptions.
+
+- Cluster numbers identify members but do not indicate behavior, value, or needs on their own.
+- Model output shows Cluster 0, Cluster 1, and Cluster 2; it only tells which group a member belongs to.
+- Questions remain: What is the behavior? What is the value? What is needed?
+- Cluster ID ≠ business meaning.

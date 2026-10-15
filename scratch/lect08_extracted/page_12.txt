@@ -1,0 +1,11 @@
+### Distance Function
+
+- **Definition**: The slide introduces the concept of a distance function, which is used to measure the similarity or dissimilarity between two data points.
+- **Multivariate Data Example**: It provides an example where the data points are multivariate, meaning they have multiple features or variables. Specifically, it mentions that the number of variables in this example is 4.
+- **Vectors X and Y**: Two vectors, \(X\) and \(Y\), are defined as follows:
+  - \(X = \langle x_1, x_2, x_3, x_4 \rangle\)
+  - \(Y = \langle y_1, y_2, y_3, y_4 \rangle\)
+- **Data Representation**: The slide includes a table with IDs and corresponding values for V1, V2, V3, ..., Vn. This table represents the multivariate data points.
+- **Scatter Plot**: A scatter plot is shown with axes labeled as \(v1\) and \(v2\). The plot illustrates the distribution of data points based on these two variables.
+
+The slide emphasizes the importance of understanding how to represent and analyze multivariate data using vectors and tables, and how to visualize such data using scatter plots.

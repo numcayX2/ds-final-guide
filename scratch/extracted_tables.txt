@@ -1,0 +1,126 @@
+=== TABLE 0 ===
+📋 โครงสร้างและแผนที่การอ่านเพื่อพิชิตคะแนนสอบ Final (Lectures 04.1 - 09 + Framework)  • หลักสูตรนี้อิงตามกระบวนการ CRISP-DS 8 ขั้นตอน โดยข้อสอบเน้นหนักตั้งแต่ Data Preparation ไปจนถึง Responsible AI • ครอบคลุมทุกสูตรและตัวเลขคำนวณ: Min-Max, Z-score, Tukey's Fences (IQR), Weighted Gini & Gain, Confusion Matrix (FIFA & Churn), K-Means (Distance, Centroid, Inertia, Silhouette) และ 2 ข้อการบ้านอาจารย์ • ข้อสอบชอบวัดทั้งวิธีคิดเชิงตัวเลขและบริบทการตัดสินใจธุรกิจ (Business Decision Context) เช่น เมื่อใดควรแคร์ Precision มากกว่า Recall
+
+=== TABLE 1 ===
+บทที่	|	หัวข้อหลัก & สไลด์อ้างอิง	|	สูตรคำนวณสำคัญ & จุดเน้นในห้องสอบ
+บทที่ 1	|	Data Science Framework (CRISP-DS) (Lect 02 p18, p20)	|	• วงจรการทำงาน 8 ขั้นตอน (ตั้งแต่ Business Understanding ถึง AI-assisted Improvement) • กฎสัดส่วนเวลา Data Preparation (60–80% ของงานทั้งหมด) • ชนิดข้อมูล: Quantitative (Discrete, Continuous) vs Qualitative (Nominal, Ordinal)
+บทที่ 2	|	Data Preparation I: Data Cleaning (Lect 04.1)	|	• วงจร 6 ขั้นตอน: Detect → Understand → Decide → Transform → Validate → Document • ยุทธศาสตร์ Missing Data: Deletion, Simple, Group-wise, Regression, Cluster-based • สูตร Valid Mean Imputation (ตัด Known Invalid ออกก่อน) และ Cluster Median (p32) • จุดระวัง: กฎ Clean Known Errors Before Calculating Replacements (สไลด์ p34)
+บทที่ 3	|	Data Preparation II: Feature Scaling (Lect 04.2)	|	• เทคนิค: Categorical Encoding (Ordinal vs One-Hot), Binning, Log Transformation • กฎป้องกัน Data Leakage (p27): Fit scaler เฉพาะบน Train Set เท่านั้น • สูตร Min-Max Normalization สู่ช่วงทั่วไป [new_min, new_max] (ตัวอย่าง Rachel สู่ [0, 9]) • สูตร Z-Score Standardization: z = (x - μ) / σ (ตัวอย่าง John เทียบ μ, σ ประชากร)
+บทที่ 4	|	Exploratory Data Analysis (EDA) (Lect 05)	|	• บทบาทของ EDA: ชี้แนะแนวทางโมเดล (Informs) ไม่ใช่เลือกอัลกอริทึมอัตโนมัติ • สูตรตรวจ Outlier ด้วย IQR: Lower Fence = Q1 - 1.5*IQR, Upper Fence = Q3 + 1.5*IQR • ข้อสังเกต Boxplot: Whisker ลากถึงจุดจริงสุดท้ายที่อยู่ในรั้ว ไม่ใช่ตัว Fence • คู่มือเลือกชาร์ต Tableau: Comparison, Time/Trend, Composition, Distribution, Relationship
+บทที่ 5	|	Modeling Framework & การแบ่งชุดข้อมูล (Lect 06, Lect 07 p07, p32)	|	• 4 ตระกูล Candidate Models: Decision Tree, 5-NN, Naive Bayes, Neural Network • กฎ 3-Way Partitioning: Training (60-70%), Validation (15-20%), Test (15-20%) • กฎเหล็ก 'Protect the Test Set': ข้อมูลทดสอบต้องใช้ครั้งเดียวตอนสุดท้าย ห้ามใช้จูนโมเดล
+บทที่ 6	|	Decision Tree: Gini Impurity & Gain (Lect 07 p11–12, p19, p31)	|	• สูตร Gini Impurity: Gini(Node) = 1 - ∑(p_i)^2 • สูตร Weighted Gini Split: Gini_split = (n_L/n)*Gini(L) + (n_R/n)*Gini(R) • สูตร Gini Gain: Gain = Gini(Parent) - Gini_split (ตัวอย่าง Candidate A ชนะ B) • ตาราง Bias-Variance 2x2 Matrix & บันไดความลึก max_depth (ระดับ 3 ดีที่สุด)
+บทที่ 7	|	Confusion Matrix & Evaluation Metrics (Lect 07 p22–35)	|	• กฎเหล็ก: เขียน Positive Class ก่อนเสมอ! ระวังแกนตาราง (แถว = Actual, คอลัมน์ = Predicted) • สูตรครบชุด: Accuracy, Precision (แคร์ FP), Recall (แคร์ FN), F1-Score (ฮาร์โมนิก) • ตัวอย่างข้อสอบจริง: FIFA World Cup 2026 Model (10 คน) • เฉลยการบ้าน HW#1: Customer Churn 10 ราย (ทุกเมตริกออกเท่ากัน = 0.60) • เฉลยการบ้าน HW#2: เปรียบเทียบ Models A / B / C บนลูกค้า 100 ราย และบริบทธุรกิจ
+บทที่ 8	|	K-Means Clustering & การประเมิน (Lect 08 p12–37)	|	• เป้าหมาย: Maximize Intra-cluster Similarity และ Minimize Inter-cluster Similarity • ฟังก์ชันระยะทาง: Manhattan (L1), Euclidean (L2), Minkowski (Lp) • อัลกอริทึม Step-by-Step พร้อมตัวอย่างจัดกลุ่ม 8 จุด (A1-A8) และคำนวณ Centroid ใหม่ • สูตรประเมินคุณภาพ: Inertia/WCSS (Compactness) และ Silhouette Score [-1, +1] • กับดักข้อสอบ: ในห้องเรียน Assign ด้วย Manhattan แต่สูตร Inertia ใช้ Squared Euclidean
+บทที่ 9	|	Responsible Data Science & Ethics (Lect 09)	|	• อคติ 3 ด้าน: Historical Bias, Representation Bias, Proxy Features (Postal Code) • การเปลี่ยนแปลงข้อมูล: Concept Drift (ความสัมพันธ์เปลี่ยน) vs Data Drift (อินพุตเปลี่ยน) • Explainable AI (XAI): Global (Feature Importance) vs Local (SHAP, Decision Path) • คดีจริงในประวัติศาสตร์: iTutorGroup, Health-risk Algorithm, Meta Ads, Rite Aid • ประตูตัดสินใจส่งมอบโมเดล (Decision Gates): Accept, Revise, Reject
+บทที่ 10	|	คลังสูตรเร่งด่วน 10 นาทีก่อนเข้าห้องสอบ (Cheat Sheet Table)	|	• สรุปตารางย่อ 14 สูตรหลัก สมการคำนวณ ตัวแปร และคีย์เวิร์ดที่โจทย์ถามบ่อยที่สุด • แผ่นเดียวจบสำหรับทบทวนและตรวจทานคำตอบในห้องสอบ
+
+=== TABLE 2 ===
+กลยุทธ์	|	วิธีทำ	|	ข้อดี	|	ข้อควรระวัง / Cost & Risk
+Deletion (การลบทิ้ง)	|	Drop Row หรือ Column ที่มี Missing	|	ง่าย ไม่ต้องเดาข้อมูล	|	Information Loss เสียตัวอย่าง เกิด Selection Bias (เช่น สัดส่วน Section เปลี่ยนจาก 64:36 เป็น 70:30)
+Simple Imputation	|	แทนที่ด้วย Mean, Median, Mode รวมทั้งคอลัมน์	|	ทำง่าย ไม่เสียแถวข้อมูล	|	บิดเบือนการกระจายตัว (Variance ลดลง), ขาดความแม่นยำรายกลุ่ม
+Group-wise Imputation	|	แบ่งกลุ่มตาม Context แล้วหา Mean/Median เฉพาะกลุ่ม	|	สะท้อนความจริงดีกว่า Mean รวม	|	ขึ้นกับสมมติฐานการจัดกลุ่ม หากกลุ่มย่อยมีตัวอย่างน้อย ค่าจะแกว่ง
+Regression Imputation	|	สร้างสมการทำนาย y = β0 + β1*X จากแถวที่มีค่าครบ	|	ใช้ความสัมพันธ์ของ Feature อื่น	|	เสี่ยงต่อ Data Leakage และ Overfitting หากไม่แยก Train/Val
+Cluster-based Imputation	|	ใช้ความคล้ายคลึงเฉพาะที่ (Local Similarity) จัดกลุ่มจุด แล้วใช้มัธยฐานในกลุ่ม	|	จับกลุ่มธรรมชาติแบบ Multi-feature ได้ดี	|	ผลลัพธ์ขึ้นกับการคัดเลือก Feature, การ Scaling และจำนวนคลัสเตอร์ (k)
+
+=== TABLE 3 ===
+📌 สูตร: สูตรการแทนค่าด้วยค่าเฉลี่ยที่ถูกต้อง (Clean Before Impute Rule - Lect04.1 p29, p34) Global Valid Mean:       X_bar = (∑ x_valid) / n_valid Group-wise Valid Mean:  X_bar_group = (∑ x_group_valid) / n_group_valid  • กฎเหล็ก: ต้องตัดเฉพาะค่าที่ระบุว่าเป็น Known Invalid ออกก่อนคำนวณเสมอ! • ทุกครั้งที่ Impute ต้องสร้างคอลัมน์ Flag เสมอ เช่น income_imputed = 1 เพื่อความโปร่งใส (Traceability)
+
+=== TABLE 4 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างที่ 1: การคำนวณ Mean Imputation จากสไลด์อาจารย์หน้า 29  โจทย์: ลูกค้า 1003 ขาดข้อมูล Income โดยข้อมูลลูกค้าคนอื่นคือ: [75,000, -40,000, 50,000, 99,999] ขั้นตอนที่ 1 (Detect & Clean): ค่า -40,000 คือ Known Invalid Data (รายได้ติดลบไม่ได้) จึงต้องตัดออก   * หมายเหตุสำคัญ: ค่า 99,999 ในสไลด์นี้ถือเป็นรายได้จริงที่ถูกต้อง (Valid) ไม่ใช่ค่าขยะ! ขั้นตอนที่ 2 (Calculate): นำเฉพาะค่า Valid 3 ค่ามาหาค่าเฉลี่ย:     Valid Mean = (75,000 + 50,000 + 99,999) / 3 = 224,999 / 3 ≈ 75,000 บาท ขั้นตอนที่ 3: แทนค่า 75,000 ลงในช่องว่าง และบันทึก flag 'income_imputed = 1'
+
+=== TABLE 5 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างที่ 2: Cluster-based Imputation จากสไลด์อาจารย์หน้า 32  โจทย์: บันทึกข้อมูล Record A ขาดตัวแปร Y แต่มี Feature X1, X2, X3 เมื่อนำไปจัดกลุ่ม พบว่าตกอยู่ใน Cluster C2 ใน Cluster C2 มีแถวอื่นที่สังเกตค่า Y ได้ครบจำนวน 4 จุด คือ: [48, 42, 51, 47] ขั้นตอนการทำ:   1. เรียงลำดับข้อมูล Y ใน C2: [42, 47, 48, 51]   2. หามัธยฐาน (Median): เนื่องจากมี 4 ตัว (เลขคู่) นำสองตัวกลางมาเฉลี่ย: (47 + 48) / 2 = 47.5   3. แทนค่า: กำหนด Y ← 47.5 พร้อมบันทึก Y_imputed = 1
+
+=== TABLE 6 ===
+⚡ จุดระวังในข้อสอบ (Exam Trap & Tip): กับดักข้อสอบ: ลำดับการคลีนข้อมูล (Slide p34) ข้อสอบชอบถามว่า 'ถ้าคำนวณ Mean ก่อนคลีน จะได้ค่าเท่าใด และถ้าคลีนก่อนคำนวณจะได้เท่าใด?' • กรณีสไลด์ p34: ข้อมูลมี [20000, 32000, 44000, 904000 (Known Invalid)]   - ถ้าคิดผิด (คำนวณก่อนคลีน): Mean = (20000+32000+44000+904000)/4 = 250,000 (Bad replacement!)   - ถ้าคิดถูก (ตัด 904000 ออกก่อน): Valid Mean = (20000+32000+44000)/3 = 32,000 (Defensible replacement!)
+
+=== TABLE 7 ===
+📌 สูตร: สูตร Min-Max Normalization (Lect04.2 p19, p20) แปลงสู่ช่วงมาตรฐาน [0, 1]:     x' = (x - min) / (max - min)  แปลงสู่ช่วงใหม่ [new_min, new_max]:     x' = [ (x - min) / (max - min) ] * (new_max - new_min) + new_min  • min, max คำนวณจากชุดข้อมูลฝึกสอน (Training Range) • คุณสมบัติ: ควบคุมช่วงตัวเลขได้อย่างสมบูรณ์ แต่ไวต่อ Outliers มาก
+
+=== TABLE 8 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างคำนวณ Min-Max สู่ช่วง [0, 9] (สไลด์หน้า 20)  โจทย์: ลูกค้า Rachel มีรายได้ x = 50,000 โดยข้อมูลลูกค้า 6 คนมี min = 35,000 และ max = 200,000 จงแปลงสู่ช่วง [0, 9] วิธีทำ:   1. x - min = 50,000 - 35,000 = 15,000   2. max - min = 200,000 - 35,000 = 165,000   3. สัดส่วน: 15,000 / 165,000 = 1 / 11 ≈ 0.090909   4. ปรับช่วง: 0.090909 * (9 - 0) + 0 = 0.818181... ≈ 0.82
+
+=== TABLE 9 ===
+📌 สูตร: สูตร Z-Score Standardization (Lect04.2 p21, p22)     z = (x - μ) / σ     (สไลด์อาจารย์ใช้ Population SD: σ = √[ ∑(x - μ)^2 / n ])  • μ (Mean) คือ ค่าเฉลี่ย, σ คือ ส่วนเบี่ยงเบนมาตรฐานประชากร • คุณสมบัติ: ปรับค่าเฉลี่ยใหม่เป็น 0 และปรับ Std ใหม่เป็น 1 โดย 'ไม่เปลี่ยนรูปทรงเดิม' (Does not change shape/skewness)
+
+=== TABLE 10 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างคำนวณ Z-score (สไลด์หน้า 22)  โจทย์: ข้อมูลลูกค้า 6 คน มี μ = 90,833.33 และ σ = 67,355.81 จงหา Z-score ของ John ที่มีรายได้ x = 35,000 วิธีทำ:   z = (35,000 - 90,833.33) / 67,355.81 = -55,833.33 / 67,355.81 ≈ -0.83   (แปลความหมาย: รายได้ของ John อยู่ต่ำกว่าค่าเฉลี่ยกลุ่มเป็นระยะ 0.83 ส่วนเบี่ยงเบนมาตรฐาน)
+
+=== TABLE 11 ===
+📌 สูตร: สูตรการตรวจจับ Outlier ด้วย IQR และรั้วของ Tukey (Tukey's Fences - Lect05 p17) 1. Interquartile Range:    IQR = Q3 - Q1 2. รั้วล่าง (Lower Fence):   Lower Fence = Q1 - 1.5 * IQR 3. รั้วบน (Upper Fence):   Upper Fence = Q3 + 1.5 * IQR  • การตัดสิน: ข้อมูลตัวใดที่ < Lower Fence หรือ > Upper Fence ถือเป็น 'Potential Outlier' • ข้อสอบชอบถามเรื่อง Boxplot: Whisker (เส้นหนวด) จะลากไปถึงค่าจริงตัวสุดท้ายที่ยังอยู่ภายในรั้ว ไม่ใช่ลากไปที่ตัว Fence
+
+=== TABLE 12 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างคำนวณ Outlier  โจทย์: ตรวจสอบข้อมูล มี Q1 = 30 และ Q3 = 70 พบข้อมูล x = 140 จงพิจารณาว่าเป็น Outlier หรือไม่   1. IQR = 70 - 30 = 40   2. Upper Fence = 70 + (1.5 * 40) = 70 + 60 = 130   3. Lower Fence = 30 - (1.5 * 40) = 30 - 60 = -30   4. สรุป: x = 140 มีค่ามากกว่า 130 (หลุดรั้วบน) → เป็น Potential Outlier
+
+=== TABLE 13 ===
+ชุดข้อมูล	|	สัดส่วนทั่วไป	|	บทบาทและหน้าที่สำคัญ	|	กฎเหล็กในข้อสอบ
+Training Set	|	60–70%	|	ใช้สอนโมเดล ให้เรียนรู้ Parameter / Decision Rules	|	โมเดลสัมผัสข้อมูลชุดนี้ได้เต็มที่
+Validation Set	|	15–20%	|	ใช้เปรียบเทียบ Candidate Models และจูน Hyperparameter (เช่น max_depth)	|	ห้ามใช้เทรน ใช้ตัดสินใจเลือกโมเดลที่ดีที่สุด
+Test Set	|	15–20%	|	ใช้ประเมิน Generalization Performance กับข้อมูลที่ไม่เคยเห็น	|	กฎ 'Protected Evidence': ต้องใช้ทดสอบเพียง 'ครั้งเดียว' ตอนสุดท้าย ห้ามใช้จูนโมเดลเด็ดขาด!
+
+=== TABLE 14 ===
+📌 สูตร: สูตร Gini Impurity, Weighted Gini Split และ Gini Gain (Lect07 p11-12) 1. Gini Impurity ของโหนดเดี่ยว:     Gini(Node) = 1 - ∑ (p_i)^2  2. Weighted Gini หลังการแตกกิ่ง (Split Gini):     Gini_split = (n_L / n) * Gini(Left) + (n_R / n) * Gini(Right)  3. การลดลงของความไม่บริสุทธิ์ (Gini Gain):     Gini Gain = Gini(Parent) - Gini_split  • p_i คือ สัดส่วนของคลาส i ในโหนดนั้น, n คือจำนวนข้อมูลรวมของโหนดแม่, n_L และ n_R คือจำนวนข้อมูลกิ่งซ้าย-ขวา • เป้าหมายของ Decision Tree: เลือก Feature และ Threshold ที่ให้ 'Gini Gain สูงสุด' (หรือทำให้ Gini_split ต่ำที่สุด)
+
+=== TABLE 15 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างข้อสอบจริง: การคำนวณเปรียบเทียบ Candidate Splits (สไลด์ Lect07 p11-12)  โจทย์: โหนดแม่มีข้อมูล 10 ตัว แบ่งเป็น Class Active 5 ตัว และ Inactive 5 ตัว (Gini Parent = 1 - (5/10)^2 - (5/10)^2 = 0.500) อาจารย์นำเสนอทางเลือกการตัดกิ่ง 2 ตัวเลือก คือ Candidate A และ Candidate B: ---------------------------------------------------------------- • การแตกกิ่งแบบ Candidate A: ได้กิ่งซ้ายและขวาที่มี Gini ถ่วงน้ำหนักแล้ว:     Gini_split(A) = 0.278     Gini Gain(A) = Gini(Parent) - Gini_split(A) = 0.500 - 0.278 = 0.222 • การแตกกิ่งแบบ Candidate B: ได้กิ่งที่มี Gini ถ่วงน้ำหนักแล้ว:     Gini_split(B) = 0.444     Gini Gain(B) = Gini(Parent) - Gini_split(B) = 0.500 - 0.444 = 0.056 ---------------------------------------------------------------- การตัดสินใจ: เลือก 'Candidate A' เพราะให้ Gini Gain สูงกว่าอย่างชัดเจน (0.222 > 0.056) ทำให้โหนดย่อยมีความบริสุทธิ์เพิ่มขึ้นมากกว่า
+
+=== TABLE 16 ===
+ความลึกของ Tree (Complexity)	|	Bias	|	Variance	|	สถานะของโมเดล	|	ผลบน Validation Set
+Shallow Tree (max_depth = 1)	|	สูง (High Bias)	|	ต่ำ (Low Variance)	|	Underfitting (จับ pattern ได้น้อยเกินไป)	|	Validation Performance ต่ำ
+Moderate Tree (max_depth = 3)	|	พอดี (Low Bias)	|	พอดี (Low Variance)	|	Appropriate Fit (จุดสมดุลที่ดีที่สุด)	|	Validation Performance สูงสุด (Selected Model!)
+Very Deep Tree (max_depth = 6 ขึ้นไป)	|	ต่ำมาก (Low Bias)	|	สูงมาก (High Variance)	|	Overfitting (จดจำ Noise ในข้อมูล)	|	Validation Performance ลดลงอย่างมีนัยสำคัญ
+Unrestricted (ไม่จำกัดความลึก)	|	ต่ำที่สุด (0)	|	สูงที่สุด	|	Extreme Overfitting (จำ Training ครบ 100%)	|	Validation Performance ตกฮวบ (Materially lower)
+
+=== TABLE 17 ===
+📌 สูตร: ชุดสูตร Classification Evaluation Metrics ครบชุด Accuracy   = (TP + TN) / (TP + TN + FP + FN) Precision  = TP / (TP + FP) Recall     = TP / (TP + FN) F1-Score   = 2 * (Precision * Recall) / (Precision + Recall) = 2*TP / (2*TP + FP + FN)  • Precision แคร์เมื่อ False Positive (FP) มีต้นทุนสูง เช่น การโทรไปรบกวนลูกค้า, การแจ้งเตือนขโมยผิดคน • Recall แคร์เมื่อ False Negative (FN) มีต้นทุนรุนแรง เช่น ลูกค้าจะเลิกใช้บริการแต่จับไม่ได้ (Missed Churn)
+
+=== TABLE 18 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างข้อสอบจริง 1: FIFA World Cup 2026 (Lect07 p23, p30)  โจทย์: ตัดสินใจส่งนักเตะลงเล่น (play) หรือพัก (rest) โดย Positive Class = 'play' จากนักเตะ 10 คน ได้ผล Confusion Matrix: TP = 4, FN = 2, FP = 1, TN = 3 (ผลรวม N = 10)   1. Accuracy  = (4 + 3) / 10 = 7 / 10 = 0.70 (70%)   2. Precision = 4 / (4 + 1) = 4 / 5 = 0.80 (80%)   3. Recall    = 4 / (4 + 2) = 4 / 6 ≈ 0.67 (66.67%)   4. F1-Score  = (2 * 4) / ( (2 * 4) + 1 + 2 ) = 8 / 11 ≈ 0.73
+
+=== TABLE 19 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างข้อสอบจริง 2 (การบ้าน HW#1): Customer Churn Prediction (Lect07 p26, p34)  โจทย์: ลูกค้า 10 ราย ทำนาย Inactive โดย Positive Class = 'Inactive = Yes' ตรวจนับตาราง 10 แถว พบผลลัพธ์:   • TP = 3 (ลูกค้า 01, 05, 08: จริง Yes ทาย Yes)   • TN = 3 (ลูกค้า 02, 06, 09: จริง No ทาย No)   • FP = 2 (ลูกค้า 04, 07: จริง No แต่ทาย Yes)   • FN = 2 (ลูกค้า 03, 10: จริง Yes แต่ทาย No) ผลการคำนวณครบ 4 เมตริก (ออกผลลัพธ์เท่ากันหมด 0.60!):   - Accuracy  = (3 + 3) / 10 = 6 / 10 = 0.60   - Precision = 3 / (3 + 2) = 3 / 5 = 0.60   - Recall    = 3 / (3 + 2) = 3 / 5 = 0.60   - F1-Score  = (2 * 3) / ( (2 * 3) + 2 + 2 ) = 6 / 10 = 0.60
+
+=== TABLE 20 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างข้อสอบจริง 3 (การบ้าน HW#2): การเปรียบเทียบ Candidate Models A / B / C (Lect07 p35)  โจทย์: เปรียบเทียบโมเดลทำนาย Customer Inactivity (Positive = Yes) บน Evaluation Set 100 ราย ตารางผลการคำนวณเมตริกของทั้ง 3 โมเดล:   • Model A (TP=24, FN=16, FP=3, TN=57):  Acc=0.81 | Prec=0.89 | Rec=0.60 | F1=0.72   • Model B (TP=36, FN=4,  FP=18, TN=42): Acc=0.78 | Prec=0.67 | Rec=0.90 | F1=0.77   • Model C (TP=32, FN=8,  FP=7, TN=53):  Acc=0.85 | Prec=0.82 | Rec=0.80 | F1=0.81 ---------------------------------------------------------------- หลักเกณฑ์การเลือกโมเดลเชิงธุรกิจ (Decision Context): 1. หากต้องการความสมดุลสูงสุด (Balanced): เลือก 'Model C' เพราะ F1-Score สูงสุด (0.81) และ Accuracy สูงสุด (0.85) อีกทั้งชนะ Model A ในทุกมิติ 2. หากธุรกิจกลัวลูกค้าหลุดหายมากที่สุด (Missed Churn Cost รุนแรง): เลือก 'Model B' เพราะจับลูกค้า Inactive ได้ถึง 90% (Recall 0.90) แม้จะต้องแลกกับต้นทุนติดต่อลูกค้าฟรี 18 ราย (FP=18)
+
+=== TABLE 21 ===
+📌 สูตร: สูตรวัดระยะทาง & การ Update Centroid (Lect08 p12-24) 1. Manhattan Distance (L1):  d(X, Y) = ∑ |xi - yi| 2. Euclidean Distance (L2):  d(X, Y) = √ [ ∑ (xi - yi)^2 ] 3. Centroid Update (Mean):   C_k = ( ∑ x_1 / m,  ∑ x_2 / m,  ... )  • ในตัวอย่างสไลด์หน้า 26-28 อาจารย์ใช้ Manhattan Distance ในการจัดสรรจุดเข้ากลุ่มเพื่อความสะดวกรวดเร็วในการคิดเลข
+
+=== TABLE 22 ===
+💡 ตัวอย่างข้อสอบจริง & วิธีคิด: ตัวอย่างการจัดกลุ่ม K-Means รอบที่ 1 (สไลด์หน้า 25-31)  โจทย์: ข้อมูล 8 จุด: A1(2,10), A2(2,5), A3(8,4), A4(5,8), A5(7,5), A6(6,4), A7(1,2), A8(4,9) Centroid เริ่มต้น: C1(2,10), C2(5,8), C3(1,2) ใช้ Manhattan Distance:   • A1(2,10) เข้า C1 (ระยะ 0) -> Cluster 1 มี {A1}   • A2(2,5) เข้า C3 (ระยะ 4) -> Cluster 3 มี {A2, A7}   • A3, A4, A5, A6, A8 เข้า C2 -> Cluster 2 มี 5 จุด คำนวณ Centroid ใหม่รอบถัดไป:   - C1_new = A1 = (2, 10)   - C2_new = ( (8+5+7+6+4)/5, (4+8+5+4+9)/5 ) = (30/5, 30/5) = (6, 6)   - C3_new = ( (2+1)/2, (5+2)/2 ) = (1.5, 3.5)
+
+=== TABLE 23 ===
+📌 สูตร: สูตรวัดคุณภาพ Cluster: Inertia (WCSS) และ Silhouette Score (Lect08 p35-37) 1. Inertia / WCSS (Compactness):   Inertia = ∑ [ ∑ ||x - C_k||^2 ] 2. Silhouette Score ของจุด i:      s(i) = [ b(i) - a(i) ] / max( a(i), b(i) )  • a(i) = ระยะทางเฉลี่ยไปยังจุดอื่นในกลุ่มเดียวกัน (Intra-cluster similarity) • b(i) = ระยะทางเฉลี่ยไปยังจุดในกลุ่มข้างเคียงที่ใกล้ที่สุด (Inter-cluster similarity) • ช่วงคะแนน: [-1, +1] ยิ่งใกล้ +1 แปลว่าจัดกลุ่มได้ยอดเยี่ยม, ใกล้ 0 แปลว่าอยู่รอยต่อ, ติดลบ แปลว่าอาจอยู่ผิดกลุ่ม
+
+=== TABLE 24 ===
+⚡ จุดระวังในข้อสอบ (Exam Trap & Tip): กับดักสูตร K-Means: Manhattan vs Squared Distance สังเกตให้ดี! ในขั้นตอน Assign จุด สไลด์อาจารย์ใช้ 'Manhattan Distance' (|x1-c1|+|x2-c2|) เพื่อให้คิดเลขง่าย แต่สูตร Inertia/WCSS ตามทฤษฎี (p35) ใช้ 'Squared Euclidean Distance' (||x - Ck||^2) อย่าสับสนนำสองสูตรนี้มาปนกัน
+
+=== TABLE 25 ===
+หัวข้อ / ประเด็น	|	นิยามและความหมาย	|	ตัวเลขและข้อเท็จจริงในสไลด์
+Historical Bias	|	อคติจากข้อมูลในอดีตที่มีความเหลื่อมล้ำ	|	สไลด์ p10: อดีตแจกโปรโมชันเฉพาะ VIP ทำให้คลาส VIP ตอบรับ 80% ส่วน Non-VIP ตอบรับแค่ 20% โมเดลจึงเลือกปฏิบัติตามอดีต
+Representation Bias	|	กลุ่มตัวอย่างมีสัดส่วนไม่สะท้อนความจริง	|	สไลด์ p12: กลุ่มสมัคร Subscription 800 ราย แต่ไม่สมัครมีแค่ 40 ราย ทำให้ Recall กลุ่มย่อยต่ำเตี้ยเรี่ยดิน
+Proxy Features	|	ตัวแปรแอบแฝงที่ทำหน้าที่แทนข้อมูลอ่อนไหว	|	สไลด์ p13: ตัดเรื่องเชื้อชาติออก แต่รหัสไปรษณีย์ (Postal Code) ยังคงสะท้อนฐานะและเชื้อชาติได้
+Concept Drift	|	ความสัมพันธ์ระหว่าง Feature กับ Target เปลี่ยนไปตามเวลา	|	สไลด์ p11, 20: เดิมไม่ซื้อของเกิน 45 วัน = Inactive ปัจจุบันเปลี่ยนเป็น 70 วัน ทำให้ Recall ของโมเดลลดฮวบเหลือ 54%
+Explainable AI (XAI)	|	ความสามารถในการอธิบายการตัดสินใจของ AI	|	Global Explanation (ภาพรวมทั้งระบบ เช่น Feature Importance) vs Local Explanation (เฉพาะรายคน เช่น SHAP Value, Decision Path)
+iTutorGroup (EEOC 2023)	|	ระบบคัดกรองใบสมัครงานเลือกปฏิบัติ	|	ปฏิเสธผู้สมัครหญิงอายุเกิน 55 ปี และชายอายุเกิน 60 ปี อัตโนมัติ ผู้เสียหายกว่า 200 ราย ถูกสั่งปรับ $365,000 ดอลลาร์
+Health-risk Algorithm (2019)	|	ใช้อดีตค่ารักษาพยาบาลเป็น Proxy วัดความเสี่ยงโรค	|	คนจนเข้าถึงการรักษาน้อยทำให้ค่าใช้จ่ายต่ำ ถูกมองว่าแข็งแรง หลังแก้ปัญหาช่วยเพิ่มคนไข้ผิวดำได้รับการดูแลจาก 17.7% เป็น 46.5%
+Meta Housing Ads (2022)	|	อัลกอริทึมเลือกกลุ่มผู้เห็นโฆษณาบ้านไม่เท่าเทียม	|	ละเมิด Fair Housing Act พัฒนาระบบ VRS ถูกปรับ $115,054 ดอลลาร์
+Rite Aid (FTC 2023-2024)	|	ใช้ Facial Recognition จับขโมยเกิด False Positive สูง	|	ระบบเตือนผิดพลาดทำให้ผู้บริสุทธิ์ถูกจับกุม FTC สั่งแบนการใช้ Facial Recognition 5 ปี และสั่งให้มี Human Checkpoint
+Decision Gates (Lect09 p36)	|	การตัดสินใจขั้นตอนสุดท้ายในการส่งมอบงาน	|	มี 3 ทางเลือก: Accept (ใช้งานได้), Revise (ส่งกลับไปจูนในขั้นตอนเดิมของ CRISP-DS), Reject (ปฏิเสธโมเดลเด็ดขาด)
+
+=== TABLE 26 ===
+ชื่อสูตร	|	สมการ / รูปแบบคำนวณ	|	คีย์เวิร์ดที่โจทย์ถาม / วัตถุประสงค์
+Min-Max Scaling	|	x' = [(x - min)/(max - min)] * (new_max - new_min) + new_min	|	แปลงค่าเข้ากรอบ [new_min, new_max] เช่น [0, 9]
+Z-Score	|	z = (x - μ) / σ	|	ข้อมูลอยู่ห่างจาก Mean กี่เท่าของ SD (ไม่เปลี่ยน Shape)
+IQR Outlier Fences	|	IQR = Q3 - Q1 Lower = Q1 - 1.5*IQR, Upper = Q3 + 1.5*IQR	|	หาค่ารั้วบน-รั้วล่าง และตัดสินว่าจุดใดเป็น Outlier
+Gini Impurity	|	Gini = 1 - ∑ (p_i)^2	|	วัดความไม่บริสุทธิ์ (ถ้า Pure โหนดเดียว Gini = 0)
+Weighted Gini Split	|	Gini_split = (n_L/n)*Gini(L) + (n_R/n)*Gini(R)	|	คำนวณ Gini รวมหลังแยกกิ่งซ้าย-ขวา
+Gini Gain	|	Gain = Gini(Parent) - Gini_split	|	เลือกกิ่งที่ให้ Gain สูงสุด (เช่น 0.222 ชนะ 0.056)
+Accuracy	|	(TP + TN) / (TP + TN + FP + FN)	|	สัดส่วนการทายถูกรวมทั้งหมด
+Precision	|	TP / (TP + FP)	|	เมื่อโมเดลบอกว่าใช่ มีโอกาสจริงเท่าใด (เน้นลด FP)
+Recall (Sensitivity)	|	TP / (TP + FN)	|	ของจริงทั้งหมด โมเดลจับได้กี่ % (เน้นลด FN)
+F1-Score	|	2*TP / (2*TP + FP + FN) = 2*(P*R)/(P+R)	|	ค่าเฉลี่ยฮาร์โมนิก ผสาน Precision และ Recall
+Manhattan Distance	|	∑ |xi - yi|	|	ผลรวมผลต่างสัมบูรณ์ (โจทย์จัดกลุ่ม K-Means ใช้ตัวนี้)
+Euclidean Distance	|	√ [ ∑ (xi - yi)^2 ]	|	ระยะทางเส้นตรง L2 Norm
+Centroid Update	|	ค่าเฉลี่ยพิกัด x1, x2 ของจุดสมาชิกในกลุ่มนั้น	|	หาพิกัดจุดศูนย์กลางใหม่ในรอบถัดไป
+Silhouette Score	|	s(i) = [ b(i) - a(i) ] / max( a(i), b(i) )	|	วัดคุณภาพ Cluster [-1, +1] ยิ่งใกล้ 1 ยิ่งสมบูรณ์

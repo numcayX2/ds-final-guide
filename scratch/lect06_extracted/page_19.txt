@@ -1,0 +1,25 @@
+**1. Supervised Learning**
+
+*   **“Learn to label”**
+
+**Training is complete!**
+
+*   **Input (LABELED EXAMPLES):**
+    *   Image of an apple labeled “apple”
+    *   Image of a lime labeled “lime”
+    *   Image of an apple labeled “apple”
+    *   Image of a lime labeled “lime”
+
+*   **Processing:** A robot-like figure processes the labeled examples.
+
+*   **Output (MODEL):**
+    *   **What is apple?**
+        *   shape: Red, round with stem
+        *   color: Red
+    *   **What is lime?**
+        *   shape: Green, round
+        *   color: Green
+
+**ที่มา (Source):** Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec
+
+**Slide Number:** 19

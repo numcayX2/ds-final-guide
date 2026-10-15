@@ -1,0 +1,53 @@
+**Slide 13: วิธีการเรียนรู้ของ Supervised Machine Learning (How Supervised Machine Learning Learns)**
+
+---
+
+**Core Concept:**
+Supervised Machine Learning learns by mapping input data to known output labels, then uses that learned relationship to predict labels for new, unseen inputs.
+
+---
+
+**Training Phase (Left Side of Slide):**
+
+- **Input Data (“ข้อมูลสอน” – Training Data):**
+  - Four categories of fruit are shown with multiple visual representations per category:
+    - Apple (“แอปเปิ้ล”): Red apple slice, whole red apple, line drawing.
+    - Papaya (“มะละกอ”: Green papaya, cut open papaya showing seeds, line drawing.
+    - Banana (“กล้วย”): Yellow banana bunch, brown spotted banana, peeled banana line drawing.
+    - Orange (“ส้ม”): Whole orange, sliced orange, line drawing.
+
+- **Labels (“ป้าย (Label)”):**
+  - Each group of images maps to a single Thai label:
+    - → แอปเปิ้ล (Apple)
+    - → มะละกอ (Papaya)
+    - → กล้วย (Banana)
+    - → ส้ม (Orange)
+
+This demonstrates how supervised learning uses labeled examples during training — the model sees many variations of each class and associates them with their correct label.
+
+---
+
+**Inference/Prediction Phase (Right Side of Slide):**
+
+- **Model (“Model”):**
+  - Represented as a neural network icon (red brain-like structure with circuit connections).
+  - This is the trained system that has learned from the labeled training data.
+
+- **New Input (“นี่คืออะไร?” – “What is this?”):**
+  - A single image of a brown spotted banana is presented as an unknown input.
+
+- **Output (“ทายผล” – “Prediction”):**
+  - The model outputs the predicted label: “กล้วย” (Banana), displayed in a red box.
+
+This illustrates inference: applying the learned model to classify new, unlabeled data based on patterns acquired during training.
+
+---
+
+**Source Attribution (Bottom Left):**
+“ที่มา: จากการสรุปและรวบรวมข้อมูลของ สพร.”  
+(Source: Summarized and compiled by SPOR.)
+
+---
+
+**Key Takeaway:**
+Supervised Machine Learning requires labeled training data to learn mappings between inputs and outputs. Once trained, the model can generalize to correctly classify new, previously unseen instances — as demonstrated by predicting “กล้วย” for a novel banana image after learning from multiple labeled banana examples.

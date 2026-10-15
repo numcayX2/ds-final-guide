@@ -1,0 +1,18 @@
+**1. Supervised Learning**
+
+*   **“Learn to label”**
+*   **Step 2: Prediction**
+    *   Input: **UNSEEN OBJECT** (Image of a lime)
+    *   Process: **CLASSIFIER** (Image of robot WALL-E)
+    *   Output: **Lime (85%)**
+*   **MODEL** Logic:
+    *   **What is apple?**
+        *   **shape**: Trapezoid icon
+        *   **color**: Red circle icon
+    *   **What is lime?**
+        *   **shape**: Spoked wheel icon
+        *   **color**: Green circle icon
+*   **Function label**
+    *   (Define Function predict(features))
+*   **construct to code** (Blue arrow pointing to the right)
+*   **Source:** Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec

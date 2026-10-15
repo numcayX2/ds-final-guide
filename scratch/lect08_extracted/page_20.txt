@@ -1,0 +1,10 @@
+**K-means Clustering: Initialization (Slide 20)**
+
+The slide details the initialization phase of K-means clustering, emphasizing that this is a critical first step. The core concept involves deciding on the number of clusters, denoted as **K**, and then initializing **K centers** (also called centroids) randomly from the dataset. This random selection serves as the starting point for the algorithm's iterative process.
+
+Key points from the slide include:
+- **Method**: The text outlines the procedural steps for initialization. It specifies that one must first decide on the value of **K** and then select **K centers** randomly from the data points. These initial centers are referred to as **centroids**.
+- **Initialization Process**: The slide notes that after selecting the initial centroids, the algorithm proceeds with an iterative method to refine these centroids based on cluster assignments.
+- **Terminology**: The terms used in the slide—such as "cluster," "centroid," and "initialization"—are standard in machine learning literature. They refer to the grouping of data points into subsets (clusters) and the central point of each subset (centroid).
+
+In summary, the slide provides a concise overview of how K-means clustering begins by randomly assigning initial centroids, which are then refined through subsequent iterations.

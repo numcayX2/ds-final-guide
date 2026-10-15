@@ -1,0 +1,20 @@
+The slide titled "Chart Candidates Are Starting Points, Not Rules" outlines key considerations for selecting appropriate chart types in data visualization.
+
+**Main Concept:**
+- Chart candidates are starting points, not rules. Selection must be validated against Question, Data Structure, Audience, and Context.
+
+**Validation Checklist (after selecting a candidate):**
+1. Question
+2. Data Structure
+3. Audience
+4. Context
+
+**Specific Chart Types and Their Use Cases:**
+
+*   **Map**: Used when Geography is part of the question.
+*   **Part-to-whole**: Pie, Treemap, Packed Bubbles — used to compare parts that are close together.
+*   **Dual Axis Chart**: Displays Scale and Unit clearly.
+*   **Dashboard**: Multiple Views working together, not just one chart.
+
+**Takeaway:**
+Chart Candidate is a starting point, not an automatic answer.

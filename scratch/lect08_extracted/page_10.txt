@@ -1,0 +1,9 @@
+Good clustering is defined by two core principles: maximizing Intra-Cluster Similarity and minimizing Inter-Cluster Similarity.
+
+Key points:
+• The goal is to group items such that those within the same cluster are as similar as possible (Maximize Intra-Cluster Similarity).
+• Simultaneously, different clusters should be as dissimilar as possible from each other (Minimize Inter-Cluster Similarity).
+
+Visual representation on slide 10 of lect08 illustrates this with three distinct groups of data points in a 3D space:
+• One group contains pink octagons; labeled “Intra-cluster similarity are maximized.”
+• Two other groups contain blue and orange octagons respectively; labeled “Inter-cluster similarity are minimized,” indicating separation between these groups.

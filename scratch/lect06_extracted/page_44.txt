@@ -1,0 +1,24 @@
+A Trained Model Is a Candidate, Not a Conclusion
+
+Computer เรียนรู้ Pattern เฉพาะ Task จากตัวอย่าง แต่ Trained Model ต้องได้รับการตรวจสอบด้วย Unseen Data และเทียบกับโจทย์เดิมก่อนยอมรับ
+
+Modeling
+How can computers learn from data?
+Examples + Learning Algorithm → Training → Trained Model Candidate
+
+Exploratory Data Analysis
+Data Preparation
+Business Understanding
+Data Understanding
+AI-assisted Improvement
+Deployment & Communication
+Evaluation
+Iterate
+ย้อนกลับไปปรับปรุง Problem, Target, Features หรือ Modeling Choices
+
+Proceed to Model Evaluation
+ตรวจสอบ Reliability และ Usefulness ด้วย Independent Evidence
+Decision Point
+หรือ
+Takeaway: A trained model becomes useful only after evidence shows that it serves the problem beyond the training data.
+Chapter 7: Model Evaluation | How do we know our model is reliable?

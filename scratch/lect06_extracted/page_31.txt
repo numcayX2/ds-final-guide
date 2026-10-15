@@ -1,0 +1,24 @@
+### Summary of Slide 31: Clustering Constructs Candidate Groups from Similarity
+
+#### Key Points:
+- **Clustering** constructs candidate groups based on similarity.
+- The slide highlights the importance of selecting appropriate features for clustering, such as purchase frequency, value, and product-category mix.
+- It emphasizes that clusters are not predefined classes or ground truth but rather proposed groupings.
+- The visual representation shows how different attributes (e.g., calendar, shopping cart, pie chart) can be used to define clusters.
+- The core takeaway is that clustering proposes potential groupings but does not confirm their natural validity.
+
+#### Detailed Breakdown:
+- **Selected Features**: 
+  - Purchase Frequency
+  - Value
+  - Product-category Mix
+- **Target**: None
+- **Clustering Process**:
+  - Organizes observations into groups based on selected features.
+  - Ensures similar observations are placed in the same cluster.
+- **Important Note**: 
+  - Clusters ≠ Predefined Class ≠ Ground Truth
+  - Must validate and verify that the grouping has practical utility.
+
+#### Takeaway:
+- Clustering proposes groups; it does not certify that the groups are naturally true.

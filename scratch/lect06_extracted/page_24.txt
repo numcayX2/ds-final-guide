@@ -1,0 +1,21 @@
+### Summary
+
+**Supervised Learning Overview:**
+- **Concept:** "Learn to label"
+- **Diagram:** A graph with a dashed line representing the model's predictions. The x-axis and y-axis are labeled with icons (a wheel and a cup) and images of limes and apples. Correct predictions are marked with green circles, while incorrect ones are marked with red crosses.
+- **Evaluation:**
+  - **Definition:** Measuring the model’s quality of prediction against the gold standard (i.e., answers).
+  - **Formula:** 
+    \[
+    \text{Accuracy} = \frac{\text{Correct prediction}}{\text{Data size}}
+    \]
+  - **Example Calculation:**
+    \[
+    \text{Accuracy} = \frac{7}{9} = 77.78\%
+    \]
+
+**Key Points:**
+- The slide introduces supervised learning as a method where the goal is to learn how to label data correctly.
+- Evaluation involves comparing the model's predictions to actual labels (gold standard).
+- Accuracy is calculated by dividing the number of correct predictions by the total data size.
+- In the provided example, 7 out of 9 predictions were correct, resulting in an accuracy of 77.78%.

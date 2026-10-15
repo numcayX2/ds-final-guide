@@ -1,0 +1,28 @@
+**The Positive Class Gives Errors Meaning**
+
+Positive Class is an Evaluation Convention; the consequences of False Positive and False Negative determine which Error is more important to decision-making.
+
+**State the Convention First**
+*   **Positive Class: Inactive = Yes**
+    *   Class of Interest for customer retention (การรักษาลูกค้า).
+
+**Name Each Prediction Outcome**
+*   **TP (True Positive)**
+    *   Actual: Yes | Predicted: Yes
+    *   Correctly identified customers who will be Inactive (ระบุลูกค้าที่จะ Inactive ได้ถูกต้อง).
+*   **TN (True Negative)**
+    *   Actual: No | Predicted: No
+    *   Correctly identified customers who are still Active (ระบุลูกค้าที่ยัง Active ได้ถูกต้อง).
+*   **FP (False Positive)**
+    *   Actual: No | Predicted: Yes
+    *   Contacting customers who are still Active unnecessarily (ติดต่อลูกค้าที่ยัง Active โดยไม่จำเป็น).
+*   **FN (False Negative)**
+    *   Actual: Yes | Predicted: No
+    *   Losing customers who will be Inactive and missing intervention opportunities (พลาดลูกค้าที่จะ Inactive และเสียโอกาสช่วยรักษาไว้).
+
+**Error Consequences Guide Attention**
+*   **FP:** Wastes limited resources (ใช้ทรัพยากรเกินจำเป็น).
+*   **FN:** Misses Intervention opportunities (พลาดโอกาส Intervention).
+
+**Takeaway**
+*   The meaning of Error is established only after defining the Positive Class and understanding its consequences (ชื่อของ Error มีความหมายเมื่อกำหนด Positive Class และเข้าใจผลกระทบแล้ว).

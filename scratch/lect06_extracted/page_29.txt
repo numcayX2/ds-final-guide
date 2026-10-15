@@ -1,0 +1,25 @@
+Building an Unsupervised Learning Model
+
+Unsupervised Learning ตรวจจับ Pattern ที่ซ่อนอยู่จากข้อมูลที่มี Target Label
+
+Initial Unlabeled Dataset
+Features only • No Target Label
+
+Understand & Prepare Data
+EDA • Data Cleaning • Scaling • Feature Preparation
+
+Unsupervised Model Development
+Clustering
+Dimensionality Reduction
+Anomaly Detection
+
+Discovered Structure
+Clusters • Representations • Anomalies
+
+Interpret & Validate
+Stability • Separation • Domain Usefulness
+
+Iterate
+
+Key Rule:
+ไม่มี Target Label — Model เรียนรู้จากความเหมือน ความแตกต่าง และโครงสร้างภายในข้อมูล

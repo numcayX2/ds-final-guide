@@ -1,0 +1,17 @@
+**Validation Evidence Selects Tree Complexity**
+
+**Model Development Roles:**
+*   **Training Data:** Used to learn Candidate Trees at different depths.
+*   **Validation Data:** Used to compare `max_depth` values.
+
+**Candidate Comparison:**
+*   **max_depth = 1:** Validation result: low
+*   **max_depth = 3:** Validation result: high (Selected for Development)
+*   **max_depth = 6:** Validation result: lower
+*   **unrestricted:** Validation result: materially lower
+
+**Protect Final Evidence:**
+*   **Final Test Set:** Remains locked and unused during the selection process. It is only used after modeling choices are finalized.
+
+**Takeaway:**
+*   Validation drives model choices, while Test Evidence must be protected until the final stage.

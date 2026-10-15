@@ -1,0 +1,7 @@
+The slide outlines a data science workflow emphasizing the importance of addressing root causes rather than symptoms. It highlights two key stages: "ระหว่าง EDA" (During Exploratory Data Analysis) and "ระหว่าง Modeling" (During Modeling).
+
+In the EDA stage, it identifies issues like insufficient data for analysis ("ข้อมูลมีน้อยเกินไป") and problems with postal code attributes ("Postal Code มีอิทธิพลสูงผิดคาด"). The slide suggests that these issues should be resolved by going back to fix the underlying cause in "Data Understanding," not just at the end during evaluation.
+
+In the Modeling stage, similar issues are noted, such as unexpected influence from certain data points. The slide advises returning to "Data Preparation / Modeling" to address these problems before final evaluation.
+
+Overall, the slide advocates for a proactive approach to problem-solving in data science, focusing on correcting issues at their source rather than merely treating symptoms at the end of the process.

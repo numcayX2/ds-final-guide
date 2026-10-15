@@ -1,0 +1,22 @@
+**Hero: The Complete CRISP-DS Workflow**
+
+The slide outlines the **CRISP-DS Workflow**, which is an iterative process involving six key phases:
+1.  **Business Understanding**
+2.  **Data Understanding**
+3.  **Data Preparation**
+4.  **Exploratory Data Analysis (EDA)**
+5.  **Modeling**
+6.  **Evaluation**
+7.  **Deployment & Communication**
+8.  **AI-assisted Improvement**
+
+An arrow indicates that the workflow can loop back from **AI-assisted Improvement** to **Business Understanding**.
+
+A specific note highlights that **Initial EDA** can begin during **Data Understanding** and continue into **Data Preparation**.
+
+---
+
+**Key Takeaways:**
+
+*   **Exploratory Data Analysis (EDA)** connects prepared data to subsequent stages of the Data Science Workflow.
+*   It serves as a bridge between data preparation and further analysis steps.

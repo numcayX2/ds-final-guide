@@ -1,0 +1,38 @@
+**Summary of Slide 4: “Begin EDA with an Analytical Question”**
+
+The slide emphasizes that Exploratory Data Analysis (EDA) should start with a clear **Analytical Question**, not with visualizations. It illustrates this through a sequential workflow and contrasts it with common pitfalls.
+
+---
+
+### Key Points in Descending Order of Importance:
+
+1. **Start EDA with an Analytical Question**  
+   The core principle is to begin by defining the analytical question — which determines what variables, summaries, comparisons, and visualizations are relevant. This ensures purpose-driven analysis.
+
+2. **Workflow from Analytical Question → Variables → Summary & Comparison → Visualization**  
+   - Begin with the **Analytical Question**: e.g., *“Are there differences in purchasing behavior between customer groups?”*  
+   - Identify relevant **variables** (represented by a clipboard icon).  
+   - Perform **summary and comparison** (shown as table ↔ bar chart).  
+   - End with appropriate **visualization** (bar chart + magnifying glass icon), tailored to answer the initial question.
+
+3. **Do NOT Start with Visualizations**  
+   A red warning triangle explicitly states: *“อย่าเริ่มด้วย”* (“Don’t start with”) followed by icons representing various charts (bar, scatter, histogram, boxplot, line, pie, etc.). These are shown crossed out or de-emphasized, indicating they are inappropriate starting points without a guiding question.
+
+4. **Takeaway**  
+   > **“อย่าเริ่ม EDA ด้วยกราฟ ให้เริ่มด้วยคำถาม”**  
+   > *(“Don’t start EDA with graphs; start with questions.”)*  
+   This reinforces that visualization alone cannot drive meaningful exploration — it must be anchored in a specific analytical inquiry.
+
+5. **Visual Representation**  
+   The slide uses green checkmarks for correct practice and red warnings/crosses for incorrect approaches. Icons include:
+   - Clipboard (for variable selection)
+   - Table and bar chart (for summary/comparison)
+   - Magnifying glass over bar chart (for targeted visualization)
+   - Red exclamation mark inside triangle (warning against starting with visuals)
+
+6. **Page Number**  
+   Slide number “4” appears at bottom right, consistent with its position in a presentation sequence.
+
+---
+
+This summary preserves all original terminology, structure, and intent while organizing content according to importance and logical flow — strictly adhering to the source material without adding external interpretation.

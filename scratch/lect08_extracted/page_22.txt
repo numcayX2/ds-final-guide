@@ -1,0 +1,12 @@
+**K-means Clustering: Iteration 2**
+
+After moving centers, re-assign the objects...
+
+The slide presents a scatter plot with axes ranging from 0 to 5 on both x and y. It displays three cluster centers labeled k₁ (black circle near top right), k₂ (black circle near bottom left), and k₃ (black circle near middle right). Data points are represented as colored diamonds: green for one group, red for another, and blue for a third.
+
+**Method:**
+
+1) สุ่มค่าเริ่มต้น จำนวน k ค่า เรียกว่า cluster centers (centroid);
+2) ทำการหาระยะห่างระหว่างข้อมูลกับจุดศูนย์กลางมากที่สุด หากข้อมูลไหนใกล้ค่าจุดศูนย์กลางตัวไหนมากที่สุดให้เปลี่ยนไปอยู่กลุ่มนั้น
+3) หาค่าเฉลี่ย (Mean) แต่ละกลุ่ม ให้เป็น ค่าจุดกลาง (centroid) ใหม่
+4) กลับไปยังข้อ 2 จนกระทั่ง ค่าเฉลี่ยในแต่ละกลุ่มจะไม่เปลี่ยนแปลง หรือ ไม่มีสมาชิกในกลุ่มใดๆ เปลี่ยนกลุ่มแล้ว

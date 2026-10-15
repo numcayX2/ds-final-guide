@@ -1,0 +1,10 @@
+**Spread Shows What the Center Leaves Out**
+
+The slide presents a statistical concept emphasizing that identical means (centers) across two data groups do not imply identical data distributions, as they may differ significantly in spread. It contrasts "Customer Segment A" with low purchase value spread (data clustered near the mean) against "Customer Segment B," which exhibits high spread (wider purchase value distribution). The core takeaway is that while the center indicates the overall value, the spread reveals how consistently that value represents the data.
+
+Key concepts and metrics for measuring spread include:
+*   **Range:** Defined as the interval from Minimum to Maximum.
+*   **IQR (Interquartile Range):** Represents the range of the middle 50% of data.
+*   **Variance / Standard Deviation:** Measures the dispersion around the Mean.
+
+Technical notes specify that Variance has units squared, whereas SD shares the same units as the data.

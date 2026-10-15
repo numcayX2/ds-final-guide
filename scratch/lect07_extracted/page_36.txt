@@ -1,0 +1,48 @@
+**Summary of Slide 36 (lect07): Evaluation Ends with an Explainable Decision**
+
+The slide presents a structured framework for concluding the evaluation phase in data science projects, emphasizing that **evaluation ends with an explainable decision**. This principle is central to ensuring transparency and accountability in model deployment.
+
+---
+
+### Key Components:
+
+#### 1. Bring the Evidence Together
+This section outlines how evidence should be compiled before making a final decision:
+- **Model Logic**: The reasoning behind the model’s behavior must be clear.
+- **Validation และ Final Test Evidence**: Results from validation and final testing phases must support the conclusion.
+- **Error Consequences และ Metric Meaning**: Understanding what errors mean and their consequences is critical.
+- **Important Limitations**: Acknowledge any limitations that affect interpretation or generalizability.
+
+These elements collectively form the evidentiary basis required to justify a decision.
+
+---
+
+#### 2. Choose a Defensible Action
+After evaluating all evidence, one must choose among three possible actions based on confidence levels:
+- **Accept**: If supported by valid evidence and no significant limitations, proceed with intended use. Monitor performance over time.
+- **Revise**: If insufficient but adjustable, return to earlier CRISP-DS phases (e.g., Data Preparation) for refinement.
+- **Reject**: If unsupported by evidence, halt candidate use entirely due to lack of justification.
+
+Each action corresponds to a level of certainty and appropriate next steps within the project lifecycle.
+
+---
+
+#### 3. Takeaway
+The core takeaway is:  
+> **“Evaluation มีความหมายเมื่อสร้างการตัดสินใจที่มีเหตุผลและสื่อสารได้อย่างชัดเจน”**  
+*(“Evaluation has meaning when it builds reasoned decisions and communicates clearly.”)*
+
+This reinforces the idea that evaluation isn’t just about metrics—it’s about building trust through transparent, defensible, and well-documented decision-making processes.
+
+---
+
+### Visual Structure:
+The slide uses icons and flow diagrams to illustrate:
+- A cycle connecting “Bring the Evidence Together” → “Choose a Defensible Action” → “Explain the Recommendation”.
+- Arrows indicate feedback loops between stages (e.g., revisiting prior steps if needed).
+- Icons represent key concepts like AI-assisted improvement, modeling, exploratory analysis, etc.
+
+---
+
+### Conclusion:
+Slide 36 emphasizes that successful evaluation culminates in an **explainable, justified decision**, grounded in comprehensive evidence and aligned with business understanding. It underscores the importance of communication, iteration, and adaptability throughout the CRISP-DS process.

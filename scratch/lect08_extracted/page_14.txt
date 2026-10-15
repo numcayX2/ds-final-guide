@@ -1,0 +1,19 @@
+### Manhattan Distance ให้น้ำหนักความแตกต่างต่างกัน
+
+#### Euclidean Distance (L₂)
+- **เส้นทางการตรง**
+- **ยกกำลังสองทำให้ความแตกต่างที่มากขึ้นมีอิทธิพลมากขึ้น**
+
+#### Manhattan Distance (L₁)
+- **เส้นทางแบบบล็อกเมือง**
+- **รวมค่าความแตกต่างแบบสมบูรณ์**
+
+#### Formula:
+$$ d(p, q) = \sum_i |p_i - q_i| $$
+
+#### Key Points:
+- **Euclidean Distance (L₂)** emphasizes larger differences due to squaring.
+- **Manhattan Distance (L₁)** sums absolute differences directly.
+
+#### Conclusion:
+- **เลือก Metric ต่างกัน อาจได้ความใกล้ที่แตกต่างกัน**

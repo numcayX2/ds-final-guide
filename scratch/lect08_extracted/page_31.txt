@@ -1,0 +1,5 @@
+### Summary
+
+The slide illustrates an example of K-Mean Clustering, a fundamental algorithm in data science. The visual representation includes two distinct clusters labeled as "Cluster 1" and "Cluster 2," each containing specific data points denoted by coordinates such as A1(2, 10), A3(8, 4), A4(5, 8), A5(7, 5), A6(6, 4), A7(1, 2), A8(4, 9), and A4(5, 8). These points are plotted on a Cartesian plane with axes ranging from 0 to 12 on the vertical axis and 0 to 9 on the horizontal axis. 
+
+In Cluster 1, the points c1, c2, and c3 are highlighted with red diamond markers, indicating their significance in the clustering process. Similarly, in Cluster 2, the points c1, c2, and c3 are also marked with red diamonds, emphasizing their roles within the cluster. The text accompanying these visuals provides detailed information about the distribution and relationships among these points, suggesting a structured approach to understanding complex datasets through K-Mean Clustering techniques.

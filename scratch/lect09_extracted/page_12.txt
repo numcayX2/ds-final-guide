@@ -1,0 +1,6 @@
+**Representation Bias: Summary Statistics Can Mask Group-Specific Outcomes**
+
+- **Overall Recall**: 82% (95% CI: 78%–86%) — appears statistically reliable at first glance.
+- **New Subscription Members**: Only 40 individuals, with a recall rate of 54% (95% CI: 39%–69%). This wide confidence interval signals significant variability and potential underperformance for this subgroup.
+- **Corporate Clients**: A distinct group with n = 120, whose performance metrics are not fully detailed but implied to differ from the overall average.
+- **Key Insight**: While aggregate data may suggest consistent model behavior, representation bias can obscure disparities across subgroups. The overall recall of 82% masks the fact that new subscription members perform significantly worse (54%), indicating hidden inequities in outcomes.

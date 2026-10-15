@@ -1,0 +1,71 @@
+### Summary of Slide 27: K-Mean Clustering Example
+
+**Key Concept:**
+The slide illustrates the application of K-Mean Clustering to determine the distance between data points and cluster centers.
+
+**Worked Examples:**
+
+1. **Cluster C1:**
+   - Data Point: (2, 10)
+   - Cluster Center: (2, 10)
+   - Manhattan Distance Calculation:
+     \[
+     \text{Distance}_{\text{manhattan}}(point1, C1) = |x1 - y1| + |x2 - y2|
+     \]
+     \[
+     = |2 - 2| + |10 - 10| = 0
+     \]
+
+2. **Cluster C2:**
+   - Data Point: (2, 10)
+   - Cluster Center: (5, 8)
+   - Manhattan Distance Calculation:
+     \[
+     \text{Distance}_{\text{manhattan}}(point1, C2) = |x1 - y1| + |x2 - y2|
+     \]
+     \[
+     = |2 - 5| + |10 - 8| = 3 + 2 = 5
+     \]
+
+3. **Cluster C3:**
+   - Data Point: (2, 10)
+   - Cluster Center: (1, 2)
+   - Manhattan Distance Calculation:
+     \[
+     \text{Distance}_{\text{manhattan}}(point1, C3) = |x1 - y1| + |x2 - y2|
+     \]
+     \[
+     = |2 - 1| + |10 - 2| = 1 + 8 = 9
+     \]
+
+**Table Representation:**
+
+| Case ข้อมูล | V1 | V2 |
+|-------------|----|----|
+| A           | x1 | x2 |
+| Y           | y1 | y2 |
+
+**Manhattan Distance Formula:**
+\[
+\text{Distance}_{\text{manhattan}}(A, Y) = |x1 - y1| + |x2 - y2|
+\]
+
+**Example Points and Distances:**
+
+- **Point A1:** (2, 10)
+  - Dist Mean 1: 0
+  - Dist Mean 2: 5
+  - Dist Mean 3: 9
+  - Cluster: 1
+
+- **Other Points:**
+  - A2: (2, 5)
+  - A3: (8, 4)
+  - A4: (5, 8)
+  - A5: (7, 5)
+  - A6: (6, 4)
+  - A7: (1, 2)
+  - A8: (4, 9)
+
+**Conclusion:**
+The slide demonstrates how to calculate the Manhattan distance between data points and cluster centers in a K-Mean Clustering example, with specific calculations provided for three clusters (C1, C2, C3). The table lists various points and their respective distances to these clusters.

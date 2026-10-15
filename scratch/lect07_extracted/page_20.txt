@@ -1,0 +1,13 @@
+**Training and Validation Patterns Reveal Fit Problems**
+
+The slide presents a framework for diagnosing model fit issues by comparing Training and Validation Performance. The central theme is "Read the Pattern, Not One Score," which emphasizes evaluating the relative performance levels rather than relying on a single metric.
+
+Three distinct diagnostic patterns are identified based on the relationship between Training and Validation scores:
+
+1.  **Low Training + Low Validation**: This pattern suggests the model has not learned sufficient complexity or features from the training data.
+2.  **Strong Training + Similar Validation**: This indicates an appropriate fit where the model performs well on both training and validation sets with minimal gap.
+3.  **Strong Training + Materially Lower Validation**: This signals likely overfitting, where the model captures noise in the training data that does not generalize to new data, resulting in a significant drop in validation performance.
+
+The slide also introduces two supporting concepts:
+-   **Evidence Boundary**: This highlights that while score patterns support diagnosis, they are not conclusive evidence on their own.
+-   **Takeaway**: This key insight states that diagnosing overfitting should be based on comparative analysis, not solely on Training Accuracy.

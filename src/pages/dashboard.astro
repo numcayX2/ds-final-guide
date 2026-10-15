@@ -1,0 +1,253 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { allModules } from '../data/modules/index';
+import { allFormulas } from '../data/formulas/index';
+---
+
+<Layout title="10301351 Data Science - แดชบอร์ดวิเคราะห์ความพร้อม (Mastery Dashboard)" activeTab="dashboard">
+  <!-- Dashboard Hero -->
+  <div class="border-2 border-[#171719] bg-[#171719] text-[#F4F1EA] p-6 mb-8 shadow-[5px_5px_0px_#A3E635]">
+    <div class="flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2">MASTERY TRACKER</span>
+          <span class="text-xs font-mono uppercase tracking-wider text-gray-300">Phase 5 Delivery</span>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-black font-['Space_Grotesk'] text-white">
+          MASTERY PROGRESS & READINESS
+        </h1>
+        <p class="text-xs sm:text-sm text-gray-300 font-mono mt-1">
+          ระบบติดตามความพร้อมรายบุคคล วิเคราะห์จุดอ่อนจากผลสอบจำลอง และบันทึกสถานะลงเครื่อง (LocalStorage)
+        </p>
+      </div>
+
+      <!-- Overall Readiness Meter -->
+      <div class="border-2 border-[#F4F1EA] bg-[#222226] p-4 text-center min-w-[160px]">
+        <div class="text-[10px] font-mono text-gray-400 uppercase">ระดับความพร้อมรวม</div>
+        <div class="text-3xl font-black font-['Space_Grotesk'] text-[#A3E635] mt-1" id="overall-pct">
+          0%
+        </div>
+        <div class="text-[10px] font-mono text-gray-300 mt-1" id="overall-status">
+          ยังไม่ได้เริ่มทดสอบ
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-Column Diagnostic Summary -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 font-mono text-xs">
+    <!-- Stat 1: Modules Read -->
+    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-bold text-[#171719] uppercase">บทเรียนที่อ่านจบแล้ว</span>
+        <span class="tape-label bg-[#EAE6DC] text-[#171719] text-[10px]" id="stat-mod-ratio">0 / 9</span>
+      </div>
+      <div class="w-full bg-[#EAE6DC] h-3 border border-[#171719] overflow-hidden my-2">
+        <div id="bar-mod" class="bg-[#A3E635] h-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+      <p class="text-gray-500 text-[11px]">ครอบคลุมเนื้อหาทั้ง 9 เลกเชอร์ของวิชา</p>
+    </div>
+
+    <!-- Stat 2: Formula Mastery -->
+    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-bold text-[#171719] uppercase">สูตรที่เข้าใจแล้ว (14 สูตร)</span>
+        <span class="tape-label bg-[#EAE6DC] text-[#171719] text-[10px]" id="stat-formula-ratio">0 / 14</span>
+      </div>
+      <div class="w-full bg-[#EAE6DC] h-3 border border-[#171719] overflow-hidden my-2">
+        <div id="bar-formula" class="bg-[#2563EB] h-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+      <p class="text-gray-500 text-[11px]">แอนิเมชัน KaTeX Ghost Clone ทั้งหมด</p>
+    </div>
+
+    <!-- Stat 3: Exam Score -->
+    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-bold text-[#171719] uppercase">คะแนนสอบจำลองล่าสุด</span>
+        <span class="tape-label bg-[#E11D48] text-white text-[10px]" id="stat-exam-ratio">ยังไม่ได้สอบ</span>
+      </div>
+      <div class="w-full bg-[#EAE6DC] h-3 border border-[#171719] overflow-hidden my-2">
+        <div id="bar-exam" class="bg-[#E11D48] h-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+      <p class="text-gray-500 text-[11px]">เป้าหมายห้องสอบ: 12 / 14 คะแนนขึ้นไป (Grade A)</p>
+    </div>
+  </div>
+
+  <!-- Detailed Checklists Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Left: Modules Checklist -->
+    <div class="border-2 border-[#171719] bg-white p-6 shadow-[4px_4px_0px_#171719]">
+      <div class="flex justify-between items-center mb-4 border-b-2 border-[#171719] pb-3">
+        <h3 class="font-bold text-base font-['Space_Grotesk'] text-[#171719] flex items-center gap-2">
+          <span>01. เช็กลิสต์ความเข้าใจรายบทเรียน (9 บท)</span>
+        </h3>
+        <span class="text-xs font-mono text-gray-500">คลิกเพื่อเช็กสถานะ</span>
+      </div>
+
+      <div class="space-y-2">
+        {allModules.map((mod) => (
+          <div
+            class="flex items-center justify-between p-2.5 border border-[#171719]/40 hover:bg-[#F4F1EA] transition-colors font-mono text-xs"
+            data-mod-row={mod.id}
+          >
+            <div class="flex items-center gap-2.5">
+              <input
+                type="checkbox"
+                class="mod-check w-4 h-4 border-2 border-[#171719] accent-[#171719] cursor-pointer"
+                data-mod-id={mod.id}
+              />
+              <span class="font-bold text-[#171719]">
+                {mod.moduleNumber}. {mod.title}
+              </span>
+            </div>
+            <span class="text-[10px] text-gray-500">{mod.lectureCode}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Right: Formulas Mastery Grid -->
+    <div class="border-2 border-[#171719] bg-white p-6 shadow-[4px_4px_0px_#171719]">
+      <div class="flex justify-between items-center mb-4 border-b-2 border-[#171719] pb-3">
+        <h3 class="font-bold text-base font-['Space_Grotesk'] text-[#171719] flex items-center gap-2">
+          <span>02. เช็กลิสต์ความเชี่ยวชาญ 14 สูตรคำนวณ</span>
+        </h3>
+        <span class="text-xs font-mono text-gray-500">คลิกเพื่อเช็กสถานะ</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {allFormulas.map((formula, i) => (
+          <div
+            class="p-2 border border-[#171719]/40 hover:bg-[#F4F1EA] transition-colors font-mono text-xs flex items-center justify-between"
+            data-formula-row={formula.id}
+          >
+            <div class="flex items-center gap-2 truncate pr-1">
+              <input
+                type="checkbox"
+                class="formula-check w-4 h-4 border-2 border-[#171719] accent-[#171719] cursor-pointer shrink-0"
+                data-formula-id={formula.id}
+              />
+              <a href={`/formulas#${formula.id}`} class="truncate hover:underline font-semibold text-[#171719]">
+                {String(i + 1).padStart(2, '0')}. {formula.name}
+              </a>
+            </div>
+            <span class="text-[9px] uppercase px-1 bg-gray-100 border border-gray-300 shrink-0">
+              {formula.category}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom: Actions & Storage Reset -->
+  <div class="mt-8 pt-6 border-t-2 border-[#171719] flex flex-wrap justify-between items-center gap-4 text-xs font-mono">
+    <div class="text-gray-600">
+      💾 สถานะการเรียนรู้ทั้งหมดถูกบันทึกลงในเบราว์เซอร์ของคุณโดยอัตโนมัติ (LocalStorage API)
+    </div>
+    <button
+      type="button"
+      id="reset-progress-btn"
+      class="px-3 py-1.5 text-xs font-bold text-[#E11D48] border border-[#E11D48] hover:bg-[#E11D48] hover:text-white transition-all cursor-pointer"
+    >
+      รีเซ็ตข้อมูลความก้าวหน้าทั้งหมด
+    </button>
+  </div>
+</Layout>
+
+<script>
+  import { ProgressStore } from '../lib/progress-store';
+
+  function refreshDashboard() {
+    const progress = ProgressStore.load();
+    const totalModules = 9;
+    const totalFormulas = 14;
+
+    const completedMods = progress.completedModuleIds.length;
+    const masteredFormulas = progress.masteredFormulaIds.length;
+
+    // Exam score from localStorage
+    const lastScoreRaw = localStorage.getItem('ds_exam_last_score');
+    const examScore = lastScoreRaw !== null ? Number(lastScoreRaw) : 0;
+    const hasTakenExam = lastScoreRaw !== null;
+
+    // Update numbers
+    const modRatioEl = document.getElementById('stat-mod-ratio');
+    const formulaRatioEl = document.getElementById('stat-formula-ratio');
+    const examRatioEl = document.getElementById('stat-exam-ratio');
+
+    if (modRatioEl) modRatioEl.textContent = `${completedMods} / ${totalModules}`;
+    if (formulaRatioEl) formulaRatioEl.textContent = `${masteredFormulas} / ${totalFormulas}`;
+    if (examRatioEl) examRatioEl.textContent = hasTakenExam ? `${examScore} / 14 ข้อ` : 'ยังไม่ได้สอบ';
+
+    // Update Bars
+    const modPct = Math.round((completedMods / totalModules) * 100);
+    const formulaPct = Math.round((masteredFormulas / totalFormulas) * 100);
+    const examPct = hasTakenExam ? Math.round((examScore / 14) * 100) : 0;
+
+    const barMod = document.getElementById('bar-mod');
+    const barFormula = document.getElementById('bar-formula');
+    const barExam = document.getElementById('bar-exam');
+
+    if (barMod) barMod.style.width = `${modPct}%`;
+    if (barFormula) barFormula.style.width = `${formulaPct}%`;
+    if (barExam) barExam.style.width = `${examPct}%`;
+
+    // Overall Readiness Calculation
+    const overallScore = Math.round((modPct * 0.3) + (formulaPct * 0.3) + (examPct * 0.4));
+    const overallPctEl = document.getElementById('overall-pct');
+    const overallStatusEl = document.getElementById('overall-status');
+
+    if (overallPctEl) overallPctEl.textContent = `${overallScore}%`;
+    if (overallStatusEl) {
+      if (overallScore >= 80) overallStatusEl.textContent = 'พร้อมสอบระดับเกรด A 🎉';
+      else if (overallScore >= 50) overallStatusEl.textContent = 'กำลังเตรียมตัวได้ดี ทวนจุดอ่อนเพิ่ม';
+      else overallStatusEl.textContent = 'เพิ่งเริ่มต้น ทบทวนเนื้อหาและสูตร';
+    }
+
+    // Sync Checkboxes
+    document.querySelectorAll<HTMLInputElement>('.mod-check').forEach((cb) => {
+      const modId = cb.getAttribute('data-mod-id');
+      cb.checked = modId ? progress.completedModuleIds.includes(modId) : false;
+    });
+
+    document.querySelectorAll<HTMLInputElement>('.formula-check').forEach((cb) => {
+      const fId = cb.getAttribute('data-formula-id');
+      cb.checked = fId ? progress.masteredFormulaIds.includes(fId) : false;
+    });
+  }
+
+  // Checkbox Event Listeners
+  document.querySelectorAll<HTMLInputElement>('.mod-check').forEach((cb) => {
+    cb.addEventListener('change', () => {
+      const modId = cb.getAttribute('data-mod-id');
+      if (modId) {
+        ProgressStore.toggleModuleCompleted(modId);
+        refreshDashboard();
+      }
+    });
+  });
+
+  document.querySelectorAll<HTMLInputElement>('.formula-check').forEach((cb) => {
+    cb.addEventListener('change', () => {
+      const fId = cb.getAttribute('data-formula-id');
+      if (fId) {
+        ProgressStore.toggleFormulaMastered(fId);
+        refreshDashboard();
+      }
+    });
+  });
+
+  // Reset Progress
+  document.getElementById('reset-progress-btn')?.addEventListener('click', () => {
+    if (confirm('คุณต้องการรีเซ็ตสถิติความก้าวหน้าทั้งหมดใช่หรือไม่?')) {
+      localStorage.removeItem('ds_10301351_progress_v1');
+      localStorage.removeItem('ds_exam_last_score');
+      localStorage.removeItem('ds_exam_total');
+      refreshDashboard();
+    }
+  });
+
+  // Init
+  refreshDashboard();
+</script>

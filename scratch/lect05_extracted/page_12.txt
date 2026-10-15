@@ -1,0 +1,8 @@
+The most important fact is that relationships between variables reveal how they move together, specifically illustrated by the positive correlation between Website Activity and Purchase Frequency.
+
+Key points include:
+- **Direction**: Variables can move in the same direction or opposite directions.
+- **Strength**: This refers to how closely observations cluster around a specific form.
+- **Form**: Relationships may take the shape of a straight line, a curve, or have no clear pattern.
+- **Unusual Cases**: These are individual data points that do not follow the overall trend.
+- **Takeaway**: It is essential to describe how variables move together before proposing reasons why.

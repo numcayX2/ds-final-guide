@@ -1,0 +1,9 @@
+The most important outcome is that a Model must support the decision to retain customers, not just create a Class Label.
+
+**The Customer Inactivity Decision**
+*   Prediction has value when it helps answer clear questions and supports sound decision-making.
+
+**Process Flow:**
+1.  **Decision Question**: Which customers are at risk of becoming Inactive?
+2.  **Prediction**: Determines if a customer is Inactive = Yes / No.
+3.  **Retention Decision**: Which customers should be prioritized for retention when the team can only contact some?

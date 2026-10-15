@@ -1,0 +1,4 @@
+Example: K-Mean Clustering
+
+• ขั้นตอนที่ 1 สุ่มค่าเริ่มต้น จำนวน k ค่า เรียกว่า cluster centers (centroid);
+• สมมติ k =3 แสดงว่า c1, c2 และ c3 เป็น centroid ที่เราสุ่มขึ้นมา

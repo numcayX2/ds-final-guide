@@ -1,0 +1,15 @@
+The Confusion Matrix Organizes Prediction Outcomes.
+
+**Positive Class**: Inactive = Yes.
+
+**Axis Convention on This Slide**: Rows: Actual Class; Columns: Predicted Class.
+
+**Confusion Matrix**:
+- **Actual: Yes, Predicted: Yes (TP)**: ระบุ Inactive ถูกต้อง
+- **Actual: Yes, Predicted: No (FN)**: พลาดลูกค้าที่จะ Inactive
+- **Actual: No, Predicted: Yes (FP)**: ติดต่อลูกค้าที่จะยัง Active
+- **Actual: No, Predicted: No (TN)**: ระบุ Active ถูกต้อง
+
+**Interpretation Rule**: ใช้ Axis Labels และ Class Meaning สร้างความหมายของ Cell แทนการจำตำแหน่ง
+
+**Takeaway**: ตรวจสอบ Axes และ Positive Class ทุกครั้งก่อนอ่าน Confusion Matrix

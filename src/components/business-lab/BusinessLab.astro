@@ -1,0 +1,462 @@
+---
+// Business Context Lab - Sequential Locked Card Builder + Reverse Mode (Spec 13)
+---
+
+<div class="business-lab-container space-y-8 select-none">
+  <!-- Zone A Header -->
+  <div class="border-2 border-[#171719] bg-[#171719] text-[#F4F1EA] p-6 shadow-[5px_5px_0px_#A3E635]">
+    <div class="flex flex-wrap justify-between items-start gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2">SPEC 13</span>
+          <span class="text-xs font-mono uppercase tracking-wider text-gray-300">Interactive Decision Simulator</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-white">
+          BUSINESS CONTEXT LAB & DECISION GATES
+        </h2>
+        <p class="text-xs sm:text-sm text-gray-300 font-mono mt-1">
+          จำลองการตัดสินใจทางธุรกิจจริง: เชื่อมโยงต้นทุนความผิดพลาด FP/FN เข้ากับ Precision/Recall และประตูตัดสินใจ Lect 09
+        </p>
+      </div>
+
+      <!-- Mode Switcher -->
+      <div class="flex border-2 border-[#F4F1EA] bg-[#222226] p-1 gap-1">
+        <button
+          type="button"
+          id="mode-builder-btn"
+          class="px-3 py-1 text-xs font-mono font-bold uppercase bg-[#A3E635] text-[#171719] border border-[#171719] shadow-[1px_1px_0px_#171719] cursor-pointer"
+        >
+          1. Sequential Card Builder
+        </button>
+        <button
+          type="button"
+          id="mode-reverse-btn"
+          class="px-3 py-1 text-xs font-mono font-bold uppercase bg-transparent text-gray-300 hover:text-white border border-transparent cursor-pointer"
+        >
+          2. Reverse Challenge Mode
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode 1: Sequential Locked Card Builder -->
+  <div id="builder-mode-view" class="space-y-6">
+    <!-- Step 1: Domain Selection -->
+    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+      <div class="flex items-center justify-between mb-3 border-b border-[#171719] pb-2">
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#171719] flex items-center gap-2">
+          <span class="w-6 h-6 bg-[#171719] text-[#A3E635] flex items-center justify-center font-bold text-xs">1</span>
+          เลือกโดเมนธุรกิจ (Business Domain)
+        </span>
+        <span class="tape-label bg-[#EAE6DC] text-[#171719] text-[10px]">Lect 07 / Lect 09 Cases</span>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <button
+          type="button"
+          data-domain="churn"
+          class="domain-card border-2 border-[#171719] p-3 text-left hover:bg-[#F4F1EA] transition-all cursor-pointer bg-[#A3E635]/20 border-[#171719]"
+        >
+          <div class="font-bold text-sm text-[#171719]">Customer Churn</div>
+          <div class="text-xs text-gray-600 mt-1">การบ้านอาจารย์ HW#1 / HW#2 ลูกค้าเลิกใช้บริการ</div>
+        </button>
+        <button
+          type="button"
+          data-domain="medical"
+          class="domain-card border-2 border-[#171719] p-3 text-left hover:bg-[#F4F1EA] transition-all cursor-pointer bg-white"
+        >
+          <div class="font-bold text-sm text-[#171719]">Health-risk Algorithm</div>
+          <div class="text-xs text-gray-600 mt-1">คดีจริง 2019 การคัดกรองผู้ป่วยความเสี่ยงสูง</div>
+        </button>
+        <button
+          type="button"
+          data-domain="hiring"
+          class="domain-card border-2 border-[#171719] p-3 text-left hover:bg-[#F4F1EA] transition-all cursor-pointer bg-white"
+        >
+          <div class="font-bold text-sm text-[#171719]">iTutorGroup HR AI</div>
+          <div class="text-xs text-gray-600 mt-1">คดีจริง EEOC 2023 คัดกรองใบสมัครงาน</div>
+        </button>
+        <button
+          type="button"
+          data-domain="theft"
+          class="domain-card border-2 border-[#171719] p-3 text-left hover:bg-[#F4F1EA] transition-all cursor-pointer bg-white"
+        >
+          <div class="font-bold text-sm text-[#171719]">Rite Aid Retail Facial AI</div>
+          <div class="text-xs text-gray-600 mt-1">คดีจริง FTC 2023 จับขโมยในร้านค้า</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Positive Class Definition & 2x2 Matrix Cost Assignment -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Left: Positive Class & Scenario Summary -->
+      <div class="lg:col-span-5 border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719] flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-2 mb-3 border-b border-[#171719] pb-2">
+            <span class="w-6 h-6 bg-[#171719] text-[#A3E635] flex items-center justify-center font-bold text-xs">2</span>
+            <span class="text-xs font-mono font-bold uppercase text-[#171719]">กฎเหล็ก: เขียน Positive Class ก่อนเสมอ</span>
+          </div>
+
+          <div class="p-3 bg-[#171719] text-white font-mono text-xs border border-[#171719] mb-4">
+            <div class="text-gray-400 text-[10px] uppercase">Positive Class Defined As:</div>
+            <div id="positive-class-text" class="text-base font-bold text-[#A3E635] mt-1">
+              Positive = 'Inactive / Churn = Yes'
+            </div>
+            <div id="positive-class-desc" class="text-xs text-gray-300 mt-1">
+              เป้าหมายของโมเดลคือการตรวจจับลูกค้าที่มีความเสี่ยงจะเลิกใช้บริการ
+            </div>
+          </div>
+
+          <div class="space-y-3 text-xs font-mono">
+            <div>
+              <span class="font-bold text-[#171719]">ต้นทุนความผิดพลาด FP (โทรไปรบกวน):</span>
+              <p class="text-gray-600 mt-0.5">โทรไปหาลูกค้าที่ยังใช้บริการอยู่ มอบส่วนลดฟรี หรือรบกวนเวลา</p>
+            </div>
+            <div>
+              <span class="font-bold text-[#E11D48]">ต้นทุนความผิดพลาด FN (ลูกค้าหนีหลุดมือ):</span>
+              <p class="text-gray-600 mt-0.5">ลูกค้าเลิกใช้บริการจริง แต่โมเดลตรวจไม่พบ สูญเสีย Lifetime Value มหาศาล</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-[#171719] flex justify-between items-center text-xs font-mono">
+          <span>ความเสี่ยงสำคัญที่สุด:</span>
+          <span id="primary-risk-badge" class="tape-label bg-[#E11D48] text-white text-[10px]">
+            FN รุนแรงกว่า FP
+          </span>
+        </div>
+      </div>
+
+      <!-- Right: Interactive 2x2 Matrix & Metric Sensitivity -->
+      <div class="lg:col-span-7 border-2 border-[#171719] bg-[#F4F1EA] p-5 shadow-[3px_3px_0px_#171719]">
+        <div class="flex items-center justify-between mb-3 border-b border-[#171719] pb-2">
+          <span class="text-xs font-mono font-bold uppercase text-[#171719] flex items-center gap-2">
+            <span class="w-6 h-6 bg-[#171719] text-[#A3E635] flex items-center justify-center font-bold text-xs">3</span>
+            ตารางถ่วงน้ำหนักต้นทุน 2x2 & Metric Sensitivity
+          </span>
+          <span class="text-[10px] font-mono text-gray-500">Confusion Matrix Tradeoff</span>
+        </div>
+
+        <!-- 2x2 Matrix Grid -->
+        <div class="grid grid-cols-2 gap-3 mb-4 text-xs font-mono">
+          <!-- TP Box -->
+          <div class="border-2 border-[#171719] bg-white p-3 shadow-[2px_2px_0px_#171719]">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-[#84CC16]">TRUE POSITIVE (TP)</span>
+              <span class="text-[10px] bg-[#A3E635]/30 px-1 font-bold">ผลดี</span>
+            </div>
+            <p class="text-gray-600 text-[11px] mt-1">โมเดลทายบวก และเป็นจริง จับได้ถูกต้อง</p>
+          </div>
+
+          <!-- FP Box -->
+          <div id="box-fp" class="border-2 border-[#171719] bg-white p-3 shadow-[2px_2px_0px_#171719] transition-all">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-[#D97706]">FALSE POSITIVE (FP)</span>
+              <span class="text-[10px] bg-[#F59E0B]/30 px-1 font-bold">ทายว่าใช่ แต่ผิด</span>
+            </div>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-[10px] text-gray-500">ระดับต้นทุน:</span>
+              <select id="select-fp-cost" class="border border-[#171719] bg-[#F4F1EA] text-xs font-bold px-1.5 py-0.5">
+                <option value="low">ต่ำ (Low Cost)</option>
+                <option value="med" selected>ปานกลาง (Med Cost)</option>
+                <option value="high">รุนแรงมาก (Severe Cost)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- FN Box -->
+          <div id="box-fn" class="border-2 border-[#171719] bg-white p-3 shadow-[2px_2px_0px_#171719] transition-all">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-[#E11D48]">FALSE NEGATIVE (FN)</span>
+              <span class="text-[10px] bg-[#E11D48]/20 px-1 font-bold text-[#E11D48]">หลุดเคสบวก</span>
+            </div>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-[10px] text-gray-500">ระดับต้นทุน:</span>
+              <select id="select-fn-cost" class="border border-[#171719] bg-[#F4F1EA] text-xs font-bold px-1.5 py-0.5">
+                <option value="low">ต่ำ (Low Cost)</option>
+                <option value="med">ปานกลาง (Med Cost)</option>
+                <option value="high" selected>รุนแรงสูงสุด (Fatal Churn)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TN Box -->
+          <div class="border-2 border-[#171719] bg-white p-3 shadow-[2px_2px_0px_#171719]">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-[#2563EB]">TRUE NEGATIVE (TN)</span>
+              <span class="text-[10px] bg-[#2563EB]/20 px-1 font-bold">ผลดี</span>
+            </div>
+            <p class="text-gray-600 text-[11px] mt-1">โมเดลทายลบ และเป็นลบจริง ปกติ</p>
+          </div>
+        </div>
+
+        <!-- Metric Highlight Banner -->
+        <div id="metric-output-banner" class="border-2 border-[#171719] bg-[#171719] text-white p-4 font-mono shadow-[2px_2px_0px_#171719]">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs text-gray-400">OPTIMIZATION METRIC MANDATED:</span>
+            <span id="metric-name-badge" class="px-2 py-0.5 bg-[#E11D48] text-white font-bold text-xs uppercase">
+              RECALL (SENSITIVITY)
+            </span>
+          </div>
+          <div id="metric-explanation" class="text-xs text-[#F4F1EA] leading-relaxed">
+            เพราะต้นทุนของ False Negative รุนแรงกว่ามาก ต้องเลือกโมเดลที่ให้ค่า Recall สูงสุด (เช่น Model B ใน HW#2 ที่ให้ Recall 0.90) เพื่อป้องกันลูกค้าหลุดมือ!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Decision Gate (Lect 09 p36) -->
+    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+      <div class="flex items-center justify-between mb-3 border-b border-[#171719] pb-2">
+        <span class="text-xs font-mono font-bold uppercase text-[#171719] flex items-center gap-2">
+          <span class="w-6 h-6 bg-[#171719] text-[#A3E635] flex items-center justify-center font-bold text-xs">4</span>
+          ประตูตัดสินใจส่งมอบโมเดล (Decision Gates - Lect 09 p36)
+        </span>
+        <span class="tape-label bg-[#A3E635] text-[#171719] text-[10px]">Governance Checkpoint</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
+        <button
+          type="button"
+          data-gate="accept"
+          class="gate-card border-2 border-[#171719] p-4 text-left hover:bg-[#F4F1EA] transition-all cursor-pointer bg-white"
+        >
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-sm text-[#84CC16]">1. ACCEPT</span>
+            <span class="w-3 h-3 rounded-full bg-[#84CC16]"></span>
+          </div>
+          <p class="text-gray-600 text-[11px]">โมเดลผ่านการตรวจสอบด้านจริยธรรม Metric ตรงตามบริบทธุรกิจ พร้อม Deploy</p>
+        </button>
+
+        <button
+          type="button"
+          data-gate="revise"
+          class="gate-card border-2 border-[#171719] p-4 text-left hover:bg-[#F4F1EA] transition-all cursor-pointer bg-[#F59E0B]/20 border-[#171719]"
+        >
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-sm text-[#D97706]">2. REVISE</span>
+            <span class="w-3 h-3 rounded-full bg-[#F59E0B]"></span>
+          </div>
+          <p class="text-gray-600 text-[11px]">ส่งกลับไปจูนในขั้นตอนเดิมของ CRISP-DS เช่น ปรับ Threshold หรือลบ Proxy Features</p>
+        </button>
+
+        <button
+          type="button"
+          data-gate="reject"
+          class="gate-card border-2 border-[#171719] p-4 text-left hover:bg-[#F4F1EA] transition-all cursor-pointer bg-white"
+        >
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-sm text-[#E11D48]">3. REJECT</span>
+            <span class="w-3 h-3 rounded-full bg-[#E11D48]"></span>
+          </div>
+          <p class="text-gray-600 text-[11px]">ปฏิเสธโมเดลเด็ดขาด เสี่ยงผิดกฎหมาย ละเมิดสิทธิ หรือความเสียหายเกินรับได้</p>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode 2: Reverse Challenge Mode View (Hidden by default) -->
+  <div id="reverse-mode-view" class="hidden space-y-6">
+    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+      <div class="border-b-2 border-[#171719] pb-3 mb-4 flex justify-between items-center">
+        <div>
+          <span class="tape-label bg-[#E11D48] text-white text-xs">REVERSE MODE</span>
+          <h3 class="font-bold text-lg font-['Space_Grotesk'] text-[#171719] mt-1">
+            โจทย์ท้าทาย: วิเคราะห์ความเสี่ยงและเลือก Decision Gate จากสถิติ
+          </h3>
+        </div>
+        <span class="text-xs font-mono text-gray-500">Authentic Exam Scenario</span>
+      </div>
+
+      <!-- Challenge Card 1 -->
+      <div class="border-2 border-[#171719] p-4 bg-[#F4F1EA] mb-4 font-mono text-xs">
+        <div class="font-bold text-sm text-[#171719] mb-1">
+          คดี Rite Aid (FTC 2023-2024): ระบบ Facial Recognition แจ้งเตือนจับขโมย
+        </div>
+        <p class="text-gray-700 leading-relaxed mb-3">
+          สถานการณ์: โมเดลมี Accuracy สูง 94% แต่เมื่อตรวจนับพบว่าแจ้งเตือนลูกค้าผิดคน (False Positive) จำนวนมาก ทำให้ผู้บริสุทธิ์ถูกเจ้าหน้าที่รักษาความปลอดภัยคุกคามและจับกุม
+        </p>
+
+        <div class="bg-white p-3 border border-[#171719] mb-3">
+          <span class="font-bold text-[#E11D48]">คำถาม:</span> เมตริกใดที่โมเดลนี้สอบตกอย่างร้ายแรง และคณะกรรมการ FTC ตัดสินให้ลงที่ Decision Gate ใด?
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button
+            type="button"
+            class="reverse-opt-btn border border-[#171719] p-2 bg-white text-left hover:bg-[#EAE6DC]"
+            data-correct="false"
+          >
+            A. ตก Recall / ตัดสินใจ Accept เพราะ Accuracy รวมยังสูง 94%
+          </button>
+          <button
+            type="button"
+            class="reverse-opt-btn border border-[#171719] p-2 bg-white text-left hover:bg-[#EAE6DC]"
+            data-correct="true"
+          >
+            B. ตก Precision (FP สูงมาก) / ตัดสินใจ Reject (FTC สั่งแบน 5 ปี และสั่งให้มี Human Checkpoint)
+          </button>
+        </div>
+        <div class="reverse-feedback hidden mt-2 p-2 font-bold"></div>
+      </div>
+
+      <!-- Challenge Card 2 -->
+      <div class="border-2 border-[#171719] p-4 bg-[#F4F1EA] font-mono text-xs">
+        <div class="font-bold text-sm text-[#171719] mb-1">
+          การบ้าน HW#2: การเลือกโมเดล Customer Inactivity (100 ราย)
+        </div>
+        <p class="text-gray-700 leading-relaxed mb-3">
+          โจทย์กำหนด: Model A (Acc=0.81, Prec=0.89, Rec=0.60) | Model B (Acc=0.78, Prec=0.67, Rec=0.90) | Model C (Acc=0.85, Prec=0.82, Rec=0.80)
+        </p>
+
+        <div class="bg-white p-3 border border-[#171719] mb-3">
+          <span class="font-bold text-[#E11D48]">คำถาม:</span> หากฝ่ายการตลาดต้องการ "ความสมดุลสูงสุดระหว่างทุกมิติ" และ "กลัวลูกค้าเลิกใช้บริการมากที่สุด" ควรเลือกโมเดลใดตามลำดับ?
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button
+            type="button"
+            class="reverse-opt-btn border border-[#171719] p-2 bg-white text-left hover:bg-[#EAE6DC]"
+            data-correct="true"
+          >
+            A. สมดุลที่สุดเลือก Model C (F1 0.81, Acc 0.85) / กลัวลูกค้าหนีเลือก Model B (Recall 0.90)
+          </button>
+          <button
+            type="button"
+            class="reverse-opt-btn border border-[#171719] p-2 bg-white text-left hover:bg-[#EAE6DC]"
+            data-correct="false"
+          >
+            B. ทั้งสองกรณีเลือก Model A เพราะมี Precision สูงสุด (0.89)
+          </button>
+        </div>
+        <div class="reverse-feedback hidden mt-2 p-2 font-bold"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mode switcher
+  const builderBtn = document.getElementById('mode-builder-btn');
+  const reverseBtn = document.getElementById('mode-reverse-btn');
+  const builderView = document.getElementById('builder-mode-view');
+  const reverseView = document.getElementById('reverse-mode-view');
+
+  builderBtn?.addEventListener('click', () => {
+    builderBtn.className = 'px-3 py-1 text-xs font-mono font-bold uppercase bg-[#A3E635] text-[#171719] border border-[#171719] shadow-[1px_1px_0px_#171719] cursor-pointer';
+    reverseBtn!.className = 'px-3 py-1 text-xs font-mono font-bold uppercase bg-transparent text-gray-300 hover:text-white border border-transparent cursor-pointer';
+    builderView?.classList.remove('hidden');
+    reverseView?.classList.add('hidden');
+  });
+
+  reverseBtn?.addEventListener('click', () => {
+    reverseBtn.className = 'px-3 py-1 text-xs font-mono font-bold uppercase bg-[#A3E635] text-[#171719] border border-[#171719] shadow-[1px_1px_0px_#171719] cursor-pointer';
+    builderBtn!.className = 'px-3 py-1 text-xs font-mono font-bold uppercase bg-transparent text-gray-300 hover:text-white border border-transparent cursor-pointer';
+    reverseView?.classList.remove('hidden');
+    builderView?.classList.add('hidden');
+  });
+
+  // Domain configs
+  const domainConfigs: Record<string, { posText: string; posDesc: string; fpCost: string; fnCost: string; risk: string }> = {
+    churn: {
+      posText: "Positive = 'Inactive / Churn = Yes'",
+      posDesc: 'ตรวจจับลูกค้าที่จะเลิกใช้บริการ เพื่อติดต่อเสนอดีลพิเศษ',
+      fpCost: 'med',
+      fnCost: 'high',
+      risk: 'FN รุนแรงกว่า FP (ลูกค้าหนี)',
+    },
+    medical: {
+      posText: "Positive = 'High Disease Risk = Yes'",
+      posDesc: 'คัดกรองผู้ป่วยอาการหนักเพื่อเข้าโครงการดูแลเข้มข้น',
+      fpCost: 'low',
+      fnCost: 'high',
+      risk: 'FN เป็นอันตรายต่อชีวิต',
+    },
+    hiring: {
+      posText: "Positive = 'Qualified Candidate = Yes'",
+      posDesc: 'คัดกรองใบสมัครงานที่มีทักษะตรงตามเกณฑ์',
+      fpCost: 'high',
+      fnCost: 'med',
+      risk: 'FP เสียเวลาสัมภาษณ์ / ละเมิดอายุ',
+    },
+    theft: {
+      posText: "Positive = 'Shoplifter / Suspect = Yes'",
+      posDesc: 'ระบบตรวจจับใบหน้าผู้ต้องสงสัยขโมยของในร้านค้า',
+      fpCost: 'high',
+      fnCost: 'med',
+      risk: 'FP รุนแรงมาก (จับผู้บริสุทธิ์)',
+    },
+  };
+
+  const domainCards = document.querySelectorAll<HTMLElement>('.domain-card');
+  const posTextEl = document.getElementById('positive-class-text');
+  const posDescEl = document.getElementById('positive-class-desc');
+  const riskBadgeEl = document.getElementById('primary-risk-badge');
+  const fpSelect = document.getElementById('select-fp-cost') as HTMLSelectElement;
+  const fnSelect = document.getElementById('select-fn-cost') as HTMLSelectElement;
+  const metricBadge = document.getElementById('metric-name-badge');
+  const metricExplanation = document.getElementById('metric-explanation');
+
+  domainCards.forEach((card) => {
+    card.addEventListener('click', () => {
+      domainCards.forEach((c) => {
+        c.classList.remove('bg-[#A3E635]/20');
+        c.classList.add('bg-white');
+      });
+      card.classList.remove('bg-white');
+      card.classList.add('bg-[#A3E635]/20');
+
+      const domainKey = card.getAttribute('data-domain') || 'churn';
+      const config = domainConfigs[domainKey];
+      if (config) {
+        if (posTextEl) posTextEl.textContent = config.posText;
+        if (posDescEl) posDescEl.textContent = config.posDesc;
+        if (riskBadgeEl) riskBadgeEl.textContent = config.risk;
+        if (fpSelect) fpSelect.value = config.fpCost;
+        if (fnSelect) fnSelect.value = config.fnCost;
+        updateMetricState();
+      }
+    });
+  });
+
+  fpSelect?.addEventListener('change', updateMetricState);
+  fnSelect?.addEventListener('change', updateMetricState);
+
+  function updateMetricState() {
+    const fp = fpSelect.value;
+    const fn = fnSelect.value;
+
+    if (fn === 'high' && fp !== 'high') {
+      metricBadge!.textContent = 'RECALL (SENSITIVITY)';
+      metricBadge!.className = 'px-2 py-0.5 bg-[#E11D48] text-white font-bold text-xs uppercase';
+      metricExplanation!.textContent = 'เพราะต้นทุนของ False Negative รุนแรงกว่ามาก ต้องเลือกโมเดลที่ให้ค่า Recall สูงสุด เพื่อลดโอกาสหลุดเคสบวก (เช่น ในการบ้าน HW#2 เลือก Model B ที่มี Recall 0.90)';
+    } else if (fp === 'high' && fn !== 'high') {
+      metricBadge!.textContent = 'PRECISION';
+      metricBadge!.className = 'px-2 py-0.5 bg-[#84CC16] text-[#171719] font-bold text-xs uppercase';
+      metricExplanation!.textContent = 'เพราะต้นทุนของ False Positive มีความเสียหายสูงมาก (เช่น ฟ้องร้องทางกฎหมาย หรือรบกวนลูกค้า) โมเดลต้องเน้น Precision สูงเพื่อไม่ให้ทายมั่ว (เช่น คดี Rite Aid)';
+    } else {
+      metricBadge!.textContent = 'F1-SCORE (BALANCED)';
+      metricBadge!.className = 'px-2 py-0.5 bg-[#2563EB] text-white font-bold text-xs uppercase';
+      metricExplanation!.textContent = 'เมื่อทั้ง FP และ FN มีความสำคัญใกล้เคียงกัน ให้ใช้ F1-Score เป็นเกณฑ์หลักในการเปรียบเทียบโมเดล (เช่น ใน HW#2 เลือก Model C ที่ชนะด้วย F1 = 0.81)';
+    }
+  }
+
+  // Reverse challenge options
+  document.querySelectorAll<HTMLElement>('.reverse-opt-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const isCorrect = btn.getAttribute('data-correct') === 'true';
+      const parent = btn.closest('.border-2');
+      const feedback = parent?.querySelector<HTMLElement>('.reverse-feedback');
+      if (feedback) {
+        feedback.classList.remove('hidden');
+        if (isCorrect) {
+          feedback.textContent = '✅ ถูกต้องสมบูรณ์แบบ! ตรงตามข้อสอบและการบ้านอาจารย์ 100%';
+          feedback.className = 'reverse-feedback mt-2 p-2 font-bold bg-[#A3E635]/20 text-[#84CC16] border border-[#84CC16]';
+        } else {
+          feedback.textContent = '❌ ยังไม่ถูกต้อง ลองพิจารณาผลกระทบของ FP vs FN ใหม่อีกครั้ง';
+          feedback.className = 'reverse-feedback mt-2 p-2 font-bold bg-[#E11D48]/10 text-[#E11D48] border border-[#E11D48]';
+        }
+      }
+    });
+  });
+</script>

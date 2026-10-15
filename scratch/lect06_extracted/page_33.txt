@@ -1,0 +1,13 @@
+**ภาพที่ 13 การเรียนรู้แบบ Semi-supervised Machine Learning**
+
+The slide illustrates **Semi-supervised Machine Learning** through a visual workflow involving fruit classification.
+
+*   **Input Data:** The process begins with two distinct sets of data:
+    *   **Labeled Data (ข้อมูลที่มีป้ายกำกับ):** A small, curated set of images including bananas, apples, and papayas, each assigned a specific label ("กล้วย" for banana, "แอปเปิ้ล" for apple, "มะละกอ" for papaya). This represents the supervised component where ground truth is known.
+    *   **Unlabeled Data (ข้อมูลไม่มีป้ายกำกับ):** A large pool of diverse fruit images (including bananas, apples, papayas, oranges, and others) that lack predefined categories. This represents the unsupervised component where no labels are provided initially.
+
+*   **Model Processing:** Both labeled and unlabeled datasets are fed into a central **Model**, symbolized by a brain icon with circuitry. This signifies the machine learning algorithm's role in processing both types of information simultaneously to learn patterns from limited labeled examples while leveraging the structure of abundant unlabeled data.
+
+*   **Output/Result:** The final output demonstrates the model’s ability to classify new, unseen fruits based on the learned patterns. The result shows correctly categorized fruits like "กล้วย" (banana), "แอปเปิ้ล" (apple), and "มะละกอ" (papaya), indicating successful semi-supervised learning where the model generalizes from a few labeled instances to many unlabeled ones.
+
+This diagram effectively contrasts how semi-supervised learning combines the precision of supervised signals with the scalability of unsupervised analysis to improve overall classification accuracy.

@@ -1,0 +1,18 @@
+The image is a comprehensive "Tableau Visualization Guide" (Slide 19) that systematically details the appropriate use cases for various data visualization techniques. It serves as an instructional resource, outlining how to select and apply different chart types effectively in Tableau based on specific analytical goals.
+
+The guide is structured into twelve distinct sections, each dedicated to a particular visualization method:
+
+1.  **Bar Chart**: Recommended for comparing values across categories. The example provided is "Sales by Category."
+2.  **Line Chart**: Ideal for showing trends over time. The example given is "Monthly Sales Trend."
+3.  **Map**: Used to visualize data geographically. An example application is "Sales by Country."
+4.  **Treemap**: Suited for showing part-to-whole relationships using nested rectangles. The example is "Sales by Category."
+5.  **Pie Chart**: Also used for part-to-whole comparisons but specifically utilizing proportions. The example is "Sales by Segment."
+6.  **Scatter Plot**: Designed to show the relationship between two measures. The example illustrates "Sales vs Profit."
+7.  **Heat Map**: Best for showing magnitude using color intensity. An example is a "Monthly Sales Heat Map."
+8.  **Highlight Table**: Useful for comparing values in a table with color. The example focuses on "Sales & Profit by Sub-Category."
+9.  **Dashboard**: Combines multiple views for interactive insights. The example provided is an "Executive Dashboard."
+10. **Packed Bubbles**: Shows part-to-whole relationships with bubble size. The example is "Sales by Category."
+11. **Dual Axis Chart**: Compares two measures with different scales. The example demonstrates the "Sales and Profit Trend."
+12. **Box Plot**: Displays distribution using a five-number summary. The example analyzes "Sales Distribution by Segment."
+
+Each section includes a brief description of its purpose, a visual representation or example, and often specifies when it is "Best for" certain types of analysis, such as storytelling, decision-making, or pattern recognition. A concluding tip advises users to "Choose the right visualization to reveal insights and tell your data story!"

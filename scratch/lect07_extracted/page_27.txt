@@ -1,0 +1,7 @@
+The most important fact is that high Accuracy alone is insufficient for evaluating model performance; Class Balance and a Baseline must also be considered.
+
+Key supporting points:
+- The formula for calculating Accuracy is: (TP + TN) / (TP + TN + FP + FN).
+- When the Customer class is predominantly Active, predicting Active for everyone yields high Accuracy, making it misleading without context.
+- A Majority-class Baseline serves as a reference point for evaluation on the same Evaluation Data.
+- Evidence Check requires that Candidate Accuracy exceeds the Baseline to validate the Model's usefulness.

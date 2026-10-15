@@ -1,0 +1,1 @@
+Lecture 1 of "lect07" for course 10301351 Data Science is titled "Decision Tree Classifier And Evaluation." The Thai subtitle reads "คาบบรรยายที่ 7," which translates to Lecture 7.

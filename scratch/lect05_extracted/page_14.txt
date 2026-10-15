@@ -1,0 +1,12 @@
+Time Order Reveals Trends and Change
+
+*   **Core Concept:** Pattern ตามเวลาต้องรักษาลำดับ และตีความร่วมกับ Seasonality, Context และ Data Collection (Time patterns must maintain order and be interpreted alongside Seasonality, Context, and Data Collection).
+*   **Prerequisite:** Time ไม่ใช่ Category ที่สลับลำดับได้ (Time is not a category that can be reordered).
+*   **Observation:** เมื่อรักษาลำดับเวลา เราจะเห็น (When maintaining time order, we see):
+    *   **Trend:** ทิศทางการเปลี่ยนแปลงโดยรวม (Overall direction of change).
+    *   **Seasonality:** รูปแบบที่เกิดขึ้นตามช่วงเวลา (Patterns recurring over specific periods).
+    *   **Shift:** ระดับหรือพฤติกรรมที่เปลี่ยนไป (Changes in level or behavior).
+    *   **Unusual Period:** ช่วงเวลาที่แตกต่างจาก Pattern โดยรวม (Periods differing from the overall pattern).
+*   **Example Data:** Monthly E-commerce Orders.
+*   **Analysis Step:** ก่อนตีความ ตรวจสอบว่า Context หรือ Data Collection เปลี่ยนหรือไม่ (Before interpretation, check if Context or Data Collection has changed).
+*   **Takeaway:** Time Pattern มีความหมายเมื่อเราตรวจสอบรับทและการเก็บข้อมูลแล้ว (Time Patterns are meaningful only after checking records and data collection methods).

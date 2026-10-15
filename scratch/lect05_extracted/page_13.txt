@@ -1,0 +1,44 @@
+The slide titled "Correlation Is Association, Not Causation" (Slide 13) presents a core principle in data science: correlation indicates association between variables but does not prove causation.
+
+**Most Important Fact:**
+- Correlation shows that Variables change together in direction and level, but it does not confirm that one causes the other. Before claiming Causation, one must investigate alternative explanations.
+
+**Key Points in Descending Order of Importance:**
+
+1. **Association Defined by Scatter Plot:**
+   - A scatter plot illustrates “Association” between two variables: “Website Activity” (x-axis) and “Customer Spending” (y-axis). The upward trend of blue dots indicates a positive association — as Website Activity increases, Customer Spending tends to increase.
+
+2. **What Correlation Does NOT Prove:**
+   - The red box states: “Correlation ยังพิสูจน์ไม่ได้ว่า X causes Y” → Correlation cannot yet prove that X causes Y.
+   - A diagram shows X with an arrow pointing to a red minus sign, then to Y, visually rejecting direct causation from X to Y.
+
+3. **Alternative Explanations for Observed Correlation:**
+   - Before asserting causation, consider these confounding factors:
+     - Confounding
+     - Reverse Direction
+     - Selection Effects
+     - Coincidence
+   - These are represented as question marks branching out from the central idea, indicating multiple possible non-causal explanations.
+
+4. **Takeaway Message:**
+   - “Association ช่วยนำทางการสืบค้น แต่ไม่ใช่หลักฐานพิสูจน์สาเหตุ” → Association helps guide investigation, but is not proof of cause.
+
+5. **Language Note:**
+   - The slide uses bilingual text: English for technical terms (“Correlation”, “Association”, “Variables”, “Website Activity”, “Customer Spending”) and Thai for explanatory phrases, reflecting its educational context targeting Thai-speaking learners familiar with English terminology.
+
+6. **Visual Structure:**
+   - Left side: Blue-themed section explaining what correlation *does* show (association via scatter plot).
+   - Right side: Orange/red-themed section warning against assuming causation, listing pitfalls and alternatives.
+   - Bottom: Green “Takeaway” banner summarizing the key lesson.
+
+7. **No Formulas or Tables Present:**
+   - While no mathematical formulas or tabular data appear, the conceptual framework relies on visual logic (scatter plot + directional arrows + exclusion symbols) to convey statistical reasoning.
+
+8. **Pedagogical Intent:**
+   - Designed for teaching foundational concepts in data science/statistics, emphasizing critical thinking about causal inference versus mere association.
+
+9. **Slide Numbering:**
+   - Labeled as Slide 13, suggesting part of a larger lecture series or presentation deck.
+
+10. **Core Message Reinforced:**
+    - Repeated emphasis throughout the slide: Do not equate correlation with causation; always seek deeper evidence before concluding causal relationships.

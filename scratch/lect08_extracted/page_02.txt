@@ -1,0 +1,13 @@
+The most important fact is that Clustering is only one part of the comprehensive Data Science process, which starts from a business problem and leads to value.
+
+The lecture slide presents the "Comprehensive CRISP-DS Process" as an iterative cycle:
+1.  **Business Understanding**: The starting point of the process.
+2.  **Data Understanding**
+3.  **Data Preparation**
+4.  **Exploratory Data Analysis**
+5.  **Modeling**: This step is specifically highlighted in the context of "บทที่ 8: Clustering" (Chapter 8: Clustering).
+6.  **Evaluation**: An iterative loop exists between Modeling and Evaluation.
+7.  **Deployment & Communication**
+8.  **AI-assisted Improvement**: The final step loops back to the beginning for continuous improvement ("ทำซ้ำ เพื่อคุณค่าที่ยิ่งขึ้น").
+
+The overall journey is categorized into five stages at the bottom of the diagram: Problem -> Data -> Insight -> Decision -> Value.

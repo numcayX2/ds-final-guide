@@ -1,0 +1,20 @@
+**Precision and Recall Describe Different Error Trade-offs**
+
+*   **Positive Class: Inactive = Yes**
+    *   Precision ประเมิน Positive Predictions ส่วน Recall ประเมินว่า Model ตรวจพบ Actual Positive Cases ได้มากเพียงใด
+
+**Precision**
+*   ในลูกค้าที่ Model ทำนายว่าจะ Inactive มีสัดส่วนเท่าใดที่ Inactive จริง
+*   Formula: Precision = TP / (TP + FP)
+*   Precision สูงสะท้อน Unnecessary Contacts ที่น้อยลงในกลุ่มที่ถูกติดต่อ
+
+**Recall**
+*   ในลูกค้าที่ Inactive จริง Model ตรวจพบได้สัดส่วนเท่าใด
+*   Formula: Recall = TP / (TP + FN)
+*   Recall สูงสะท้อน Missed Inactive Customers ที่น้อยลง
+
+**Different Questions, Different Errors**
+*   Precision ไวต่อ FP ส่วน Recall ไวต่อ FN
+
+**Takeaway**
+*   Precision ถามว่า Alerts ถูกต้องเพียงใด ส่วน Recall ถามว่า Important Cases ถูกค้นพบบางเพียงใด

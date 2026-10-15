@@ -1,0 +1,3 @@
+The slide is titled "ก่อนเปิดเผยหรือส่งต่อ" (Before disclosing or forwarding). It includes a warning icon with an exclamation mark and the text "ยังระบุตัวตนได้ แม้ใช้รหัสแทนชื่อ" (Still identifiable even if names are replaced), indicating potential privacy risks when sharing information.
+
+Additionally, it highlights that data should be checked for access rights ("ตรวจผู้เข้าถึง") before being shared externally, emphasizing the importance of verifying who has permission to view the data.

@@ -1,0 +1,4 @@
+1. Supervised Learning is defined as “Learn to label”.
+2. Step 1: Training uses labeled examples (specifically a lime) to train a model (represented by the robot WALL-E).
+3. The resulting model learns features such as shape and color to distinguish between items, illustrated by asking "What is apple?" and "What is lime?".
+4. The slide is titled Introduction to Machine Learning, Prachya Boonkwan, LST Lab, Nectec.

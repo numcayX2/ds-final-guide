@@ -1,0 +1,82 @@
+**Classification: Decision Tree Example (Slide 25)**
+
+The slide presents a worked example of applying a **Decision Tree** for **Classification**, using **Business Info** data to predict whether a customer will **Buy** or **Rent Property**.
+
+---
+
+### Key Components Extracted:
+
+#### 1. Input Data Table: “Business Info”
+Contains three columns:
+- **Age**: Numerical values — 23, 36, 20, 27, 20, 50, 36, 36, 22
+- **Rent Period**: Numerical values — 3, 1.5, 1.5, 2, 1, 2.5, 1, 2, 2.5
+- **Buy**: Categorical label — “No”, “Yes”, “no” (note case inconsistency)
+
+Total rows: 9
+
+Sample entries:
+- Age=23, Rent Period=3 → Buy=No
+- Age=36, Rent Period=1.5 → Buy=No
+- Age=20, Rent Period=1.5 → Buy=No
+- Age=27, Rent Period=2 → Buy=Yes
+- Age=20, Rent Period=1 → Buy=No
+- Age=50, Rent Period=2.5 → Buy=Yes
+- Age=36, Rent Period=1 → Buy=No
+- Age=36, Rent Period=2 → Buy=Yes
+- Age=22, Rent Period=2.5 → Buy=no
+
+---
+
+#### 2. Decision Tree Diagram
+Visual representation of classification logic based on two decision nodes and three terminal leaf nodes.
+
+**Root Node:**
+> “Customer renting property > 2 year?”
+
+→ If **No** → Leaf Node: **“Rent Property”**  
+→ If **Yes** → Proceed to next node:
+
+**Second Node:**
+> “Customer age > 25 year?”
+
+→ If **No** → Leaf Node: **“Rent Property”**  
+→ If **Yes** → Leaf Node: **“Buy Property”**
+
+Thus, the tree has:
+- 2 internal decision nodes
+- 3 leaf outcome nodes: two labeled “Rent Property”, one labeled “Buy Property”
+
+---
+
+#### 3. Pseudo Code Section
+Header: **“Pseudo code”**  
+Content placeholder:  
+> Function label  
+[Empty box below — no actual pseudo-code provided]
+
+---
+
+### Summary Structure (Descending Importance):
+
+1. **Primary Concept**: The slide demonstrates how a **Decision Tree** classifies customers into “Rent Property” or “Buy Property” based on attributes from a small dataset (“Business Info”).
+
+2. **Data Structure**: A table with 9 records containing features (**Age**, **Rent Period**) and target variable (**Buy**), showing mixed-case labels (“Yes”, “No”, “no”).
+
+3. **Tree Logic**: 
+   - First split: “Customer renting property > 2 year?”
+     - No → Rent Property
+     - Yes → Check “Customer age > 25 year?”
+       - No → Rent Property
+       - Yes → Buy Property
+
+4. **Output Nodes**: Three possible outcomes; two lead to “Rent Property”, one to “Buy Property”.
+
+5. **Pseudo Code Placeholder**: Labeled section titled “Function label” but contains no executable or illustrative code.
+
+6. **Slide Metadata**: Page number “25” in bottom right corner.
+
+7. **Language Note**: Title includes Thai text “ตัวอย่าง:” meaning “Example:”.
+
+--- 
+
+All elements are transcribed verbatim where applicable; no external information added.

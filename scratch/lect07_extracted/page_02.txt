@@ -1,0 +1,15 @@
+**Hero: The Complete CRISP-DS Workflow**
+
+*   **Chapter 07:** Supervised Learning (Decision Tree) / Building and Evaluating Classification Models
+*   **Big Question:** How do we know our model is reliable?
+*   **Central Framework:** DS-01 CRISP-DS
+*   **Workflow Cycle:**
+    *   Business Understanding
+    *   Data Understanding
+    *   Data Preparation
+    *   Exploratory Data Analysis
+    *   Modeling
+    *   Evaluation
+    *   Deployment & Communication
+    *   AI-assisted Improvement
+*   **Takeaway:** Model reliability matters because a model is one part of a complete Data Science workflow.
