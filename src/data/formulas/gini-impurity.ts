@@ -68,5 +68,5 @@ export const giniImpurityFormula: FormulaAnimation = {
       phoneticScript: 'ได้ค่า กีนี ของโหนดแม่ เท่ากับ ศูนย์จุดห้าศูนย์ศูนย์',
     },
   ],
-  oneLineRule: 'Gini = 0 คือบริสุทธิ์ 100% (Pure Node), Gini = 0.5 คือคละกันมั่วสุด',
+  oneLineRule: 'Gini = 0 คือโหนดบริสุทธิ์สมบูรณ์ (Pure Node มีคลาสเดียวตามสไลด์ Lect 07 p11), Gini = 0.500 คือคละกัน 50:50',
 };

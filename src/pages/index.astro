@@ -22,7 +22,7 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
   },
   'module-05-modeling-framework': {
     label: 'VISUAL HOOK • 3-WAY SPLIT',
-    formulaOrRule: 'Train 70% ↔ Val 15% (จูน) | 🔒 Test 15% (วัดผลครั้งเดียวตอนจบ)',
+    formulaOrRule: 'Train 70% ↔ Val 15% (จูน) | Test 15% (วัดผลครั้งเดียวตอนจบ)',
   },
   'module-06-decision-tree': {
     label: 'VISUAL HOOK • GINI & DEPTH',
@@ -52,7 +52,7 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
           SEMESTER 2/2025
         </span>
         <span class="tape-label bg-[#E11D48] text-white text-xs py-0.5 px-2 font-bold">
-          LECTURES 01–09
+          LECTURES 01–09 (FINAL CORE: 05–09)
         </span>
         <span class="text-xs font-mono text-gray-400">10301351 DATA SCIENCE</span>
       </div>
@@ -63,8 +63,7 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
       </h1>
 
       <p class="text-sm sm:text-base font-mono text-gray-300 leading-relaxed max-w-2xl mb-6">
-        รวบรวมเนื้อหา 100% ครบทุกสไลด์ ทุกสูตรคำนวณ ตัวอย่างจริง และข้อสอบอาจารย์ 
-        ตั้งแต่ CRISP-DS 8 ขั้นตอน จนถึง Responsible AI พร้อมระบบแอนิเมชันสูตร KaTeX In-Equation Morphing
+        สรุปเนื้อหาตามสไลด์บรรยาย Lectures 01–09 (เน้นข้อสอบปลายภาค Lectures 05–09) ครอบคลุม 14 สูตรคำนวณ ตัวอย่างข้อมูลจริง และจุดหลอกในข้อสอบ พร้อมระบบแอนิเมชันสูตร KaTeX In-Equation Morphing
       </p>
 
       <div class="flex flex-wrap items-center gap-3">
@@ -72,13 +71,13 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
           href="/formulas"
           class="btn-chamfer px-5 py-3 bg-[#A3E635] text-[#171719] font-mono font-black text-sm uppercase border border-[#171719] shadow-[3px_3px_0px_#171719] hover:bg-[#84CC16] active:translate-x-0.5 active:translate-y-0.5 transition-all"
         >
-          🚀 ดูแอนิเมชัน 14 สูตรคำนวณ →
+          ดูแอนิเมชัน 14 สูตรคำนวณ →
         </a>
         <a
           href="/exam"
           class="btn-chamfer px-5 py-3 bg-white text-[#171719] font-mono font-bold text-sm uppercase border border-[#171719] shadow-[3px_3px_0px_#171719] hover:bg-[#EAE6DC] active:translate-x-0.5 active:translate-y-0.5 transition-all"
         >
-          📝 เข้าสู่ห้องสอบจำลอง 14 ข้อ
+          เข้าสู่ห้องสอบจำลอง (14 ข้อ) →
         </a>
       </div>
     </div>
@@ -178,7 +177,7 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
               {hook && (
                 <div class="mb-3 p-2.5 bg-[#F4F1EA] border border-[#171719] font-mono">
                   <div class="flex items-center justify-between text-[10px] text-gray-500 font-bold mb-0.5">
-                    <span>📊 {hook.label}</span>
+                    <span>{hook.label}</span>
                     <span class="text-[#2563EB] group-hover:underline">ดูแผนภาพเต็ม →</span>
                   </div>
                   <div class="text-[11px] font-bold text-[#171719] leading-snug">
@@ -191,7 +190,7 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
               {mod.examTraps && mod.examTraps.length > 0 && (
                 <div class="p-2.5 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-[11px] font-mono mb-4">
                   <div class="flex items-center justify-between gap-1 text-[10px] font-bold text-[#BE123C] mb-1">
-                    <span>⚠️ กับดักข้อสอบ ({mod.examTraps[0].slideRef})</span>
+                    <span>EXAM TRAP ({mod.examTraps[0].slideRef})</span>
                     {mod.examTraps.length > 1 && (
                       <span class="px-1.5 py-0.2 bg-[#E11D48] text-white text-[9px]">
                         +{mod.examTraps.length - 1} จุดในบทนี้
@@ -212,8 +211,9 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
             <div class="pt-3 border-t border-[#171719] flex flex-wrap justify-between items-center gap-2 text-xs font-mono">
               <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1 font-bold text-[#171719] group-hover:text-[#2563EB] transition-colors">
-                  <span>📖 เปิดสรุป + แผนภาพ</span>
+                  <span>เปิดสรุป + แผนภาพ →</span>
                 </span>
+
                 {mod.coreFormulas && mod.coreFormulas.length > 0 && (
                   <a
                     href={`/formulas#${mod.coreFormulas[0]}`}

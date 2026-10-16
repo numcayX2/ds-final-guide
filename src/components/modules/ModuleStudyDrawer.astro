@@ -85,7 +85,7 @@ const { modules } = Astro.props;
               </p>
               {mod.coreFormulas.length > 0 && (
                 <div class="mt-3 pt-3 border-t border-[#171719]/20 flex flex-wrap items-center gap-2">
-                  <span class="text-xs font-mono font-bold text-[#171719]">🔢 สูตรคำนวณที่เกี่ยวข้อง:</span>
+                  <span class="text-xs font-mono font-bold text-[#171719]">สูตรคำนวณที่เกี่ยวข้อง:</span>
                   {mod.coreFormulas.map((fId) => (
                     <a
                       href={`/formulas#${fId}`}
@@ -120,7 +120,7 @@ const { modules } = Astro.props;
                   <!-- Boxplot & Whisker Rule SVG Diagram -->
                   <div class="bg-[#F4F1EA] border border-[#171719] p-4">
                     <div class="text-xs font-mono font-bold text-[#171719] mb-3 flex flex-wrap justify-between gap-2">
-                      <span>📐 แผนภาพโครงสร้าง Boxplot & กฎเหล็กเส้นหนวดของ Tukey (Lect 05 p17–18)</span>
+                      <span>แผนภาพโครงสร้าง Boxplot & กฎเส้นหนวดของ Tukey (Lect 05 p17–18)</span>
                       <span class="text-[#E11D48]">★ จุดหลอกข้อสอบ: เส้นหนวดหยุดที่ข้อมูลจริงในรั้ว ไม่ได้ลากไปชน Fence!</span>
                     </div>
                     <div class="overflow-x-auto">
@@ -173,7 +173,7 @@ const { modules } = Astro.props;
                   <!-- EDA Role & Confounder Visual Grid -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
                     <div class="p-4 border border-[#171719] bg-[#A3E635]/15">
-                      <div class="font-bold text-[#171719] mb-2">✅ บทบาทที่แท้จริงของ EDA (Lect 05 p04)</div>
+                      <div class="font-bold text-[#171719] mb-2">บทบาทที่แท้จริงของ EDA (Lect 05 p04)</div>
                       <div class="flex items-center gap-2 bg-white p-2.5 border border-[#171719]">
                         <span class="px-2 py-1 bg-[#171719] text-[#A3E635] font-bold">EDA</span>
                         <span>→</span>
@@ -184,7 +184,7 @@ const { modules } = Astro.props;
                       </p>
                     </div>
                     <div class="p-4 border border-[#171719] bg-[#E11D48]/10">
-                      <div class="font-bold text-[#BE123C] mb-2">⚠️ กับดักตัวแปรกวน (Confounding Variable)</div>
+                      <div class="font-bold text-[#BE123C] mb-2">กับดักตัวแปรกวน (Confounding Variable)</div>
                       <div class="bg-white p-2.5 border border-[#171719] text-center">
                         <span class="font-bold text-[#E11D48]">[อุณหภูมิฤดูร้อน (Confounder)]</span>
                         <div class="text-[11px] mt-1">↙ ส่งผลทั้งคู่ ↘</div>
@@ -208,13 +208,13 @@ const { modules } = Astro.props;
                   <!-- 3-Way Partitioning Visual Bar -->
                   <div class="bg-[#F4F1EA] border border-[#171719] p-4">
                     <div class="text-xs font-mono font-bold text-[#171719] mb-3">
-                      🛡️ แผนภาพการแบ่งข้อมูล 3 ส่วน & กฎเหล็ก Protect the Test Set (Lect 07 p07, p32)
+                      แผนภาพการแบ่งข้อมูล 3 ส่วน & กฎ Protect the Test Set (Lect 07 p07, p32)
                     </div>
                     <div class="grid grid-cols-12 border-2 border-[#171719] text-xs font-mono overflow-hidden">
                       <div class="col-span-12 md:col-span-7 bg-[#A3E635] p-3.5 border-b-2 md:border-b-0 md:border-r-2 border-[#171719]">
                         <div class="font-black text-sm text-[#171719]">1. TRAINING SET (60% – 70%)</div>
                         <div class="text-[11px] text-[#171719] mt-1">• ใช้สอนโมเดล (Fit Parameters & เรียนรู้กฎ)</div>
-                        <div class="text-[11px] font-bold text-[#171719] mt-1">🔄 ทำงานคู่กับ Validation ในลูปปรับจูน</div>
+                        <div class="text-[11px] font-bold text-[#171719] mt-1">• ทำงานคู่กับ Validation ในลูปปรับจูน</div>
                       </div>
                       <div class="col-span-12 md:col-span-3 bg-[#F59E0B]/40 p-3.5 border-b-2 md:border-b-0 md:border-r-4 border-[#171719]">
                         <div class="font-black text-sm text-[#171719]">2. VALIDATION (15–20%)</div>
@@ -222,7 +222,7 @@ const { modules } = Astro.props;
                         <div class="text-[11px] font-bold text-[#171719] mt-1">• คัดเลือกผู้ชนะจาก 4 Candidate Models</div>
                       </div>
                       <div class="col-span-12 md:col-span-2 bg-[#E11D48] text-white p-3.5 flex flex-col justify-between">
-                        <div class="font-black text-sm">🔒 3. TEST SET (15–20%)</div>
+                        <div class="font-black text-sm">3. TEST SET (15–20%)</div>
                         <div class="text-[10px] mt-1 leading-snug">
                           <strong>PROTECTED EVIDENCE!</strong> ห้ามแตะต้องตอนจูน ใช้ประเมินครั้งเดียวตอนจบเท่านั้น
                         </div>
@@ -234,22 +234,22 @@ const { modules } = Astro.props;
                   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
                     <div class="p-3.5 border-2 border-[#171719] bg-white">
                       <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 01</div>
-                      <div class="font-bold text-sm text-[#171719]">🌳 Decision Tree</div>
+                      <div class="font-bold text-sm text-[#171719]">Decision Tree</div>
                       <p class="text-[11px] text-gray-600 mt-1">แตกกิ่ง If-Else ด้วย Gini Impurity อ่านกฎเข้าใจง่าย (White-box) ไม่ต้องทำ Scaling</p>
                     </div>
                     <div class="p-3.5 border-2 border-[#171719] bg-white">
                       <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 02</div>
-                      <div class="font-bold text-sm text-[#171719]">📍 5-NN (Nearest Neighbors)</div>
+                      <div class="font-bold text-sm text-[#171719]">5-NN (Nearest Neighbors)</div>
                       <p class="text-[11px] text-gray-600 mt-1">โหวตจากเพื่อนบ้านใกล้สุด 5 จุด <strong>ต้องทำ Feature Scaling เสมอ</strong> เพราะใช้ระยะทาง</p>
                     </div>
                     <div class="p-3.5 border-2 border-[#171719] bg-white">
                       <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 03</div>
-                      <div class="font-bold text-sm text-[#171719]">🎲 Naive Bayes</div>
+                      <div class="font-bold text-sm text-[#171719]">Naive Bayes</div>
                       <p class="text-[11px] text-gray-600 mt-1">คำนวณความน่าจะเป็น Bayes P(Y|X) สมมติให้ทุกตัวแปรเป็นอิสระต่อกัน</p>
                     </div>
                     <div class="p-3.5 border-2 border-[#171719] bg-white">
                       <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 04</div>
-                      <div class="font-bold text-sm text-[#171719]">🧠 Neural Network</div>
+                      <div class="font-bold text-sm text-[#171719]">Neural Network</div>
                       <p class="text-[11px] text-gray-600 mt-1">โครงข่ายประสาทเทียมหลายชั้น จับ Non-linear ซับซ้อนได้สูง แต่เป็น Black-box</p>
                     </div>
                   </div>
@@ -263,7 +263,7 @@ const { modules } = Astro.props;
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
                     <div class="border-2 border-[#171719] bg-[#A3E635]/20 p-4 relative">
                       <span class="absolute top-3 right-3 px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold text-[10px]">
-                        🏆 WINNER (เลือกกิ่งนี้!)
+                        SELECTED (เลือกกิ่งนี้)
                       </span>
                       <div class="font-black text-sm text-[#171719] mb-2">CANDIDATE SPLIT A (Lect 07 p11)</div>
                       <div class="bg-white border border-[#171719] p-2.5 text-center mb-2">
@@ -281,13 +281,13 @@ const { modules } = Astro.props;
                       </div>
                       <div class="bg-[#171719] text-white p-2.5 flex justify-between items-center">
                         <span>Gini_split = <strong>0.278</strong> (ต่ำสุด)</span>
-                        <span class="text-[#A3E635] font-black">Gini Gain = 0.222 (สูงสุด!)</span>
+                        <span class="text-[#A3E635] font-black">Gini Gain = 0.222 (สูงสุด)</span>
                       </div>
                     </div>
 
                     <div class="border-2 border-[#171719] bg-[#F4F1EA] p-4 relative opacity-90">
                       <span class="absolute top-3 right-3 px-2 py-0.5 bg-gray-300 text-[#171719] font-bold text-[10px]">
-                        ❌ แพ้ (คละกันมากกว่า)
+                        NOT SELECTED (คละกันมากกว่า)
                       </span>
                       <div class="font-black text-sm text-[#171719] mb-2">CANDIDATE SPLIT B (Lect 07 p12)</div>
                       <div class="bg-white border border-[#171719] p-2.5 text-center mb-2">
@@ -313,7 +313,7 @@ const { modules } = Astro.props;
                   <!-- Tree Complexity Visual Ladder -->
                   <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs">
                     <div class="font-bold text-[#171719] mb-3">
-                      📈 แผนภาพบันไดความลึกต้นไม้ (Tree Complexity vs Validation Performance — Lect 07 p19, p31)
+                      แผนภาพระดับความลึกต้นไม้ (Tree Complexity vs Validation Performance — Lect 07 p19, p31)
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
                       <div class="p-3 bg-white border border-[#171719]">
@@ -324,21 +324,21 @@ const { modules } = Astro.props;
                       </div>
                       <div class="p-3 bg-[#A3E635]/30 border-2 border-[#171719] shadow-[2px_2px_0px_#171719]">
                         <div class="text-[10px] font-black text-[#171719]">2. MODERATE (depth = 3) ★</div>
-                        <div class="font-black text-[#171719] mt-1">Appropriate Fit!</div>
+                        <div class="font-black text-[#171719] mt-1">Appropriate Fit</div>
                         <div class="text-[11px] mt-1">Low Bias / Low Variance</div>
-                        <div class="mt-2 text-[11px] bg-[#171719] text-[#A3E635] font-bold p-1">Validation สูงสุด (เลือก!)</div>
+                        <div class="mt-2 text-[11px] bg-[#171719] text-[#A3E635] font-bold p-1">Validation สูงสุด (เลือก)</div>
                       </div>
                       <div class="p-3 bg-white border border-[#171719]">
                         <div class="text-[10px] font-bold text-gray-500">3. DEEP (depth ≥ 6)</div>
                         <div class="font-black text-[#F59E0B] mt-1">Overfitting</div>
                         <div class="text-[11px] mt-1">Low Bias / High Variance</div>
-                        <div class="mt-2 text-[11px] bg-gray-100 p-1">เริ่มจำ Noise คะแนน Val ตก</div>
+                        <div class="mt-2 text-[11px] bg-gray-100 p-1">เริ่มจำ Noise คะแนน Val ลดลง</div>
                       </div>
                       <div class="p-3 bg-[#E11D48]/10 border border-[#E11D48]">
                         <div class="text-[10px] font-bold text-[#BE123C]">4. UNRESTRICTED</div>
                         <div class="font-black text-[#E11D48] mt-1">Extreme Overfit</div>
                         <div class="text-[11px] mt-1">Bias ≈ 0 / Variance สูงสุด</div>
-                        <div class="mt-2 text-[11px] bg-white p-1 border border-[#E11D48]/40">Train 100% แต่ Val พังยับ</div>
+                        <div class="mt-2 text-[11px] bg-white p-1 border border-[#E11D48]/40">Train สูงสุด แต่ Validation Error พุ่งสูง</div>
                       </div>
                     </div>
                   </div>
@@ -352,8 +352,8 @@ const { modules } = Astro.props;
                   <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 font-mono text-xs">
                     <div class="lg:col-span-7 bg-[#F4F1EA] border border-[#171719] p-4">
                       <div class="flex justify-between items-center mb-2">
-                        <span class="font-bold text-[#171719]">🎯 ผังโครงสร้าง Confusion Matrix มาตรฐาน (Lect 07 p22)</span>
-                        <span class="px-2 py-0.5 bg-[#E11D48] text-white font-bold text-[10px]">Positive Class = ต้องเขียนก่อนเสมอ!</span>
+                        <span class="font-bold text-[#171719]">ผังโครงสร้าง Confusion Matrix มาตรฐาน (Lect 07 p22)</span>
+                        <span class="px-2 py-0.5 bg-[#E11D48] text-white font-bold text-[10px]">Positive Class = ต้องเขียนก่อนเสมอ</span>
                       </div>
                       <table class="w-full border-collapse border-2 border-[#171719] bg-white text-center">
                         <thead>
@@ -405,19 +405,19 @@ const { modules } = Astro.props;
                     <!-- Business Decision Rule Visual Box -->
                     <div class="lg:col-span-5 flex flex-col justify-between gap-3">
                       <div class="p-3.5 border-2 border-[#171719] bg-[#2563EB]/10">
-                        <div class="font-black text-[#1D4ED8] text-sm">🚨 เมื่อไหร่ต้องเลือก RECALL สูงสุด?</div>
+                        <div class="font-black text-[#1D4ED8] text-sm">เกณฑ์การเลือก RECALL สูงสุด</div>
                         <p class="text-[11px] text-[#171719] mt-1">
                           เมื่อ <strong>False Negative (FN / การปล่อยหลุด)</strong> มีความเสียหายรุนแรง เช่น:
                         </p>
                         <ul class="text-[11px] mt-1.5 space-y-1 font-bold text-[#171719]">
                           <li>• คัดกรองผู้ป่วยโรคร้ายแรง / บาดเจ็บ (FIFA Medical)</li>
-                          <li>• ลูกค้ากำลังจะย้ายค่าย (Customer Churn HW#2 → เลือก Model B ได้ Recall 0.90!)</li>
+                          <li>• ลูกค้ากำลังจะย้ายค่าย (Customer Churn HW#2 → เลือก Model B ได้ Recall 0.90)</li>
                         </ul>
                       </div>
                       <div class="p-3.5 border-2 border-[#171719] bg-[#F59E0B]/15">
-                        <div class="font-black text-[#B45309] text-sm">🎯 เมื่อไหร่ต้องเลือก PRECISION สูงสุด?</div>
+                        <div class="font-black text-[#B45309] text-sm">เกณฑ์การเลือก PRECISION สูงสุด</div>
                         <p class="text-[11px] text-[#171719] mt-1">
-                          เมื่อ <strong>False Positive (FP / การทายมั่วว่าใช่)</strong> มีต้นทุนแพง เช่น:
+                          เมื่อ <strong>False Positive (FP / การทายเกินว่าใช่)</strong> มีต้นทุนสูง เช่น:
                         </p>
                         <ul class="text-[11px] mt-1.5 space-y-1 font-bold text-[#171719]">
                           <li>• ระบบบล็อกอีเมลขยะ (ห้ามบล็อกอีเมลงานสำคัญของลูกค้า)</li>
@@ -436,7 +436,7 @@ const { modules } = Astro.props;
                     <!-- SVG 2D Plot of A1-A8 -->
                     <div class="lg:col-span-7 bg-[#F4F1EA] border border-[#171719] p-4">
                       <div class="font-bold text-[#171719] mb-2">
-                        🗺️ แผนภาพพิกัด 8 จุดจริง (A1–A8) และการขยับ Centroid รอบที่ 1 (Lect 08 p25–28)
+                        แผนภาพพิกัด 8 จุดจริง (A1–A8) และการขยับ Centroid รอบที่ 1 (Lect 08 p25–28)
                       </div>
                       <svg viewBox="0 0 420 260" class="w-full h-auto bg-white border border-[#171719] p-2">
                         <!-- Grid lines -->
@@ -483,7 +483,7 @@ const { modules } = Astro.props;
                     <!-- Distance Formula Trap & Silhouette Spectrum -->
                     <div class="lg:col-span-5 flex flex-col justify-between gap-3">
                       <div class="p-3.5 border-2 border-[#171719] bg-[#E11D48]/10">
-                        <div class="font-black text-[#BE123C] text-sm">⚠️ แยกแยะ 2 สูตรระยะทางในห้องสอบ!</div>
+                        <div class="font-black text-[#BE123C] text-sm">ข้อควรระวัง: แยกแยะ 2 สูตรระยะทางในห้องสอบ</div>
                         <div class="mt-2 p-2 bg-white border border-[#171719]">
                           <div class="font-bold text-[#171719]">1. ตอนจัดจุดเข้ากลุ่ม (Assign Step — p25):</div>
                           <div class="text-[#2563EB] font-bold mt-0.5">Manhattan = |x1 − c1| + |x2 − c2|</div>
@@ -495,7 +495,7 @@ const { modules } = Astro.props;
                       </div>
 
                       <div class="p-3.5 border-2 border-[#171719] bg-white">
-                        <div class="font-black text-[#171719] text-sm mb-2">📏 สเกลวัดผล Silhouette Score s(i)</div>
+                        <div class="font-black text-[#171719] text-sm mb-2">สเกลวัดผล Silhouette Score s(i)</div>
                         <div class="grid grid-cols-3 text-center border border-[#171719] font-bold text-[11px]">
                           <div class="p-2 bg-[#E11D48]/25 text-[#BE123C] border-r border-[#171719]">
                             −1.0<br /><span class="text-[9px] font-normal">อยู่ผิดคลัสเตอร์</span>
@@ -522,7 +522,7 @@ const { modules } = Astro.props;
                   <!-- Proxy Feature & Concept Drift Visual -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="p-4 border-2 border-[#171719] bg-[#E11D48]/10">
-                      <div class="font-black text-[#BE123C] text-sm mb-2">🕵️ กลไก Proxy Feature (Lect 09 p13)</div>
+                      <div class="font-black text-[#BE123C] text-sm mb-2">กลไก Proxy Feature (Lect 09 p13)</div>
                       <div class="bg-white p-3 border border-[#171719] space-y-2">
                         <div class="flex items-center justify-between text-gray-400 line-through">
                           <span>คอลัมน์: เชื้อชาติ / ศาสนา (Race)</span>
@@ -530,7 +530,7 @@ const { modules } = Astro.props;
                         </div>
                         <div class="flex items-center justify-between font-bold text-[#E11D48]">
                           <span>คอลัมน์: รหัสไปรษณีย์ (Postal Code)</span>
-                          <span>→ สะท้อนเขตที่อยู่อาศัย & เชื้อชาติ!</span>
+                          <span>→ สะท้อนเขตที่อยู่อาศัย & เชื้อชาติ</span>
                         </div>
                       </div>
                       <p class="text-[11px] text-gray-700 mt-2">
@@ -539,7 +539,7 @@ const { modules } = Astro.props;
                     </div>
 
                     <div class="p-4 border-2 border-[#171719] bg-[#F59E0B]/15">
-                      <div class="font-black text-[#B45309] text-sm mb-2">📉 Concept Drift (Lect 09 p11, p20)</div>
+                      <div class="font-black text-[#B45309] text-sm mb-2">Concept Drift (Lect 09 p11, p20)</div>
                       <div class="bg-white p-3 border border-[#171719] space-y-2">
                         <div class="flex justify-between">
                           <span>พฤติกรรมเดิมตอนเทรน:</span>
@@ -550,7 +550,7 @@ const { modules } = Astro.props;
                           <span>ไม่ซื้อ &gt; 70 วัน = Inactive</span>
                         </div>
                         <div class="pt-1 border-t border-gray-200 text-center font-black text-[#BE123C]">
-                          ผลลัพธ์: ค่า Recall ตกฮวบเหลือเพียง 54%!
+                          ผลลัพธ์: ค่า Recall ลดลงเหลือเพียง 54%
                         </div>
                       </div>
                     </div>
@@ -559,7 +559,7 @@ const { modules } = Astro.props;
                   <!-- SHAP Force Plot & 3 Decision Gates -->
                   <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                     <div class="md:col-span-7 p-4 border-2 border-[#171719] bg-[#F4F1EA]">
-                      <div class="font-black text-[#171719] text-sm mb-2">⚡ แผนภาพ SHAP Force Plot (Local Explanation)</div>
+                      <div class="font-black text-[#171719] text-sm mb-2">แผนภาพ SHAP Force Plot (Local Explanation)</div>
                       <div class="bg-white border border-[#171719] p-3">
                         <div class="flex justify-between text-[10px] text-gray-500 mb-1">
                           <span>ค่าเฉลี่ยตั้งต้น Base Value E[f(x)]</span>
@@ -580,7 +580,7 @@ const { modules } = Astro.props;
                     </div>
 
                     <div class="md:col-span-5 p-4 border-2 border-[#171719] bg-white">
-                      <div class="font-black text-[#171719] text-sm mb-2">🚦 3 ทางเลือกที่ Decision Gates (p36)</div>
+                      <div class="font-black text-[#171719] text-sm mb-2">3 ทางเลือกที่ Decision Gates (Lect 09 p36)</div>
                       <div class="space-y-1.5">
                         <div class="p-2 bg-[#A3E635]/30 border border-[#171719] font-bold">
                           1. ACCEPT: อนุมัติใช้งานจริงพร้อม Monitoring
@@ -600,11 +600,11 @@ const { modules } = Astro.props;
               {/* MODULES 01-03 VISUAL: Foundation Visuals */}
               {mod.id === 'module-01-crisp-ds' && (
                 <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
-                  <div class="font-bold text-[#171719]">🔄 วงจร CRISP-DS 8 ขั้นตอน (Iterative Cycle — ย้อนกลับไปแก้ไขได้ตลอด)</div>
+                  <div class="font-bold text-[#171719]">วงจร CRISP-DS 8 ขั้นตอน (Iterative Cycle — ย้อนกลับไปแก้ไขได้ตลอด)</div>
                   <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div class="p-2.5 bg-white border border-[#171719]"><strong>1. Business</strong><br />ตั้งเป้าหมายธุรกิจ</div>
                     <div class="p-2.5 bg-white border border-[#171719]"><strong>2. Data Underst.</strong><br />สำรวจโครงสร้างข้อมูล</div>
-                    <div class="p-2.5 bg-[#A3E635] border-2 border-[#171719] font-bold"><strong>3. Data Prep ★</strong><br />กินเวลา 60–80% ของงาน!</div>
+                    <div class="p-2.5 bg-[#A3E635] border-2 border-[#171719] font-bold"><strong>3. Data Prep ★</strong><br />กินเวลา 60–80% ของงาน</div>
                     <div class="p-2.5 bg-white border border-[#171719]"><strong>4. EDA</strong><br />หา Pattern & Outlier</div>
                     <div class="p-2.5 bg-white border border-[#171719]"><strong>5. Modeling</strong><br />ฝึกสอนโมเดล</div>
                     <div class="p-2.5 bg-white border border-[#171719]"><strong>6. Evaluation</strong><br />วัดผลเทียบเกณฑ์ธุรกิจ</div>
@@ -616,10 +616,10 @@ const { modules } = Astro.props;
 
               {mod.id === 'module-02-data-cleaning' && (
                 <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
-                  <div class="font-bold text-[#171719]">🧹 กฎเหล็ก Clean Before Impute (Lect 04.1 p29, p34)</div>
+                  <div class="font-bold text-[#171719]">กฎ Clean Before Impute (Lect 04.1 p29, p34)</div>
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div class="p-3 bg-[#E11D48]/15 border border-[#171719]">
-                      <div class="font-bold text-[#BE123C]">STEP 1: ตัด Known Invalid ก่อน!</div>
+                      <div class="font-bold text-[#BE123C]">STEP 1: ตัด Known Invalid ก่อน</div>
                       <p class="mt-1 text-[11px]">ตัดค่าผิดปกติชัดเจน เช่น รายได้ติดลบ (-40,000) หรือพิมพ์ศูนย์เกิน (904,000) ออกจากตัวหารก่อนเสมอ</p>
                     </div>
                     <div class="p-3 bg-white border border-[#171719]">
@@ -636,14 +636,14 @@ const { modules } = Astro.props;
 
               {mod.id === 'module-03-feature-engineering' && (
                 <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
-                  <div class="font-bold text-[#171719]">⚖️ กฎเหล็กป้องกัน Data Leakage ในการทำ Feature Scaling (Lect 04.2 p21, p27)</div>
+                  <div class="font-bold text-[#171719]">กฎป้องกัน Data Leakage ในการทำ Feature Scaling (Lect 04.2 p21, p27)</div>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div class="p-3 bg-[#A3E635]/25 border border-[#171719]">
-                      <div class="font-bold text-[#171719]">✅ กฎ Fit เฉพาะบน Training Set</div>
+                      <div class="font-bold text-[#171719]">กฎ Fit เฉพาะบน Training Set</div>
                       <p class="mt-1 text-[11px]">คำนวณค่า min, max, μ, σ จาก <strong>Training Set เท่านั้น</strong> แล้วนำค่าพารามิเตอร์เดิมนั้นไปแปลง (Transform) บน Validation และ Test Set</p>
                     </div>
                     <div class="p-3 bg-white border border-[#171719]">
-                      <div class="font-bold text-[#E11D48]">⚠️ Z-Score ไม่เปลี่ยนรูปทรงความเบ้ (Shape)</div>
+                      <div class="font-bold text-[#E11D48]">ข้อควรระวัง: Z-Score ไม่เปลี่ยนรูปทรงความเบ้ (Shape)</div>
                       <p class="mt-1 text-[11px]">Z-Score ปรับเพียง Mean = 0, SD = 1 แต่ถ้าข้อมูลเดิมเบ้ขวา หลังทำ Z-Score ก็ยังคงเบ้ขวาเหมือนเดิม (แก้ความเบ้ต้องใช้ Log Transform)</p>
                     </div>
                   </div>
@@ -669,7 +669,7 @@ const { modules } = Astro.props;
                   <div class="border-2 border-[#171719] bg-white shadow-[3px_3px_0px_#E11D48] overflow-hidden">
                     <div class="bg-[#171719] text-white px-4 py-2 flex flex-wrap justify-between items-center gap-2 font-mono text-xs">
                       <span class="font-bold text-[#A3E635]">
-                        ⚠️ กับดักจุดที่ {tIdx + 1}: {trap.trapTitle}
+                        TRAP #{tIdx + 1}: {trap.trapTitle}
                       </span>
                       <span class="px-2 py-0.5 bg-[#222226] border border-gray-600 text-gray-200 text-[11px]">
                         อ้างอิง: {trap.slideRef}
@@ -678,7 +678,7 @@ const { modules } = Astro.props;
                     <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#171719]">
                       <div class="p-4 bg-[#E11D48]/5">
                         <div class="text-xs font-mono font-bold text-[#BE123C] mb-1">
-                          ❌ สิ่งที่โจทย์หลอก / ความเข้าใจผิดที่พบบ่อย:
+                          [MISCONCEPTION] สิ่งที่โจทย์หลอก / ความเข้าใจผิดที่พบบ่อย:
                         </div>
                         <p class="text-xs sm:text-sm text-gray-800 leading-relaxed">
                           {trap.trapDescription}
@@ -686,7 +686,7 @@ const { modules } = Astro.props;
                       </div>
                       <div class="p-4 bg-[#A3E635]/15">
                         <div class="text-xs font-mono font-bold text-[#171719] mb-1">
-                          ✅ หลักการที่ถูกต้องตามสไลด์อาจารย์:
+                          [SLIDE PRINCIPLE] หลักการที่ถูกต้องตามสไลด์อาจารย์:
                         </div>
                         <p class="text-xs sm:text-sm text-[#171719] font-semibold leading-relaxed">
                           {trap.correctApproach}
@@ -697,6 +697,7 @@ const { modules } = Astro.props;
                 ))}
               </div>
             </div>
+
 
             <!-- ========================================================= -->
             <!-- ULTRA-DETAILED SECTIONS & TABLES -->

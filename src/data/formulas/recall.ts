@@ -97,6 +97,6 @@ export const recallFormula: FormulaAnimation = {
   oneLineRule: 'Recall แคร์เมื่อ "หลุดเคสบวกแล้วเสียหายรุนแรง" (FN มีต้นทุนสูง เช่น มะเร็ง, ลูกค้าหนี)',
   businessImpact: {
     primaryCareMetric: 'recall',
-    tradeoffSummary: 'ถ้าอยากได้ Recall สูงใกล้ 100% โมเดลต้องเดา Positive ให้บ่อยขึ้น ซึ่งจะแลกมาด้วย False Positive ที่เพิ่มขึ้นตามมา',
+    tradeoffSummary: 'การปรับเกณฑ์ให้ Recall เข้าใกล้ 1.00 โมเดลต้องทำนาย Positive กว้างขึ้น ส่งผลให้ False Positive เพิ่มขึ้นตามหลัก Precision-Recall Tradeoff (Lect 07 p30)',
   },
 };

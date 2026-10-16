@@ -97,6 +97,7 @@ export interface MCQOption {
   isCorrect: boolean;
   explanation: string;
   distractorNote?: string;
+  distractorTrap?: string;
 }
 
 export interface ExamQuestion {

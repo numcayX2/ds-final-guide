@@ -84,7 +84,7 @@ export const examQuestions: ExamQuestion[] = [
     title: 'บันไดความลึกต้นไม้ max_depth & Overfitting',
     scenario: 'ในการฝึกสอน Decision Tree ทำไมอาจารย์จึงเลือก Moderate Tree (max_depth = 3) เป็นโมเดลที่ดีที่สุดแทนที่จะเลือก Unrestricted Depth?',
     options: [
-      { id: 'A', text: 'เพราะ max_depth = 3 ได้คะแนนบน Training Set สูงที่สุด 100%', isCorrect: false, explanation: 'ผิด: ตัวที่ได้ 100% บน Train คือ Unrestricted' },
+      { id: 'A', text: 'เพราะ max_depth = 3 ให้ค่า Training Error ต่ำที่สุดเมื่อเทียบกับความลึกทุกแบบ', isCorrect: false, explanation: 'ผิดตามสไลด์ Lect 07 p19: โมเดลที่กด Training Error ต่ำสุดคือ Unrestricted Tree แต่จะเกิด Overfitting บน Validation Set' },
       { id: 'B', text: 'เพราะ max_depth = 3 ให้จุดสมดุล Bias-Variance ที่ดีที่สุด ส่งผลให้ได้ประสิทธิภาพสูงสุดบน Validation Set', isCorrect: true, explanation: 'ถูกต้องตามตาราง Bias-Variance Matrix (p19, p31): Moderate tree ไม่เกิด Underfitting และไม่ Overfitting บน Validation set' },
       { id: 'C', text: 'เพราะต้นไม้ความลึก 3 คำนวณได้เร็วกว่า', isCorrect: false, explanation: 'ผิด: ความเร็วไม่ใช่เหตุผลหลักทางสถิติ' },
       { id: 'D', text: 'เพราะโมเดลต้นไม้ไม่สามารถสร้างลึกเกิน 3 ชั้นได้', isCorrect: false, explanation: 'ผิด: ต้นไม้สามารถสร้างลึกเท่าใดก็ได้' },
@@ -174,7 +174,7 @@ export const examQuestions: ExamQuestion[] = [
     title: 'ตัวแปรตัวแทน Proxy Features ใน AI Ethics',
     scenario: 'สถาบันการเงินแห่งหนึ่งต้องการป้องกันการเลือกปฏิบัติ จึงลบคอลัมน์ "เชื้อชาติ" และ "เพศ" ออกจากโมเดลสินเชื่อ แต่ทำไมโมเดลยังคงแสดงพฤติกรรมเลือกปฏิบัติต่อกลุ่มชาติพันธุ์ได้?',
     options: [
-      { id: 'A', text: 'เพราะอัลกอริทึมจดจำ Training Data ได้ 100% เสมอ', isCorrect: false, explanation: 'ผิด: ไม่ใช่เหตุผลเรื่องความจำของโมเดล' },
+      { id: 'A', text: 'เพราะอัลกอริทึมกู้คืนคอลัมน์ที่ถูกลบกลับมาจาก Metadata ของฐานข้อมูลโดยอัตโนมัติ', isCorrect: false, explanation: 'ผิดตามสไลด์ Lect 09 p13: โมเดลไม่ได้กู้คืนคอลัมน์ที่ถูกลบ แต่เรียนรู้ผ่านตัวแปรอื่นที่มีความสัมพันธ์แทน (Proxy Features)' },
       { id: 'B', text: 'เพราะตัวแปรอื่น เช่น "รหัสไปรษณีย์" (Postal Code) ทำหน้าที่เป็น Proxy Feature ที่สะท้อนฐานะและการกระจุกตัวของเชื้อชาติได้', isCorrect: true, explanation: 'ถูกต้องตามสไลด์ Lect 09 p13: Proxy Features สามารถส่งผ่านความสัมพันธ์ของ Sensitive Attributes ได้แม้จะตัดตัวแปรหลักทิ้งไปแล้ว' },
       { id: 'C', text: 'เพราะเกิด Data Leakage ระหว่าง Train และ Test Set', isCorrect: false, explanation: 'ผิด: ไม่เกี่ยวกับ Data Leakage' },
       { id: 'D', text: 'เพราะโมเดลมีค่า max_depth ต่ำเกินไป', isCorrect: false, explanation: 'ผิด: ความลึกไม่เกี่ยวกับอคติของตัวแปร' },

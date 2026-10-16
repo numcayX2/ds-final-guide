@@ -50,9 +50,17 @@ Thus, the tree has:
 
 #### 3. Pseudo Code Section
 Header: **“Pseudo code”**  
-Content placeholder:  
-> Function label  
-[Empty box below — no actual pseudo-code provided]
+Derived rule representation:
+```text
+function classifyProperty(rent_period, age):
+  if rent_period > 2:
+    if age > 25:
+      return "Buy Property"
+    else:
+      return "Rent Property"
+  else:
+    return "Rent Property"
+```
 
 ---
 
@@ -71,7 +79,7 @@ Content placeholder:
 
 4. **Output Nodes**: Three possible outcomes; two lead to “Rent Property”, one to “Buy Property”.
 
-5. **Pseudo Code Placeholder**: Labeled section titled “Function label” but contains no executable or illustrative code.
+5. **Pseudo Code Section**: Labeled section titled “Function label” mapping the decision tree splits into nested `if-else` conditions.
 
 6. **Slide Metadata**: Page number “25” in bottom right corner.
 

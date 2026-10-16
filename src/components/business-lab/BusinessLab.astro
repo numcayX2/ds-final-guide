@@ -450,10 +450,10 @@
       if (feedback) {
         feedback.classList.remove('hidden');
         if (isCorrect) {
-          feedback.textContent = '✅ ถูกต้องสมบูรณ์แบบ! ตรงตามข้อสอบและการบ้านอาจารย์ 100%';
+          feedback.textContent = '[CORRECT] วิเคราะห์ตรงตามเกณฑ์ต้นทุนความผิดพลาด (FP vs FN) ในสไลด์อาจารย์';
           feedback.className = 'reverse-feedback mt-2 p-2 font-bold bg-[#A3E635]/20 text-[#84CC16] border border-[#84CC16]';
         } else {
-          feedback.textContent = '❌ ยังไม่ถูกต้อง ลองพิจารณาผลกระทบของ FP vs FN ใหม่อีกครั้ง';
+          feedback.textContent = '[INCORRECT] ยังไม่ตรงเกณฑ์ ลองเปรียบเทียบผลกระทบของ FP กับ FN อีกครั้ง';
           feedback.className = 'reverse-feedback mt-2 p-2 font-bold bg-[#E11D48]/10 text-[#E11D48] border border-[#E11D48]';
         }
       }

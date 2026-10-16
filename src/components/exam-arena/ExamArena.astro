@@ -126,21 +126,21 @@ import { examQuestions } from '../../data/exam-questions';
                     <input
                       type="text"
                       class="w-full bg-transparent border-none outline-none text-xs font-mono font-semibold text-[#171719]"
-                      placeholder="เช่น IQR, Gini_A"
+                      placeholder="ระบุตัวแปร"
                     />
                   </td>
                   <td class="p-1 border border-[#171719]/30">
                     <input
                       type="text"
                       class="w-full bg-transparent border-none outline-none text-xs font-mono tabular-nums text-gray-700"
-                      placeholder="เช่น 70 - 30 = 40"
+                      placeholder="นิพจน์คำนวณ"
                     />
                   </td>
                   <td class="p-1 border border-[#171719]/30 text-right">
                     <input
                       type="text"
                       class="w-full bg-transparent border-none outline-none text-xs font-mono font-bold text-right tabular-nums text-[#171719]"
-                      placeholder="40"
+                      placeholder="ค่าผลลัพธ์"
                     />
                   </td>
                 </tr>
@@ -211,7 +211,7 @@ import { examQuestions } from '../../data/exam-questions';
             14 / 14
           </div>
           <div class="text-xs font-mono text-gray-300 mt-1" id="result-pct-text">
-            ความแม่นยำ 100% (Mastery Level)
+            ความแม่นยำ: 100% (ผ่านเกณฑ์ ≥ 80%)
           </div>
         </div>
 
@@ -382,7 +382,7 @@ import { examQuestions } from '../../data/exam-questions';
 
       const pct = Math.round((score / questions.length) * 100);
       if (scoreTextEl) scoreTextEl.textContent = `${score} / ${questions.length}`;
-      if (pctTextEl) pctTextEl.textContent = `ความแม่นยำ ${pct}% (${pct >= 80 ? 'Mastery Level' : 'ต้องทบทวนจุดอ่อน'})`;
+      if (pctTextEl) pctTextEl.textContent = `ความแม่นยำ: ${pct}% (${pct >= 80 ? 'ผ่านเกณฑ์ ≥ 80%' : 'ควรทบทวนจุดที่ผิด'})`;
 
       if (gradeEl) {
         if (pct >= 80) {
