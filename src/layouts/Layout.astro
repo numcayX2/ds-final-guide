@@ -15,7 +15,7 @@ const {
 ---
 
 <!doctype html>
-<html lang="th" class="scroll-smooth">
+<html lang="th" class="scroll-smooth overflow-x-hidden max-w-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,7 +32,7 @@ const {
       rel="stylesheet"
     />
   </head>
-  <body class="bg-[#F4F1EA] text-[#171719] min-h-screen flex flex-col font-['Plus_Jakarta_Sans',_'IBM_Plex_Sans_Thai',_sans-serif]">
+  <body class="bg-[#F4F1EA] text-[#171719] min-h-screen flex flex-col font-['Plus_Jakarta_Sans',_'IBM_Plex_Sans_Thai',_sans-serif] overflow-x-hidden max-w-full">
     <!-- Top Announcement Tape Bar -->
     <div class="bg-[#171719] text-[#F4F1EA] text-xs font-mono py-1.5 px-4 flex justify-between items-center border-b border-[#171719] select-none">
       <div class="flex items-center gap-2">
@@ -140,7 +140,7 @@ const {
     </header>
 
     <!-- Main Content Container -->
-    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-w-0 overflow-x-hidden">
       <slot />
     </main>
 

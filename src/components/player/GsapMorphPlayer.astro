@@ -9,7 +9,7 @@ const { formula } = Astro.props;
 ---
 
 <div
-  class="gsap-morph-player border-2 border-[#171719] bg-white shadow-[4px_4px_0px_#171719] flex flex-col my-6 select-none focus-within:ring-2 focus-within:ring-[#A3E635] outline-none"
+  class="gsap-morph-player border-2 border-[#171719] bg-white shadow-[4px_4px_0px_#171719] flex flex-col my-6 select-none focus-within:ring-2 focus-within:ring-[#A3E635] outline-none min-w-0 max-w-full overflow-hidden"
   tabindex="0"
   role="region"
   aria-label={`Formula Derivation Player: ${formula.name}`}
@@ -17,12 +17,12 @@ const { formula } = Astro.props;
   data-formula-json={JSON.stringify(formula)}
 >
   <!-- Player Top Bar (Zone A / Technical Header) -->
-  <div class="bg-[#171719] text-[#F4F1EA] px-4 py-3 flex flex-wrap justify-between items-center gap-3 border-b-2 border-[#171719]">
-    <div class="flex items-center gap-3">
+  <div class="bg-[#171719] text-[#F4F1EA] px-4 py-3 flex flex-wrap justify-between items-center gap-3 border-b-2 border-[#171719] min-w-0 max-w-full overflow-hidden">
+    <div class="flex items-center gap-3 min-w-0">
       <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2">
         {formula.category.toUpperCase()}
       </span>
-      <h3 class="font-['Space_Grotesk'] font-bold text-base sm:text-lg tracking-tight text-white">
+      <h3 class="font-['Space_Grotesk'] font-bold text-base sm:text-lg tracking-tight text-white truncate">
         {formula.name}: <span class="text-[#A3E635]">{formula.thaiName}</span>
       </h3>
     </div>
@@ -34,22 +34,32 @@ const { formula } = Astro.props;
         type="button"
         data-audio-toggle
         data-audio-context="header"
-        class="flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-bold border-2 border-[#A3E635] text-[#A3E635] hover:bg-[#A3E635] hover:text-[#171719] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none"
+        class="audio-toggle-btn flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-bold border-2 border-[#A3E635] text-[#A3E635] hover:bg-[#A3E635] hover:text-[#171719] transition-all duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none group relative overflow-hidden"
         title="เปิด/ปิด เสียงคำบรรยายภาษาไทย"
       >
-        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        <span data-audio-text>ฟังคำอธิบายเสียงไทย (Free)</span>
+        <div class="absolute inset-0 bg-[#A3E635] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></div>
+        <svg class="w-4 h-4 flex-shrink-0 relative z-10 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <span data-audio-text class="relative z-10 transition-colors">ฟังคำอธิบายเสียงไทย (Free)</span>
       </button>
     </div>
   </div>
 
+  <!-- Progress Bar (New: Visual derivation progress) -->
+  <div class="h-1 bg-[#EAE6DC] relative overflow-hidden">
+    <div
+      data-progress-bar
+      class="h-full bg-gradient-to-r from-[#A3E635] to-[#65A30D] transition-all duration-500 ease-out"
+      style="width: 0%"
+    ></div>
+  </div>
+
   <!-- Main Body: Clinical Dual-Zone Grid (Zone B) -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 border-b-2 border-[#171719]">
+  <div class="grid grid-cols-1 lg:grid-cols-12 border-b-2 border-[#171719] min-w-0 max-w-full overflow-hidden">
     <!-- Left: Authentic Data Source Table (Monospace & Tabular) -->
-    <div class="lg:col-span-5 p-4 bg-[#F4F1EA] border-b-2 lg:border-b-0 lg:border-r-2 border-[#171719] overflow-x-auto">
+    <div class="lg:col-span-5 p-4 bg-[#F4F1EA] border-b-2 lg:border-b-0 lg:border-r-2 border-[#171719] overflow-x-auto min-w-0 max-w-full">
       <div class="flex justify-between items-center mb-2">
         <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#171719] flex items-center gap-1.5">
-          <span class="w-2 h-2 bg-[#171719] inline-block"></span>
+          <span class="w-2 h-2 bg-[#171719] inline-block animate-pulse"></span>
           ข้อมูลตั้งต้น (Evidence Table)
         </span>
         <span class="text-[10px] font-mono text-gray-500">Zero Translation Grid</span>
@@ -64,13 +74,16 @@ const { formula } = Astro.props;
           </tr>
         </thead>
         <tbody>
-          {formula.dataset.rows.map((row) => (
-            <tr class="border-b border-[#171719]/40 hover:bg-[#F4F1EA] transition-colors">
+          {formula.dataset.rows.map((row, rowIdx) => (
+            <tr 
+              class="border-b border-[#171719]/40 hover:bg-[#F4F1EA] transition-all duration-200 data-row"
+              style={`animation: fadeInRow 0.3s ease-out ${rowIdx * 0.05}s both`}
+            >
               {formula.dataset.headers.map((h) => {
                 const cell = row.cells[h.key];
                 return (
                   <td
-                    class="p-2 border border-[#171719]/30 zone-b-cell tabular-nums font-semibold"
+                    class="p-2 border border-[#171719]/30 zone-b-cell tabular-nums font-semibold transition-colors duration-200"
                     data-source-cell-id={cell?.id}
                     data-semantic={cell?.semantic || 'neutral'}
                   >
@@ -84,61 +97,74 @@ const { formula } = Astro.props;
       </table>
 
       <!-- Base Formula reference snippet -->
-      <div class="mt-3 p-2 bg-[#EAE6DC] border border-[#171719] text-[11px] font-mono">
+      <div class="mt-3 p-2 bg-[#EAE6DC] border border-[#171719] text-[11px] font-mono animate-[slideInUp_0.4s_ease-out_0.3s_both]">
         <span class="font-bold text-[#171719]">สมการตั้งต้น:</span>
         <code class="ml-1 text-black font-semibold">{formula.baseFormulaLatex}</code>
       </div>
     </div>
 
     <!-- Right: KaTeX Animated Derivation Display (Zone B) -->
-    <div class="lg:col-span-7 p-6 bg-white flex flex-col justify-center items-center min-h-[220px] relative">
+    <div class="lg:col-span-7 min-w-0 max-w-full p-6 bg-white flex flex-col justify-center items-center min-h-[220px] relative overflow-hidden">
       <div class="absolute top-2 right-2 text-[10px] font-mono uppercase text-gray-400">
         KaTeX Derivation Stage
       </div>
       
+      <!-- Step Transition Overlay -->
+      <div 
+        data-transition-overlay
+        class="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300"
+      >
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 bg-[#A3E635] rounded-full animate-[pulse_0.6s_ease-in-out_infinite]"></div>
+          <div class="w-2 h-2 bg-[#A3E635] rounded-full animate-[pulse_0.6s_ease-in-out_0.2s_infinite]"></div>
+          <div class="w-2 h-2 bg-[#A3E635] rounded-full animate-[pulse_0.6s_ease-in-out_0.4s_infinite]"></div>
+        </div>
+      </div>
+
       <!-- KaTeX Equation Mount Point -->
       <div
         data-katex-mount
-        class="w-full py-4 px-2 flex justify-center items-center text-xl sm:text-2xl text-[#171719] font-mono tabular-nums overflow-x-auto min-h-[110px] max-h-[360px] overflow-y-auto"
+        class="katex-mount w-full max-w-full min-w-0 py-4 px-2 flex justify-center items-center text-xl sm:text-2xl text-[#171719] font-mono tabular-nums overflow-x-auto min-h-[110px] max-h-[360px] overflow-y-auto"
       >
         <!-- Injected via FormulaMorphEngine -->
       </div>
 
       <!-- Current Step Explanation Box (With Integrated Contextual Audio Button) -->
-      <div class="w-full mt-4 p-3.5 bg-[#F4F1EA] border border-[#171719] text-xs sm:text-sm">
+      <div class="w-full mt-4 p-3.5 bg-[#F4F1EA] border border-[#171719] text-xs sm:text-sm transition-all duration-300 min-w-0 max-w-full overflow-hidden">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-[#171719]/20">
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 bg-[#171719] text-[#A3E635] text-xs font-mono font-bold">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="step-indicator-badge px-2 py-0.5 bg-[#171719] text-[#A3E635] text-xs font-mono font-bold transition-all duration-300 flex-shrink-0">
               สเต็ป <span data-step-indicator>1</span> / {formula.steps.length}
             </span>
-            <h4 data-step-title class="font-bold text-[#171719] text-sm sm:text-base">
+            <h4 data-step-title class="font-bold text-[#171719] text-sm sm:text-base transition-all duration-300 truncate">
               {formula.steps[0].title}
             </h4>
           </div>
 
-          <!-- Direct In-Context Step Audio Button (Addresses OMP disconnection finding) -->
+          <!-- Direct In-Context Step Audio Button -->
           <button
             type="button"
             data-audio-toggle
             data-audio-context="step"
             aria-pressed="false"
             aria-label="ฟังเสียงบรรยายขั้นตอนนี้ด้วย Fish Audio Free"
-            class="flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] text-xs font-mono font-bold border-2 border-[#171719] bg-white hover:bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
+            class="audio-toggle-btn flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] text-xs font-mono font-bold border-2 border-[#171719] bg-white hover:bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#171719] outline-none relative overflow-hidden flex-shrink-0"
             title="ฟังเสียงบรรยายขั้นตอนการคำนวณนี้ (OpenRouter Fish Audio Free)"
           >
-            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <span data-audio-text>ฟังเสียงอธิบายสเต็ปนี้ (Fish Audio)</span>
+            <div class="audio-wave-indicator hidden absolute inset-0 bg-gradient-to-r from-transparent via-[#A3E635]/30 to-transparent animate-[waveSweep_1.5s_ease-in-out_infinite]"></div>
+            <svg class="w-4 h-4 flex-shrink-0 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span data-audio-text class="relative z-10">ฟังเสียงอธิบายสเต็ปนี้ (Fish Audio)</span>
           </button>
         </div>
 
-        <p data-step-explanation class="text-[#171719] font-medium leading-relaxed text-xs sm:text-sm">
+        <p data-step-explanation class="text-[#171719] font-medium leading-relaxed text-xs sm:text-sm transition-all duration-300 break-words">
           {formula.steps[0].explanation}
         </p>
 
         <!-- Exam Trap Warning (Hazard Crimson) -->
         <div
           data-trap-box
-          class="hidden mt-2 p-2 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-xs font-mono text-[#BE123C]"
+          class="hidden mt-2 p-2 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-xs font-mono text-[#BE123C] transition-all duration-300 origin-top"
         >
           <span class="font-bold">⚠️ กับดักข้อสอบอาจารย์:</span>
           <span data-trap-text class="ml-1"></span>
@@ -147,13 +173,13 @@ const { formula } = Astro.props;
     </div>
   </div>
 
-  <!-- Player Controls (Zone B Monospace Controls: Touch targets >= 44x44px) -->
-  <div class="bg-[#F4F1EA] p-3 sm:p-4 flex flex-wrap justify-between items-center gap-3 border-t border-[#171719]">
+  <!-- Player Controls (Zone B Monospace Controls) -->
+  <div class="bg-[#F4F1EA] p-3 sm:p-4 flex flex-wrap justify-between items-center gap-3 border-t border-[#171719] min-w-0 max-w-full overflow-hidden">
     <div class="flex items-center gap-2">
       <button
         type="button"
         data-prev-step
-        class="min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
+        class="control-btn min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0"
         aria-label="ย้อนกลับสเต็ปก่อนหน้า"
       >
         ← สเต็ปก่อนหน้า
@@ -161,14 +187,14 @@ const { formula } = Astro.props;
       <button
         type="button"
         data-next-step
-        class="min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none"
+        class="control-btn min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0"
         aria-label="ไปยังสเต็ปถัดไป"
       >
         สเต็ปถัดไป →
       </button>
     </div>
 
-    <!-- Step Scrubber Dots (Touch target >= 44x44px for thumb reachability) -->
+    <!-- Step Scrubber Dots -->
     <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Step navigation">
       {formula.steps.map((_, idx) => (
         <button
@@ -176,7 +202,7 @@ const { formula } = Astro.props;
           data-step-dot={idx + 1}
           aria-label={`ไปยังสเต็ปที่ ${idx + 1}`}
           class:list={[
-            'min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none',
+            'step-dot min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none transition-all duration-300 hover:scale-105',
             idx === 0
               ? 'bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719]'
               : 'bg-white text-gray-700 hover:bg-gray-100 shadow-[1px_1px_0px_#171719]',
@@ -192,13 +218,274 @@ const { formula } = Astro.props;
       <span class="hidden md:inline-flex text-[10px] font-mono text-gray-500 bg-[#EAE6DC] px-2 py-1 border border-gray-400">
         ⌨️ [← / → เลื่อน] [Space เสียง] [R รีเซ็ต]
       </span>
-      <div class="text-[11px] font-mono text-[#171719] bg-white px-2.5 py-1.5 border border-[#171719] shadow-[1px_1px_0px_#171719]">
+      <div class="text-[11px] font-mono text-[#171719] bg-white px-2.5 py-1.5 border border-[#171719] shadow-[1px_1px_0px_#171719] animate-[slideInUp_0.4s_ease-out_0.4s_both]">
         <span class="font-bold text-[#E11D48]">💡 สูตรจำ 1 บรรทัด:</span>
         <span class="ml-1 font-semibold">{formula.oneLineRule}</span>
       </div>
     </div>
   </div>
 </div>
+
+<style is:global>
+  /* Entry Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInRow {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes waveSweep {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes morphIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+      filter: blur(4px);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.02) translateY(-2px);
+      filter: blur(1px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes morphOut {
+    0% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: blur(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+      filter: blur(4px);
+    }
+  }
+
+  @keyframes highlightPulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(163, 230, 53, 0);
+    }
+  }
+
+  @keyframes stepChange {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    30% {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    31% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes trapSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  /* KaTeX Mount Animation Classes */
+  .katex-mount .katex-equation-enter {
+    animation: morphIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .katex-mount .katex-equation-exit {
+    animation: morphOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .katex-mount .katex-equation-morph {
+    animation: morphIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Step content transition */
+  .step-content-transitioning {
+    animation: stepChange 0.4s ease-in-out;
+  }
+
+  /* Trap box animation */
+  [data-trap-box].trap-visible {
+    animation: trapSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  [data-trap-box].trap-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  /* Audio playing states */
+  .audio-playing .audio-wave-indicator {
+    display: block !important;
+  }
+
+  .audio-playing {
+    animation: highlightPulse 2s ease-in-out infinite;
+  }
+
+  /* Step dot active state */
+  .step-dot-active {
+    animation: highlightPulse 0.6s ease-out;
+  }
+
+  /* Control button ripple effect */
+  .control-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(163, 230, 53, 0.3) 0%, transparent 70%);
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.5s, opacity 0.5s;
+  }
+
+  .control-btn:active::after {
+    transform: scale(2);
+    opacity: 1;
+    transition: 0s;
+  }
+
+  /* Progress bar animation */
+  .progress-updating {
+    animation: progressPulse 0.3s ease-out;
+  }
+
+  @keyframes progressPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+  /* Highlight animation for data cells */
+  .zone-b-cell.highlight-flash {
+    animation: cellFlash 0.8s ease-out;
+  }
+
+  @keyframes cellFlash {
+    0% { background-color: transparent; }
+    30% { background-color: rgba(163, 230, 53, 0.3); }
+    100% { background-color: transparent; }
+  }
+
+  /* Smooth transitions for text content */
+  [data-step-title],
+  [data-step-explanation],
+  [data-step-indicator] {
+    transition: all 0.3s ease-out;
+  }
+
+  /* Transition overlay states */
+  [data-transition-overlay].overlay-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Step indicator badge animation */
+  .step-indicator-badge.step-changing {
+    animation: stepChange 0.3s ease-in-out;
+  }
+
+  /* Disabled state for buttons */
+  .control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .control-btn:disabled:active {
+    transform: none !important;
+    box-shadow: 2px 2px 0px #171719 !important;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .katex-mount {
+      font-size: 1rem;
+    }
+  }
+</style>
 
 <script>
   import { FormulaMorphEngine } from './morph-engine';
@@ -217,56 +504,156 @@ const { formula } = Astro.props;
       const trapBox = playerEl.querySelector<HTMLElement>('[data-trap-box]');
       const trapText = playerEl.querySelector<HTMLElement>('[data-trap-text]');
       const stepDots = playerEl.querySelectorAll<HTMLElement>('[data-step-dot]');
+      const progressBar = playerEl.querySelector<HTMLElement>('[data-progress-bar]');
+      const transitionOverlay = playerEl.querySelector<HTMLElement>('[data-transition-overlay]');
+      const prevBtn = playerEl.querySelector<HTMLButtonElement>('[data-prev-step]');
+      const nextBtn = playerEl.querySelector<HTMLButtonElement>('[data-next-step]');
+      const audioButtons = playerEl.querySelectorAll<HTMLButtonElement>('[data-audio-toggle]');
+
+      let isTransitioning = false;
+      let currentStepIndex = 1;
 
       const engine = new FormulaMorphEngine(playerEl, formula, (stepIdx) => {
+        if (isTransitioning) return;
+        
         const step = formula.steps.find((s) => s.stepIndex === stepIdx);
         if (!step) return;
 
-        if (stepIndicator) stepIndicator.textContent = String(stepIdx);
-        if (stepTitle) stepTitle.textContent = step.title;
-        if (stepExplanation) stepExplanation.textContent = step.explanation;
+        isTransitioning = true;
 
-        // Trap Warning
+        // Show transition overlay briefly
+        if (transitionOverlay) {
+          transitionOverlay.classList.add('overlay-active');
+          setTimeout(() => {
+            transitionOverlay.classList.remove('overlay-active');
+          }, 200);
+        }
+
+        // Animate step indicator
+        if (stepIndicator) {
+          stepIndicator.parentElement?.classList.add('step-changing');
+          setTimeout(() => {
+            stepIndicator.textContent = String(stepIdx);
+            stepIndicator.parentElement?.classList.remove('step-changing');
+          }, 150);
+        }
+
+        // Animate text content changes
+        if (stepTitle) {
+          stepTitle.classList.add('step-content-transitioning');
+          setTimeout(() => {
+            stepTitle.textContent = step.title;
+            stepTitle.classList.remove('step-content-transitioning');
+          }, 150);
+        }
+
+        if (stepExplanation) {
+          stepExplanation.classList.add('step-content-transitioning');
+          setTimeout(() => {
+            stepExplanation.textContent = step.explanation;
+            stepExplanation.classList.remove('step-content-transitioning');
+          }, 150);
+        }
+
+        // Trap Warning with animation
         if (trapBox && trapText) {
           if (step.examTrapWarning) {
             trapText.textContent = step.examTrapWarning;
             trapBox.classList.remove('hidden');
+            trapBox.classList.add('trap-visible');
+            setTimeout(() => {
+              trapBox.classList.add('trap-shake');
+              setTimeout(() => trapBox.classList.remove('trap-shake'), 500);
+            }, 400);
           } else {
-            trapBox.classList.add('hidden');
+            trapBox.classList.remove('trap-visible');
+            setTimeout(() => trapBox.classList.add('hidden'), 300);
           }
         }
 
-        // Update Dots with touch-compliant classes (>= 44x44px)
+        // Update progress bar
+        if (progressBar) {
+          const progress = ((stepIdx - 1) / (formula.steps.length - 1)) * 100;
+          progressBar.style.width = `${progress}%`;
+          progressBar.classList.add('progress-updating');
+          setTimeout(() => progressBar.classList.remove('progress-updating'), 300);
+        }
+
+        // Update Dots with animations
         stepDots.forEach((dot) => {
           const dotIdx = Number(dot.getAttribute('data-step-dot'));
           if (dotIdx === stepIdx) {
             dot.className =
-              'min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none';
+              'step-dot step-dot-active min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none transition-all duration-300 hover:scale-105';
           } else {
             dot.className =
-              'min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center bg-white text-gray-700 hover:bg-gray-100 shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none';
+              'step-dot min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center bg-white text-gray-700 hover:bg-gray-100 shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none transition-all duration-300 hover:scale-105';
+          }
+        });
+
+        // Update button states
+        currentStepIndex = stepIdx;
+        updateButtonStates();
+
+        setTimeout(() => {
+          isTransitioning = false;
+        }, 500);
+      });
+
+      function updateButtonStates() {
+        if (prevBtn) {
+          prevBtn.disabled = currentStepIndex <= 1;
+        }
+        if (nextBtn) {
+          nextBtn.disabled = currentStepIndex >= formula.steps.length;
+        }
+      }
+
+      engine.init();
+      updateButtonStates();
+
+      // Controls
+      prevBtn?.addEventListener('click', () => {
+        if (!isTransitioning) engine.prevStep();
+      });
+      
+      nextBtn?.addEventListener('click', () => {
+        if (!isTransitioning) engine.nextStep();
+      });
+
+      audioButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const isPlaying = btn.classList.contains('audio-playing');
+          
+          // Remove playing state from all audio buttons in this player
+          audioButtons.forEach((b) => b.classList.remove('audio-playing'));
+          
+          if (!isPlaying) {
+            btn.classList.add('audio-playing');
+            engine.playAudio();
+            
+            // Auto-remove playing state after a timeout (you can adjust based on audio duration)
+            setTimeout(() => {
+              btn.classList.remove('audio-playing');
+            }, 5000);
+          } else {
+            engine.stopAudio?.();
           }
         });
       });
 
-      engine.init();
-
-      // Controls
-      playerEl.querySelector('[data-prev-step]')?.addEventListener('click', () => engine.prevStep());
-      playerEl.querySelector('[data-next-step]')?.addEventListener('click', () => engine.nextStep());
-      playerEl.querySelectorAll('[data-audio-toggle]').forEach((btn) => {
-        btn.addEventListener('click', () => engine.playAudio());
-      });
-
       stepDots.forEach((dot) => {
         dot.addEventListener('click', () => {
+          if (isTransitioning) return;
           const idx = Number(dot.getAttribute('data-step-dot'));
           engine.goToStep(idx, true);
         });
       });
 
-      // Keyboard Accessibility (Addresses OMP finding P1-3)
+      // Keyboard Accessibility
       playerEl.addEventListener('keydown', (e) => {
+        if (isTransitioning) return;
+        
         if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') {
           e.preventDefault();
           engine.nextStep();
@@ -275,12 +662,26 @@ const { formula } = Astro.props;
           engine.prevStep();
         } else if (e.key === ' ' || e.key === 'k' || e.key === 'K') {
           e.preventDefault();
-          engine.playAudio();
+          const firstAudioBtn = playerEl.querySelector<HTMLButtonElement>('[data-audio-toggle]');
+          firstAudioBtn?.click();
         } else if (e.key === 'r' || e.key === 'R' || e.key === 'Home') {
           e.preventDefault();
           engine.goToStep(1, true);
         }
       });
+
+      // Highlight related data cells when hovering equation
+      const katexMount = playerEl.querySelector('[data-katex-mount]');
+      katexMount?.addEventListener('mouseenter', () => {
+        const cells = playerEl.querySelectorAll('.zone-b-cell');
+        cells.forEach((cell, idx) => {
+          setTimeout(() => {
+            cell.classList.add('highlight-flash');
+            setTimeout(() => cell.classList.remove('highlight-flash'), 800);
+          }, idx * 100);
+        });
+      });
+
     } catch (err) {
       console.error('Failed to init formula player:', err);
     }

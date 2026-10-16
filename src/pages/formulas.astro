@@ -94,11 +94,11 @@ import { allFormulas } from '../data/formulas/index';
   </div>
 
   <!-- Formula Players List -->
-  <div class="space-y-12" id="formulas-list">
+  <div class="space-y-12 min-w-0 max-w-full overflow-hidden" id="formulas-list">
     {allFormulas.map((formula, idx) => (
       <section
         id={formula.id}
-        class="formula-section scroll-mt-20"
+        class="formula-section scroll-mt-20 min-w-0 max-w-full overflow-hidden"
         data-category={formula.category}
         data-focus={formula.isFinalFocus ? 'true' : 'false'}
       >
