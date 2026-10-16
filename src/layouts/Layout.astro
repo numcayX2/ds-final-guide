@@ -129,7 +129,7 @@ const navLinks = [
     </header>
 
     <!-- Main Content Container -->
-    <main id="main-content" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-w-0 overflow-x-hidden overflow-x-clip animate-[fadeIn_0.5s_ease-out]">
+    <main id="main-content" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-w-0 overflow-x-hidden overflow-x-clip">
       <slot />
     </main>
 
@@ -269,23 +269,13 @@ const navLinks = [
         }, 150);
       }
 
-      // Minimal, clean GSAP entrance animation for page elements
+      // Minimal, clean GSAP entrance animation for page elements (zero blink/FOUC)
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
-        // Initial hero / top elements enter smoothly
-        const heroTargets = document.querySelectorAll('main > section:first-child, main > div:first-child, header');
-        if (heroTargets.length > 0) {
-          gsap.from(heroTargets, {
-            y: 12,
-            opacity: 0,
-            duration: 0.5,
-            stagger: 0.08,
-            ease: 'power2.out',
-            clearProps: 'all',
-          });
-        }
+        // Only animate scroll-revealed elements that are below the initial viewportfold
+        // This ensures the top/hero content is rendered immediately without any blank/blink delay
+        const windowHeight = window.innerHeight;
 
-        // Scroll-triggered minimal reveals using IntersectionObserver (lightweight & 100% resilient with Lenis)
         const revealObserver = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -293,16 +283,16 @@ const navLinks = [
                 const target = entry.target as HTMLElement;
                 revealObserver.unobserve(target);
 
-                const staggerChildren = target.querySelectorAll<HTMLElement>('.module-card, .formula-card, .business-case-card, [data-enter-item]');
-                if (staggerChildren.length > 0) {
+                const cards = target.querySelectorAll<HTMLElement>('.module-card, .formula-card, .business-case-card');
+                if (cards.length > 0) {
                   gsap.fromTo(
-                    staggerChildren,
+                    cards,
                     { y: 16, opacity: 0 },
                     {
                       y: 0,
                       opacity: 1,
-                      duration: 0.45,
-                      stagger: 0.05,
+                      duration: 0.4,
+                      stagger: 0.04,
                       ease: 'power2.out',
                       clearProps: 'transform,opacity',
                     }
@@ -310,11 +300,11 @@ const navLinks = [
                 } else {
                   gsap.fromTo(
                     target,
-                    { y: 14, opacity: 0 },
+                    { y: 12, opacity: 0 },
                     {
                       y: 0,
                       opacity: 1,
-                      duration: 0.45,
+                      duration: 0.4,
                       ease: 'power2.out',
                       clearProps: 'transform,opacity',
                     }
@@ -323,17 +313,17 @@ const navLinks = [
               }
             });
           },
-          { rootMargin: '0px 0px -40px 0px', threshold: 0.08 }
+          { rootMargin: '0px 0px -40px 0px', threshold: 0.05 }
         );
 
-        // Observe main content sections, card grids, tables, and callouts
-        const enterSections = document.querySelectorAll(
-          'main section, #modules-grid, #formulas-container, table, .border-2.border-\\[\\#171719\\]'
+        // Target below-fold sections and grids only
+        const observeTargets = document.querySelectorAll(
+          'main section:not(:first-child), #cheat-sheet-section, #formulas-container'
         );
-        enterSections.forEach((el) => {
-          // Skip if already in viewport on initial load to avoid double flash
+        observeTargets.forEach((el) => {
           const rect = el.getBoundingClientRect();
-          if (rect.top > window.innerHeight) {
+          // Strictly only observe if well below the visible viewport so initial view is 100% instant
+          if (rect.top > windowHeight * 0.85) {
             revealObserver.observe(el);
           }
         });
