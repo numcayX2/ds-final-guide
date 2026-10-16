@@ -83,7 +83,7 @@ export class FormulaMorphEngine {
   }
 
   /**
-   * Core Ghost Clone Morph Execution (Spec 11)
+   * Core In-Equation Token Morph Execution (Zero Floating Boxes)
    */
   private async renderStep(stepIndex: number, animate: boolean) {
     const step = this.formula.steps.find((s) => s.stepIndex === stepIndex);
@@ -94,45 +94,58 @@ export class FormulaMorphEngine {
 
     await document.fonts.ready;
 
-    // 1. Render KaTeX with \htmlData trust enabled (Spec 11)
+    // Capture previous token texts before updating DOM so we know which tokens actually changed
+    const prevTokenTexts = new Map<string, string>();
+    katexMount.querySelectorAll<HTMLElement>('[data-flip-id]').forEach((el) => {
+      const id = el.getAttribute('data-flip-id');
+      if (id) {
+        prevTokenTexts.set(id, (el.textContent || '').trim());
+      }
+    });
+
+    // Render KaTeX with \htmlData trust enabled
     const renderedHtml = katex.renderToString(step.katexDisplay, {
       displayMode: true,
       throwOnError: false,
       trust: (context) => context.command === '\\htmlData',
     });
 
-    if (!animate) {
+    this.highlightCells(step);
+
+    if (!animate || prevTokenTexts.size === 0) {
       this.cleanupGhosts();
       katexMount.innerHTML = renderedHtml;
-      this.highlightCells(step);
+      this.decorateTokens(step, katexMount);
       return;
     }
 
     this.cleanupGhosts();
     this.isAnimating = true;
 
-    // Fast crossfade KaTeX container
-    gsap.to(katexMount, {
-      opacity: 0.3,
-      duration: 0.1,
-      onComplete: async () => {
+    const outgoingTokens = Array.from(katexMount.querySelectorAll<HTMLElement>('[data-flip-id]'));
+
+    // 1. Morph outgoing tokens out in-place inside the equation
+    gsap.to(outgoingTokens.length > 0 ? outgoingTokens : katexMount, {
+      opacity: 0,
+      y: -7,
+      scale: 0.84,
+      filter: 'blur(3px)',
+      duration: 0.13,
+      stagger: 0.02,
+      ease: 'power2.in',
+      onComplete: () => {
+        // 2. Swap KaTeX HTML and apply inline semantic token highlights
+        katexMount.style.opacity = '1';
+        katexMount.style.transform = 'none';
+        katexMount.style.filter = 'none';
         katexMount.innerHTML = renderedHtml;
-        await document.fonts.ready;
 
-        // Execute Ghost Clone for source cells -> target tokens
-        this.executeGhostClones(step, katexMount);
+        this.decorateTokens(step, katexMount);
 
-        gsap.to(katexMount, {
-          opacity: 1,
-          duration: 0.15,
-          onComplete: () => {
-            this.isAnimating = false;
-          },
-        });
+        // 3. Morph incoming tokens directly in-place inside the equation
+        this.animateEquationTokensInPlace(katexMount, prevTokenTexts);
       },
     });
-
-    this.highlightCells(step);
   }
 
   /**
@@ -171,143 +184,133 @@ export class FormulaMorphEngine {
   }
 
   /**
-   * Remove any lingering ghost clones from DOM and restore hidden tokens
+   * Kill any active GSAP tweens on equation tokens and reset state cleanly
    */
   public cleanupGhosts() {
-    document.querySelectorAll('.ghost-clone-element').forEach((ghost) => {
-      gsap.killTweensOf(ghost);
-      ghost.remove();
-    });
-
     const katexMount = this.container.querySelector<HTMLElement>('[data-katex-mount]');
     if (katexMount) {
+      gsap.killTweensOf(katexMount);
+      katexMount.style.opacity = '1';
+      katexMount.style.transform = 'none';
+      katexMount.style.filter = 'none';
+
       katexMount.querySelectorAll<HTMLElement>('[data-flip-id]').forEach((token) => {
-        token.style.opacity = '1';
         gsap.killTweensOf(token);
+        token.style.opacity = '1';
+        token.style.transform = 'none';
+        token.style.filter = 'none';
       });
     }
   }
 
   /**
-   * Match source cells to target tokens accurately
+   * Resolve semantic highlight class for a token inside the KaTeX equation
    */
-  private getClonePairs(
-    step: FormulaAnimationStep,
-    katexMount: HTMLElement
-  ): Array<{ sourceEl: HTMLElement; targetToken: HTMLElement; sourceId: string; tokenId: string }> {
-    if (!step.sourceCellIds || step.sourceCellIds.length === 0) return [];
-
-    const pairs: Array<{ sourceEl: HTMLElement; targetToken: HTMLElement; sourceId: string; tokenId: string }> = [];
-    const targetTokenIds = step.targetTokenIds || [];
-
-    // Semantic keywords for intelligent token pairing (e.g., tp, tn, fp, fn, q1, q3, etc.)
+  private resolveTokenSemanticClass(step: FormulaAnimationStep, tokenId: string, tokenIdx: number): string {
+    const lowerToken = tokenId.toLowerCase();
     const semanticKeywords = ['tp', 'tn', 'fp', 'fn', 'act', 'inact', 'q1', 'q3', 'iqr', 'sd', 'mean', 'bi', 'ai', 'c2', 'c3'];
 
-    if (targetTokenIds.length > 0) {
-      targetTokenIds.forEach((tokenId, targetIdx) => {
-        const targetToken = katexMount.querySelector<HTMLElement>(`[data-flip-id="${tokenId}"]`);
-        if (!targetToken) return;
-
-        let matchedSourceId: string | undefined;
-
-        // Try semantic keyword matching first
-        for (const kw of semanticKeywords) {
-          if (tokenId.toLowerCase().includes(kw)) {
-            matchedSourceId = step.sourceCellIds?.find((sId) => sId.toLowerCase().includes(kw));
-            if (matchedSourceId) break;
-          }
-        }
-
-        // If no keyword match, pair by index
-        if (!matchedSourceId && step.sourceCellIds) {
-          matchedSourceId = step.sourceCellIds[targetIdx] || step.sourceCellIds[0];
-        }
-
-        if (matchedSourceId) {
-          const sourceEl = this.container.querySelector<HTMLElement>(`[data-source-cell-id="${matchedSourceId}"]`);
-          if (sourceEl) {
-            pairs.push({ sourceEl, targetToken, sourceId: matchedSourceId, tokenId });
-          }
-        }
-      });
+    let matchedSourceId: string | undefined;
+    for (const kw of semanticKeywords) {
+      if (lowerToken.includes(kw)) {
+        matchedSourceId = step.sourceCellIds?.find((sId) => sId.toLowerCase().includes(kw));
+        if (matchedSourceId) break;
+      }
     }
 
-    // Fallback if no pairs found: pair source cells to any [data-flip-id] by index
-    if (pairs.length === 0) {
-      const allTokens = Array.from(katexMount.querySelectorAll<HTMLElement>('[data-flip-id]'));
-      step.sourceCellIds.forEach((sourceId, idx) => {
-        const sourceEl = this.container.querySelector<HTMLElement>(`[data-source-cell-id="${sourceId}"]`);
-        const targetToken = allTokens[idx] || allTokens[0];
-        if (sourceEl && targetToken) {
-          pairs.push({
-            sourceEl,
-            targetToken,
-            sourceId,
-            tokenId: targetToken.getAttribute('data-flip-id') || `token-${idx}`,
-          });
-        }
-      });
+    if (!matchedSourceId && step.sourceCellIds && step.sourceCellIds.length > 0) {
+      matchedSourceId = step.sourceCellIds[tokenIdx] || step.sourceCellIds[0];
     }
 
-    return pairs;
+    let status = step.highlightStatus || 'neutral';
+    if (matchedSourceId) {
+      const sourceEl = this.container.querySelector<HTMLElement>(`[data-source-cell-id="${matchedSourceId}"]`);
+      const cellSemantic = sourceEl?.getAttribute('data-semantic');
+      if (cellSemantic && cellSemantic !== 'neutral') {
+        status = cellSemantic as typeof status;
+      }
+    }
+
+    if (lowerToken.includes('fp') || lowerToken.includes('inact') || status === 'fp' || status === 'caution') {
+      return 'katex-token-fp';
+    }
+    if (lowerToken.includes('fn') || lowerToken.includes('inv') || status === 'fn' || status === 'invalid') {
+      return 'katex-token-fn';
+    }
+    if (lowerToken.includes('tp') || lowerToken.includes('tn') || lowerToken.includes('act') || lowerToken.includes('result') || status === 'tp' || status === 'success') {
+      return 'katex-token-tp';
+    }
+    return 'katex-token-neutral';
   }
 
   /**
-   * Spawn Ghost Clones from data table cells to target KaTeX tokens with semantic styling
+   * Apply clean inline badge classes directly to [data-flip-id] spans inside the KaTeX equation
    */
-  private executeGhostClones(step: FormulaAnimationStep, katexMount: HTMLElement) {
-    this.cleanupGhosts();
-    const pairs = this.getClonePairs(step, katexMount);
-    if (pairs.length === 0) return;
-
-    pairs.forEach(({ sourceEl, targetToken }) => {
-      const sourceRect = sourceEl.getBoundingClientRect();
-      const targetRect = targetToken.getBoundingClientRect();
-
-      // Semantic color classes
-      const status = sourceEl.getAttribute('data-semantic') || 'tp';
-      let colorClasses = 'bg-[#171719] text-[#A3E635] border-[#A3E635]';
-      if (status === 'tp' || status === 'success') {
-        colorClasses = 'bg-[#171719] text-[#A3E635] border-[#A3E635]';
-      } else if (status === 'fp' || status === 'caution') {
-        colorClasses = 'bg-[#171719] text-[#F59E0B] border-[#F59E0B]';
-      } else if (status === 'fn' || status === 'invalid') {
-        colorClasses = 'bg-[#171719] text-[#E11D48] border-[#E11D48]';
-      } else {
-        colorClasses = 'bg-[#171719] text-[#38BDF8] border-[#38BDF8]';
-      }
-
-      // Create ghost clone DOM node
-      const ghost = document.createElement('div');
-      ghost.className = `ghost-clone-element text-xs font-mono font-bold px-1.5 py-0.5 border-2 shadow-[2px_2px_0px_#171719] ${colorClasses}`;
-      ghost.textContent = sourceEl.textContent?.trim() || '';
-      ghost.style.left = `${sourceRect.left}px`;
-      ghost.style.top = `${sourceRect.top}px`;
-      ghost.style.width = `${sourceRect.width}px`;
-      ghost.style.height = `${sourceRect.height}px`;
-
-      document.body.appendChild(ghost);
-
-      // Hide target token briefly while ghost flies in
-      targetToken.style.opacity = '0';
-
-      const deltaX = targetRect.left - sourceRect.left;
-      const deltaY = targetRect.top - sourceRect.top;
-
-      gsap.to(ghost, {
-        x: deltaX,
-        y: deltaY,
-        duration: 0.55,
-        ease: 'power2.out',
-        onComplete: () => {
-          if (targetToken) {
-            targetToken.style.opacity = '1';
-            gsap.fromTo(targetToken, { scale: 1.25 }, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
-          }
-          ghost.remove();
-        },
-      });
+  private decorateTokens(step: FormulaAnimationStep, katexMount: HTMLElement) {
+    const tokens = Array.from(katexMount.querySelectorAll<HTMLElement>('[data-flip-id]'));
+    tokens.forEach((token, idx) => {
+      const tokenId = token.getAttribute('data-flip-id') || `token-${idx}`;
+      const semanticClass = this.resolveTokenSemanticClass(step, tokenId, idx);
+      token.classList.add('katex-morph-token', semanticClass);
     });
+  }
+
+  /**
+   * Animate tokens morphing directly in-place within the KaTeX equation
+   */
+  private animateEquationTokensInPlace(katexMount: HTMLElement, prevTokenTexts: Map<string, string>) {
+    const allTokens = Array.from(katexMount.querySelectorAll<HTMLElement>('[data-flip-id]'));
+    if (allTokens.length === 0) {
+      this.isAnimating = false;
+      return;
+    }
+
+    const changedTokens: HTMLElement[] = [];
+    const unchangedTokens: HTMLElement[] = [];
+
+    allTokens.forEach((token) => {
+      const id = token.getAttribute('data-flip-id') || '';
+      const currentText = (token.textContent || '').trim();
+      const prevText = prevTokenTexts.get(id);
+
+      if (prevText === undefined || prevText !== currentText) {
+        changedTokens.push(token);
+      } else {
+        unchangedTokens.push(token);
+      }
+    });
+
+    const targetsToMorph = changedTokens.length > 0 ? changedTokens : allTokens;
+
+    if (unchangedTokens.length > 0 && changedTokens.length > 0) {
+      gsap.fromTo(
+        unchangedTokens,
+        { opacity: 0.6, scale: 0.96 },
+        { opacity: 1, scale: 1, duration: 0.2, ease: 'power1.out' }
+      );
+    }
+
+    gsap.fromTo(
+      targetsToMorph,
+      {
+        opacity: 0,
+        y: 10,
+        scale: 0.72,
+        filter: 'blur(4px)',
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: 'blur(0px)',
+        duration: 0.38,
+        stagger: 0.06,
+        ease: 'back.out(2.0)',
+        onComplete: () => {
+          this.isAnimating = false;
+        },
+      }
+    );
   }
 
   /**

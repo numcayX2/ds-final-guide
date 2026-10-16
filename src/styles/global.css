@@ -80,16 +80,40 @@ body {
   transform: none !important;
 }
 
-/* Ghost Clone animation styling */
-.ghost-clone-element {
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
-  font-family: var(--font-mono);
+/* In-Equation KaTeX Token Morphing (Zero Floating Boxes) */
+.katex-morph-token {
+  display: inline-block;
+  padding: 0.02em 0.28em;
+  margin: 0 0.05em;
+  border-radius: 3px;
   font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  transform-origin: center center;
+  will-change: transform, opacity, filter;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.katex-token-tp {
+  background-color: rgba(163, 230, 53, 0.35);
+  border-bottom: 2px solid #4D7C0F;
+  color: #171719;
+}
+
+.katex-token-fp {
+  background-color: rgba(245, 158, 11, 0.30);
+  border-bottom: 2px solid #B45309;
+  color: #171719;
+}
+
+.katex-token-fn {
+  background-color: rgba(225, 29, 72, 0.22);
+  border-bottom: 2px solid #BE123C;
+  color: #881337;
+}
+
+.katex-token-neutral {
+  background-color: rgba(37, 99, 235, 0.16);
+  border-bottom: 2px solid #1D4ED8;
+  color: #171719;
 }
 
 /* Universal Accessible Focus Rings (WCAG 2.1 AA) */
