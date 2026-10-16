@@ -25,7 +25,7 @@ const navLinks = [
 ---
 
 <!doctype html>
-<html lang="th" class="scroll-smooth overflow-x-hidden max-w-full">
+<html lang="th" class="overflow-x-hidden max-w-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -215,6 +215,58 @@ const navLinks = [
           toggleBtn.className = 'px-3 py-1 text-xs font-mono font-extrabold uppercase bg-gray-200 text-gray-700 border border-gray-500 cursor-pointer hover:opacity-90 active:scale-95 transition-all min-h-[32px]';
           document.body.classList.remove('final-focus-active');
         }
+      }
+    </script>
+
+    <!-- Lenis Smooth Scrolling Engine synchronized with GSAP ticker -->
+    <script>
+      import Lenis from 'lenis';
+      import gsap from 'gsap';
+
+      const lenis = new Lenis({
+        duration: 1.15,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 1.5,
+      });
+
+      // Synchronize Lenis with GSAP ticker for unified frame timing
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+
+      // Expose globally for modals or components
+      (window as any).lenis = lenis;
+
+      // Handle anchor links with smooth scroll via Lenis
+      document.addEventListener('click', (e) => {
+        const target = (e.target as HTMLElement)?.closest('a');
+        if (!target) return;
+        const href = target.getAttribute('href');
+        if (!href) return;
+
+        // Check if internal hash link (e.g., #formulas or /current-path#target)
+        if (href.startsWith('#') && href.length > 1) {
+          const el = document.querySelector(href);
+          if (el) {
+            e.preventDefault();
+            lenis.scrollTo(el, { offset: -24 });
+          }
+        }
+      });
+
+      // If initial page loads with a hash, smooth scroll to it
+      if (window.location.hash) {
+        setTimeout(() => {
+          const targetEl = document.querySelector(window.location.hash);
+          if (targetEl) {
+            lenis.scrollTo(targetEl, { offset: -24, immediate: false });
+          }
+        }, 150);
       }
     </script>
   </body>

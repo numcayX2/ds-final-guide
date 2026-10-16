@@ -15,6 +15,7 @@ const { modules } = Astro.props;
   role="dialog"
   aria-modal="true"
   aria-labelledby="modal-module-title"
+  data-lenis-prevent
 >
   <div class="max-w-5xl mx-auto my-2 sm:my-4 border-2 border-[#171719] bg-[#F4F1EA] shadow-[8px_8px_0px_#171719] overflow-hidden">
     {modules.map((mod, idx) => {

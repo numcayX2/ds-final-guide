@@ -466,12 +466,14 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
     studyModal.classList.remove('hidden');
     studyModal.scrollTop = 0;
     document.body.style.overflow = 'hidden';
+    (window as any).lenis?.stop();
   }
 
   function closeModuleModal() {
     if (!studyModal) return;
     studyModal.classList.add('hidden');
     document.body.style.overflow = '';
+    (window as any).lenis?.start();
   }
 
   moduleCards.forEach((card) => {
