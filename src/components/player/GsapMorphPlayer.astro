@@ -108,19 +108,6 @@ const { formula } = Astro.props;
       <div class="absolute top-2 right-2 text-[10px] font-mono uppercase text-gray-400">
         KaTeX Derivation Stage
       </div>
-      
-      <!-- Step Transition Overlay -->
-      <div 
-        data-transition-overlay
-        class="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300"
-      >
-        <div class="flex items-center gap-2">
-          <div class="w-2 h-2 bg-[#A3E635] rounded-full animate-[pulse_0.6s_ease-in-out_infinite]"></div>
-          <div class="w-2 h-2 bg-[#A3E635] rounded-full animate-[pulse_0.6s_ease-in-out_0.2s_infinite]"></div>
-          <div class="w-2 h-2 bg-[#A3E635] rounded-full animate-[pulse_0.6s_ease-in-out_0.4s_infinite]"></div>
-        </div>
-      </div>
-
       <!-- KaTeX Equation Mount Point -->
       <div
         data-katex-mount
@@ -179,7 +166,7 @@ const { formula } = Astro.props;
       <button
         type="button"
         data-prev-step
-        class="control-btn min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0"
+        class="control-btn relative overflow-hidden min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0"
         aria-label="ย้อนกลับสเต็ปก่อนหน้า"
       >
         ← สเต็ปก่อนหน้า
@@ -187,7 +174,7 @@ const { formula } = Astro.props;
       <button
         type="button"
         data-next-step
-        class="control-btn min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0"
+        class="control-btn relative overflow-hidden min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0"
         aria-label="ไปยังสเต็ปถัดไป"
       >
         สเต็ปถัดไป →
@@ -411,21 +398,10 @@ const { formula } = Astro.props;
     animation: highlightPulse 0.6s ease-out;
   }
 
-  /* Control button ripple effect */
-  .control-btn::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle, rgba(163, 230, 53, 0.3) 0%, transparent 70%);
-    opacity: 0;
-    transform: scale(0);
-    transition: transform 0.5s, opacity 0.5s;
-  }
-
-  .control-btn:active::after {
-    transform: scale(2);
-    opacity: 1;
-    transition: 0s;
+  /* Control button containment */
+  .control-btn {
+    position: relative;
+    overflow: hidden;
   }
 
   /* Progress bar animation */
@@ -450,22 +426,15 @@ const { formula } = Astro.props;
     100% { background-color: transparent; }
   }
 
-  /* Smooth transitions for text content */
+  /* Smooth transitions for text content without flashing to opacity 0 */
   [data-step-title],
   [data-step-explanation],
   [data-step-indicator] {
-    transition: all 0.3s ease-out;
+    transition: opacity 0.15s ease-out;
   }
 
-  /* Transition overlay states */
-  [data-transition-overlay].overlay-active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* Step indicator badge animation */
-  .step-indicator-badge.step-changing {
-    animation: stepChange 0.3s ease-in-out;
+  .step-content-transitioning {
+    opacity: 0.6;
   }
 
   /* Disabled state for buttons */
@@ -505,7 +474,6 @@ const { formula } = Astro.props;
       const trapText = playerEl.querySelector<HTMLElement>('[data-trap-text]');
       const stepDots = playerEl.querySelectorAll<HTMLElement>('[data-step-dot]');
       const progressBar = playerEl.querySelector<HTMLElement>('[data-progress-bar]');
-      const transitionOverlay = playerEl.querySelector<HTMLElement>('[data-transition-overlay]');
       const prevBtn = playerEl.querySelector<HTMLButtonElement>('[data-prev-step]');
       const nextBtn = playerEl.querySelector<HTMLButtonElement>('[data-next-step]');
       const audioButtons = playerEl.querySelectorAll<HTMLButtonElement>('[data-audio-toggle]');
@@ -521,38 +489,25 @@ const { formula } = Astro.props;
 
         isTransitioning = true;
 
-        // Show transition overlay briefly
-        if (transitionOverlay) {
-          transitionOverlay.classList.add('overlay-active');
-          setTimeout(() => {
-            transitionOverlay.classList.remove('overlay-active');
-          }, 200);
-        }
-
-        // Animate step indicator
+        // Smooth text content updates without jarring flicker
         if (stepIndicator) {
-          stepIndicator.parentElement?.classList.add('step-changing');
-          setTimeout(() => {
-            stepIndicator.textContent = String(stepIdx);
-            stepIndicator.parentElement?.classList.remove('step-changing');
-          }, 150);
+          stepIndicator.textContent = String(stepIdx);
         }
 
-        // Animate text content changes
         if (stepTitle) {
           stepTitle.classList.add('step-content-transitioning');
+          stepTitle.textContent = step.title;
           setTimeout(() => {
-            stepTitle.textContent = step.title;
             stepTitle.classList.remove('step-content-transitioning');
-          }, 150);
+          }, 120);
         }
 
         if (stepExplanation) {
           stepExplanation.classList.add('step-content-transitioning');
+          stepExplanation.textContent = step.explanation;
           setTimeout(() => {
-            stepExplanation.textContent = step.explanation;
             stepExplanation.classList.remove('step-content-transitioning');
-          }, 150);
+          }, 120);
         }
 
         // Trap Warning with animation

@@ -124,28 +124,30 @@ export class FormulaMorphEngine {
 
     const outgoingTokens = Array.from(katexMount.querySelectorAll<HTMLElement>('[data-flip-id]'));
 
-    // 1. Morph outgoing tokens out in-place inside the equation
-    gsap.to(outgoingTokens.length > 0 ? outgoingTokens : katexMount, {
-      opacity: 0,
-      y: -7,
-      scale: 0.84,
-      filter: 'blur(3px)',
-      duration: 0.13,
-      stagger: 0.02,
-      ease: 'power2.in',
-      onComplete: () => {
-        // 2. Swap KaTeX HTML and apply inline semantic token highlights
-        katexMount.style.opacity = '1';
-        katexMount.style.transform = 'none';
-        katexMount.style.filter = 'none';
-        katexMount.innerHTML = renderedHtml;
+    const onSwapAndMorph = () => {
+      katexMount.style.opacity = '1';
+      katexMount.style.transform = 'none';
+      katexMount.style.filter = 'none';
+      katexMount.innerHTML = renderedHtml;
 
-        this.decorateTokens(step, katexMount);
+      this.decorateTokens(step, katexMount);
+      this.animateEquationTokensInPlace(katexMount, prevTokenTexts);
+    };
 
-        // 3. Morph incoming tokens directly in-place inside the equation
-        this.animateEquationTokensInPlace(katexMount, prevTokenTexts);
-      },
-    });
+    if (outgoingTokens.length > 0) {
+      // Morph outgoing tokens in-place without blurring or blanking the whole equation
+      gsap.to(outgoingTokens, {
+        opacity: 0.1,
+        y: -4,
+        scale: 0.94,
+        duration: 0.12,
+        stagger: 0.02,
+        ease: 'power2.in',
+        onComplete: onSwapAndMorph,
+      });
+    } else {
+      onSwapAndMorph();
+    }
   }
 
   /**
@@ -293,19 +295,17 @@ export class FormulaMorphEngine {
     gsap.fromTo(
       targetsToMorph,
       {
-        opacity: 0,
-        y: 10,
-        scale: 0.72,
-        filter: 'blur(4px)',
+        opacity: 0.2,
+        y: 6,
+        scale: 0.92,
       },
       {
         opacity: 1,
         y: 0,
         scale: 1,
-        filter: 'blur(0px)',
-        duration: 0.38,
-        stagger: 0.06,
-        ease: 'back.out(2.0)',
+        duration: 0.26,
+        stagger: 0.04,
+        ease: 'power2.out',
         onComplete: () => {
           this.isAnimating = false;
         },
