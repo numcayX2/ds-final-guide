@@ -10,6 +10,8 @@ export class FormulaMorphEngine {
   private audioElement: HTMLAudioElement | null = null;
   private speechUtterance: SpeechSynthesisUtterance | null = null;
   private isPlayingAudio: boolean = false;
+  private isAutoPlaying: boolean = false;
+  private autoPlayTimer: ReturnType<typeof setTimeout> | null = null;
   private onStepChangeCallback?: (stepIndex: number) => void;
 
   constructor(container: HTMLElement, formula: FormulaAnimation, onStepChange?: (stepIndex: number) => void) {
@@ -23,8 +25,7 @@ export class FormulaMorphEngine {
   private setupAudioListeners() {
     if (!this.audioElement) return;
     this.audioElement.addEventListener('ended', () => {
-      this.isPlayingAudio = false;
-      this.updateAudioButtonState(false);
+      this.handleAudioEnded();
     });
     this.audioElement.addEventListener('error', () => {
       // Fallback to Web Speech API if MP3 file is not found
@@ -51,7 +52,7 @@ export class FormulaMorphEngine {
   /**
    * Render a specific step with Ghost Clone animation if requested
    */
-  public async goToStep(targetStepIndex: number, animate: boolean = true) {
+  public async goToStep(targetStepIndex: number, animate: boolean = true, preserveAutoPlay: boolean = false) {
     if (targetStepIndex < 1 || targetStepIndex > this.totalSteps) return;
 
     // Interrupt any active animation immediately
@@ -61,7 +62,9 @@ export class FormulaMorphEngine {
     }
 
     this.cleanupGhosts();
-    this.stopAudio();
+    if (!preserveAutoPlay) {
+      this.stopAudio();
+    }
     this.currentStepIndex = targetStepIndex;
     if (this.onStepChangeCallback) {
       this.onStepChangeCallback(this.currentStepIndex);
@@ -316,11 +319,53 @@ export class FormulaMorphEngine {
   /**
    * Audio narration: Plays pre-generated MP3 or falls back to Web Speech API
    */
-  public playAudio() {
-    if (this.isPlayingAudio) {
+  /**
+   * Auto-play derivation: Plays audio and auto-advances step animation until the end
+   */
+  public async startAutoPlay() {
+    if (this.isAutoPlaying) {
       this.stopAudio();
       return;
     }
+
+    this.stopAudio();
+
+    // If already at the last step, restart from step 1
+    if (this.currentStepIndex >= this.totalSteps) {
+      await this.goToStep(1, true, true);
+    }
+
+    this.isAutoPlaying = true;
+    this.playCurrentStepAudio();
+  }
+
+  /**
+   * Single-step audio narration
+   */
+  public playStepAudio() {
+    if (this.isPlayingAudio && !this.isAutoPlaying) {
+      this.stopAudio();
+      return;
+    }
+
+    this.stopAudio();
+    this.isAutoPlaying = false;
+    this.playCurrentStepAudio();
+  }
+
+  /**
+   * Legacy alias: plays step audio or toggles
+   */
+  public playAudio() {
+    this.playStepAudio();
+  }
+
+  /**
+   * Play audio for the current step (MP3 with Web Speech fallback)
+   */
+  private playCurrentStepAudio() {
+    this.isPlayingAudio = true;
+    this.updateAudioButtonState(true);
 
     const audioPath = `/audio/tts/${this.formula.id}_step_${this.currentStepIndex}.mp3`;
     if (this.audioElement) {
@@ -339,8 +384,38 @@ export class FormulaMorphEngine {
     }
   }
 
+  /**
+   * Called when audio of current step finishes
+   */
+  private handleAudioEnded() {
+    this.isPlayingAudio = false;
+
+    if (this.isAutoPlaying) {
+      // Check if more steps remain in the animation
+      if (this.currentStepIndex < this.totalSteps) {
+        // Pause briefly (600ms) for learner comprehension before next morph transition
+        this.autoPlayTimer = setTimeout(async () => {
+          if (!this.isAutoPlaying) return;
+          await this.goToStep(this.currentStepIndex + 1, true, true);
+          if (this.isAutoPlaying) {
+            this.playCurrentStepAudio();
+          }
+        }, 600);
+      } else {
+        // Reached the end of the derivation!
+        this.isAutoPlaying = false;
+        this.updateAudioButtonState(false);
+      }
+    } else {
+      this.updateAudioButtonState(false);
+    }
+  }
+
   private fallbackWebSpeech() {
-    if (!('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window)) {
+      this.handleAudioEnded();
+      return;
+    }
     window.speechSynthesis.cancel();
 
     const textToSpeak = this.currentStep.phoneticScript || this.currentStep.explanation;
@@ -354,19 +429,21 @@ export class FormulaMorphEngine {
     };
 
     this.speechUtterance.onend = () => {
-      this.isPlayingAudio = false;
-      this.updateAudioButtonState(false);
+      this.handleAudioEnded();
     };
 
     this.speechUtterance.onerror = () => {
-      this.isPlayingAudio = false;
-      this.updateAudioButtonState(false);
+      this.handleAudioEnded();
     };
 
     window.speechSynthesis.speak(this.speechUtterance);
   }
 
   public stopAudio() {
+    if (this.autoPlayTimer) {
+      clearTimeout(this.autoPlayTimer);
+      this.autoPlayTimer = null;
+    }
     if (this.audioElement) {
       this.audioElement.pause();
       this.audioElement.currentTime = 0;
@@ -375,47 +452,51 @@ export class FormulaMorphEngine {
       window.speechSynthesis.cancel();
     }
     this.isPlayingAudio = false;
+    this.isAutoPlaying = false;
     this.updateAudioButtonState(false);
   }
 
   private updateAudioButtonState(isPlaying: boolean) {
     const playBtns = this.container.querySelectorAll<HTMLElement>('[data-audio-toggle]');
     playBtns.forEach((btn) => {
-      const isStepBtn = btn.getAttribute('data-audio-context') === 'step';
+      const isHeaderBtn = btn.getAttribute('data-audio-context') === 'header';
       const textSpan = btn.querySelector('[data-audio-text]') || btn.querySelector('span');
       const iconSvg = btn.querySelector('svg');
 
-      btn.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+      // Header button indicates auto-play state; Step button indicates single-step playing state
+      const btnIsActive = isHeaderBtn ? (this.isAutoPlaying && isPlaying) : (!this.isAutoPlaying && isPlaying);
 
-      if (isPlaying) {
-        btn.classList.add('bg-[#A3E635]', 'text-[#171719]');
+      btn.setAttribute('aria-pressed', btnIsActive ? 'true' : 'false');
+
+      if (btnIsActive) {
+        btn.classList.add('bg-[#A3E635]', 'text-[#171719]', 'audio-playing');
         btn.classList.remove('text-[#A3E635]', 'bg-white');
         if (iconSvg) {
           iconSvg.outerHTML = `
-            <svg class="w-4 h-4 animate-pulse flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 animate-pulse flex-shrink-0 relative z-10" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
             </svg>
           `;
         }
         if (textSpan) {
-          textSpan.textContent = isStepBtn ? 'หยุดเสียงบรรยาย' : 'หยุดเสียง';
+          textSpan.textContent = isHeaderBtn ? 'หยุดเล่นอัตโนมัติ' : 'หยุดเสียงบรรยาย';
         }
       } else {
-        btn.classList.remove('bg-[#A3E635]', 'text-[#171719]');
-        if (isStepBtn) {
-          btn.classList.add('bg-white', 'text-[#171719]');
-        } else {
+        btn.classList.remove('bg-[#A3E635]', 'text-[#171719]', 'audio-playing');
+        if (isHeaderBtn) {
           btn.classList.add('text-[#A3E635]');
+        } else {
+          btn.classList.add('bg-white', 'text-[#171719]');
         }
         if (iconSvg) {
           iconSvg.outerHTML = `
-            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 flex-shrink-0 relative z-10 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z"/>
             </svg>
           `;
         }
         if (textSpan) {
-          textSpan.textContent = isStepBtn ? 'ฟังเสียงอธิบายสเต็ปนี้' : 'ฟังคำอธิบายเสียงไทย';
+          textSpan.textContent = isHeaderBtn ? 'เล่นอัตโนมัติพร้อมเสียงไทย' : 'ฟังเสียงอธิบายสเต็ปนี้';
         }
       }
     });

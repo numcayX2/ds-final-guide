@@ -1,6 +1,46 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { allModules } from '../data/modules/index';
+import ModuleStudyDrawer from '../components/modules/ModuleStudyDrawer.astro';
+
+const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
+  'module-01-crisp-ds': {
+    label: 'MEMORY HOOK • 8 STEPS',
+    formulaOrRule: 'Data Prep กินเวลา 60–80% | Quantitative vs Qualitative',
+  },
+  'module-02-data-cleaning': {
+    label: 'MEMORY HOOK • CLEAN FIRST',
+    formulaOrRule: 'ตัด Known Invalid (-40k, 904k) ก่อนหา Mean/Median + ติด Flag',
+  },
+  'module-03-feature-engineering': {
+    label: 'MEMORY HOOK • NO LEAKAGE',
+    formulaOrRule: 'Fit Scaler บน Train เท่านั้น | Z-Score ไม่เปลี่ยนรูปทรงความเบ้',
+  },
+  'module-04-eda-outliers': {
+    label: 'VISUAL HOOK • BOXPLOT & TUKEY',
+    formulaOrRule: 'Fence = Q1/Q3 ± 1.5(IQR) | ปลายหนวดหยุดที่ข้อมูลจริงในรั้ว!',
+  },
+  'module-05-modeling-framework': {
+    label: 'VISUAL HOOK • 3-WAY SPLIT',
+    formulaOrRule: 'Train 70% ↔ Val 15% (จูน) | 🔒 Test 15% (วัดผลครั้งเดียวตอนจบ)',
+  },
+  'module-06-decision-tree': {
+    label: 'VISUAL HOOK • GINI & DEPTH',
+    formulaOrRule: 'Cand.A Gain 0.222 ชนะ B (0.056) | Sweet Spot: max_depth = 3',
+  },
+  'module-07-evaluation-metrics': {
+    label: 'VISUAL HOOK • CONFUSION MATRIX',
+    formulaOrRule: 'แถว = Actual, คอลัมน์ = Pred | FIFA Prec 0.80 | HW#2 B Rec 0.90',
+  },
+  'module-08-kmeans': {
+    label: 'VISUAL HOOK • 8 POINTS & INERTIA',
+    formulaOrRule: 'Assign ใช้ Manhattan | Inertia ใช้ ||x−Ck||² | C2_new = (6,6)',
+  },
+  'module-09-responsible-ai': {
+    label: 'VISUAL HOOK • BIAS & XAI',
+    formulaOrRule: 'Postal Code = Proxy | Drift Recall 54% | Gate: Accept/Revise/Reject',
+  },
+};
 ---
 
 <Layout title="10301351 Data Science Final Exam Guide - 9 บทเรียนเข้มข้น" activeTab="modules">
@@ -56,7 +96,7 @@ import { allModules } from '../data/modules/index';
         <div class="flex items-center gap-2 mb-1">
           <span class="w-3 h-3 bg-[#A3E635] border border-[#171719]"></span>
           <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#171719]">
-            CURRICULUM MODULES
+            CURRICULUM MODULES • คลิกที่การ์ดเพื่อเปิดแผนภาพจำสอบและสรุปเจาะลึก
           </span>
         </div>
         <h2 class="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-[#171719]">
@@ -69,100 +109,143 @@ import { allModules } from '../data/modules/index';
         <button
           type="button"
           id="filter-all-btn"
-          class="px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer transition-all"
+          class="px-3 py-1.5 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer transition-all"
         >
           ทั้งหมด (9 บท)
         </button>
         <button
           type="button"
           id="filter-focus-btn"
-          class="px-3 py-1 border border-[#171719] bg-[#A3E635] text-[#171719] font-black shadow-[2px_2px_0px_#171719] cursor-pointer transition-all"
+          class="px-3 py-1.5 border border-[#171719] bg-[#A3E635] text-[#171719] font-black shadow-[2px_2px_0px_#171719] cursor-pointer transition-all"
         >
-          Final Focus (Lect 05–09)
+          เน้นสอบปลายภาค (Lect 05–09)
         </button>
       </div>
     </div>
 
     <!-- Modules Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="modules-grid">
-      {allModules.map((mod) => (
-        <article
-          class:list={[
-            'module-card border-2 border-[#171719] bg-white p-5 shadow-[4px_4px_0px_#171719] flex flex-col justify-between transition-all hover:-translate-y-0.5',
-            mod.isFinalFocus ? 'is-focus-module' : 'is-foundation-module',
-          ]}
-          data-focus={mod.isFinalFocus ? 'true' : 'false'}
-        >
-          <div>
-            <!-- Card Header -->
-            <div class="flex justify-between items-start gap-2 mb-3">
-              <span class="w-8 h-8 bg-[#171719] text-[#A3E635] font-['Space_Grotesk'] font-bold text-sm flex items-center justify-center border border-[#171719]">
-                {mod.moduleNumber}
-              </span>
-              <div class="flex flex-wrap items-center gap-1.5 justify-end">
-                <span class="tape-label bg-[#F4F1EA] text-[#171719] text-[10px] py-0 px-1.5">
-                  {mod.lectureCode}
-                </span>
-                {mod.isFinalFocus ? (
-                  <span class="tape-label bg-[#A3E635] text-[#171719] text-[10px] py-0 px-1.5 font-black">
-                    CORE FINAL
+      {allModules.map((mod) => {
+        const hook = visualHooks[mod.id];
+        return (
+          <article
+            class:list={[
+              'module-card group relative border-2 border-[#171719] bg-white p-5 shadow-[4px_4px_0px_#171719] flex flex-col justify-between transition-all duration-150 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#171719] cursor-pointer',
+              mod.isFinalFocus ? 'is-focus-module' : 'is-foundation-module',
+            ]}
+            data-focus={mod.isFinalFocus ? 'true' : 'false'}
+            data-open-module={mod.id}
+            tabindex="0"
+            role="button"
+            aria-label={`เปิดสรุปเจาะลึกและแผนภาพของบทที่ ${mod.moduleNumber}: ${mod.title}`}
+          >
+            <div>
+              <!-- Card Header -->
+              <div class="flex justify-between items-start gap-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 bg-[#171719] text-[#A3E635] font-['Space_Grotesk'] font-bold text-sm flex items-center justify-center border border-[#171719] shrink-0">
+                    {mod.moduleNumber}
                   </span>
-                ) : (
-                  <span class="tape-label bg-gray-200 text-gray-700 text-[10px] py-0 px-1.5">
-                    FOUNDATION
+                  <span
+                    class="card-done-pill hidden px-1.5 py-0.5 bg-[#A3E635]/30 border border-[#171719] text-[10px] font-mono font-bold text-[#171719]"
+                    data-card-badge={mod.id}
+                  >
+                    ✓ ทบทวนแล้ว
                   </span>
-                )}
+                </div>
+
+                <div class="flex flex-wrap items-center gap-1.5 justify-end">
+                  <span class="tape-label bg-[#F4F1EA] text-[#171719] text-[10px] py-0 px-1.5">
+                    {mod.lectureCode}
+                  </span>
+                  <span class="px-1.5 py-0.5 bg-[#171719] text-white font-mono text-[10px] font-bold">
+                    ~{mod.timeEstimateMinutes} นาที
+                  </span>
+                </div>
               </div>
+
+              <!-- Title -->
+              <h3 class="font-['Space_Grotesk'] font-bold text-lg text-[#171719] group-hover:text-[#2563EB] transition-colors leading-snug mb-2">
+                {mod.title}
+              </h3>
+
+              <!-- Summary -->
+              <p class="text-xs text-gray-700 leading-relaxed font-['Plus_Jakarta_Sans'] mb-3">
+                {mod.quickSummary}
+              </p>
+
+              <!-- Visual Memory Key Strip -->
+              {hook && (
+                <div class="mb-3 p-2.5 bg-[#F4F1EA] border border-[#171719] font-mono">
+                  <div class="flex items-center justify-between text-[10px] text-gray-500 font-bold mb-0.5">
+                    <span>📊 {hook.label}</span>
+                    <span class="text-[#2563EB] group-hover:underline">ดูแผนภาพเต็ม →</span>
+                  </div>
+                  <div class="text-[11px] font-bold text-[#171719] leading-snug">
+                    {hook.formulaOrRule}
+                  </div>
+                </div>
+              )}
+
+              <!-- Exam Trap Box (Fixed non-squished header layout) -->
+              {mod.examTraps && mod.examTraps.length > 0 && (
+                <div class="p-2.5 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-[11px] font-mono mb-4">
+                  <div class="flex items-center justify-between gap-1 text-[10px] font-bold text-[#BE123C] mb-1">
+                    <span>⚠️ กับดักข้อสอบ ({mod.examTraps[0].slideRef})</span>
+                    {mod.examTraps.length > 1 && (
+                      <span class="px-1.5 py-0.2 bg-[#E11D48] text-white text-[9px]">
+                        +{mod.examTraps.length - 1} จุดในบทนี้
+                      </span>
+                    )}
+                  </div>
+                  <div class="font-bold text-[#171719] leading-snug">
+                    {mod.examTraps[0].trapTitle}
+                  </div>
+                  <p class="text-gray-700 mt-1 leading-normal line-clamp-2">
+                    {mod.examTraps[0].correctApproach}
+                  </p>
+                </div>
+              )}
             </div>
 
-            <h3 class="font-['Space_Grotesk'] font-bold text-lg text-[#171719] leading-snug mb-2">
-              {mod.title}
-            </h3>
-
-            <p class="text-xs text-gray-700 leading-relaxed font-['Plus_Jakarta_Sans'] mb-4">
-              {mod.quickSummary}
-            </p>
-
-            <!-- Exam Trap Box (Hazard Crimson) -->
-            {mod.examTraps && mod.examTraps.length > 0 && (
-              <div class="p-2.5 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-[11px] font-mono text-[#BE123C] mb-4">
-                <div class="font-bold flex items-center gap-1">
-                  <span>⚠️ กับดักข้อสอบ:</span>
-                  <span>{mod.examTraps[0].trapTitle}</span>
-                </div>
-                <p class="text-gray-700 mt-1 leading-normal line-clamp-2">
-                  {mod.examTraps[0].correctApproach}
-                </p>
+            <!-- Card Bottom Actions -->
+            <div class="pt-3 border-t border-[#171719] flex flex-wrap justify-between items-center gap-2 text-xs font-mono">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1 font-bold text-[#171719] group-hover:text-[#2563EB] transition-colors">
+                  <span>📖 เปิดสรุป + แผนภาพ</span>
+                </span>
+                {mod.coreFormulas && mod.coreFormulas.length > 0 && (
+                  <a
+                    href={`/formulas#${mod.coreFormulas[0]}`}
+                    data-stop-card-open
+                    class="px-1.5 py-0.5 bg-[#2563EB]/10 hover:bg-[#2563EB] text-[#2563EB] hover:text-white border border-[#2563EB] text-[10px] font-bold transition-colors"
+                    title="ไปยังหน้าแอนิเมชันสูตรคำนวณ"
+                  >
+                    สูตร ({mod.coreFormulas.length}) →
+                  </a>
+                )}
               </div>
-            )}
-          </div>
 
-          <!-- Card Bottom Actions -->
-          <div class="pt-3 border-t border-[#171719] flex justify-between items-center text-xs font-mono">
-            {mod.coreFormulas && mod.coreFormulas.length > 0 ? (
-              <a
-                href={`/formulas#${mod.coreFormulas[0]}`}
-                class="font-bold text-[#2563EB] hover:underline flex items-center gap-1"
+              <!-- Polished Read-Status Toggle Button (Zero Slop) -->
+              <button
+                type="button"
+                data-stop-card-open
+                class="module-mark-btn inline-flex items-center gap-1.5 px-2.5 py-1 border border-[#171719] text-[11px] font-bold bg-white text-gray-700 hover:bg-[#F4F1EA] hover:text-[#171719] transition-all cursor-pointer"
+                data-mod-id={mod.id}
+                aria-pressed="false"
               >
-                <span>สูตรคำนวณ ({mod.coreFormulas.length})</span>
-                <span>→</span>
-              </a>
-            ) : (
-              <span class="text-gray-400">เนื้อหาเชิงทฤษฎี/จริยธรรม</span>
-            )}
-
-            <button
-              type="button"
-              class="module-mark-btn px-2 py-0.5 border border-[#171719] text-[10px] font-bold bg-[#F4F1EA] hover:bg-[#A3E635] transition-colors cursor-pointer"
-              data-mod-id={mod.id}
-            >
-              อ่านจบแล้ว ✓
-            </button>
-          </div>
-        </article>
-      ))}
+                <span class="mark-icon w-3.5 h-3.5 border border-[#171719] bg-white flex items-center justify-center text-[10px] leading-none"></span>
+                <span class="mark-label">ทบทวนแล้ว</span>
+              </button>
+            </div>
+          </article>
+        );
+      })}
     </div>
   </section>
+
+  <!-- Ultra-Detail Visual Study Drawer Modal -->
+  <ModuleStudyDrawer modules={allModules} />
 
   <!-- Section 3: 10-Minute Cheat Sheet Table (Zone B Clinical Grid) -->
   <section class="mt-12 border-2 border-[#171719] bg-white p-6 shadow-[5px_5px_0px_#171719]">
@@ -259,6 +342,8 @@ import { allModules } from '../data/modules/index';
   const filterAllBtn = document.getElementById('filter-all-btn');
   const filterFocusBtn = document.getElementById('filter-focus-btn');
   const moduleCards = document.querySelectorAll<HTMLElement>('.module-card');
+  const studyModal = document.getElementById('module-study-modal');
+  const detailPanes = document.querySelectorAll<HTMLElement>('[data-module-pane]');
 
   // Filter handlers
   filterAllBtn?.addEventListener('click', () => applyFilter(false));
@@ -293,26 +378,139 @@ import { allModules } from '../data/modules/index';
     }
   }
 
-  // Load progress and mark completed
-  const progress = ProgressStore.load();
-  document.querySelectorAll<HTMLElement>('.module-mark-btn').forEach((btn) => {
-    const modId = btn.getAttribute('data-mod-id');
-    if (modId && progress.completedModuleIds.includes(modId)) {
-      btn.textContent = 'อ่านแล้ว ✓✓';
-      btn.classList.add('bg-[#A3E635]', 'text-[#171719]');
+  // Sync read status UI across both Card buttons and Modal buttons
+  function renderModuleMarkState(modId: string, isDone: boolean) {
+    const buttons = document.querySelectorAll<HTMLElement>(`.module-mark-btn[data-mod-id="${modId}"]`);
+    const badge = document.querySelector<HTMLElement>(`[data-card-badge="${modId}"]`);
+
+    if (badge) {
+      badge.classList.toggle('hidden', !isDone);
     }
 
-    btn.addEventListener('click', () => {
-      if (!modId) return;
-      const isDone = ProgressStore.toggleModuleCompleted(modId);
+    buttons.forEach((btn) => {
+      btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
+      const iconEl = btn.querySelector<HTMLElement>('.mark-icon');
+      const labelEl = btn.querySelector<HTMLElement>('.mark-label');
+
       if (isDone) {
-        btn.textContent = 'อ่านแล้ว ✓✓';
-        btn.classList.add('bg-[#A3E635]', 'text-[#171719]');
+        btn.classList.add('bg-[#A3E635]', 'text-[#171719]', 'border-[#171719]', 'shadow-[2px_2px_0px_#171719]');
+        btn.classList.remove('bg-white', 'text-gray-700', 'bg-[#222226]', 'text-[#F4F1EA]');
+        if (iconEl) {
+          iconEl.textContent = '✓';
+          iconEl.classList.add('bg-[#171719]', 'text-[#A3E635]', 'border-[#171719]');
+          iconEl.classList.remove('bg-white');
+        }
+        if (labelEl) {
+          labelEl.textContent = 'ทบทวนแล้ว';
+        }
       } else {
-        btn.textContent = 'อ่านจบแล้ว ✓';
-        btn.classList.remove('bg-[#A3E635]', 'text-[#171719]');
+        btn.classList.remove('bg-[#A3E635]', 'text-[#171719]', 'shadow-[2px_2px_0px_#171719]');
+        const isInsideModal = btn.closest('#module-study-modal') !== null;
+        if (isInsideModal) {
+          btn.classList.add('bg-[#222226]', 'text-[#F4F1EA]');
+        } else {
+          btn.classList.add('bg-white', 'text-gray-700');
+        }
+        if (iconEl) {
+          iconEl.textContent = '';
+          iconEl.classList.remove('bg-[#171719]', 'text-[#A3E635]');
+          if (!isInsideModal) iconEl.classList.add('bg-white');
+        }
+        if (labelEl) {
+          labelEl.textContent = isInsideModal ? 'ทำเครื่องหมายว่าทบทวนแล้ว' : 'ทบทวนแล้ว';
+        }
       }
     });
+  }
+
+  // Initialize progress states
+  const progress = ProgressStore.load();
+  const allModIds = new Set<string>();
+  document.querySelectorAll<HTMLElement>('.module-mark-btn').forEach((btn) => {
+    const modId = btn.getAttribute('data-mod-id');
+    if (modId) allModIds.add(modId);
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!modId) return;
+      const isDone = ProgressStore.toggleModuleCompleted(modId);
+      renderModuleMarkState(modId, isDone);
+    });
+  });
+
+  allModIds.forEach((modId) => {
+    renderModuleMarkState(modId, progress.completedModuleIds.includes(modId));
+  });
+
+  // Prevent formula link clicks from triggering card modal
+  document.querySelectorAll<HTMLElement>('[data-stop-card-open]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  });
+
+  // Modal Open / Close / Switch Logic
+  function openModuleModal(modId: string) {
+    if (!studyModal) return;
+    let found = false;
+    detailPanes.forEach((pane) => {
+      if (pane.getAttribute('data-module-pane') === modId) {
+        pane.classList.remove('hidden');
+        found = true;
+      } else {
+        pane.classList.add('hidden');
+      }
+    });
+    if (!found) return;
+
+    studyModal.classList.remove('hidden');
+    studyModal.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModuleModal() {
+    if (!studyModal) return;
+    studyModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  moduleCards.forEach((card) => {
+    const modId = card.getAttribute('data-open-module');
+    if (!modId) return;
+
+    card.addEventListener('click', () => {
+      openModuleModal(modId);
+    });
+
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModuleModal(modId);
+      }
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-close-modal]').forEach((btn) => {
+    btn.addEventListener('click', () => closeModuleModal());
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-switch-module]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-switch-module');
+      if (targetId) openModuleModal(targetId);
+    });
+  });
+
+  studyModal?.addEventListener('click', (e) => {
+    if (e.target === studyModal) {
+      closeModuleModal();
+    }
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && studyModal && !studyModal.classList.contains('hidden')) {
+      closeModuleModal();
+    }
   });
 
   // Init filter based on localStorage

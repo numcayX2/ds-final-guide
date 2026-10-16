@@ -1,0 +1,786 @@
+---
+import type { StudyModule } from '../../types/study';
+
+interface Props {
+  modules: StudyModule[];
+}
+
+const { modules } = Astro.props;
+---
+
+<!-- Ultra-Detailed Visual Study Drawer / Modal -->
+<div
+  id="module-study-modal"
+  class="fixed inset-0 z-50 hidden bg-[#171719]/80 backdrop-blur-[2px] overflow-y-auto p-2 sm:p-4 md:p-6"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-module-title"
+>
+  <div class="max-w-5xl mx-auto my-2 sm:my-4 border-2 border-[#171719] bg-[#F4F1EA] shadow-[8px_8px_0px_#171719] overflow-hidden">
+    {modules.map((mod, idx) => {
+      const prevMod = idx > 0 ? modules[idx - 1] : null;
+      const nextMod = idx < modules.length - 1 ? modules[idx + 1] : null;
+
+      return (
+        <div
+          class="module-detail-pane hidden"
+          data-module-pane={mod.id}
+        >
+          <!-- Sticky Top Bar -->
+          <div class="sticky top-0 z-30 bg-[#171719] text-[#F4F1EA] px-4 sm:px-6 py-3.5 border-b-2 border-[#171719] flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 bg-[#A3E635] text-[#171719] font-['Space_Grotesk'] font-black text-sm flex items-center justify-center border border-[#171719] shrink-0">
+                {mod.moduleNumber}
+              </span>
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono text-gray-300">
+                  <span class="text-[#A3E635] font-bold">{mod.lectureCode}</span>
+                  <span>•</span>
+                  <span>เวลาทบทวน ~{mod.timeEstimateMinutes} นาที</span>
+                  {mod.isFinalFocus && (
+                    <span class="bg-[#E11D48] text-white px-1.5 py-0.2 font-bold text-[10px]">
+                      ออกสอบเน้นๆ (FINAL FOCUS)
+                    </span>
+                  )}
+                </div>
+                <h2 id="modal-module-title" class="font-['Space_Grotesk'] font-bold text-base sm:text-xl text-white truncate">
+                  {mod.title}
+                </h2>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <!-- Synced Read Status Toggle Button -->
+              <button
+                type="button"
+                class="module-mark-btn inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#F4F1EA]/40 bg-[#222226] text-[#F4F1EA] hover:border-[#A3E635] text-xs font-mono font-bold transition-all cursor-pointer"
+                data-mod-id={mod.id}
+              >
+                <span class="mark-icon w-3.5 h-3.5 border border-current flex items-center justify-center text-[10px]"></span>
+                <span class="mark-label">ทำเครื่องหมายว่าทบทวนแล้ว</span>
+              </button>
+
+              <!-- Close Button -->
+              <button
+                type="button"
+                data-close-modal
+                class="px-3 py-1.5 bg-[#E11D48] hover:bg-[#BE123C] text-white font-mono font-bold text-xs border border-[#171719] cursor-pointer transition-colors"
+                aria-label="ปิดหน้าต่างสรุปบทเรียน (ESC)"
+              >
+                ✕ ปิด [ESC]
+              </button>
+            </div>
+          </div>
+
+          <!-- Modal Body Content -->
+          <div class="p-4 sm:p-6 md:p-8 space-y-8">
+            <!-- Quick Overview Banner -->
+            <div class="bg-white border-2 border-[#171719] p-4 sm:p-5 shadow-[4px_4px_0px_#171719]">
+              <div class="text-[11px] font-mono font-bold uppercase text-gray-500 mb-1">
+                OVERVIEW • แก่นสำคัญของบทเรียน ({mod.titleEn})
+              </div>
+              <p class="text-sm sm:text-base text-[#171719] font-medium leading-relaxed">
+                {mod.quickSummary}
+              </p>
+              {mod.coreFormulas.length > 0 && (
+                <div class="mt-3 pt-3 border-t border-[#171719]/20 flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-mono font-bold text-[#171719]">🔢 สูตรคำนวณที่เกี่ยวข้อง:</span>
+                  {mod.coreFormulas.map((fId) => (
+                    <a
+                      href={`/formulas#${fId}`}
+                      class="px-2.5 py-1 bg-[#A3E635] hover:bg-[#84CC16] text-[#171719] border border-[#171719] font-mono text-xs font-bold shadow-[2px_2px_0px_#171719] transition-all"
+                    >
+                      เปิดแอนิเมชัน {fId} →
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- VISUAL MEMORY BLUEPRINTS (เฉพาะแต่ละบทเรียน เพื่อการจำเข้าห้องสอบ) -->
+            <!-- ========================================================= -->
+            <div class="border-2 border-[#171719] bg-white p-4 sm:p-6 shadow-[4px_4px_0px_#171719]">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#171719] pb-3 mb-5">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-mono text-xs font-bold">
+                    VISUAL MEMORY BLUEPRINT
+                  </span>
+                  <h3 class="font-['Space_Grotesk'] font-black text-base sm:text-lg text-[#171719]">
+                    แผนภาพจำภาพรวมและจุดออกสอบ (Visual Schematic)
+                  </h3>
+                </div>
+                <span class="text-[11px] font-mono text-gray-500">อ้างอิงตรงตามสไลด์ {mod.lectureCode}</span>
+              </div>
+
+              {/* MODULE 04 VISUAL: Boxplot & Tukey's Fences + EDA Role */}
+              {mod.id === 'module-04-eda-outliers' && (
+                <div class="space-y-6">
+                  <!-- Boxplot & Whisker Rule SVG Diagram -->
+                  <div class="bg-[#F4F1EA] border border-[#171719] p-4">
+                    <div class="text-xs font-mono font-bold text-[#171719] mb-3 flex flex-wrap justify-between gap-2">
+                      <span>📐 แผนภาพโครงสร้าง Boxplot & กฎเหล็กเส้นหนวดของ Tukey (Lect 05 p17–18)</span>
+                      <span class="text-[#E11D48]">★ จุดหลอกข้อสอบ: เส้นหนวดหยุดที่ข้อมูลจริงในรั้ว ไม่ได้ลากไปชน Fence!</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                      <svg viewBox="0 0 760 190" class="w-full min-w-[600px] h-auto bg-white border border-[#171719] p-2">
+                        <!-- Number line axis -->
+                        <line x1="40" y1="150" x2="720" y2="150" stroke="#171719" stroke-width="2" />
+                        <!-- Lower Fence = 40 -->
+                        <line x1="110" y1="35" x2="110" y2="155" stroke="#E11D48" stroke-width="2" stroke-dasharray="5,5" />
+                        <text x="110" y="25" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#E11D48">Lower Fence = 40</text>
+                        <text x="110" y="172" text-anchor="middle" font-family="monospace" font-size="10" fill="#666">Q1 − 1.5(IQR)</text>
+
+                        <!-- Min Actual Data inside fence = 65 -->
+                        <line x1="200" y1="75" x2="200" y2="115" stroke="#171719" stroke-width="3" />
+                        <line x1="200" y1="95" x2="250" y2="95" stroke="#171719" stroke-width="2.5" />
+                        <circle cx="200" cy="95" r="4" fill="#171719" />
+                        <text x="200" y="65" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">Min ในรั้ว (65)</text>
+
+                        <!-- IQR Box [Q1=70 to Q3=90] -->
+                        <rect x="250" y="65" width="180" height="60" fill="#A3E635" fill-opacity="0.35" stroke="#171719" stroke-width="2.5" />
+                        <!-- Median = 82.5 -->
+                        <line x1="355" y1="65" x2="355" y2="125" stroke="#171719" stroke-width="3.5" />
+                        <text x="250" y="55" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">Q1 = 70</text>
+                        <text x="355" y="55" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#2563EB">Median = 82.5</text>
+                        <text x="430" y="55" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">Q3 = 90</text>
+                        <text x="340" y="100" text-anchor="middle" font-family="monospace" font-size="12" font-weight="bold" fill="#171719">IQR = 90 − 70 = 20</text>
+
+                        <!-- Right Whisker stops at 115 (Last actual data point inside fence) -->
+                        <line x1="430" y1="95" x2="520" y2="95" stroke="#171719" stroke-width="2.5" />
+                        <line x1="520" y1="75" x2="520" y2="115" stroke="#2563EB" stroke-width="3.5" />
+                        <circle cx="520" cy="95" r="4.5" fill="#2563EB" />
+                        <text x="520" y="62" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#2563EB">ปลาย Whisker (115)</text>
+                        <text x="520" y="138" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#2563EB">หยุดที่ข้อมูลจริงตัวสุดท้าย!</text>
+
+                        <!-- Gap between Whisker end and Upper Fence -->
+                        <text x="565" y="98" text-anchor="middle" font-family="monospace" font-size="10" fill="#E11D48">← ห้ามลากชนรั้ว!</text>
+
+                        <!-- Upper Fence = 120 / 130 -->
+                        <line x1="610" y1="35" x2="610" y2="155" stroke="#E11D48" stroke-width="2" stroke-dasharray="5,5" />
+                        <text x="610" y="25" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#E11D48">Upper Fence (120 / 130)</text>
+                        <text x="610" y="172" text-anchor="middle" font-family="monospace" font-size="10" fill="#666">Q3 + 1.5(IQR)</text>
+
+                        <!-- Potential Outlier = 140 -->
+                        <circle cx="685" cy="95" r="7" fill="#E11D48" stroke="#171719" stroke-width="2" />
+                        <text x="685" y="70" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#E11D48">จุด 140 (Outlier)</text>
+                        <text x="685" y="135" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#BE123C">Potential Outlier != Error</text>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- EDA Role & Confounder Visual Grid -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+                    <div class="p-4 border border-[#171719] bg-[#A3E635]/15">
+                      <div class="font-bold text-[#171719] mb-2">✅ บทบาทที่แท้จริงของ EDA (Lect 05 p04)</div>
+                      <div class="flex items-center gap-2 bg-white p-2.5 border border-[#171719]">
+                        <span class="px-2 py-1 bg-[#171719] text-[#A3E635] font-bold">EDA</span>
+                        <span>→</span>
+                        <span class="font-bold text-[#171719]">"Informs modeling decisions"</span>
+                      </div>
+                      <p class="text-[11px] text-gray-700 mt-2">
+                        ชี้แนะแนวทางให้ Data Scientist เห็นความเบ้, Outlier และความสัมพันธ์ แต่ <strong>"ไม่ได้เลือกอัลกอริทึมให้อัตโนมัติ"</strong>
+                      </p>
+                    </div>
+                    <div class="p-4 border border-[#171719] bg-[#E11D48]/10">
+                      <div class="font-bold text-[#BE123C] mb-2">⚠️ กับดักตัวแปรกวน (Confounding Variable)</div>
+                      <div class="bg-white p-2.5 border border-[#171719] text-center">
+                        <span class="font-bold text-[#E11D48]">[อุณหภูมิฤดูร้อน (Confounder)]</span>
+                        <div class="text-[11px] mt-1">↙ ส่งผลทั้งคู่ ↘</div>
+                        <div class="flex justify-around font-bold mt-1">
+                          <span>ยอดขายไอศกรีม ↑</span>
+                          <span>≠</span>
+                          <span>อัตราจมน้ำ ↑</span>
+                        </div>
+                      </div>
+                      <p class="text-[11px] text-gray-700 mt-2">
+                        <strong>Correlation != Causation:</strong> มีสหสัมพันธ์กันไม่ได้แปลว่าเป็นต้นเหตุของกันและกัน
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 05 VISUAL: 3-Way Partitioning & 4 Candidate Models */}
+              {mod.id === 'module-05-modeling-framework' && (
+                <div class="space-y-6">
+                  <!-- 3-Way Partitioning Visual Bar -->
+                  <div class="bg-[#F4F1EA] border border-[#171719] p-4">
+                    <div class="text-xs font-mono font-bold text-[#171719] mb-3">
+                      🛡️ แผนภาพการแบ่งข้อมูล 3 ส่วน & กฎเหล็ก Protect the Test Set (Lect 07 p07, p32)
+                    </div>
+                    <div class="grid grid-cols-12 border-2 border-[#171719] text-xs font-mono overflow-hidden">
+                      <div class="col-span-12 md:col-span-7 bg-[#A3E635] p-3.5 border-b-2 md:border-b-0 md:border-r-2 border-[#171719]">
+                        <div class="font-black text-sm text-[#171719]">1. TRAINING SET (60% – 70%)</div>
+                        <div class="text-[11px] text-[#171719] mt-1">• ใช้สอนโมเดล (Fit Parameters & เรียนรู้กฎ)</div>
+                        <div class="text-[11px] font-bold text-[#171719] mt-1">🔄 ทำงานคู่กับ Validation ในลูปปรับจูน</div>
+                      </div>
+                      <div class="col-span-12 md:col-span-3 bg-[#F59E0B]/40 p-3.5 border-b-2 md:border-b-0 md:border-r-4 border-[#171719]">
+                        <div class="font-black text-sm text-[#171719]">2. VALIDATION (15–20%)</div>
+                        <div class="text-[11px] text-[#171719] mt-1">• จูน Hyperparameter (เช่น max_depth)</div>
+                        <div class="text-[11px] font-bold text-[#171719] mt-1">• คัดเลือกผู้ชนะจาก 4 Candidate Models</div>
+                      </div>
+                      <div class="col-span-12 md:col-span-2 bg-[#E11D48] text-white p-3.5 flex flex-col justify-between">
+                        <div class="font-black text-sm">🔒 3. TEST SET (15–20%)</div>
+                        <div class="text-[10px] mt-1 leading-snug">
+                          <strong>PROTECTED EVIDENCE!</strong> ห้ามแตะต้องตอนจูน ใช้ประเมินครั้งเดียวตอนจบเท่านั้น
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 4 Candidate Models Visual Cards -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
+                    <div class="p-3.5 border-2 border-[#171719] bg-white">
+                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 01</div>
+                      <div class="font-bold text-sm text-[#171719]">🌳 Decision Tree</div>
+                      <p class="text-[11px] text-gray-600 mt-1">แตกกิ่ง If-Else ด้วย Gini Impurity อ่านกฎเข้าใจง่าย (White-box) ไม่ต้องทำ Scaling</p>
+                    </div>
+                    <div class="p-3.5 border-2 border-[#171719] bg-white">
+                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 02</div>
+                      <div class="font-bold text-sm text-[#171719]">📍 5-NN (Nearest Neighbors)</div>
+                      <p class="text-[11px] text-gray-600 mt-1">โหวตจากเพื่อนบ้านใกล้สุด 5 จุด <strong>ต้องทำ Feature Scaling เสมอ</strong> เพราะใช้ระยะทาง</p>
+                    </div>
+                    <div class="p-3.5 border-2 border-[#171719] bg-white">
+                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 03</div>
+                      <div class="font-bold text-sm text-[#171719]">🎲 Naive Bayes</div>
+                      <p class="text-[11px] text-gray-600 mt-1">คำนวณความน่าจะเป็น Bayes P(Y|X) สมมติให้ทุกตัวแปรเป็นอิสระต่อกัน</p>
+                    </div>
+                    <div class="p-3.5 border-2 border-[#171719] bg-white">
+                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 04</div>
+                      <div class="font-bold text-sm text-[#171719]">🧠 Neural Network</div>
+                      <p class="text-[11px] text-gray-600 mt-1">โครงข่ายประสาทเทียมหลายชั้น จับ Non-linear ซับซ้อนได้สูง แต่เป็น Black-box</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 06 VISUAL: Candidate A vs B Gini Battle & Tree Depth Ladder */}
+              {mod.id === 'module-06-decision-tree' && (
+                <div class="space-y-6">
+                  <!-- Candidate A vs B Visual Tree Battle -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+                    <div class="border-2 border-[#171719] bg-[#A3E635]/20 p-4 relative">
+                      <span class="absolute top-3 right-3 px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold text-[10px]">
+                        🏆 WINNER (เลือกกิ่งนี้!)
+                      </span>
+                      <div class="font-black text-sm text-[#171719] mb-2">CANDIDATE SPLIT A (Lect 07 p11)</div>
+                      <div class="bg-white border border-[#171719] p-2.5 text-center mb-2">
+                        Parent Node (N=12): <strong>[6 Play, 6 No]</strong> → Gini = <strong>0.500</strong>
+                      </div>
+                      <div class="grid grid-cols-2 gap-2 text-center mb-3">
+                        <div class="bg-white border border-[#171719] p-2">
+                          <div class="font-bold">Left (n=6): [5, 1]</div>
+                          <div class="text-[#2563EB] font-bold">Gini = 0.278</div>
+                        </div>
+                        <div class="bg-white border border-[#171719] p-2">
+                          <div class="font-bold">Right (n=6): [1, 5]</div>
+                          <div class="text-[#2563EB] font-bold">Gini = 0.278</div>
+                        </div>
+                      </div>
+                      <div class="bg-[#171719] text-white p-2.5 flex justify-between items-center">
+                        <span>Gini_split = <strong>0.278</strong> (ต่ำสุด)</span>
+                        <span class="text-[#A3E635] font-black">Gini Gain = 0.222 (สูงสุด!)</span>
+                      </div>
+                    </div>
+
+                    <div class="border-2 border-[#171719] bg-[#F4F1EA] p-4 relative opacity-90">
+                      <span class="absolute top-3 right-3 px-2 py-0.5 bg-gray-300 text-[#171719] font-bold text-[10px]">
+                        ❌ แพ้ (คละกันมากกว่า)
+                      </span>
+                      <div class="font-black text-sm text-[#171719] mb-2">CANDIDATE SPLIT B (Lect 07 p12)</div>
+                      <div class="bg-white border border-[#171719] p-2.5 text-center mb-2">
+                        Parent Node (N=12): <strong>[6 Play, 6 No]</strong> → Gini = <strong>0.500</strong>
+                      </div>
+                      <div class="grid grid-cols-2 gap-2 text-center mb-3">
+                        <div class="bg-white border border-[#171719] p-2">
+                          <div class="font-bold">Left (n=6): [4, 2]</div>
+                          <div class="text-[#E11D48] font-bold">Gini = 0.444</div>
+                        </div>
+                        <div class="bg-white border border-[#171719] p-2">
+                          <div class="font-bold">Right (n=6): [2, 4]</div>
+                          <div class="text-[#E11D48] font-bold">Gini = 0.444</div>
+                        </div>
+                      </div>
+                      <div class="bg-gray-200 text-[#171719] border border-[#171719] p-2.5 flex justify-between items-center">
+                        <span>Gini_split = <strong>0.444</strong> (สูงกว่า)</span>
+                        <span class="text-[#E11D48] font-bold">Gini Gain = 0.056 (ต่ำ)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tree Complexity Visual Ladder -->
+                  <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs">
+                    <div class="font-bold text-[#171719] mb-3">
+                      📈 แผนภาพบันไดความลึกต้นไม้ (Tree Complexity vs Validation Performance — Lect 07 p19, p31)
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                      <div class="p-3 bg-white border border-[#171719]">
+                        <div class="text-[10px] font-bold text-gray-500">1. SHALLOW (depth = 1)</div>
+                        <div class="font-black text-[#E11D48] mt-1">Underfitting</div>
+                        <div class="text-[11px] mt-1">High Bias / Low Variance</div>
+                        <div class="mt-2 text-[11px] bg-gray-100 p-1">ตื้นเกินไป จับ Pattern ไม่ได้</div>
+                      </div>
+                      <div class="p-3 bg-[#A3E635]/30 border-2 border-[#171719] shadow-[2px_2px_0px_#171719]">
+                        <div class="text-[10px] font-black text-[#171719]">2. MODERATE (depth = 3) ★</div>
+                        <div class="font-black text-[#171719] mt-1">Appropriate Fit!</div>
+                        <div class="text-[11px] mt-1">Low Bias / Low Variance</div>
+                        <div class="mt-2 text-[11px] bg-[#171719] text-[#A3E635] font-bold p-1">Validation สูงสุด (เลือก!)</div>
+                      </div>
+                      <div class="p-3 bg-white border border-[#171719]">
+                        <div class="text-[10px] font-bold text-gray-500">3. DEEP (depth ≥ 6)</div>
+                        <div class="font-black text-[#F59E0B] mt-1">Overfitting</div>
+                        <div class="text-[11px] mt-1">Low Bias / High Variance</div>
+                        <div class="mt-2 text-[11px] bg-gray-100 p-1">เริ่มจำ Noise คะแนน Val ตก</div>
+                      </div>
+                      <div class="p-3 bg-[#E11D48]/10 border border-[#E11D48]">
+                        <div class="text-[10px] font-bold text-[#BE123C]">4. UNRESTRICTED</div>
+                        <div class="font-black text-[#E11D48] mt-1">Extreme Overfit</div>
+                        <div class="text-[11px] mt-1">Bias ≈ 0 / Variance สูงสุด</div>
+                        <div class="mt-2 text-[11px] bg-white p-1 border border-[#E11D48]/40">Train 100% แต่ Val พังยับ</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 07 VISUAL: 2x2 Confusion Matrix Blueprint & 3 Case Studies */}
+              {mod.id === 'module-07-evaluation-metrics' && (
+                <div class="space-y-6">
+                  <!-- 2x2 Confusion Matrix Visual Schematic -->
+                  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 font-mono text-xs">
+                    <div class="lg:col-span-7 bg-[#F4F1EA] border border-[#171719] p-4">
+                      <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-[#171719]">🎯 ผังโครงสร้าง Confusion Matrix มาตรฐาน (Lect 07 p22)</span>
+                        <span class="px-2 py-0.5 bg-[#E11D48] text-white font-bold text-[10px]">Positive Class = ต้องเขียนก่อนเสมอ!</span>
+                      </div>
+                      <table class="w-full border-collapse border-2 border-[#171719] bg-white text-center">
+                        <thead>
+                          <tr class="bg-[#171719] text-white">
+                            <th class="p-2 border border-[#171719] text-[10px]">แกนตารางในสไลด์</th>
+                            <th class="p-2 border border-[#171719] text-[#A3E635]">Predicted: POSITIVE (+)</th>
+                            <th class="p-2 border border-[#171719] text-gray-300">Predicted: NEGATIVE (−)</th>
+                            <th class="p-2 border border-[#171719] bg-[#2563EB] text-white">แนวนอน = RECALL</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="p-2.5 border border-[#171719] font-bold bg-gray-100 text-left">Actual: POSITIVE (+)</td>
+                            <td class="p-3 border-2 border-[#171719] bg-[#A3E635]/35 font-black text-sm">
+                              TP (True Pos)<br /><span class="text-[10px] font-normal">ของจริง + ทายว่า +</span>
+                            </td>
+                            <td class="p-3 border-2 border-[#171719] bg-[#E11D48]/20 font-black text-sm text-[#BE123C]">
+                              FN (False Neg)<br /><span class="text-[10px] font-normal">ของจริง + แต่ทายหลุดเป็น −</span>
+                            </td>
+                            <td class="p-2 border border-[#171719] bg-[#2563EB]/10 font-bold text-[#1D4ED8]">
+                              Recall =<br />TP / (TP + FN)
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="p-2.5 border border-[#171719] font-bold bg-gray-100 text-left">Actual: NEGATIVE (−)</td>
+                            <td class="p-3 border-2 border-[#171719] bg-[#F59E0B]/30 font-black text-sm text-[#B45309]">
+                              FP (False Pos)<br /><span class="text-[10px] font-normal">ของจริง − แต่ทายเกินเป็น +</span>
+                            </td>
+                            <td class="p-3 border-2 border-[#171719] bg-gray-100 font-black text-sm">
+                              TN (True Neg)<br /><span class="text-[10px] font-normal">ของจริง − ทายว่า −</span>
+                            </td>
+                            <td class="p-2 border border-[#171719] text-gray-500 text-[10px]">
+                              Actual Negative Row
+                            </td>
+                          </tr>
+                          <tr class="bg-[#F59E0B]/15 font-bold">
+                            <td class="p-2 border border-[#171719] text-left">แนวตั้ง = PRECISION</td>
+                            <td class="p-2 border border-[#171719] text-[#B45309]">
+                              Precision = TP / (TP + FP)
+                            </td>
+                            <td class="p-2 border border-[#171719] text-gray-500" colspan="2">
+                              Accuracy = (TP + TN) / Total
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <!-- Business Decision Rule Visual Box -->
+                    <div class="lg:col-span-5 flex flex-col justify-between gap-3">
+                      <div class="p-3.5 border-2 border-[#171719] bg-[#2563EB]/10">
+                        <div class="font-black text-[#1D4ED8] text-sm">🚨 เมื่อไหร่ต้องเลือก RECALL สูงสุด?</div>
+                        <p class="text-[11px] text-[#171719] mt-1">
+                          เมื่อ <strong>False Negative (FN / การปล่อยหลุด)</strong> มีความเสียหายรุนแรง เช่น:
+                        </p>
+                        <ul class="text-[11px] mt-1.5 space-y-1 font-bold text-[#171719]">
+                          <li>• คัดกรองผู้ป่วยโรคร้ายแรง / บาดเจ็บ (FIFA Medical)</li>
+                          <li>• ลูกค้ากำลังจะย้ายค่าย (Customer Churn HW#2 → เลือก Model B ได้ Recall 0.90!)</li>
+                        </ul>
+                      </div>
+                      <div class="p-3.5 border-2 border-[#171719] bg-[#F59E0B]/15">
+                        <div class="font-black text-[#B45309] text-sm">🎯 เมื่อไหร่ต้องเลือก PRECISION สูงสุด?</div>
+                        <p class="text-[11px] text-[#171719] mt-1">
+                          เมื่อ <strong>False Positive (FP / การทายมั่วว่าใช่)</strong> มีต้นทุนแพง เช่น:
+                        </p>
+                        <ul class="text-[11px] mt-1.5 space-y-1 font-bold text-[#171719]">
+                          <li>• ระบบบล็อกอีเมลขยะ (ห้ามบล็อกอีเมลงานสำคัญของลูกค้า)</li>
+                          <li>• แคมเปญแจกส่วนลดราคาแพง (HW#2 → Model A ได้ Precision 0.89)</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 08 VISUAL: K-Means 8-Point Coordinate Grid & Silhouette Bar */}
+              {mod.id === 'module-08-kmeans' && (
+                <div class="space-y-6">
+                  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 font-mono text-xs">
+                    <!-- SVG 2D Plot of A1-A8 -->
+                    <div class="lg:col-span-7 bg-[#F4F1EA] border border-[#171719] p-4">
+                      <div class="font-bold text-[#171719] mb-2">
+                        🗺️ แผนภาพพิกัด 8 จุดจริง (A1–A8) และการขยับ Centroid รอบที่ 1 (Lect 08 p25–28)
+                      </div>
+                      <svg viewBox="0 0 420 260" class="w-full h-auto bg-white border border-[#171719] p-2">
+                        <!-- Grid lines -->
+                        <line x1="45" y1="225" x2="395" y2="225" stroke="#171719" stroke-width="2" />
+                        <line x1="45" y1="20" x2="45" y2="225" stroke="#171719" stroke-width="2" />
+                        <text x="220" y="250" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold">แกน X1 (1 ถึง 10)</text>
+                        <text x="15" y="125" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" transform="rotate(-90 15 125)">แกน X2 (1 ถึง 10)</text>
+
+                        <!-- Cluster 1 region: A1(2,10) -->
+                        <circle cx="105" cy="35" r="22" fill="#A3E635" fill-opacity="0.25" stroke="#4D7C0F" stroke-dasharray="3,3" />
+                        <circle cx="105" cy="35" r="6" fill="#4D7C0F" />
+                        <text x="140" y="38" font-family="monospace" font-size="10" font-weight="bold" fill="#171719">A1(2,10) = C1_new(2,10)</text>
+
+                        <!-- Cluster 3 region: A2(2,5), A7(1,2) -> C3_new(1.5, 3.5) -->
+                        <ellipse cx="92" cy="165" rx="45" ry="48" fill="#F59E0B" fill-opacity="0.2" stroke="#B45309" stroke-dasharray="3,3" />
+                        <circle cx="105" cy="135" r="5" fill="#B45309" />
+                        <text x="115" y="138" font-family="monospace" font-size="10" font-weight="bold">A2(2,5)</text>
+                        <circle cx="75" cy="195" r="5" fill="#B45309" />
+                        <text x="85" y="208" font-family="monospace" font-size="10" font-weight="bold">A7(1,2)=C3เดิม</text>
+                        <!-- New C3(1.5, 3.5) -->
+                        <rect x="85" y="160" width="10" height="10" fill="#E11D48" stroke="#171719" />
+                        <text x="102" y="170" font-family="monospace" font-size="10" font-weight="bold" fill="#E11D48">★ C3_new(1.5, 3.5)</text>
+
+                        <!-- Cluster 2 region: A4(5,8), A8(4,9), A5(7,5), A6(6,4), A3(8,4) -> C2_new(6,6) -->
+                        <ellipse cx="245" cy="115" rx="85" ry="68" fill="#2563EB" fill-opacity="0.15" stroke="#1D4ED8" stroke-dasharray="3,3" />
+                        <circle cx="165" cy="55" r="5" fill="#1D4ED8" />
+                        <text x="173" y="55" font-family="monospace" font-size="10" font-weight="bold">A8(4,9)</text>
+                        <circle cx="195" cy="75" r="5" fill="#1D4ED8" />
+                        <text x="203" y="75" font-family="monospace" font-size="10" font-weight="bold">A4(5,8)=C2เดิม</text>
+                        <circle cx="255" cy="135" r="5" fill="#1D4ED8" />
+                        <text x="263" y="135" font-family="monospace" font-size="10" font-weight="bold">A5(7,5)</text>
+                        <circle cx="225" cy="155" r="5" fill="#1D4ED8" />
+                        <text x="175" y="165" font-family="monospace" font-size="10" font-weight="bold">A6(6,4)</text>
+                        <circle cx="285" cy="155" r="5" fill="#1D4ED8" />
+                        <text x="293" y="158" font-family="monospace" font-size="10" font-weight="bold">A3(8,4)</text>
+
+                        <!-- C2_new(6,6) -->
+                        <line x1="195" y1="75" x2="225" y2="115" stroke="#E11D48" stroke-width="2" />
+                        <rect x="220" y="110" width="11" height="11" fill="#A3E635" stroke="#171719" stroke-width="2" />
+                        <text x="236" y="115" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">★ C2_new = (6, 6)</text>
+                      </svg>
+                    </div>
+
+                    <!-- Distance Formula Trap & Silhouette Spectrum -->
+                    <div class="lg:col-span-5 flex flex-col justify-between gap-3">
+                      <div class="p-3.5 border-2 border-[#171719] bg-[#E11D48]/10">
+                        <div class="font-black text-[#BE123C] text-sm">⚠️ แยกแยะ 2 สูตรระยะทางในห้องสอบ!</div>
+                        <div class="mt-2 p-2 bg-white border border-[#171719]">
+                          <div class="font-bold text-[#171719]">1. ตอนจัดจุดเข้ากลุ่ม (Assign Step — p25):</div>
+                          <div class="text-[#2563EB] font-bold mt-0.5">Manhattan = |x1 − c1| + |x2 − c2|</div>
+                        </div>
+                        <div class="mt-2 p-2 bg-white border border-[#171719]">
+                          <div class="font-bold text-[#171719]">2. ตอนคำนวณความแน่น Inertia/WCSS (p35):</div>
+                          <div class="text-[#E11D48] font-bold mt-0.5">Squared Euclidean = ∑ ||x − C_k||²</div>
+                        </div>
+                      </div>
+
+                      <div class="p-3.5 border-2 border-[#171719] bg-white">
+                        <div class="font-black text-[#171719] text-sm mb-2">📏 สเกลวัดผล Silhouette Score s(i)</div>
+                        <div class="grid grid-cols-3 text-center border border-[#171719] font-bold text-[11px]">
+                          <div class="p-2 bg-[#E11D48]/25 text-[#BE123C] border-r border-[#171719]">
+                            −1.0<br /><span class="text-[9px] font-normal">อยู่ผิดคลัสเตอร์</span>
+                          </div>
+                          <div class="p-2 bg-[#F59E0B]/25 text-[#B45309] border-r border-[#171719]">
+                            0.0<br /><span class="text-[9px] font-normal">ก้ำกึ่งขอบกลุ่ม</span>
+                          </div>
+                          <div class="p-2 bg-[#A3E635]/40 text-[#171719]">
+                            +1.0<br /><span class="text-[9px] font-normal">เกาะกลุ่มสมบูรณ์</span>
+                          </div>
+                        </div>
+                        <p class="text-[11px] text-gray-600 mt-2">
+                          <strong>s(i) = [b(i) − a(i)] / max(a(i), b(i))</strong> โดยต้องการให้ <strong>a(i) น้อย</strong> (ในกลุ่มชิดกัน) และ <strong>b(i) มาก</strong> (ห่างกลุ่มอื่น)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 09 VISUAL: 3 Biases, SHAP Force Plot & 3 Decision Gates */}
+              {mod.id === 'module-09-responsible-ai' && (
+                <div class="space-y-6 font-mono text-xs">
+                  <!-- Proxy Feature & Concept Drift Visual -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 border-2 border-[#171719] bg-[#E11D48]/10">
+                      <div class="font-black text-[#BE123C] text-sm mb-2">🕵️ กลไก Proxy Feature (Lect 09 p13)</div>
+                      <div class="bg-white p-3 border border-[#171719] space-y-2">
+                        <div class="flex items-center justify-between text-gray-400 line-through">
+                          <span>คอลัมน์: เชื้อชาติ / ศาสนา (Race)</span>
+                          <span class="px-1.5 py-0.5 bg-gray-200 text-gray-700 text-[10px] no-underline">ถูกลบออกแล้ว</span>
+                        </div>
+                        <div class="flex items-center justify-between font-bold text-[#E11D48]">
+                          <span>คอลัมน์: รหัสไปรษณีย์ (Postal Code)</span>
+                          <span>→ สะท้อนเขตที่อยู่อาศัย & เชื้อชาติ!</span>
+                        </div>
+                      </div>
+                      <p class="text-[11px] text-gray-700 mt-2">
+                        การลบตัวแปรอ่อนไหวออกอย่างเดียวไม่ทำให้โมเดลยุติธรรม เพราะยังมี <strong>Proxy Feature</strong> ซ่อนอยู่
+                      </p>
+                    </div>
+
+                    <div class="p-4 border-2 border-[#171719] bg-[#F59E0B]/15">
+                      <div class="font-black text-[#B45309] text-sm mb-2">📉 Concept Drift (Lect 09 p11, p20)</div>
+                      <div class="bg-white p-3 border border-[#171719] space-y-2">
+                        <div class="flex justify-between">
+                          <span>พฤติกรรมเดิมตอนเทรน:</span>
+                          <span class="font-bold">ไม่ซื้อ &gt; 45 วัน = Inactive</span>
+                        </div>
+                        <div class="flex justify-between text-[#E11D48] font-bold">
+                          <span>พฤติกรรมโลกจริงเปลี่ยน:</span>
+                          <span>ไม่ซื้อ &gt; 70 วัน = Inactive</span>
+                        </div>
+                        <div class="pt-1 border-t border-gray-200 text-center font-black text-[#BE123C]">
+                          ผลลัพธ์: ค่า Recall ตกฮวบเหลือเพียง 54%!
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SHAP Force Plot & 3 Decision Gates -->
+                  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div class="md:col-span-7 p-4 border-2 border-[#171719] bg-[#F4F1EA]">
+                      <div class="font-black text-[#171719] text-sm mb-2">⚡ แผนภาพ SHAP Force Plot (Local Explanation)</div>
+                      <div class="bg-white border border-[#171719] p-3">
+                        <div class="flex justify-between text-[10px] text-gray-500 mb-1">
+                          <span>ค่าเฉลี่ยตั้งต้น Base Value E[f(x)]</span>
+                          <span>คำทำนายสุทธิรายบุคคล f(x)</span>
+                        </div>
+                        <div class="grid grid-cols-12 h-8 border border-[#171719] font-bold text-[11px] text-white">
+                          <div class="col-span-7 bg-[#E11D48] flex items-center justify-center">
+                            แรงผลักบวก (+SHAP) ดันคะแนนขึ้น →
+                          </div>
+                          <div class="col-span-5 bg-[#2563EB] flex items-center justify-center">
+                            ← แรงผลักลบ (−SHAP)
+                          </div>
+                        </div>
+                        <p class="text-[11px] text-gray-700 mt-2">
+                          อธิบายระดับรายบุคคล (Local XAI) ว่าตัวแปรใดผลักให้เคสนี้ถูกตัดสินใจไปในทิศทางบวกหรือลบเท่าใด
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="md:col-span-5 p-4 border-2 border-[#171719] bg-white">
+                      <div class="font-black text-[#171719] text-sm mb-2">🚦 3 ทางเลือกที่ Decision Gates (p36)</div>
+                      <div class="space-y-1.5">
+                        <div class="p-2 bg-[#A3E635]/30 border border-[#171719] font-bold">
+                          1. ACCEPT: อนุมัติใช้งานจริงพร้อม Monitoring
+                        </div>
+                        <div class="p-2 bg-[#F59E0B]/30 border border-[#171719] font-bold">
+                          2. REVISE: ส่งกลับไปแก้ไขในขั้นตอน CRISP-DS ก่อนหน้า
+                        </div>
+                        <div class="p-2 bg-[#E11D48]/20 border border-[#171719] font-bold text-[#BE123C]">
+                          3. REJECT: ระงับการนำโมเดลไปใช้งานเด็ดขาด
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULES 01-03 VISUAL: Foundation Visuals */}
+              {mod.id === 'module-01-crisp-ds' && (
+                <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
+                  <div class="font-bold text-[#171719]">🔄 วงจร CRISP-DS 8 ขั้นตอน (Iterative Cycle — ย้อนกลับไปแก้ไขได้ตลอด)</div>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div class="p-2.5 bg-white border border-[#171719]"><strong>1. Business</strong><br />ตั้งเป้าหมายธุรกิจ</div>
+                    <div class="p-2.5 bg-white border border-[#171719]"><strong>2. Data Underst.</strong><br />สำรวจโครงสร้างข้อมูล</div>
+                    <div class="p-2.5 bg-[#A3E635] border-2 border-[#171719] font-bold"><strong>3. Data Prep ★</strong><br />กินเวลา 60–80% ของงาน!</div>
+                    <div class="p-2.5 bg-white border border-[#171719]"><strong>4. EDA</strong><br />หา Pattern & Outlier</div>
+                    <div class="p-2.5 bg-white border border-[#171719]"><strong>5. Modeling</strong><br />ฝึกสอนโมเดล</div>
+                    <div class="p-2.5 bg-white border border-[#171719]"><strong>6. Evaluation</strong><br />วัดผลเทียบเกณฑ์ธุรกิจ</div>
+                    <div class="p-2.5 bg-white border border-[#171719]"><strong>7. Deployment</strong><br />ใช้งานจริง & Storytelling</div>
+                    <div class="p-2.5 bg-white border border-[#171719]"><strong>8. AI Improvement</strong><br />เฝ้าระวัง Drift & HITL</div>
+                  </div>
+                </div>
+              )}
+
+              {mod.id === 'module-02-data-cleaning' && (
+                <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
+                  <div class="font-bold text-[#171719]">🧹 กฎเหล็ก Clean Before Impute (Lect 04.1 p29, p34)</div>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="p-3 bg-[#E11D48]/15 border border-[#171719]">
+                      <div class="font-bold text-[#BE123C]">STEP 1: ตัด Known Invalid ก่อน!</div>
+                      <p class="mt-1 text-[11px]">ตัดค่าผิดปกติชัดเจน เช่น รายได้ติดลบ (-40,000) หรือพิมพ์ศูนย์เกิน (904,000) ออกจากตัวหารก่อนเสมอ</p>
+                    </div>
+                    <div class="p-3 bg-white border border-[#171719]">
+                      <div class="font-bold text-[#171719]">STEP 2: คำนวณค่าแทนที่ (Impute)</div>
+                      <p class="mt-1 text-[11px]">หา Valid Mean หรือ Cluster-based Median จากข้อมูลที่สะอาดแล้วเท่านั้น</p>
+                    </div>
+                    <div class="p-3 bg-[#A3E635]/30 border border-[#171719]">
+                      <div class="font-bold text-[#171719]">STEP 3: สร้างคอลัมน์ Flag เสมอ</div>
+                      <p class="mt-1 text-[11px]">บันทึกหลักฐาน Traceability เช่นตั้งค่า <code>income_imputed = 1</code></p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {mod.id === 'module-03-feature-engineering' && (
+                <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
+                  <div class="font-bold text-[#171719]">⚖️ กฎเหล็กป้องกัน Data Leakage ในการทำ Feature Scaling (Lect 04.2 p21, p27)</div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="p-3 bg-[#A3E635]/25 border border-[#171719]">
+                      <div class="font-bold text-[#171719]">✅ กฎ Fit เฉพาะบน Training Set</div>
+                      <p class="mt-1 text-[11px]">คำนวณค่า min, max, μ, σ จาก <strong>Training Set เท่านั้น</strong> แล้วนำค่าพารามิเตอร์เดิมนั้นไปแปลง (Transform) บน Validation และ Test Set</p>
+                    </div>
+                    <div class="p-3 bg-white border border-[#171719]">
+                      <div class="font-bold text-[#E11D48]">⚠️ Z-Score ไม่เปลี่ยนรูปทรงความเบ้ (Shape)</div>
+                      <p class="mt-1 text-[11px]">Z-Score ปรับเพียง Mean = 0, SD = 1 แต่ถ้าข้อมูลเดิมเบ้ขวา หลังทำ Z-Score ก็ยังคงเบ้ขวาเหมือนเดิม (แก้ความเบ้ต้องใช้ Log Transform)</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- ALL EXAM TRAPS (ครบทุกจุดหลอกในบทเรียน พร้อมเทียบ ผิด vs ถูก) -->
+            <!-- ========================================================= -->
+            <div class="space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 bg-[#E11D48] text-white font-mono text-xs font-bold">
+                  EXAM TRAPS ({mod.examTraps.length} จุดต้องระวัง)
+                </span>
+                <h3 class="font-['Space_Grotesk'] font-black text-base sm:text-lg text-[#171719]">
+                  กับดักข้อสอบอาจารย์ & วิธีคิดที่ถูกต้องตามสไลด์
+                </h3>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4">
+                {mod.examTraps.map((trap, tIdx) => (
+                  <div class="border-2 border-[#171719] bg-white shadow-[3px_3px_0px_#E11D48] overflow-hidden">
+                    <div class="bg-[#171719] text-white px-4 py-2 flex flex-wrap justify-between items-center gap-2 font-mono text-xs">
+                      <span class="font-bold text-[#A3E635]">
+                        ⚠️ กับดักจุดที่ {tIdx + 1}: {trap.trapTitle}
+                      </span>
+                      <span class="px-2 py-0.5 bg-[#222226] border border-gray-600 text-gray-200 text-[11px]">
+                        อ้างอิง: {trap.slideRef}
+                      </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#171719]">
+                      <div class="p-4 bg-[#E11D48]/5">
+                        <div class="text-xs font-mono font-bold text-[#BE123C] mb-1">
+                          ❌ สิ่งที่โจทย์หลอก / ความเข้าใจผิดที่พบบ่อย:
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-800 leading-relaxed">
+                          {trap.trapDescription}
+                        </p>
+                      </div>
+                      <div class="p-4 bg-[#A3E635]/15">
+                        <div class="text-xs font-mono font-bold text-[#171719] mb-1">
+                          ✅ หลักการที่ถูกต้องตามสไลด์อาจารย์:
+                        </div>
+                        <p class="text-xs sm:text-sm text-[#171719] font-semibold leading-relaxed">
+                          {trap.correctApproach}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- ULTRA-DETAILED SECTIONS & TABLES -->
+            <!-- ========================================================= -->
+            <div class="space-y-6">
+              {mod.sections.map((sec) => (
+                <div class="border-2 border-[#171719] bg-white p-4 sm:p-6 shadow-[4px_4px_0px_#171719]">
+                  <h4 class="font-['Space_Grotesk'] font-black text-base sm:text-lg text-[#171719] border-b-2 border-[#171719] pb-2 mb-2">
+                    {sec.title}
+                  </h4>
+                  <p class="text-xs sm:text-sm font-mono text-gray-600 mb-4">
+                    {sec.conceptSummary}
+                  </p>
+
+                  {sec.tableData && (
+                    <div class="overflow-x-auto mb-4">
+                      <table class="w-full text-left text-xs font-mono border-collapse border-2 border-[#171719]">
+                        <thead>
+                          <tr class="bg-[#171719] text-[#A3E635]">
+                            {sec.tableData.headers.map((h) => (
+                              <th class="p-2.5 border border-[#171719] font-bold">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#171719]/30">
+                          {sec.tableData.rows.map((row, rIdx) => (
+                            <tr class={rIdx % 2 === 0 ? 'bg-white' : 'bg-[#F4F1EA]/60'}>
+                              {row.map((cell, cIdx) => (
+                                <td class={`p-2.5 border border-[#171719]/30 leading-relaxed ${cIdx === 0 ? 'font-bold text-[#171719]' : 'text-gray-800'}`}>
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  <ul class="space-y-2">
+                    {sec.keyPoints.map((pt) => (
+                      <li class="flex items-start gap-2.5 text-xs sm:text-sm text-[#171719] leading-relaxed bg-[#F4F1EA]/70 p-2.5 border-l-4 border-[#171719]">
+                        <span class="font-mono font-bold text-[#171719] shrink-0">▪</span>
+                        <span>{pt}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <!-- Modal Footer Navigation -->
+            <div class="pt-4 border-t-2 border-[#171719] flex flex-wrap justify-between items-center gap-3 font-mono text-xs">
+              <div class="flex items-center gap-2">
+                {prevMod && (
+                  <button
+                    type="button"
+                    data-switch-module={prevMod.id}
+                    class="px-3.5 py-2 bg-white hover:bg-[#EAE6DC] text-[#171719] font-bold border-2 border-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer"
+                  >
+                    ← บทที่ {prevMod.moduleNumber}
+                  </button>
+                )}
+                {nextMod && (
+                  <button
+                    type="button"
+                    data-switch-module={nextMod.id}
+                    class="px-3.5 py-2 bg-[#171719] hover:bg-[#222226] text-[#A3E635] font-bold border-2 border-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer"
+                  >
+                    บทที่ {nextMod.moduleNumber}: {nextMod.title.slice(0, 22)}... →
+                  </button>
+                )}
+              </div>
+
+              <button
+                type="button"
+                data-close-modal
+                class="px-4 py-2 bg-white hover:bg-gray-100 text-[#171719] font-bold border-2 border-[#171719] cursor-pointer"
+              >
+                กลับไปยังหน้ารวมบทเรียน
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>

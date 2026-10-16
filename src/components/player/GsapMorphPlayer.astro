@@ -35,11 +35,11 @@ const { formula } = Astro.props;
         data-audio-toggle
         data-audio-context="header"
         class="audio-toggle-btn flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-bold border-2 border-[#A3E635] text-[#A3E635] hover:bg-[#A3E635] hover:text-[#171719] transition-all duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none group relative overflow-hidden"
-        title="เปิด/ปิด เสียงคำบรรยายภาษาไทย"
+        title="เล่นแอนิเมชันและเสียงบรรยายภาษาไทยอัตโนมัติจนจบขั้นตอน"
       >
         <div class="absolute inset-0 bg-[#A3E635] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></div>
         <svg class="w-4 h-4 flex-shrink-0 relative z-10 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        <span data-audio-text class="relative z-10 transition-colors">ฟังคำอธิบายเสียงไทย</span>
+        <span data-audio-text class="relative z-10 transition-colors">เล่นอัตโนมัติพร้อมเสียงไทย</span>
       </button>
     </div>
   </div>
@@ -104,54 +104,62 @@ const { formula } = Astro.props;
     </div>
 
     <!-- Right: KaTeX Animated Derivation Display (Zone B) -->
-    <div class="lg:col-span-7 min-w-0 max-w-full p-6 bg-white flex flex-col justify-center items-center min-h-[220px] relative overflow-hidden">
+    <div
+      data-derivation-stage
+      class="lg:col-span-7 min-w-0 max-w-full p-4 sm:p-6 bg-white flex flex-col justify-between items-center relative overflow-hidden min-h-[340px] sm:min-h-[350px]"
+    >
       <div class="absolute top-2 right-2 text-[10px] font-mono uppercase text-gray-400">
         KaTeX Derivation Stage
       </div>
-      <!-- KaTeX Equation Mount Point -->
+      <!-- KaTeX Equation Mount Point (Locked stable height to eliminate vertical jumping) -->
       <div
         data-katex-mount
-        class="katex-mount w-full max-w-full min-w-0 py-4 px-2 flex justify-center items-center text-xl sm:text-2xl text-[#171719] font-mono tabular-nums overflow-x-auto min-h-[110px] max-h-[360px] overflow-y-auto"
+        class="katex-mount w-full max-w-full min-w-0 h-[105px] sm:h-[115px] py-2 px-2 flex justify-center items-center text-xl sm:text-2xl text-[#171719] font-mono tabular-nums overflow-x-auto overflow-y-hidden shrink-0"
       >
         <!-- Injected via FormulaMorphEngine -->
       </div>
 
-      <!-- Current Step Explanation Box (With Integrated Contextual Audio Button) -->
-      <div class="w-full mt-4 p-3.5 bg-[#F4F1EA] border border-[#171719] text-xs sm:text-sm transition-all duration-300 min-w-0 max-w-full overflow-hidden">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-[#171719]/20">
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="step-indicator-badge px-2 py-0.5 bg-[#171719] text-[#A3E635] text-xs font-mono font-bold transition-all duration-300 flex-shrink-0">
-              สเต็ป <span data-step-indicator>1</span> / {formula.steps.length}
-            </span>
-            <h4 data-step-title class="font-bold text-[#171719] text-sm sm:text-base transition-all duration-300 truncate">
-              {formula.steps[0].title}
-            </h4>
+      <!-- Current Step Explanation Box (Stabilized container height across all frames) -->
+      <div
+        data-explanation-box
+        class="w-full mt-3 p-3.5 bg-[#F4F1EA] border border-[#171719] text-xs sm:text-sm min-w-0 max-w-full overflow-hidden flex flex-col justify-between min-h-[175px] sm:min-h-[165px]"
+      >
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#171719]/20">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="step-indicator-badge px-2 py-0.5 bg-[#171719] text-[#A3E635] text-xs font-mono font-bold transition-all duration-300 flex-shrink-0">
+                สเต็ป <span data-step-indicator>1</span> / {formula.steps.length}
+              </span>
+              <h4 data-step-title class="font-bold text-[#171719] text-sm sm:text-base transition-all duration-300 truncate">
+                {formula.steps[0].title}
+              </h4>
+            </div>
+
+            <!-- Direct In-Context Step Audio Button -->
+            <button
+              type="button"
+              data-audio-toggle
+              data-audio-context="step"
+              aria-pressed="false"
+              aria-label="ฟังเสียงบรรยายขั้นตอนนี้"
+              class="audio-toggle-btn flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] text-xs font-mono font-bold border-2 border-[#171719] bg-white hover:bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#171719] outline-none relative overflow-hidden flex-shrink-0"
+              title="ฟังเสียงบรรยายขั้นตอนการคำนวณนี้"
+            >
+              <div class="audio-wave-indicator hidden absolute inset-0 bg-gradient-to-r from-transparent via-[#A3E635]/30 to-transparent animate-[waveSweep_1.5s_ease-in-out_infinite]"></div>
+              <svg class="w-4 h-4 flex-shrink-0 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <span data-audio-text class="relative z-10">ฟังเสียงอธิบายสเต็ปนี้</span>
+            </button>
           </div>
 
-          <!-- Direct In-Context Step Audio Button -->
-          <button
-            type="button"
-            data-audio-toggle
-            data-audio-context="step"
-            aria-pressed="false"
-            aria-label="ฟังเสียงบรรยายขั้นตอนนี้"
-            class="audio-toggle-btn flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] text-xs font-mono font-bold border-2 border-[#171719] bg-white hover:bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] active:translate-y-0.5 active:shadow-none cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#171719] outline-none relative overflow-hidden flex-shrink-0"
-            title="ฟังเสียงบรรยายขั้นตอนการคำนวณนี้"
-          >
-            <div class="audio-wave-indicator hidden absolute inset-0 bg-gradient-to-r from-transparent via-[#A3E635]/30 to-transparent animate-[waveSweep_1.5s_ease-in-out_infinite]"></div>
-            <svg class="w-4 h-4 flex-shrink-0 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <span data-audio-text class="relative z-10">ฟังเสียงอธิบายสเต็ปนี้</span>
-          </button>
+          <p data-step-explanation class="text-[#171719] font-medium leading-relaxed text-xs sm:text-sm transition-all duration-300 break-words">
+            {formula.steps[0].explanation}
+          </p>
         </div>
-
-        <p data-step-explanation class="text-[#171719] font-medium leading-relaxed text-xs sm:text-sm transition-all duration-300 break-words">
-          {formula.steps[0].explanation}
-        </p>
 
         <!-- Exam Trap Warning (Hazard Crimson) -->
         <div
           data-trap-box
-          class="hidden mt-2 p-2 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-xs font-mono text-[#BE123C] transition-all duration-300 origin-top"
+          class="hidden mt-2 p-2 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-xs font-mono text-[#BE123C] transition-all duration-300 origin-top shrink-0"
         >
           <span class="font-bold">⚠️ กับดักข้อสอบอาจารย์:</span>
           <span data-trap-text class="ml-1"></span>
@@ -477,6 +485,59 @@ const { formula } = Astro.props;
       const prevBtn = playerEl.querySelector<HTMLButtonElement>('[data-prev-step]');
       const nextBtn = playerEl.querySelector<HTMLButtonElement>('[data-next-step]');
       const audioButtons = playerEl.querySelectorAll<HTMLButtonElement>('[data-audio-toggle]');
+      const explanationBox = playerEl.querySelector<HTMLElement>('[data-explanation-box]');
+
+      function stabilizeBoxHeight() {
+        if (!explanationBox) return;
+
+        const targetWidth = explanationBox.clientWidth;
+        if (targetWidth <= 0) return;
+
+        // Clone off-screen to measure max height across all steps of this formula
+        const clone = explanationBox.cloneNode(true) as HTMLElement;
+        clone.style.position = 'absolute';
+        clone.style.left = '-9999px';
+        clone.style.top = '-9999px';
+        clone.style.visibility = 'hidden';
+        clone.style.pointerEvents = 'none';
+        clone.style.height = 'auto';
+        clone.style.minHeight = '0';
+        clone.style.maxHeight = 'none';
+        clone.style.boxSizing = 'border-box';
+        clone.style.width = `${targetWidth}px`;
+
+        document.body.appendChild(clone);
+
+        let maxHeight = 0;
+        const cTitle = clone.querySelector<HTMLElement>('[data-step-title]');
+        const cExp = clone.querySelector<HTMLElement>('[data-step-explanation]');
+        const cTrap = clone.querySelector<HTMLElement>('[data-trap-box]');
+        const cTrapText = clone.querySelector<HTMLElement>('[data-trap-text]');
+
+        formula.steps.forEach((step) => {
+          if (cTitle) cTitle.textContent = step.title;
+          if (cExp) cExp.textContent = step.explanation;
+          if (cTrap && cTrapText) {
+            if (step.examTrapWarning) {
+              cTrapText.textContent = step.examTrapWarning;
+              cTrap.classList.remove('hidden');
+            } else {
+              cTrap.classList.add('hidden');
+            }
+          }
+          const h = clone.offsetHeight;
+          if (h > maxHeight) {
+            maxHeight = h;
+          }
+        });
+
+        document.body.removeChild(clone);
+
+        if (maxHeight > 0) {
+          // Lock to the max step height with 2px buffer for subpixel font rendering variations
+          explanationBox.style.minHeight = `${maxHeight + 2}px`;
+        }
+      }
 
       let isTransitioning = false;
       let currentStepIndex = 1;
@@ -566,6 +627,29 @@ const { formula } = Astro.props;
 
       engine.init();
       updateButtonStates();
+      stabilizeBoxHeight();
+
+      document.fonts.ready.then(() => {
+        stabilizeBoxHeight();
+      });
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              stabilizeBoxHeight();
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.05 });
+        observer.observe(playerEl);
+      }
+
+      let resizeTimer: ReturnType<typeof setTimeout>;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(stabilizeBoxHeight, 150);
+      });
 
       // Controls
       prevBtn?.addEventListener('click', () => {
@@ -579,20 +663,16 @@ const { formula } = Astro.props;
       audioButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
           const isPlaying = btn.classList.contains('audio-playing');
-          
-          // Remove playing state from all audio buttons in this player
-          audioButtons.forEach((b) => b.classList.remove('audio-playing'));
-          
+          const isHeaderBtn = btn.getAttribute('data-audio-context') === 'header';
+
           if (!isPlaying) {
-            btn.classList.add('audio-playing');
-            engine.playAudio();
-            
-            // Auto-remove playing state after a timeout (you can adjust based on audio duration)
-            setTimeout(() => {
-              btn.classList.remove('audio-playing');
-            }, 5000);
+            if (isHeaderBtn) {
+              engine.startAutoPlay();
+            } else {
+              engine.playStepAudio();
+            }
           } else {
-            engine.stopAudio?.();
+            engine.stopAudio();
           }
         });
       });
