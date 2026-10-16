@@ -54,18 +54,6 @@ const navLinks = [
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Syne:wght@700;800&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Prevent FOUC: Add js-ready class synchronously before first paint -->
-    <script is:inline>
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.documentElement.classList.add('js-ready');
-      }
-    </script>
-    <noscript>
-      <style>
-        .gsap-reveal { opacity: 1 !important; transform: none !important; }
-      </style>
-    </noscript>
   </head>
   <body class="bg-[#F4F1EA] text-[#171719] min-h-screen flex flex-col font-['Plus_Jakarta_Sans',_'IBM_Plex_Sans_Thai',_sans-serif] overflow-x-hidden max-w-full">
     <!-- Skip Link for Accessibility -->
@@ -230,10 +218,13 @@ const navLinks = [
       }
     </script>
 
-    <!-- Lenis Smooth Scrolling Engine synchronized with GSAP ticker -->
+    <!-- Lenis Smooth Scrolling Engine synchronized with GSAP ticker & ScrollTrigger -->
     <script>
       import Lenis from 'lenis';
       import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+      gsap.registerPlugin(ScrollTrigger);
 
       const lenis = new Lenis({
         duration: 1.15,
@@ -245,6 +236,9 @@ const navLinks = [
         touchMultiplier: 1.5,
       });
 
+      // Synchronize Lenis scroll position with GSAP ScrollTrigger
+      lenis.on('scroll', ScrollTrigger.update);
+
       // Synchronize Lenis with GSAP ticker for unified frame timing
       gsap.ticker.add((time) => {
         lenis.raf(time * 1000);
@@ -253,6 +247,7 @@ const navLinks = [
 
       // Expose globally for modals or components
       (window as any).lenis = lenis;
+      (window as any).ScrollTrigger = ScrollTrigger;
 
       // Handle anchor links with smooth scroll via Lenis
       document.addEventListener('click', (e) => {
@@ -281,61 +276,76 @@ const navLinks = [
         }, 150);
       }
 
-      // Minimal GSAP entrance animation strictly for MAIN top-level elements (Zero Blink / 90% Trigger)
+      // Minimal GSAP entrance animation on MAIN block elements using ScrollTrigger (start: 'top 90%')
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
-        // Select only main top-level containers/sections (NOT individual sub-cards or inner buttons)
-        const mainElements = Array.from(
-          document.querySelectorAll<HTMLElement>('#main-content > section, #main-content > div:not(#module-study-modal)')
+        // Ensure initial focus filter state is reflected before measuring ScrollTrigger positions
+        const savedFocus = localStorage.getItem('ds_final_focus');
+        const isFocus = savedFocus !== null ? savedFocus === 'true' : true;
+        if (isFocus) {
+          document.querySelectorAll<HTMLElement>('.module-card[data-focus="false"]').forEach((card) => {
+            card.classList.add('hidden');
+          });
+        }
+
+        // Select main standalone blocks/cards across pages (excluding giant page-wrappers and inner sub-elements)
+        const rawCandidates = Array.from(
+          document.querySelectorAll<HTMLElement>(
+            [
+              '#main-content > section:first-of-type',
+              '#main-content > section:nth-of-type(2) > div:first-child',
+              '.module-card',
+              '#main-content > section:nth-of-type(3)',
+              '#main-content > div:not(.business-lab-container):not(.exam-arena-container):not(#formulas-list):not(#module-study-modal)',
+              '#main-content > div:nth-of-type(2) > div',
+              '#main-content > div:nth-of-type(3) > div',
+              '.formula-section',
+              '.business-lab-container > div:first-child',
+              '#builder-mode-view > div',
+              '.exam-arena-container > div:first-child',
+              '.exam-arena-container .lg\\:col-span-8 > div',
+              '.exam-arena-container .lg\\:col-span-4 > div',
+            ].join(', ')
+          )
         );
 
-        // IntersectionObserver triggering when top of element reaches 90% of screen height
-        // rootMargin bottom: -10% means the trigger line is at 100% - 10% = 90% of viewport height
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                const el = entry.target as HTMLElement;
-                observer.unobserve(el);
-
-                // Animate main element smoothly to normal position
-                gsap.from(el, {
-                  y: 24,
-                  opacity: 0,
-                  duration: 0.5,
-                  ease: 'power2.out',
-                  clearProps: 'transform,opacity',
-                });
-                el.classList.remove('gsap-reveal');
-              }
-            });
-          },
-          { rootMargin: '0px 0px -10% 0px', threshold: 0 }
+        // Filter out any container that wraps another matched main element so only the main block itself animates
+        const mainElements = rawCandidates.filter(
+          (el) => !rawCandidates.some((other) => other !== el && el.contains(other))
         );
 
-        const screenTriggerLine = window.innerHeight * 0.9;
+        mainElements.forEach((el) => {
+          if (el.classList.contains('hidden')) return;
 
-        mainElements.forEach((el, index) => {
-          const rect = el.getBoundingClientRect();
+          gsap.from(el, {
+            y: 28,
+            opacity: 0,
+            duration: 0.55,
+            ease: 'power2.out',
+            onComplete: () => {
+              gsap.set(el, { clearProps: 'transform,opacity' });
+            },
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 90%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          });
+        });
 
-          if (rect.top <= screenTriggerLine) {
-            // Already above 90% screen height on initial load: animate immediately with slight sequence
-            gsap.from(el, {
-              y: 20,
-              opacity: 0,
-              duration: 0.5,
-              delay: index * 0.08,
-              ease: 'power2.out',
-              clearProps: 'transform,opacity',
-            });
-          } else {
-            // Below 90% screen height: pre-hide with .gsap-reveal (opacity 0, translateY) and wait for scroll
-            el.classList.add('gsap-reveal');
-            observer.observe(el);
-          }
+        // Refresh ScrollTrigger positions when filters toggle visibility
+        window.addEventListener('final-focus-change', () => {
+          setTimeout(() => ScrollTrigger.refresh(), 50);
+        });
+        document.querySelectorAll('#filter-all-btn, #filter-focus-btn, .cat-filter-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            setTimeout(() => ScrollTrigger.refresh(), 50);
+          });
         });
       }
     </script>
+
 
 
   </body>

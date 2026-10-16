@@ -134,10 +134,3 @@ a:focus-visible,
   outline: 2px solid #A3E635 !important;
   outline-offset: 2px !important;
 }
-
-/* GSAP Smooth Entrance Initial State (Guaranteed Zero-Blink FOUC prevention) */
-html.js-ready .gsap-reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  will-change: transform, opacity;
-}
