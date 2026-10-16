@@ -138,6 +138,6 @@ a:focus-visible,
 /* GSAP Smooth Entrance Initial State (Guaranteed Zero-Blink FOUC prevention) */
 html.js-ready .gsap-reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(20px);
   will-change: transform, opacity;
 }
