@@ -54,6 +54,18 @@ const navLinks = [
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Syne:wght@700;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Prevent FOUC: Add js-ready class synchronously before first paint -->
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js-ready');
+      }
+    </script>
+    <noscript>
+      <style>
+        .gsap-reveal { opacity: 1 !important; transform: none !important; }
+      </style>
+    </noscript>
   </head>
   <body class="bg-[#F4F1EA] text-[#171719] min-h-screen flex flex-col font-['Plus_Jakarta_Sans',_'IBM_Plex_Sans_Thai',_sans-serif] overflow-x-hidden max-w-full">
     <!-- Skip Link for Accessibility -->
@@ -269,66 +281,57 @@ const navLinks = [
         }, 150);
       }
 
-      // Minimal, clean GSAP entrance animation for page elements (zero blink/FOUC)
+      // Minimal, clean GSAP entrance animation for page elements (100% Zero Blink / Pre-hidden CSS)
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
-        // Only animate scroll-revealed elements that are below the initial viewportfold
-        // This ensures the top/hero content is rendered immediately without any blank/blink delay
-        const windowHeight = window.innerHeight;
+        // Tag interactive cards and sections with .gsap-reveal for entrance
+        const targets = document.querySelectorAll<HTMLElement>(
+          '.module-card, .formula-card, .business-case-card, main > section'
+        );
 
-        const revealObserver = new IntersectionObserver(
+        const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                const target = entry.target as HTMLElement;
-                revealObserver.unobserve(target);
+                const el = entry.target as HTMLElement;
+                observer.unobserve(el);
 
-                const cards = target.querySelectorAll<HTMLElement>('.module-card, .formula-card, .business-case-card');
-                if (cards.length > 0) {
-                  gsap.fromTo(
-                    cards,
-                    { y: 16, opacity: 0 },
-                    {
-                      y: 0,
-                      opacity: 1,
-                      duration: 0.4,
-                      stagger: 0.04,
-                      ease: 'power2.out',
-                      clearProps: 'transform,opacity',
-                    }
-                  );
-                } else {
-                  gsap.fromTo(
-                    target,
-                    { y: 12, opacity: 0 },
-                    {
-                      y: 0,
-                      opacity: 1,
-                      duration: 0.4,
-                      ease: 'power2.out',
-                      clearProps: 'transform,opacity',
-                    }
-                  );
-                }
+                // Animate to natural visible state from initial translateY / opacity: 0
+                gsap.to(el, {
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.45,
+                  ease: 'power2.out',
+                  clearProps: 'transform,opacity',
+                });
               }
             });
           },
-          { rootMargin: '0px 0px -40px 0px', threshold: 0.05 }
+          { rootMargin: '0px 0px -30px 0px', threshold: 0.05 }
         );
 
-        // Target below-fold sections and grids only
-        const observeTargets = document.querySelectorAll(
-          'main section:not(:first-child), #cheat-sheet-section, #formulas-container'
-        );
-        observeTargets.forEach((el) => {
+        targets.forEach((el, index) => {
           const rect = el.getBoundingClientRect();
-          // Strictly only observe if well below the visible viewport so initial view is 100% instant
-          if (rect.top > windowHeight * 0.85) {
-            revealObserver.observe(el);
+          // If above the fold on initial load, animate in immediately with clean stagger
+          if (rect.top < window.innerHeight) {
+            el.classList.add('gsap-reveal');
+            gsap.to(el, {
+              y: 0,
+              opacity: 1,
+              duration: 0.5,
+              delay: index * 0.04,
+              ease: 'power2.out',
+              clearProps: 'transform,opacity',
+            });
+          } else {
+            // Below fold: prepare state and wait for scroll into view
+            el.classList.add('gsap-reveal');
+            observer.observe(el);
           }
         });
       }
     </script>
+
 
   </body>
 </html>
