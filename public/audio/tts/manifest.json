@@ -5,9 +5,11 @@
     "stepIndex": 1,
     "text": "เพรสิชัน เท่ากับ ทรูโพสิทิฟ ส่วนด้วย ทรูโพสิทิฟ บวก ฟอลส์โพสิทิฟ",
     "filePath": "/audio/tts/precision_step_1.mp3",
-    "generatedAt": "2026-10-15T20:41:15Z",
+    "generatedAt": "2026-10-16T06:33:50Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 114519
+    "fileSizeBytes": 94457,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "precision_step_2": {
     "hash": "b7fa505517880dd8",
@@ -15,9 +17,11 @@
     "stepIndex": 2,
     "text": "แทนค่าตัวเลข ได้ สี่ ส่วนด้วย สี่บวกหนึ่ง",
     "filePath": "/audio/tts/precision_step_2.mp3",
-    "generatedAt": "2026-10-15T20:41:20Z",
+    "generatedAt": "2026-10-16T06:33:57Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 88606
+    "fileSizeBytes": 62692,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "precision_step_3": {
     "hash": "21b6a461cfea7ef4",
@@ -25,9 +29,11 @@
     "stepIndex": 3,
     "text": "รวมตัวส่วน ได้ สี่ ส่วน ห้า",
     "filePath": "/audio/tts/precision_step_3.mp3",
-    "generatedAt": "2026-10-15T20:41:25Z",
+    "generatedAt": "2026-10-16T06:34:03Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 55169
+    "fileSizeBytes": 53915,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "precision_step_4": {
     "hash": "11c6bff81b18d85c",
@@ -35,9 +41,11 @@
     "stepIndex": 4,
     "text": "คำนวณผลลัพธ์สุดท้าย ได้ ศูนย์จุดแปดศูนย์ หรือ แปดสิบเปอร์เซ็นต์",
     "filePath": "/audio/tts/precision_step_4.mp3",
-    "generatedAt": "2026-10-15T20:41:31Z",
+    "generatedAt": "2026-10-16T06:34:09Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 64364
+    "fileSizeBytes": 87770,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "recall_step_1": {
     "hash": "2d7afe4072d8a299",
@@ -45,9 +53,11 @@
     "stepIndex": 1,
     "text": "รีคอล เท่ากับ ทรูโพสิทิฟ ส่วนด้วย ทรูโพสิทิฟ บวก ฟอลส์เนกาทีฟ",
     "filePath": "/audio/tts/recall_step_1.mp3",
-    "generatedAt": "2026-10-15T20:41:37Z",
+    "generatedAt": "2026-10-16T06:34:14Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 118281
+    "fileSizeBytes": 93203,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "recall_step_2": {
     "hash": "2528bdc1c776cc6d",
@@ -55,9 +65,11 @@
     "stepIndex": 2,
     "text": "แทนค่าตัวเลข ได้ สี่ ส่วนด้วย สี่บวกสอง",
     "filePath": "/audio/tts/recall_step_2.mp3",
-    "generatedAt": "2026-10-15T20:41:43Z",
+    "generatedAt": "2026-10-16T06:34:20Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 82754
+    "fileSizeBytes": 63528,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "recall_step_3": {
     "hash": "07b3b7da81be37af",
@@ -65,9 +77,11 @@
     "stepIndex": 3,
     "text": "รวมตัวส่วน ได้ สี่ ส่วน หก",
     "filePath": "/audio/tts/recall_step_3.mp3",
-    "generatedAt": "2026-10-15T20:41:48Z",
+    "generatedAt": "2026-10-16T06:34:25Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 63528
+    "fileSizeBytes": 43466,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "recall_step_4": {
     "hash": "2065d0c46cd67e23",
@@ -75,9 +89,11 @@
     "stepIndex": 4,
     "text": "ผลลัพธ์สุดท้าย เท่ากับ ศูนย์จุดหกเจ็ด หรือ หกสิบหกจุดหกเจ็ด เปอร์เซ็นต์",
     "filePath": "/audio/tts/recall_step_4.mp3",
-    "generatedAt": "2026-10-15T20:41:55Z",
+    "generatedAt": "2026-10-16T06:34:32Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 131656
+    "fileSizeBytes": 84844,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "accuracy_step_1": {
     "hash": "22738f9307db72be",
@@ -85,9 +101,11 @@
     "stepIndex": 1,
     "text": "แอคคิวราซี เท่ากับ ทรูโพสิทิฟ บวก ทรูเนกาทีฟ ส่วนด้วย จำนวนทั้งหมด",
     "filePath": "/audio/tts/accuracy_step_1.mp3",
-    "generatedAt": "2026-10-15T20:42:03Z",
+    "generatedAt": "2026-10-16T06:34:38Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 108668
+    "fileSizeBytes": 95293,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "accuracy_step_2": {
     "hash": "81b645f43ac4bc4c",
@@ -95,9 +113,11 @@
     "stepIndex": 2,
     "text": "แทนค่าตัวเลข ได้ สี่บวกสาม ส่วนด้วย สิบ",
     "filePath": "/audio/tts/accuracy_step_2.mp3",
-    "generatedAt": "2026-10-15T20:42:10Z",
+    "generatedAt": "2026-10-16T06:34:44Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 79829
+    "fileSizeBytes": 72306,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "accuracy_step_3": {
     "hash": "0da71dbb85f0535c",
@@ -105,9 +125,11 @@
     "stepIndex": 3,
     "text": "ผลลัพธ์ เท่ากับ ศูนย์จุดเจ็ดศูนย์ หรือ เจ็ดสิบเปอร์เซ็นต์",
     "filePath": "/audio/tts/accuracy_step_3.mp3",
-    "generatedAt": "2026-10-15T20:42:17Z",
+    "generatedAt": "2026-10-16T06:34:52Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 104906
+    "fileSizeBytes": 77739,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "f1-score_step_1": {
     "hash": "fa0874ac30f7f71d",
@@ -115,9 +137,11 @@
     "stepIndex": 1,
     "text": "เอฟวัน เท่ากับ สองคูณ ทรูโพสิทิฟ ส่วนด้วย สองคูณทรูโพสิทิฟ บวก ฟอลส์โพสิทิฟ บวก ฟอลส์เนกาทีฟ",
     "filePath": "/audio/tts/f1-score_step_1.mp3",
-    "generatedAt": "2026-10-15T20:42:25Z",
+    "generatedAt": "2026-10-16T06:35:03Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 160077
+    "fileSizeBytes": 155479,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "f1-score_step_2": {
     "hash": "f129d298014d0284",
@@ -125,9 +149,11 @@
     "stepIndex": 2,
     "text": "แทนค่า ได้ สองคูณสี่ ส่วนด้วย สองคูณสี่ บวกหนึ่ง บวกสอง",
     "filePath": "/audio/tts/f1-score_step_2.mp3",
-    "generatedAt": "2026-10-15T20:42:32Z",
+    "generatedAt": "2026-10-16T06:35:13Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 122879
+    "fileSizeBytes": 97801,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "f1-score_step_3": {
     "hash": "a9804372db37caa8",
@@ -135,9 +161,11 @@
     "stepIndex": 3,
     "text": "เศษได้ แปด ส่วนได้ สิบเอ็ด",
     "filePath": "/audio/tts/f1-score_step_3.mp3",
-    "generatedAt": "2026-10-15T20:42:37Z",
+    "generatedAt": "2026-10-16T06:35:19Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 46392
+    "fileSizeBytes": 50990,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "f1-score_step_4": {
     "hash": "226c87d4c99c1b15",
@@ -145,9 +173,11 @@
     "stepIndex": 4,
     "text": "ผลลัพธ์สุดท้าย ได้ประมาณ ศูนย์จุดเจ็ดสาม",
     "filePath": "/audio/tts/f1-score_step_4.mp3",
-    "generatedAt": "2026-10-15T20:42:43Z",
+    "generatedAt": "2026-10-16T06:35:25Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 57677
+    "fileSizeBytes": 63528,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "valid-mean_step_1": {
     "hash": "e45b50ee2767ba0f",
@@ -155,9 +185,11 @@
     "stepIndex": 1,
     "text": "ขั้นตอนที่หนึ่ง คัดกรองค่าขยะ ตัด ลบสี่หมื่น ออก เหลือข้อมูลถูกต้อง สาม ค่า",
     "filePath": "/audio/tts/valid-mean_step_1.mp3",
-    "generatedAt": "2026-10-15T20:42:49Z",
+    "generatedAt": "2026-10-16T06:35:31Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 114101
+    "fileSizeBytes": 94039,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "valid-mean_step_2": {
     "hash": "c3a677ecdf1cef18",
@@ -165,9 +197,11 @@
     "stepIndex": 2,
     "text": "ตั้งสมการรวม เจ็ดหมื่นห้าพัน บวก ห้าหมื่น บวก เก้าหมื่นเก้าพันเก้าร้อยเก้าสิบเก้า หารด้วย สาม",
     "filePath": "/audio/tts/valid-mean_step_2.mp3",
-    "generatedAt": "2026-10-15T20:42:56Z",
+    "generatedAt": "2026-10-16T06:35:38Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 142105
+    "fileSizeBytes": 113266,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "valid-mean_step_3": {
     "hash": "2153fd1991e8e4eb",
@@ -175,9 +209,11 @@
     "stepIndex": 3,
     "text": "ผลรวมเศษได้ สองแสนสองหมื่นสี่พันเก้าร้อยเก้าสิบเก้า ส่วนด้วย สาม",
     "filePath": "/audio/tts/valid-mean_step_3.mp3",
-    "generatedAt": "2026-10-15T20:43:04Z",
+    "generatedAt": "2026-10-16T06:35:44Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 119953
+    "fileSizeBytes": 98219,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "valid-mean_step_4": {
     "hash": "ec18467d51487af6",
@@ -185,9 +221,11 @@
     "stepIndex": 4,
     "text": "ได้ค่าแทนที่ เจ็ดหมื่นห้าพันบาท พร้อมบันทึก แฟล็ก",
     "filePath": "/audio/tts/valid-mean_step_4.mp3",
-    "generatedAt": "2026-10-15T20:43:10Z",
+    "generatedAt": "2026-10-16T06:35:50Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 61857
+    "fileSizeBytes": 71052,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "cluster-median_step_1": {
     "hash": "b47e540dd26330e7",
@@ -195,9 +233,11 @@
     "stepIndex": 1,
     "text": "เรียงลำดับข้อมูล สี่สิบสอง สี่สิบเจ็ด สี่สิบแปด และ ห้าสิบเอ็ด",
     "filePath": "/audio/tts/cluster-median_step_1.mp3",
-    "generatedAt": "2026-10-15T20:43:18Z",
+    "generatedAt": "2026-10-16T06:35:56Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 119117
+    "fileSizeBytes": 84426,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "cluster-median_step_2": {
     "hash": "8cffae1c3e6f19ba",
@@ -205,9 +245,11 @@
     "stepIndex": 2,
     "text": "นำตัวกลางสองตัว สี่สิบเจ็ด บวก สี่สิบแปด หารด้วย สอง",
     "filePath": "/audio/tts/cluster-median_step_2.mp3",
-    "generatedAt": "2026-10-15T20:43:24Z",
+    "generatedAt": "2026-10-16T06:36:02Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 106578
+    "fileSizeBytes": 96129,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "cluster-median_step_3": {
     "hash": "e68eb03a772f09e0",
@@ -215,9 +257,11 @@
     "stepIndex": 3,
     "text": "ผลลัพธ์มัธยฐาน ได้ สี่สิบเจ็ดจุดห้า",
     "filePath": "/audio/tts/cluster-median_step_3.mp3",
-    "generatedAt": "2026-10-15T20:43:30Z",
+    "generatedAt": "2026-10-16T06:36:07Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 75231
+    "fileSizeBytes": 55169,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "min-max_step_1": {
     "hash": "08b6b3e86cbb42f6",
@@ -225,9 +269,11 @@
     "stepIndex": 1,
     "text": "หาอัตราส่วน ได้ หนึ่งหมื่นห้าพัน หาร หนึ่งแสนหกหมื่นห้าพัน เท่ากับ เศษหนึ่งส่วนสิบเอ็ด",
     "filePath": "/audio/tts/min-max_step_1.mp3",
-    "generatedAt": "2026-10-15T20:43:37Z",
+    "generatedAt": "2026-10-16T06:36:14Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 122879
+    "fileSizeBytes": 111594,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "min-max_step_2": {
     "hash": "842bc8b0d0eabba9",
@@ -235,9 +281,11 @@
     "stepIndex": 2,
     "text": "คูณด้วยความกว้างช่วงใหม่ คือ เก้า ลบ ศูนย์",
     "filePath": "/audio/tts/min-max_step_2.mp3",
-    "generatedAt": "2026-10-15T20:43:43Z",
+    "generatedAt": "2026-10-16T06:36:20Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 71470
+    "fileSizeBytes": 61857,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "min-max_step_3": {
     "hash": "c8ec7f556c8d555a",
@@ -245,9 +293,11 @@
     "stepIndex": 3,
     "text": "ผลลัพธ์สุดท้าย ได้ประมาณ ศูนย์จุดแปดสอง",
     "filePath": "/audio/tts/min-max_step_3.mp3",
-    "generatedAt": "2026-10-15T20:43:48Z",
+    "generatedAt": "2026-10-16T06:36:25Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 58931
+    "fileSizeBytes": 51408,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "z-score_step_1": {
     "hash": "aa93d8c11d16893e",
@@ -255,9 +305,11 @@
     "stepIndex": 1,
     "text": "ตั้งสมการ สามหมื่นห้าพัน ลบ เก้าหมื่นแปดร้อยสามสิบสามจุดสามสาม หารด้วย หกหมื่นเจ็ดพันสามร้อยห้าสิบห้าจุดแปดหนึ่ง",
     "filePath": "/audio/tts/z-score_step_1.mp3",
-    "generatedAt": "2026-10-15T20:43:57Z",
+    "generatedAt": "2026-10-16T06:36:33Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 198529
+    "fileSizeBytes": 157987,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "z-score_step_2": {
     "hash": "54a43e7c0807e265",
@@ -265,9 +317,11 @@
     "stepIndex": 2,
     "text": "เศษได้ ลบห้าหมื่นห้าพันแปดร้อยสามสิบสามจุดสามสาม",
     "filePath": "/audio/tts/z-score_step_2.mp3",
-    "generatedAt": "2026-10-15T20:44:03Z",
+    "generatedAt": "2026-10-16T06:36:39Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 84426
+    "fileSizeBytes": 73977,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "z-score_step_3": {
     "hash": "2f99e45f90a8cd86",
@@ -275,9 +329,11 @@
     "stepIndex": 3,
     "text": "ผลลัพธ์ ซีสโกร์ ได้ ลบศูนย์จุดแปดสาม",
     "filePath": "/audio/tts/z-score_step_3.mp3",
-    "generatedAt": "2026-10-15T20:44:08Z",
+    "generatedAt": "2026-10-16T06:36:44Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 54333
+    "fileSizeBytes": 50154,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "tukey-fences_step_1": {
     "hash": "c214655e7e5e105d",
@@ -285,9 +341,11 @@
     "stepIndex": 1,
     "text": "หา ไอคิวอาร์ เจ็ดสิบ ลบ สามสิบ ได้ สี่สิบ",
     "filePath": "/audio/tts/tukey-fences_step_1.mp3",
-    "generatedAt": "2026-10-15T20:44:14Z",
+    "generatedAt": "2026-10-16T06:36:50Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 92368
+    "fileSizeBytes": 71052,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "tukey-fences_step_2": {
     "hash": "280db5e0bdaeef3d",
@@ -295,9 +353,11 @@
     "stepIndex": 2,
     "text": "คำนวณรั้วบน เจ็ดสิบ บวก หนึ่งจุดห้าคูณสี่สิบ ได้ หนึ่งร้อยสามสิบ",
     "filePath": "/audio/tts/tukey-fences_step_2.mp3",
-    "generatedAt": "2026-10-15T20:44:21Z",
+    "generatedAt": "2026-10-16T06:36:56Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 112430
+    "fileSizeBytes": 84426,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "tukey-fences_step_3": {
     "hash": "307e957ced5c1b3e",
@@ -305,9 +365,11 @@
     "stepIndex": 3,
     "text": "คำนวณรั้วล่าง สามสิบ ลบ หกสิบ ได้ ลบสามสิบ",
     "filePath": "/audio/tts/tukey-fences_step_3.mp3",
-    "generatedAt": "2026-10-15T20:44:27Z",
+    "generatedAt": "2026-10-16T06:37:02Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 90278
+    "fileSizeBytes": 67708,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "tukey-fences_step_4": {
     "hash": "88662eb4ab09545e",
@@ -315,9 +377,11 @@
     "stepIndex": 4,
     "text": "หนึ่งร้อยสี่สิบ มากกว่า หนึ่งร้อยสามสิบ สรุปว่าเป็น เอาต์ไลเออร์",
     "filePath": "/audio/tts/tukey-fences_step_4.mp3",
-    "generatedAt": "2026-10-15T20:44:35Z",
+    "generatedAt": "2026-10-16T06:37:08Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 114519
+    "fileSizeBytes": 82754,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-impurity_step_1": {
     "hash": "850a0433c2d50ea1",
@@ -325,9 +389,11 @@
     "stepIndex": 1,
     "text": "กีนี เท่ากับ หนึ่ง ลบด้วย ผลบวกของความน่าจะเป็นแต่ละคลาสยกกำลังสอง",
     "filePath": "/audio/tts/gini-impurity_step_1.mp3",
-    "generatedAt": "2026-10-15T20:44:42Z",
+    "generatedAt": "2026-10-16T06:37:14Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 129566
+    "fileSizeBytes": 92368,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-impurity_step_2": {
     "hash": "95573270ca569d94",
@@ -335,9 +401,11 @@
     "stepIndex": 2,
     "text": "แทนค่า หนึ่ง ลบด้วย ศูนย์จุดห้ายกกำลังสอง บวก ศูนย์จุดห้ายกกำลังสอง",
     "filePath": "/audio/tts/gini-impurity_step_2.mp3",
-    "generatedAt": "2026-10-15T20:44:48Z",
+    "generatedAt": "2026-10-16T06:37:21Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 114519
+    "fileSizeBytes": 104906,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-impurity_step_3": {
     "hash": "65f259db79ae3e5f",
@@ -345,9 +413,11 @@
     "stepIndex": 3,
     "text": "ได้ค่า กีนี ของโหนดแม่ เท่ากับ ศูนย์จุดห้าศูนย์ศูนย์",
     "filePath": "/audio/tts/gini-impurity_step_3.mp3",
-    "generatedAt": "2026-10-15T20:44:55Z",
+    "generatedAt": "2026-10-16T06:37:26Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 94457
+    "fileSizeBytes": 82754,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-split_step_1": {
     "hash": "1d8944d8b0a089a3",
@@ -355,9 +425,11 @@
     "stepIndex": 1,
     "text": "ตั้งสมการถ่วงน้ำหนัก กิ่งซ้าย บวก กิ่งขวา",
     "filePath": "/audio/tts/gini-split_step_1.mp3",
-    "generatedAt": "2026-10-15T20:45:01Z",
+    "generatedAt": "2026-10-16T06:37:32Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 81083
+    "fileSizeBytes": 57677,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-split_step_2": {
     "hash": "5a84442b6d51b068",
@@ -365,9 +437,11 @@
     "stepIndex": 2,
     "text": "แทนค่าตัวเลข ได้ หกส่วนสิบ คูณ ศูนย์จุดสองเจ็ดแปด บวก สี่ส่วนสิบ คูณ ศูนย์จุดสองเจ็ดแปด",
     "filePath": "/audio/tts/gini-split_step_2.mp3",
-    "generatedAt": "2026-10-15T20:45:09Z",
+    "generatedAt": "2026-10-16T06:37:40Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 129566
+    "fileSizeBytes": 127894,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-split_step_3": {
     "hash": "ac881662c9ea2cff",
@@ -375,9 +449,11 @@
     "stepIndex": 3,
     "text": "ได้ กีนี สปลิต ของ แคนดิเดต เอ เท่ากับ ศูนย์จุดสองเจ็ดแปด",
     "filePath": "/audio/tts/gini-split_step_3.mp3",
-    "generatedAt": "2026-10-15T20:45:16Z",
+    "generatedAt": "2026-10-16T06:37:47Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 107832
+    "fileSizeBytes": 96129,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-gain_step_1": {
     "hash": "983b01cc29f78211",
@@ -385,9 +461,11 @@
     "stepIndex": 1,
     "text": "แคนดิเดต เอ ศูนย์จุดห้าศูนย์ศูนย์ ลบ ศูนย์จุดสองเจ็ดแปด ได้ เกน เท่ากับ ศูนย์จุดสองสองสอง",
     "filePath": "/audio/tts/gini-gain_step_1.mp3",
-    "generatedAt": "2026-10-15T20:45:24Z",
+    "generatedAt": "2026-10-16T06:37:53Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 133328
+    "fileSizeBytes": 111594,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-gain_step_2": {
     "hash": "279216102812fdc5",
@@ -395,9 +473,11 @@
     "stepIndex": 2,
     "text": "แคนดิเดต บี ศูนย์จุดห้าศูนย์ศูนย์ ลบ ศูนย์จุดสี่สี่สี่ ได้ เกน เท่ากับ ศูนย์จุดศูนย์ห้าหก",
     "filePath": "/audio/tts/gini-gain_step_2.mp3",
-    "generatedAt": "2026-10-15T20:45:32Z",
+    "generatedAt": "2026-10-16T06:38:01Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 151718
+    "fileSizeBytes": 127894,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "gini-gain_step_3": {
     "hash": "a3ec26576198e6c1",
@@ -405,9 +485,11 @@
     "stepIndex": 3,
     "text": "ศูนย์จุดสองสองสอง มากกว่า ศูนย์จุดศูนย์ห้าหก ตัดสินใจเลือก แคนดิเดต เอ",
     "filePath": "/audio/tts/gini-gain_step_3.mp3",
-    "generatedAt": "2026-10-15T20:45:40Z",
+    "generatedAt": "2026-10-16T06:38:07Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 112430
+    "fileSizeBytes": 94039,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "kmeans-distance-centroid_step_1": {
     "hash": "f7ba8aef914eae41",
@@ -415,9 +497,11 @@
     "stepIndex": 1,
     "text": "คลัสเตอร์สอง ประกอบด้วยสมาชิก ห้าจุด ได้แก่ เอสาม เอสี่ เอห้า เอหก และ เอแปด",
     "filePath": "/audio/tts/kmeans-distance-centroid_step_1.mp3",
-    "generatedAt": "2026-10-15T20:45:48Z",
+    "generatedAt": "2026-10-16T06:38:14Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 151300
+    "fileSizeBytes": 117027,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "kmeans-distance-centroid_step_2": {
     "hash": "eb6f9e9d226255fe",
@@ -425,9 +509,11 @@
     "stepIndex": 2,
     "text": "หาค่าเฉลี่ยแกนเอ็กซ์หนึ่ง และแกนเอ็กซ์สอง นำมาหารด้วย ห้า",
     "filePath": "/audio/tts/kmeans-distance-centroid_step_2.mp3",
-    "generatedAt": "2026-10-15T20:45:55Z",
+    "generatedAt": "2026-10-16T06:38:22Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 99055
+    "fileSizeBytes": 76903,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "kmeans-distance-centroid_step_3": {
     "hash": "86c970c566b10c7a",
@@ -435,9 +521,11 @@
     "stepIndex": 3,
     "text": "แกนแรกได้ สามสิบส่วนห้า แกนสองได้ สามสิบส่วนห้า พิกัดเซนทรอยด์ใหม่คือ หก คอมม่า หก",
     "filePath": "/audio/tts/kmeans-distance-centroid_step_3.mp3",
-    "generatedAt": "2026-10-15T20:46:04Z",
+    "generatedAt": "2026-10-16T06:38:30Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 158405
+    "fileSizeBytes": 106578,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "kmeans-distance-centroid_step_4": {
     "hash": "33814c15dab760df",
@@ -445,9 +533,11 @@
     "stepIndex": 4,
     "text": "สรุปพิกัด เซนทรอยด์รอบถัดไปครบทั้งสามคลัสเตอร์",
     "filePath": "/audio/tts/kmeans-distance-centroid_step_4.mp3",
-    "generatedAt": "2026-10-15T20:46:10Z",
+    "generatedAt": "2026-10-16T06:38:35Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 94457
+    "fileSizeBytes": 67708,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "silhouette-score_step_1": {
     "hash": "0fa453c9f79fbc20",
@@ -455,9 +545,11 @@
     "stepIndex": 1,
     "text": "ซิลูเอต สโกร์ เท่ากับ บี ไอ ลบ เอ ไอ ส่วนด้วย ค่าแม็กซ์ของ เอไอ กับ บีไอ",
     "filePath": "/audio/tts/silhouette-score_step_1.mp3",
-    "generatedAt": "2026-10-15T20:46:18Z",
+    "generatedAt": "2026-10-16T06:38:43Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 154643
+    "fileSizeBytes": 115355,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "silhouette-score_step_2": {
     "hash": "93e94b03754ee7bb",
@@ -465,9 +557,11 @@
     "stepIndex": 2,
     "text": "แทนค่า สี่จุดแปดศูนย์ ลบ หนึ่งจุดสองศูนย์ ส่วนด้วย สี่จุดแปดศูนย์",
     "filePath": "/audio/tts/silhouette-score_step_2.mp3",
-    "generatedAt": "2026-10-15T20:46:24Z",
+    "generatedAt": "2026-10-16T06:38:50Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 112430
+    "fileSizeBytes": 99891,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   },
   "silhouette-score_step_3": {
     "hash": "e4b10e299a75b1fe",
@@ -475,8 +569,10 @@
     "stepIndex": 3,
     "text": "ผลลัพธ์สุดท้าย ได้ บวกศูนย์จุดเจ็ดห้า",
     "filePath": "/audio/tts/silhouette-score_step_3.mp3",
-    "generatedAt": "2026-10-15T20:46:30Z",
+    "generatedAt": "2026-10-16T06:38:55Z",
     "provider": "fish-audio/s2.1-pro-free:free",
-    "fileSizeBytes": 65618
+    "fileSizeBytes": 56005,
+    "voiceId": "50e6be145a954673898d80727c310325",
+    "style": "neutral_instructional"
   }
 }
