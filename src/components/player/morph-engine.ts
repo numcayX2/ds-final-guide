@@ -53,8 +53,14 @@ export class FormulaMorphEngine {
    */
   public async goToStep(targetStepIndex: number, animate: boolean = true) {
     if (targetStepIndex < 1 || targetStepIndex > this.totalSteps) return;
-    if (this.isAnimating && animate) return;
 
+    // Interrupt any active animation immediately
+    if (this.isAnimating) {
+      this.cleanupGhosts();
+      this.isAnimating = false;
+    }
+
+    this.cleanupGhosts();
     this.stopAudio();
     this.currentStepIndex = targetStepIndex;
     if (this.onStepChangeCallback) {
@@ -96,11 +102,13 @@ export class FormulaMorphEngine {
     });
 
     if (!animate) {
+      this.cleanupGhosts();
       katexMount.innerHTML = renderedHtml;
       this.highlightCells(step);
       return;
     }
 
+    this.cleanupGhosts();
     this.isAnimating = true;
 
     // Fast crossfade KaTeX container
@@ -163,25 +171,115 @@ export class FormulaMorphEngine {
   }
 
   /**
-   * Spawn Ghost Clones from data table cells to target KaTeX tokens
+   * Remove any lingering ghost clones from DOM and restore hidden tokens
+   */
+  public cleanupGhosts() {
+    document.querySelectorAll('.ghost-clone-element').forEach((ghost) => {
+      gsap.killTweensOf(ghost);
+      ghost.remove();
+    });
+
+    const katexMount = this.container.querySelector<HTMLElement>('[data-katex-mount]');
+    if (katexMount) {
+      katexMount.querySelectorAll<HTMLElement>('[data-flip-id]').forEach((token) => {
+        token.style.opacity = '1';
+        gsap.killTweensOf(token);
+      });
+    }
+  }
+
+  /**
+   * Match source cells to target tokens accurately
+   */
+  private getClonePairs(
+    step: FormulaAnimationStep,
+    katexMount: HTMLElement
+  ): Array<{ sourceEl: HTMLElement; targetToken: HTMLElement; sourceId: string; tokenId: string }> {
+    if (!step.sourceCellIds || step.sourceCellIds.length === 0) return [];
+
+    const pairs: Array<{ sourceEl: HTMLElement; targetToken: HTMLElement; sourceId: string; tokenId: string }> = [];
+    const targetTokenIds = step.targetTokenIds || [];
+
+    // Semantic keywords for intelligent token pairing (e.g., tp, tn, fp, fn, q1, q3, etc.)
+    const semanticKeywords = ['tp', 'tn', 'fp', 'fn', 'act', 'inact', 'q1', 'q3', 'iqr', 'sd', 'mean', 'bi', 'ai', 'c2', 'c3'];
+
+    if (targetTokenIds.length > 0) {
+      targetTokenIds.forEach((tokenId, targetIdx) => {
+        const targetToken = katexMount.querySelector<HTMLElement>(`[data-flip-id="${tokenId}"]`);
+        if (!targetToken) return;
+
+        let matchedSourceId: string | undefined;
+
+        // Try semantic keyword matching first
+        for (const kw of semanticKeywords) {
+          if (tokenId.toLowerCase().includes(kw)) {
+            matchedSourceId = step.sourceCellIds?.find((sId) => sId.toLowerCase().includes(kw));
+            if (matchedSourceId) break;
+          }
+        }
+
+        // If no keyword match, pair by index
+        if (!matchedSourceId && step.sourceCellIds) {
+          matchedSourceId = step.sourceCellIds[targetIdx] || step.sourceCellIds[0];
+        }
+
+        if (matchedSourceId) {
+          const sourceEl = this.container.querySelector<HTMLElement>(`[data-source-cell-id="${matchedSourceId}"]`);
+          if (sourceEl) {
+            pairs.push({ sourceEl, targetToken, sourceId: matchedSourceId, tokenId });
+          }
+        }
+      });
+    }
+
+    // Fallback if no pairs found: pair source cells to any [data-flip-id] by index
+    if (pairs.length === 0) {
+      const allTokens = Array.from(katexMount.querySelectorAll<HTMLElement>('[data-flip-id]'));
+      step.sourceCellIds.forEach((sourceId, idx) => {
+        const sourceEl = this.container.querySelector<HTMLElement>(`[data-source-cell-id="${sourceId}"]`);
+        const targetToken = allTokens[idx] || allTokens[0];
+        if (sourceEl && targetToken) {
+          pairs.push({
+            sourceEl,
+            targetToken,
+            sourceId,
+            tokenId: targetToken.getAttribute('data-flip-id') || `token-${idx}`,
+          });
+        }
+      });
+    }
+
+    return pairs;
+  }
+
+  /**
+   * Spawn Ghost Clones from data table cells to target KaTeX tokens with semantic styling
    */
   private executeGhostClones(step: FormulaAnimationStep, katexMount: HTMLElement) {
-    if (!step.sourceCellIds || step.sourceCellIds.length === 0) return;
+    this.cleanupGhosts();
+    const pairs = this.getClonePairs(step, katexMount);
+    if (pairs.length === 0) return;
 
-    step.sourceCellIds.forEach((sourceId) => {
-      const sourceEl = this.container.querySelector<HTMLElement>(`[data-source-cell-id="${sourceId}"]`);
-      if (!sourceEl) return;
-
-      // Find matching token with data-flip-id
-      const targetToken = katexMount.querySelector<HTMLElement>(`[data-flip-id]`);
-      if (!targetToken) return;
-
+    pairs.forEach(({ sourceEl, targetToken }) => {
       const sourceRect = sourceEl.getBoundingClientRect();
       const targetRect = targetToken.getBoundingClientRect();
 
+      // Semantic color classes
+      const status = sourceEl.getAttribute('data-semantic') || 'tp';
+      let colorClasses = 'bg-[#171719] text-[#A3E635] border-[#A3E635]';
+      if (status === 'tp' || status === 'success') {
+        colorClasses = 'bg-[#171719] text-[#A3E635] border-[#A3E635]';
+      } else if (status === 'fp' || status === 'caution') {
+        colorClasses = 'bg-[#171719] text-[#F59E0B] border-[#F59E0B]';
+      } else if (status === 'fn' || status === 'invalid') {
+        colorClasses = 'bg-[#171719] text-[#E11D48] border-[#E11D48]';
+      } else {
+        colorClasses = 'bg-[#171719] text-[#38BDF8] border-[#38BDF8]';
+      }
+
       // Create ghost clone DOM node
       const ghost = document.createElement('div');
-      ghost.className = 'ghost-clone-element bg-[#171719] text-[#A3E635] text-xs font-mono font-bold px-1.5 py-0.5 border border-[#171719] shadow-[2px_2px_0px_#171719]';
+      ghost.className = `ghost-clone-element text-xs font-mono font-bold px-1.5 py-0.5 border-2 shadow-[2px_2px_0px_#171719] ${colorClasses}`;
       ghost.textContent = sourceEl.textContent?.trim() || '';
       ghost.style.left = `${sourceRect.left}px`;
       ghost.style.top = `${sourceRect.top}px`;
@@ -202,8 +300,10 @@ export class FormulaMorphEngine {
         duration: 0.55,
         ease: 'power2.out',
         onComplete: () => {
-          targetToken.style.opacity = '1';
-          gsap.fromTo(targetToken, { scale: 1.25 }, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
+          if (targetToken) {
+            targetToken.style.opacity = '1';
+            gsap.fromTo(targetToken, { scale: 1.25 }, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
+          }
           ghost.remove();
         },
       });
@@ -276,20 +376,45 @@ export class FormulaMorphEngine {
   }
 
   private updateAudioButtonState(isPlaying: boolean) {
-    const playBtn = this.container.querySelector<HTMLElement>('[data-audio-toggle]');
-    if (!playBtn) return;
-    if (isPlaying) {
-      playBtn.classList.add('bg-[#A3E635]', 'text-[#171719]');
-      playBtn.innerHTML = `
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        <span>หยุดเสียง</span>
-      `;
-    } else {
-      playBtn.classList.remove('bg-[#A3E635]', 'text-[#171719]');
-      playBtn.innerHTML = `
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        <span>ฟังคำอธิบายเสียงไทย (Free)</span>
-      `;
-    }
+    const playBtns = this.container.querySelectorAll<HTMLElement>('[data-audio-toggle]');
+    playBtns.forEach((btn) => {
+      const isStepBtn = btn.getAttribute('data-audio-context') === 'step';
+      const textSpan = btn.querySelector('[data-audio-text]') || btn.querySelector('span');
+      const iconSvg = btn.querySelector('svg');
+
+      btn.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+
+      if (isPlaying) {
+        btn.classList.add('bg-[#A3E635]', 'text-[#171719]');
+        btn.classList.remove('text-[#A3E635]', 'bg-white');
+        if (iconSvg) {
+          iconSvg.outerHTML = `
+            <svg class="w-4 h-4 animate-pulse flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          `;
+        }
+        if (textSpan) {
+          textSpan.textContent = isStepBtn ? 'หยุดเสียงบรรยาย' : 'หยุดเสียง';
+        }
+      } else {
+        btn.classList.remove('bg-[#A3E635]', 'text-[#171719]');
+        if (isStepBtn) {
+          btn.classList.add('bg-white', 'text-[#171719]');
+        } else {
+          btn.classList.add('text-[#A3E635]');
+        }
+        if (iconSvg) {
+          iconSvg.outerHTML = `
+            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          `;
+        }
+        if (textSpan) {
+          textSpan.textContent = isStepBtn ? 'ฟังเสียงอธิบายสเต็ปนี้ (Fish Audio)' : 'ฟังคำอธิบายเสียงไทย (Free)';
+        }
+      }
+    });
   }
 }

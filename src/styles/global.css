@@ -91,3 +91,12 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+/* Universal Accessible Focus Rings (WCAG 2.1 AA) */
+button:focus-visible,
+select:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #A3E635 !important;
+  outline-offset: 2px !important;
+}

@@ -9,12 +9,15 @@ const { formula } = Astro.props;
 ---
 
 <div
-  class="gsap-morph-player border-2 border-[#171719] bg-white shadow-[4px_4px_0px_#171719] flex flex-col my-6 select-none"
+  class="gsap-morph-player border-2 border-[#171719] bg-white shadow-[4px_4px_0px_#171719] flex flex-col my-6 select-none focus-within:ring-2 focus-within:ring-[#A3E635] outline-none"
+  tabindex="0"
+  role="region"
+  aria-label={`Formula Derivation Player: ${formula.name}`}
   data-formula-id={formula.id}
   data-formula-json={JSON.stringify(formula)}
 >
   <!-- Player Top Bar (Zone A / Technical Header) -->
-  <div class="bg-[#171719] text-[#F4F1EA] px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b-2 border-[#171719]">
+  <div class="bg-[#171719] text-[#F4F1EA] px-4 py-3 flex flex-wrap justify-between items-center gap-3 border-b-2 border-[#171719]">
     <div class="flex items-center gap-3">
       <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2">
         {formula.category.toUpperCase()}
@@ -30,10 +33,12 @@ const { formula } = Astro.props;
       <button
         type="button"
         data-audio-toggle
-        class="flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold border border-[#A3E635] text-[#A3E635] hover:bg-[#A3E635] hover:text-[#171719] transition-all cursor-pointer"
+        data-audio-context="header"
+        class="flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-bold border-2 border-[#A3E635] text-[#A3E635] hover:bg-[#A3E635] hover:text-[#171719] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none"
+        title="เปิด/ปิด เสียงคำบรรยายภาษาไทย"
       >
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        <span>ฟังคำอธิบายเสียงไทย (Free)</span>
+        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <span data-audio-text>ฟังคำอธิบายเสียงไทย (Free)</span>
       </button>
     </div>
   </div>
@@ -94,22 +99,39 @@ const { formula } = Astro.props;
       <!-- KaTeX Equation Mount Point -->
       <div
         data-katex-mount
-        class="w-full py-4 px-2 flex justify-center items-center text-xl sm:text-2xl text-[#171719] font-mono tabular-nums overflow-x-auto min-h-[90px]"
+        class="w-full py-4 px-2 flex justify-center items-center text-xl sm:text-2xl text-[#171719] font-mono tabular-nums overflow-x-auto min-h-[110px] max-h-[360px] overflow-y-auto"
       >
         <!-- Injected via FormulaMorphEngine -->
       </div>
 
-      <!-- Current Step Explanation Box -->
-      <div class="w-full mt-4 p-3 bg-[#F4F1EA] border border-[#171719] text-xs sm:text-sm">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="px-1.5 py-0.2 bg-[#171719] text-[#A3E635] text-[10px] font-mono font-bold">
-            สเต็ป <span data-step-indicator>1</span> / {formula.steps.length}
-          </span>
-          <h4 data-step-title class="font-bold text-[#171719]">
-            {formula.steps[0].title}
-          </h4>
+      <!-- Current Step Explanation Box (With Integrated Contextual Audio Button) -->
+      <div class="w-full mt-4 p-3.5 bg-[#F4F1EA] border border-[#171719] text-xs sm:text-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-[#171719]/20">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 bg-[#171719] text-[#A3E635] text-xs font-mono font-bold">
+              สเต็ป <span data-step-indicator>1</span> / {formula.steps.length}
+            </span>
+            <h4 data-step-title class="font-bold text-[#171719] text-sm sm:text-base">
+              {formula.steps[0].title}
+            </h4>
+          </div>
+
+          <!-- Direct In-Context Step Audio Button (Addresses OMP disconnection finding) -->
+          <button
+            type="button"
+            data-audio-toggle
+            data-audio-context="step"
+            aria-pressed="false"
+            aria-label="ฟังเสียงบรรยายขั้นตอนนี้ด้วย Fish Audio Free"
+            class="flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] text-xs font-mono font-bold border-2 border-[#171719] bg-white hover:bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
+            title="ฟังเสียงบรรยายขั้นตอนการคำนวณนี้ (OpenRouter Fish Audio Free)"
+          >
+            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span data-audio-text>ฟังเสียงอธิบายสเต็ปนี้ (Fish Audio)</span>
+          </button>
         </div>
-        <p data-step-explanation class="text-[#171719] opacity-90 leading-relaxed text-xs">
+
+        <p data-step-explanation class="text-[#171719] font-medium leading-relaxed text-xs sm:text-sm">
           {formula.steps[0].explanation}
         </p>
 
@@ -125,34 +147,39 @@ const { formula } = Astro.props;
     </div>
   </div>
 
-  <!-- Player Controls (Zone B Monospace Controls) -->
-  <div class="bg-[#F4F1EA] p-3 flex flex-wrap justify-between items-center gap-3 border-t border-[#171719]">
+  <!-- Player Controls (Zone B Monospace Controls: Touch targets >= 44x44px) -->
+  <div class="bg-[#F4F1EA] p-3 sm:p-4 flex flex-wrap justify-between items-center gap-3 border-t border-[#171719]">
     <div class="flex items-center gap-2">
       <button
         type="button"
         data-prev-step
-        class="px-3 py-1.5 text-xs font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+        class="min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-white hover:bg-[#EAE6DC] text-[#171719] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
+        aria-label="ย้อนกลับสเต็ปก่อนหน้า"
       >
         ← สเต็ปก่อนหน้า
       </button>
       <button
         type="button"
         data-next-step
-        class="px-3 py-1.5 text-xs font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+        class="min-h-[44px] px-4 py-2 text-xs sm:text-sm font-mono font-bold uppercase bg-[#171719] text-[#A3E635] hover:bg-[#222226] border-2 border-[#171719] shadow-[2px_2px_0px_#171719] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635] outline-none"
+        aria-label="ไปยังสเต็ปถัดไป"
       >
         สเต็ปถัดไป →
       </button>
     </div>
 
-    <!-- Step Scrubber Dots -->
-    <div class="flex items-center gap-1.5">
+    <!-- Step Scrubber Dots (Touch target >= 44x44px for thumb reachability) -->
+    <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Step navigation">
       {formula.steps.map((_, idx) => (
         <button
           type="button"
           data-step-dot={idx + 1}
+          aria-label={`ไปยังสเต็ปที่ ${idx + 1}`}
           class:list={[
-            'w-7 h-7 text-xs font-mono font-bold border border-[#171719] flex items-center justify-center transition-all cursor-pointer',
-            idx === 0 ? 'bg-[#A3E635] text-[#171719] shadow-[1px_1px_0px_#171719]' : 'bg-white text-gray-700 hover:bg-gray-100',
+            'min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none',
+            idx === 0
+              ? 'bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719]'
+              : 'bg-white text-gray-700 hover:bg-gray-100 shadow-[1px_1px_0px_#171719]',
           ]}
         >
           {idx + 1}
@@ -160,10 +187,15 @@ const { formula } = Astro.props;
       ))}
     </div>
 
-    <!-- 1-Line Memory Rule (Bottom right) -->
-    <div class="text-[11px] font-mono text-[#171719] bg-white px-2.5 py-1 border border-[#171719] shadow-[1px_1px_0px_#171719]">
-      <span class="font-bold text-[#E11D48]">💡 สูตรจำ 1 บรรทัด:</span>
-      <span class="ml-1">{formula.oneLineRule}</span>
+    <!-- Keyboard shortcuts badge & 1-Line Memory Rule -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="hidden md:inline-flex text-[10px] font-mono text-gray-500 bg-[#EAE6DC] px-2 py-1 border border-gray-400">
+        ⌨️ [← / → เลื่อน] [Space เสียง] [R รีเซ็ต]
+      </span>
+      <div class="text-[11px] font-mono text-[#171719] bg-white px-2.5 py-1.5 border border-[#171719] shadow-[1px_1px_0px_#171719]">
+        <span class="font-bold text-[#E11D48]">💡 สูตรจำ 1 บรรทัด:</span>
+        <span class="ml-1 font-semibold">{formula.oneLineRule}</span>
+      </div>
     </div>
   </div>
 </div>
@@ -204,13 +236,15 @@ const { formula } = Astro.props;
           }
         }
 
-        // Update Dots
+        // Update Dots with touch-compliant classes (>= 44x44px)
         stepDots.forEach((dot) => {
           const dotIdx = Number(dot.getAttribute('data-step-dot'));
           if (dotIdx === stepIdx) {
-            dot.className = 'w-7 h-7 text-xs font-mono font-bold border border-[#171719] flex items-center justify-center bg-[#A3E635] text-[#171719] shadow-[1px_1px_0px_#171719] cursor-pointer';
+            dot.className =
+              'min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center bg-[#A3E635] text-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none';
           } else {
-            dot.className = 'w-7 h-7 text-xs font-mono font-bold border border-[#171719] flex items-center justify-center bg-white text-gray-700 hover:bg-gray-100 cursor-pointer';
+            dot.className =
+              'min-w-[44px] min-h-[44px] w-11 h-11 text-sm font-mono font-bold border-2 border-[#171719] flex items-center justify-center bg-white text-gray-700 hover:bg-gray-100 shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none';
           }
         });
       });
@@ -220,13 +254,32 @@ const { formula } = Astro.props;
       // Controls
       playerEl.querySelector('[data-prev-step]')?.addEventListener('click', () => engine.prevStep());
       playerEl.querySelector('[data-next-step]')?.addEventListener('click', () => engine.nextStep());
-      playerEl.querySelector('[data-audio-toggle]')?.addEventListener('click', () => engine.playAudio());
+      playerEl.querySelectorAll('[data-audio-toggle]').forEach((btn) => {
+        btn.addEventListener('click', () => engine.playAudio());
+      });
 
       stepDots.forEach((dot) => {
         dot.addEventListener('click', () => {
           const idx = Number(dot.getAttribute('data-step-dot'));
           engine.goToStep(idx, true);
         });
+      });
+
+      // Keyboard Accessibility (Addresses OMP finding P1-3)
+      playerEl.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') {
+          e.preventDefault();
+          engine.nextStep();
+        } else if (e.key === 'ArrowLeft' || e.key === 'h' || e.key === 'H') {
+          e.preventDefault();
+          engine.prevStep();
+        } else if (e.key === ' ' || e.key === 'k' || e.key === 'K') {
+          e.preventDefault();
+          engine.playAudio();
+        } else if (e.key === 'r' || e.key === 'R' || e.key === 'Home') {
+          e.preventDefault();
+          engine.goToStep(1, true);
+        }
       });
     } catch (err) {
       console.error('Failed to init formula player:', err);

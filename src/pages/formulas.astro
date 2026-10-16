@@ -22,13 +22,13 @@ import { allFormulas } from '../data/formulas/index';
       </div>
 
       <!-- Quick Formula Jump Selector -->
-      <div class="border border-gray-600 bg-[#222226] p-2 text-xs font-mono">
-        <label for="formula-jump-select" class="block text-gray-400 text-[10px] uppercase mb-1">
+      <div class="border border-gray-600 bg-[#222226] p-2.5 text-xs font-mono">
+        <label for="formula-jump-select" class="block text-gray-400 text-[10px] uppercase mb-1 font-bold">
           เลือกกระโดดไปยังสูตร:
         </label>
         <select
           id="formula-jump-select"
-          class="bg-[#171719] text-[#A3E635] border border-[#A3E635] px-2 py-1 text-xs font-bold font-mono outline-none cursor-pointer"
+          class="min-h-[40px] bg-[#171719] text-[#A3E635] border-2 border-[#A3E635] px-3 py-2 text-xs sm:text-sm font-bold font-mono outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#A3E635]"
         >
           {allFormulas.map((f, i) => (
             <option value={f.id}>
@@ -40,54 +40,54 @@ import { allFormulas } from '../data/formulas/index';
     </div>
   </div>
 
-  <!-- Formula Category Filter Pills -->
+  <!-- Formula Category Filter Pills (Touch targets >= 40px) -->
   <div class="flex flex-wrap items-center gap-2 mb-6 font-mono text-xs">
     <button
       type="button"
       data-cat-filter="all"
-      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-[#A3E635] text-[#171719] font-black shadow-[2px_2px_0px_#171719] cursor-pointer"
+      class="cat-filter-btn min-h-[40px] px-3.5 py-2 border-2 border-[#171719] bg-[#A3E635] text-[#171719] font-black shadow-[2px_2px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
     >
       ทั้งหมด (14 สูตร)
     </button>
     <button
       type="button"
       data-cat-filter="evaluation"
-      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+      class="cat-filter-btn min-h-[40px] px-3.5 py-2 border-2 border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
     >
       Confusion Matrix & Metrics (4)
     </button>
     <button
       type="button"
       data-cat-filter="tree"
-      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+      class="cat-filter-btn min-h-[40px] px-3.5 py-2 border-2 border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
     >
       Decision Tree Gini (3)
     </button>
     <button
       type="button"
       data-cat-filter="clustering"
-      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+      class="cat-filter-btn min-h-[40px] px-3.5 py-2 border-2 border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
     >
       K-Means & Silhouette (2)
     </button>
     <button
       type="button"
       data-cat-filter="eda"
-      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+      class="cat-filter-btn min-h-[40px] px-3.5 py-2 border-2 border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
     >
       EDA Outliers (1)
     </button>
     <button
       type="button"
       data-cat-filter="scaling"
-      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+      class="cat-filter-btn min-h-[40px] px-3.5 py-2 border-2 border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
     >
       Feature Scaling (2)
     </button>
     <button
       type="button"
       data-cat-filter="cleaning"
-      class="cat-filter-btn px-3 py-1 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer"
+      class="cat-filter-btn min-h-[40px] px-3.5 py-2 border-2 border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold shadow-[1px_1px_0px_#171719] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#171719] outline-none"
     >
       Data Cleaning (2)
     </button>
