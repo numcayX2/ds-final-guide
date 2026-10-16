@@ -6,7 +6,7 @@
 export type SemanticStatus = 'neutral' | 'tp' | 'fp' | 'fn' | 'tn' | 'invalid' | 'caution' | 'success';
 
 export interface DataTableCell {
-  id: string; // Used as sourceCellId in GSAP Ghost Clone
+  id: string; // Used as sourceCellId in GSAP Token Morphing
   value: string | number;
   label?: string;
   semantic?: SemanticStatus;

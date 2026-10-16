@@ -415,7 +415,7 @@ export class FormulaMorphEngine {
           `;
         }
         if (textSpan) {
-          textSpan.textContent = isStepBtn ? 'ฟังเสียงอธิบายสเต็ปนี้ (Fish Audio)' : 'ฟังคำอธิบายเสียงไทย (Free)';
+          textSpan.textContent = isStepBtn ? 'ฟังเสียงอธิบายสเต็ปนี้' : 'ฟังคำอธิบายเสียงไทย';
         }
       }
     });
