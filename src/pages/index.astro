@@ -40,96 +40,347 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
     label: 'VISUAL HOOK • BIAS & XAI',
     formulaOrRule: 'Postal Code = Proxy | Drift Recall 54% | Gate: Accept/Revise/Reject',
   },
+  'module-10-crisp-action': {
+    label: 'VISUAL HOOK • 6 ROLES & MEMO',
+    formulaOrRule: 'Decision Contract (ต้นทาง) vs Memo (ประเมิน) | MLOps Backtrack',
+  },
 };
+
+const finalCoreModules = allModules.filter((m) => m.isFinalFocus);
+const foundationModules = allModules.filter((m) => !m.isFinalFocus);
 ---
 
-<Layout title="10301351 Data Science Final Exam Guide - 9 บทเรียนเข้มข้น" activeTab="modules">
-  <!-- Hero Section -->
-  <section class="border-2 border-[#171719] bg-[#171719] text-[#F4F1EA] p-6 sm:p-10 mb-8 shadow-[6px_6px_0px_#A3E635] relative overflow-hidden">
-    <div class="relative z-10 max-w-4xl">
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2 font-black -rotate-1">
-          SEMESTER 2/2025
-        </span>
-        <span class="tape-label bg-[#E11D48] text-white text-xs py-0.5 px-2 font-bold">
-          LECTURES 01–09 (FINAL CORE: 05–09)
-        </span>
-        <span class="text-xs font-mono text-gray-400">10301351 DATA SCIENCE</span>
+<Layout title="10301351 Data Science Final Exam Guide - สรุปเข้มข้นตรงสไลด์" activeTab="home">
+  <!-- Hero Section: Hallmark Asymmetric Split Lead (Left typographic bias, right live syllabus key) -->
+  <section class="py-6 sm:py-10 border-b border-slate-200/80 mb-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Column: Typographic Lead -->
+      <div class="lg:col-span-7 space-y-4">
+        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="font-bold text-slate-900">10301351</span>
+          <span class="text-slate-300">/</span>
+          <span>DATA SCIENCE FINAL EXAM</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] text-slate-900 tracking-tight leading-[1.12]">
+          Clinical Exam Guide & <br class="hidden sm:inline" />
+          <span class="text-blue-600">Interactive Derivations</span>
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-xl">
+          คู่มือทบทวนข้อสอบ Final ถอดรหัสตรงจากสไลด์ Lect 05–10 พร้อม 14 แอนิเมชันสูตร KaTeX Morphing, Decision Workbench และวิเคราะห์กับดักข้อสอบจริง
+        </p>
+
+        <!-- CTA Buttons: 8px Radius, Explicit Transitions -->
+        <div class="pt-2 flex flex-wrap items-center gap-3">
+          <a
+            href="/formulas"
+            class="btn-primary text-xs font-mono uppercase tracking-wide inline-flex items-center gap-2"
+          >
+            <span>ดูแอนิเมชัน 14 สูตร</span>
+            <span>→</span>
+          </a>
+          <a
+            href="/exam"
+            class="btn-secondary text-xs font-mono uppercase tracking-wide inline-flex items-center gap-2"
+          >
+            <span>เข้าสู่ห้องสอบจำลอง</span>
+          </a>
+        </div>
       </div>
 
-      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-['Space_Grotesk'] tracking-tight leading-none text-white mb-4">
-        คู่มือพิชิตสอบ FINAL <br />
-        <span class="text-[#A3E635]">10301351 DATA SCIENCE</span>
-      </h1>
+      <!-- Right Column: Live Syllabus Summary -->
+      <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 shadow-xs font-mono text-xs space-y-3">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <span class="text-slate-500 text-[11px] font-bold uppercase">SYLLABUS STATUS</span>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>CORE: L05–10</span>
+          </span>
+        </div>
 
-      <p class="text-sm sm:text-base font-mono text-gray-300 leading-relaxed max-w-2xl mb-6">
-        สรุปเนื้อหาตามสไลด์บรรยาย Lectures 01–09 (เน้นข้อสอบปลายภาค Lectures 05–09) ครอบคลุม 14 สูตรคำนวณ ตัวอย่างข้อมูลจริง และจุดหลอกในข้อสอบ พร้อมระบบแอนิเมชันสูตร KaTeX In-Equation Morphing
-      </p>
+        <div class="grid grid-cols-2 gap-3 text-slate-700">
+          <div class="p-3 bg-slate-50 border border-slate-100 rounded-lg">
+            <div class="text-slate-500 text-[10px]">FINAL CORE MODULES</div>
+            <div class="text-lg font-bold text-slate-900 tabular-nums mt-0.5">6 Modules</div>
+            <div class="text-[10px] text-slate-500">EDA → CRISP in Action</div>
+          </div>
+          <div class="p-3 bg-slate-50 border border-slate-100 rounded-lg">
+            <div class="text-slate-500 text-[10px]">FORMULA DERIVATIONS</div>
+            <div class="text-lg font-bold text-blue-600 tabular-nums mt-0.5">14 Formulas</div>
+            <div class="text-[10px] text-slate-500">KaTeX + GSAP Morph</div>
+          </div>
+          <div class="p-3 bg-slate-50 border border-slate-100 rounded-lg">
+            <div class="text-slate-500 text-[10px]">EXAM QUESTIONS</div>
+            <div class="text-lg font-bold text-slate-900 tabular-nums mt-0.5">14 MCQs</div>
+            <div class="text-[10px] text-slate-500">With Scratchpad & Timer</div>
+          </div>
+          <div class="p-3 bg-slate-50 border border-slate-100 rounded-lg">
+            <div class="text-slate-500 text-[10px]">CASE STUDIES</div>
+            <div class="text-lg font-bold text-slate-900 tabular-nums mt-0.5">4 Cases</div>
+            <div class="text-[10px] text-slate-500">iTutor, Obermeyer, etc.</div>
+          </div>
+        </div>
 
-      <div class="flex flex-wrap items-center gap-3">
-        <a
-          href="/formulas"
-          class="btn-chamfer px-5 py-3 bg-[#A3E635] text-[#171719] font-mono font-black text-sm uppercase border border-[#171719] shadow-[3px_3px_0px_#171719] hover:bg-[#84CC16] active:translate-x-0.5 active:translate-y-0.5 transition-all"
-        >
-          ดูแอนิเมชัน 14 สูตรคำนวณ →
-        </a>
-        <a
-          href="/exam"
-          class="btn-chamfer px-5 py-3 bg-white text-[#171719] font-mono font-bold text-sm uppercase border border-[#171719] shadow-[3px_3px_0px_#171719] hover:bg-[#EAE6DC] active:translate-x-0.5 active:translate-y-0.5 transition-all"
-        >
-          เข้าสู่ห้องสอบจำลอง (14 ข้อ) →
-        </a>
+        <div class="pt-2 text-[11px] text-slate-500 flex items-center justify-between">
+          <span>Framework: CRISP-DS 8 ขั้นตอน</span>
+          <a href="/business-lab" class="text-blue-600 hover:underline">Business Lab →</a>
+        </div>
       </div>
-    </div>
-
-    <!-- Background Brutalist Accent Shape -->
-    <div class="absolute -bottom-10 -right-10 text-[180px] font-black font-['Space_Grotesk'] text-white/[0.04] select-none pointer-events-none">
-      FINAL
     </div>
   </section>
 
-  <!-- Section 2: Study Modules List -->
-  <section class="space-y-6">
-    <div class="flex flex-wrap justify-between items-end gap-4 border-b-2 border-[#171719] pb-3">
+  <!-- Section 1: Telemetry Diagnostics (Flattened containment layer, no nested card-in-card) -->
+  <section class="mb-14">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-6">
       <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="w-3 h-3 bg-[#A3E635] border border-[#171719]"></span>
-          <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#171719]">
-            CURRICULUM MODULES • คลิกที่การ์ดเพื่อเปิดแผนภาพจำสอบและสรุปเจาะลึก
-          </span>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-black font-['Space_Grotesk'] text-[#171719]">
-          บทเรียน 9 บทสำหรับเตรียมสอบ
+        <h2 class="text-xl sm:text-2xl font-bold font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] text-slate-900 tracking-tight">
+          Exam Telemetry & Diagnostic Tools
         </h2>
+        <p class="text-xs text-slate-500 font-mono mt-0.5">
+          Interactive derivations and clinical calculations grounded in Lectures 05–10
+        </p>
       </div>
 
-      <!-- Chapter Filter Pills -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white border border-slate-200 text-xs font-mono text-slate-700">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>INSTRUMENTATION READY</span>
+      </div>
+    </div>
+
+    <!-- 4 Stat Metric Cards (Directly anchored on canvas, using inline SVGs instead of emojis) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 font-mono">
+      <!-- Stat 1 -->
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-slate-500">Recall (Model B)</span>
+          <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" />
+          </svg>
+        </div>
+        <div class="text-2xl font-bold text-slate-900 tabular-nums">0.900</div>
+        <div class="mt-1 flex items-center gap-1.5 text-[11px]">
+          <span class="px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 font-bold">HW#2 Win</span>
+          <span class="text-slate-400">vs 0.750</span>
+        </div>
+      </div>
+
+      <!-- Stat 2 -->
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-slate-500">Gini Gain (Split A)</span>
+          <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </div>
+        <div class="text-2xl font-bold text-slate-900 tabular-nums">0.222</div>
+        <div class="mt-1 flex items-center gap-1.5 text-[11px]">
+          <span class="px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 font-bold">Optimal</span>
+          <span class="text-slate-400">vs B (0.056)</span>
+        </div>
+      </div>
+
+      <!-- Stat 3 -->
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-slate-500">K-Means Centroid</span>
+          <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+          </svg>
+        </div>
+        <div class="text-2xl font-bold text-slate-900 tabular-nums">(6.0, 6.0)</div>
+        <div class="mt-1 flex items-center gap-1.5 text-[11px]">
+          <span class="px-1.5 py-0.2 rounded-md bg-blue-50 text-blue-700 font-bold">C2 Iter 1</span>
+          <span class="text-slate-400">Mean update</span>
+        </div>
+      </div>
+
+      <!-- Stat 4 -->
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-slate-500">Curriculum Scope</span>
+          <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+          </svg>
+        </div>
+        <div class="text-2xl font-bold text-slate-900 tabular-nums">14 / 14</div>
+        <div class="mt-1 flex items-center gap-1.5 text-[11px]">
+          <span class="px-1.5 py-0.2 rounded-md bg-indigo-50 text-indigo-700 font-bold">100%</span>
+          <span class="text-slate-400">Morph Ready</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 Working Telemetry Tools (Single layer containment) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Tool 1: Recall Dial -->
+      <div class="bg-white rounded-xl p-5 border border-slate-200 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+            <span class="text-xs font-mono font-bold text-slate-800">EVALUATION METRIC</span>
+            <span class="text-[10px] font-mono text-slate-500">Lect 07 p30</span>
+          </div>
+
+          <div class="text-center py-2">
+            <div class="relative w-32 h-32 mx-auto flex items-center justify-center">
+              <svg class="w-full h-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#E2E8F0" stroke-width="6" />
+                <circle cx="50" cy="50" r="37" fill="none" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="2, 3" />
+                <circle id="gaugeProgress" class="gauge-circle" cx="50" cy="50" r="42" fill="none" stroke="#2563EB" stroke-width="6" stroke-linecap="round" />
+              </svg>
+              <div class="absolute text-center font-mono">
+                <span id="gaugeValue" class="text-2xl font-extrabold text-slate-900 tracking-tight tabular-nums">0.900</span>
+                <span id="gaugeLabel" class="block text-[9px] text-blue-600 mt-0.5 font-bold uppercase">MODEL B (RECALL)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs font-mono">
+            <div class="flex justify-between">
+              <span class="text-slate-500">Missed Churn (FN):</span>
+              <span class="text-slate-900 font-bold">4 cases (Low Risk)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Call Cost (FP):</span>
+              <span class="text-slate-700">18 cases</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-3">
+          <button id="toggleMetricBtn" type="button" class="btn-secondary w-full py-1.5 text-xs font-mono justify-center">
+            Switch Model Preset (F1: Model C)
+          </button>
+        </div>
+      </div>
+
+      <!-- Tool 2: K-Means Vector Coordinate -->
+      <div class="bg-white rounded-xl p-5 border border-slate-200 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+            <span class="text-xs font-mono font-bold text-slate-800">K-MEANS CENTROID</span>
+            <span class="text-[10px] font-mono text-slate-500">Lect 08 p28</span>
+          </div>
+
+          <div class="h-32 relative flex items-center justify-around font-mono bg-slate-50 border border-slate-200 rounded-lg overflow-hidden">
+            <svg class="absolute inset-0 w-full h-full opacity-35" viewBox="0 0 200 120" fill="none">
+              <line x1="100" y1="0" x2="100" y2="120" stroke="#CBD5E1" stroke-width="1" />
+              <line x1="0" y1="60" x2="200" y2="60" stroke="#CBD5E1" stroke-width="1" />
+            </svg>
+            <div class="text-center z-10">
+              <span class="w-2.5 h-2.5 bg-slate-400 inline-block rounded-full"></span>
+              <span class="block text-[10px] text-slate-500 mt-1">C1 (2.5, 3.5)</span>
+            </div>
+            <div class="text-center z-10">
+              <span class="w-3.5 h-3.5 bg-blue-600 border-2 border-white shadow-sm inline-block rounded-full"></span>
+              <span class="block text-[10px] text-slate-900 font-bold mt-1">C2 (6, 6)</span>
+              <span class="text-[9px] text-blue-600 block font-semibold">Iteration 1</span>
+            </div>
+            <div class="text-center z-10">
+              <span class="w-2.5 h-2.5 bg-slate-400 inline-block rounded-full"></span>
+              <span class="block text-[10px] text-slate-500 mt-1">C3 (1.5, 3.5)</span>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-mono space-y-1.5">
+            <div class="flex justify-between">
+              <span class="text-slate-500">Distance Metric:</span>
+              <span class="text-slate-900 font-bold">Manhattan (Assign)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Inertia Formula:</span>
+              <span class="text-slate-700">Squared Euclidean</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-3">
+          <span class="text-[11px] font-mono text-slate-500 block text-center">Mean calculation: (30/5, 30/5) = (6, 6)</span>
+        </div>
+      </div>
+
+      <!-- Tool 3: Gini Derivation -->
+      <div class="bg-white rounded-xl p-5 border border-slate-200 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+            <span class="text-xs font-mono font-bold text-slate-800">GINI IMPURITY SPLIT</span>
+            <span class="text-[10px] font-mono text-slate-500">Lect 07 p11</span>
+          </div>
+
+          <div class="p-3.5 font-mono bg-slate-50 border border-slate-200 rounded-lg">
+            <div class="text-[10px] text-slate-500 uppercase font-semibold">CANDIDATE A SPLIT GAIN</div>
+            <div class="text-lg font-bold text-slate-900 tracking-tight mt-0.5 tabular-nums">
+              Δ Gain = 0.500 − 0.278
+            </div>
+            <div class="mt-1 text-xs font-mono text-blue-600 font-bold">
+              = 0.222 (Optimal Split vs B = 0.056)
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-mono space-y-1.5">
+            <div class="flex justify-between">
+              <span class="text-slate-500">Parent Gini:</span>
+              <span class="text-slate-900 font-bold">0.500 (5A / 5I)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Stopping Rule:</span>
+              <span class="text-slate-700">max_depth = 3</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-3">
+          <a href="/formulas#gini-gain" class="btn-primary w-full py-1.5 text-xs font-mono justify-center">
+            <span>ดูแอนิเมชันสูตร Gini</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Curriculum Bento Grid -->
+  <section class="space-y-6">
+    <div class="flex flex-wrap justify-between items-end gap-4 border-b border-slate-200 pb-3">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] text-slate-900">
+          Curriculum & Core Modules
+        </h2>
+        <p class="text-xs font-mono text-slate-500 mt-0.5">
+          คลิกที่การ์ดบทเรียนเพื่อเปิดสไลด์จริงและสรุปจุดดักข้อสอบ
+        </p>
+      </div>
+
+      <!-- Filter Controls: rounded-lg -->
       <div class="flex items-center gap-2 font-mono text-xs">
         <button
           type="button"
           id="filter-all-btn"
-          class="px-3 py-1.5 border border-[#171719] bg-white text-[#171719] hover:bg-[#EAE6DC] font-bold cursor-pointer transition-all"
+          class="px-3 py-1.5 border border-slate-200 bg-white text-slate-600 hover:text-slate-900 rounded-lg font-semibold cursor-pointer transition-colors"
         >
-          ทั้งหมด (9 บท)
+          ทั้งหมด (10 บท)
         </button>
         <button
           type="button"
           id="filter-focus-btn"
-          class="px-3 py-1.5 border border-[#171719] bg-[#A3E635] text-[#171719] font-black shadow-[2px_2px_0px_#171719] cursor-pointer transition-all"
+          class="px-3 py-1.5 bg-slate-900 text-white rounded-lg font-semibold cursor-pointer transition-colors"
         >
-          เน้นสอบปลายภาค (Lect 05–09)
+          เน้นสอบ Final (Lect 05–10)
         </button>
       </div>
     </div>
 
-    <!-- Modules Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="modules-grid">
+    <!-- Final Core Asymmetric Bento Grid (Lectures 05 to 10) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="modules-grid">
       {allModules.map((mod) => {
         const hook = visualHooks[mod.id];
         return (
           <article
             class:list={[
-              'module-card group relative border-2 border-[#171719] bg-white p-5 shadow-[4px_4px_0px_#171719] flex flex-col justify-between transition-all duration-150 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#171719] cursor-pointer',
+              'module-card group relative p-5 flex flex-col justify-between cursor-pointer bg-white rounded-xl border border-slate-200 shadow-xs hover:border-slate-400 hover:shadow-md transition-[border-color,box-shadow,transform] duration-150',
               mod.isFinalFocus ? 'is-focus-module' : 'is-foundation-module',
             ]}
             data-focus={mod.isFinalFocus ? 'true' : 'false'}
@@ -140,67 +391,64 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
           >
             <div>
               <!-- Card Header -->
-              <div class="flex justify-between items-start gap-2 mb-3">
+              <div class="flex justify-between items-start gap-2 mb-3 pb-3 border-b border-slate-100">
                 <div class="flex items-center gap-2">
-                  <span class="w-8 h-8 bg-[#171719] text-[#A3E635] font-['Space_Grotesk'] font-bold text-sm flex items-center justify-center border border-[#171719] shrink-0">
+                  <span class="w-7 h-7 bg-slate-100 text-slate-900 font-mono font-bold text-xs flex items-center justify-center border border-slate-200 rounded-md shrink-0">
                     {mod.moduleNumber}
                   </span>
                   <span
-                    class="card-done-pill hidden px-1.5 py-0.5 bg-[#A3E635]/30 border border-[#171719] text-[10px] font-mono font-bold text-[#171719]"
+                    class="card-done-pill hidden px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-[10px] font-mono font-bold text-emerald-700 rounded-md"
                     data-card-badge={mod.id}
                   >
                     ✓ ทบทวนแล้ว
                   </span>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-1.5 justify-end">
-                  <span class="tape-label bg-[#F4F1EA] text-[#171719] text-[10px] py-0 px-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 bg-slate-50 border border-slate-200 text-[10px] font-mono text-slate-700 rounded-md">
                     {mod.lectureCode}
-                  </span>
-                  <span class="px-1.5 py-0.5 bg-[#171719] text-white font-mono text-[10px] font-bold">
-                    ~{mod.timeEstimateMinutes} นาที
                   </span>
                 </div>
               </div>
 
               <!-- Title -->
-              <h3 class="font-['Space_Grotesk'] font-bold text-lg text-[#171719] group-hover:text-[#2563EB] transition-colors leading-snug mb-2">
+              <h3 class="font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors leading-snug mb-1.5">
                 {mod.title}
               </h3>
 
               <!-- Summary -->
-              <p class="text-xs text-gray-700 leading-relaxed font-['Plus_Jakarta_Sans'] mb-3">
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">
                 {mod.quickSummary}
               </p>
 
               <!-- Visual Memory Key Strip -->
               {hook && (
-                <div class="mb-3 p-2.5 bg-[#F4F1EA] border border-[#171719] font-mono">
-                  <div class="flex items-center justify-between text-[10px] text-gray-500 font-bold mb-0.5">
-                    <span>{hook.label}</span>
-                    <span class="text-[#2563EB] group-hover:underline">ดูแผนภาพเต็ม →</span>
+                <div class="mb-3 p-2.5 bg-slate-50 border border-slate-200/80 rounded-lg font-mono">
+                  <div class="flex items-center justify-between text-[10px] text-slate-500 font-bold mb-0.5">
+                    <span class="text-blue-700">{hook.label}</span>
+                    <span class="text-slate-400 group-hover:text-slate-900 transition-colors">สรุป →</span>
                   </div>
-                  <div class="text-[11px] font-bold text-[#171719] leading-snug">
+                  <div class="text-[11px] font-medium text-slate-800 leading-snug">
                     {hook.formulaOrRule}
                   </div>
                 </div>
               )}
 
-              <!-- Exam Trap Box (Fixed non-squished header layout) -->
+              <!-- Exam Trap Box -->
               {mod.examTraps && mod.examTraps.length > 0 && (
-                <div class="p-2.5 bg-[#E11D48]/10 border-l-4 border-[#E11D48] text-[11px] font-mono mb-4">
-                  <div class="flex items-center justify-between gap-1 text-[10px] font-bold text-[#BE123C] mb-1">
-                    <span>EXAM TRAP ({mod.examTraps[0].slideRef})</span>
+                <div class="p-2.5 bg-rose-50/60 border border-rose-200 rounded-lg text-[11px] font-mono mb-3 text-rose-900">
+                  <div class="flex items-center justify-between gap-1 text-[10px] font-bold text-rose-700 mb-0.5">
+                    <span>⚠️ กับดักข้อสอบ ({mod.examTraps[0].slideRef})</span>
                     {mod.examTraps.length > 1 && (
-                      <span class="px-1.5 py-0.2 bg-[#E11D48] text-white text-[9px]">
-                        +{mod.examTraps.length - 1} จุดในบทนี้
+                      <span class="px-1.5 py-0.2 bg-rose-100 text-rose-800 text-[9px] rounded-md">
+                        +{mod.examTraps.length - 1} จุด
                       </span>
                     )}
                   </div>
-                  <div class="font-bold text-[#171719] leading-snug">
+                  <div class="font-semibold text-rose-950 leading-snug">
                     {mod.examTraps[0].trapTitle}
                   </div>
-                  <p class="text-gray-700 mt-1 leading-normal line-clamp-2">
+                  <p class="text-rose-900 mt-1 leading-normal line-clamp-2">
                     {mod.examTraps[0].correctApproach}
                   </p>
                 </div>
@@ -208,17 +456,17 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
             </div>
 
             <!-- Card Bottom Actions -->
-            <div class="pt-3 border-t border-[#171719] flex flex-wrap justify-between items-center gap-2 text-xs font-mono">
+            <div class="pt-3 border-t border-slate-100 flex flex-wrap justify-between items-center gap-2 text-xs font-mono">
               <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1 font-bold text-[#171719] group-hover:text-[#2563EB] transition-colors">
-                  <span>เปิดสรุป + แผนภาพ →</span>
+                <span class="inline-flex items-center gap-1 font-semibold text-slate-500 group-hover:text-blue-600 transition-colors">
+                  <span>เปิดสไลด์ + แผนภาพ →</span>
                 </span>
 
                 {mod.coreFormulas && mod.coreFormulas.length > 0 && (
                   <a
                     href={`/formulas#${mod.coreFormulas[0]}`}
                     data-stop-card-open
-                    class="px-1.5 py-0.5 bg-[#2563EB]/10 hover:bg-[#2563EB] text-[#2563EB] hover:text-white border border-[#2563EB] text-[10px] font-bold transition-colors"
+                    class="px-2 py-0.5 bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-700 border border-blue-200 rounded-md text-[10px] font-bold transition-colors"
                     title="ไปยังหน้าแอนิเมชันสูตรคำนวณ"
                   >
                     สูตร ({mod.coreFormulas.length}) →
@@ -226,15 +474,15 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
                 )}
               </div>
 
-              <!-- Polished Read-Status Toggle Button (Zero Slop) -->
+              <!-- Read-Status Toggle Button -->
               <button
                 type="button"
                 data-stop-card-open
-                class="module-mark-btn inline-flex items-center gap-1.5 px-2.5 py-1 border border-[#171719] text-[11px] font-bold bg-white text-gray-700 hover:bg-[#F4F1EA] hover:text-[#171719] transition-all cursor-pointer"
+                class="module-mark-btn inline-flex items-center gap-1.5 px-2.5 py-1 border border-slate-200 text-[11px] font-semibold bg-white text-slate-600 hover:text-slate-900 hover:border-slate-400 rounded-md transition-colors cursor-pointer"
                 data-mod-id={mod.id}
                 aria-pressed="false"
               >
-                <span class="mark-icon w-3.5 h-3.5 border border-[#171719] bg-white flex items-center justify-center text-[10px] leading-none"></span>
+                <span class="mark-icon w-3.5 h-3.5 border border-slate-300 bg-slate-50 rounded-sm flex items-center justify-center text-[10px] leading-none"></span>
                 <span class="mark-label">ทบทวนแล้ว</span>
               </button>
             </div>
@@ -247,88 +495,90 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
   <!-- Ultra-Detail Visual Study Drawer Modal -->
   <ModuleStudyDrawer modules={allModules} />
 
-  <!-- Section 3: 10-Minute Cheat Sheet Table (Zone B Clinical Grid) -->
-  <section class="mt-12 border-2 border-[#171719] bg-white p-6 shadow-[5px_5px_0px_#171719]">
-    <div class="border-b-2 border-[#171719] pb-3 mb-4 flex flex-wrap justify-between items-center gap-2">
+  <!-- Section 3: 10-Minute Cheat Sheet Table -->
+  <section class="mt-14 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs">
+    <div class="pb-4 mb-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-2">
       <div>
-        <span class="tape-label bg-[#171719] text-[#A3E635] text-xs">10-MINUTE CHEAT SHEET</span>
-        <h2 class="text-xl sm:text-2xl font-black font-['Space_Grotesk'] text-[#171719] mt-1">
+        <span class="text-[10px] font-mono text-blue-600 uppercase font-bold tracking-wider">QUICK REFERENCE</span>
+        <h2 class="text-xl font-bold font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] text-slate-900 mt-0.5">
           คลังสูตรเร่งด่วนสำหรับ 10 นาทีก่อนเข้าห้องสอบ
         </h2>
       </div>
-      <span class="text-xs font-mono text-gray-500">14 Core Formulas Reference</span>
+      <span class="px-2.5 py-1 bg-slate-100 border border-slate-200 rounded-md text-xs font-mono text-slate-600">
+        14 Core Formulas Reference
+      </span>
     </div>
 
-    <div class="overflow-x-auto">
-      <table class="w-full text-left text-xs font-mono border-collapse border border-[#171719]">
-        <thead>
-          <tr class="bg-[#171719] text-white text-[11px]">
-            <th class="p-2 border border-[#171719]">ชื่อสูตร</th>
-            <th class="p-2 border border-[#171719]">สมการคำนวณ</th>
-            <th class="p-2 border border-[#171719]">วัตถุประสงค์ & คีย์เวิร์ดในข้อสอบ</th>
-            <th class="p-2 border border-[#171719] text-center">ลิงก์แอนิเมชัน</th>
+    <div class="overflow-x-auto rounded-xl border border-slate-200">
+      <table class="w-full text-left text-xs font-mono border-collapse">
+        <thead class="bg-slate-50">
+          <tr class="border-b border-slate-200 text-slate-500 text-[11px]">
+            <th class="p-3">ชื่อสูตร</th>
+            <th class="p-3">สมการคำนวณ</th>
+            <th class="p-3">วัตถุประสงค์ & คีย์เวิร์ดในข้อสอบ</th>
+            <th class="p-3 text-center">ลิงก์แอนิเมชัน</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-[#171719]/30">
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Min-Max Scaling</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">x' = [(x - min)/(max - min)] * (new_max - new_min) + new_min</td>
-            <td class="p-2 border border-[#171719]/30">แปลงค่าเข้ากรอบ เช่น [0, 9] (ตัวอย่าง Rachel ได้ 0.82)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#min-max" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+        <tbody class="divide-y divide-slate-100 text-slate-700 bg-white">
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Min-Max Scaling</td>
+            <td class="p-2.5 tabular-nums text-slate-700">x' = [(x - min)/(max - min)] * (new_max - new_min) + new_min</td>
+            <td class="p-2.5 text-slate-500">แปลงค่าเข้ากรอบ เช่น [0, 9] (ตัวอย่าง Rachel ได้ 0.82)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#min-max" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Z-Score</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">z = (x - μ) / σ</td>
-            <td class="p-2 border border-[#171719]/30">ข้อมูลอยู่ห่างจาก Mean กี่เท่าของ SD (ไม่เปลี่ยน Shape เดิม)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#z-score" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Z-Score</td>
+            <td class="p-2.5 tabular-nums text-slate-700">z = (x - μ) / σ</td>
+            <td class="p-2.5 text-slate-500">ข้อมูลอยู่ห่างจาก Mean กี่เท่าของ SD (ไม่เปลี่ยน Shape เดิม)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#z-score" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Tukey's Fences</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">IQR = Q3 - Q1, Upper = Q3 + 1.5*IQR</td>
-            <td class="p-2 border border-[#171719]/30">ตรวจจับ Outlier (Upper 130, จุด 140 หลุดรั้วบน)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#tukey-fences" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Tukey's Fences</td>
+            <td class="p-2.5 tabular-nums text-slate-700">IQR = Q3 - Q1, Upper = Q3 + 1.5*IQR</td>
+            <td class="p-2.5 text-slate-500">ตรวจจับ Outlier (Upper 130, จุด 140 หลุดรั้วบน)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#tukey-fences" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Gini Impurity</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">Gini = 1 - ∑ (p_i)^2</td>
-            <td class="p-2 border border-[#171719]/30">วัดความไม่บริสุทธิ์ (Pure node = 0, คละ 50:50 = 0.500)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#gini-impurity" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Gini Impurity</td>
+            <td class="p-2.5 tabular-nums text-slate-700">Gini = 1 - ∑ (p_i)^2</td>
+            <td class="p-2.5 text-slate-500">วัดความไม่บริสุทธิ์ (Pure node = 0, คละ 50:50 = 0.500)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#gini-impurity" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Gini Gain</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">Gain = Gini(Parent) - Gini_split</td>
-            <td class="p-2 border border-[#171719]/30">เลือกกิ่งที่ให้ Gain สูงสุด (Candidate A 0.222 ชนะ B 0.056)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#gini-gain" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Gini Gain</td>
+            <td class="p-2.5 tabular-nums text-slate-700">Gain = Gini(Parent) - Gini_split</td>
+            <td class="p-2.5 text-slate-500">เลือกกิ่งที่ให้ Gain สูงสุด (Candidate A 0.222 ชนะ B 0.056)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#gini-gain" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Precision</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">TP / (TP + FP)</td>
-            <td class="p-2 border border-[#171719]/30">เน้นลด False Positive เมื่อการทายผิดมีต้นทุนสูง (FIFA 0.80)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#precision" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Precision</td>
+            <td class="p-2.5 tabular-nums text-slate-700">TP / (TP + FP)</td>
+            <td class="p-2.5 text-slate-500">เน้นลด False Positive เมื่อการทายผิดมีต้นทุนสูง (FIFA 0.80)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#precision" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Recall (Sensitivity)</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">TP / (TP + FN)</td>
-            <td class="p-2 border border-[#171719]/30">เน้นลด False Negative เมื่อการพลาดเคสบวกเป็นหายนะ (FIFA 0.67)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#recall" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Recall (Sensitivity)</td>
+            <td class="p-2.5 tabular-nums text-slate-700">TP / (TP + FN)</td>
+            <td class="p-2.5 text-slate-500">เน้นลด False Negative เมื่อการพลาดเคสบวกเป็นหายนะ (FIFA 0.67)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#recall" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">F1-Score</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">2*TP / (2*TP + FP + FN)</td>
-            <td class="p-2 border border-[#171719]/30">Harmonic Mean สมดุลความแม่นยำ (FIFA 0.73, HW#1 0.60)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#f1-score" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">F1-Score</td>
+            <td class="p-2.5 tabular-nums text-slate-700">2*TP / (2*TP + FP + FN)</td>
+            <td class="p-2.5 text-slate-500">Harmonic Mean สมดุลความแม่นยำ (FIFA 0.73, HW#1 0.60)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#f1-score" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">K-Means Centroid Update</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">C_k = (∑ x1 / m, ∑ x2 / m)</td>
-            <td class="p-2 border border-[#171719]/30">เฉลี่ยพิกัดจุดสมาชิกในคลัสเตอร์ (C2_new = (6, 6))</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#kmeans-distance-centroid" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">K-Means Centroid Update</td>
+            <td class="p-2.5 tabular-nums text-slate-700">C_k = (∑ x1 / m, ∑ x2 / m)</td>
+            <td class="p-2.5 text-slate-500">เฉลี่ยพิกัดจุดสมาชิกในคลัสเตอร์ (C2_new = (6, 6))</td>
+            <td class="p-2.5 text-center"><a href="/formulas#kmeans-distance-centroid" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
-          <tr class="hover:bg-[#F4F1EA]">
-            <td class="p-2 font-bold border border-[#171719]/30">Silhouette Score</td>
-            <td class="p-2 border border-[#171719]/30 tabular-nums">s(i) = [b(i) - a(i)] / max(a(i), b(i))</td>
-            <td class="p-2 border border-[#171719]/30">ประเมินคุณภาพคลัสเตอร์ [-1, +1] (+1 สมบูรณ์, ติดลบคือผิดกลุ่ม)</td>
-            <td class="p-2 border border-[#171719]/30 text-center"><a href="/formulas#silhouette-score" class="text-[#2563EB] font-bold hover:underline">ดูแอนิเมชัน →</a></td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 font-bold text-slate-900">Silhouette Score</td>
+            <td class="p-2.5 tabular-nums text-slate-700">s(i) = [b(i) - a(i)] / max(a(i), b(i))</td>
+            <td class="p-2.5 text-slate-500">ประเมินคุณภาพคลัสเตอร์ [-1, +1] (+1 สมบูรณ์, ติดลบคือผิดกลุ่ม)</td>
+            <td class="p-2.5 text-center"><a href="/formulas#silhouette-score" class="text-blue-600 font-bold hover:underline">ดูแอนิเมชัน →</a></td>
           </tr>
         </tbody>
       </table>
@@ -345,6 +595,34 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
   const studyModal = document.getElementById('module-study-modal');
   const detailPanes = document.querySelectorAll<HTMLElement>('[data-module-pane]');
 
+  // Interactive Gauge Dial Logic
+  const gaugeProgress = document.getElementById('gaugeProgress');
+  const gaugeValue = document.getElementById('gaugeValue');
+  const gaugeLabel = document.getElementById('gaugeLabel');
+  const toggleMetricBtn = document.getElementById('toggleMetricBtn');
+  let isModelB = true;
+
+  toggleMetricBtn?.addEventListener('click', () => {
+    isModelB = !isModelB;
+    if (isModelB) {
+      if (gaugeProgress) gaugeProgress.style.strokeDashoffset = '28.3'; // 90%
+      if (gaugeValue) gaugeValue.textContent = '0.900';
+      if (gaugeLabel) {
+        gaugeLabel.textContent = 'MODEL B (RECALL)';
+        gaugeLabel.className = 'block text-[10px] text-blue-600 mt-0.5 font-bold';
+      }
+      toggleMetricBtn.textContent = 'Switch Model Preset (F1: Model C)';
+    } else {
+      if (gaugeProgress) gaugeProgress.style.strokeDashoffset = '53.7'; // 81%
+      if (gaugeValue) gaugeValue.textContent = '0.810';
+      if (gaugeLabel) {
+        gaugeLabel.textContent = 'MODEL C (F1-SCORE)';
+        gaugeLabel.className = 'block text-[10px] text-amber-600 mt-0.5 font-bold';
+      }
+      toggleMetricBtn.textContent = 'Switch Model Preset (Recall: Model B)';
+    }
+  });
+
   // Filter handlers
   filterAllBtn?.addEventListener('click', () => applyFilter(false));
   filterFocusBtn?.addEventListener('click', () => applyFilter(true));
@@ -356,10 +634,10 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
 
   function applyFilter(isFocus: boolean) {
     if (isFocus) {
-      filterFocusBtn?.classList.add('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
-      filterFocusBtn?.classList.remove('bg-white', 'font-normal');
-      filterAllBtn?.classList.remove('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
-      filterAllBtn?.classList.add('bg-white');
+      filterFocusBtn?.classList.add('bg-slate-900', 'text-white');
+      filterFocusBtn?.classList.remove('bg-white', 'text-slate-600');
+      filterAllBtn?.classList.remove('bg-slate-900', 'text-white');
+      filterAllBtn?.classList.add('bg-white', 'text-slate-600');
 
       moduleCards.forEach((card) => {
         if (card.getAttribute('data-focus') === 'true') {
@@ -369,10 +647,10 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
         }
       });
     } else {
-      filterAllBtn?.classList.add('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
-      filterAllBtn?.classList.remove('bg-white');
-      filterFocusBtn?.classList.remove('bg-[#A3E635]', 'font-black', 'shadow-[2px_2px_0px_#171719]');
-      filterFocusBtn?.classList.add('bg-white');
+      filterAllBtn?.classList.add('bg-slate-900', 'text-white');
+      filterAllBtn?.classList.remove('bg-white', 'text-slate-600');
+      filterFocusBtn?.classList.remove('bg-slate-900', 'text-white');
+      filterFocusBtn?.classList.add('bg-white', 'text-slate-600');
 
       moduleCards.forEach((card) => card.classList.remove('hidden'));
     }
@@ -388,134 +666,80 @@ const visualHooks: Record<string, { label: string; formulaOrRule: string }> = {
     }
 
     buttons.forEach((btn) => {
-      btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
-      const iconEl = btn.querySelector<HTMLElement>('.mark-icon');
-      const labelEl = btn.querySelector<HTMLElement>('.mark-label');
+      btn.setAttribute('aria-pressed', String(isDone));
+      const icon = btn.querySelector('.mark-icon');
+      const label = btn.querySelector('.mark-label');
 
       if (isDone) {
-        btn.classList.add('bg-[#A3E635]', 'text-[#171719]', 'border-[#171719]', 'shadow-[2px_2px_0px_#171719]');
-        btn.classList.remove('bg-white', 'text-gray-700', 'bg-[#222226]', 'text-[#F4F1EA]');
-        if (iconEl) {
-          iconEl.textContent = '✓';
-          iconEl.classList.add('bg-[#171719]', 'text-[#A3E635]', 'border-[#171719]');
-          iconEl.classList.remove('bg-white');
+        btn.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+        btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+        if (icon) {
+          icon.textContent = '✓';
+          icon.className = 'mark-icon w-3.5 h-3.5 bg-emerald-600 text-white rounded-sm flex items-center justify-center text-[10px] leading-none font-bold';
         }
-        if (labelEl) {
-          labelEl.textContent = 'ทบทวนแล้ว';
-        }
+        if (label) label.textContent = 'อ่านแล้ว';
       } else {
-        btn.classList.remove('bg-[#A3E635]', 'text-[#171719]', 'shadow-[2px_2px_0px_#171719]');
-        const isInsideModal = btn.closest('#module-study-modal') !== null;
-        if (isInsideModal) {
-          btn.classList.add('bg-[#222226]', 'text-[#F4F1EA]');
-        } else {
-          btn.classList.add('bg-white', 'text-gray-700');
+        btn.classList.remove('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+        btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+        if (icon) {
+          icon.textContent = '';
+          icon.className = 'mark-icon w-3.5 h-3.5 border border-slate-300 bg-slate-50 rounded-sm flex items-center justify-center text-[10px] leading-none';
         }
-        if (iconEl) {
-          iconEl.textContent = '';
-          iconEl.classList.remove('bg-[#171719]', 'text-[#A3E635]');
-          if (!isInsideModal) iconEl.classList.add('bg-white');
-        }
-        if (labelEl) {
-          labelEl.textContent = isInsideModal ? 'ทำเครื่องหมายว่าทบทวนแล้ว' : 'ทบทวนแล้ว';
-        }
+        if (label) label.textContent = 'ทบทวนแล้ว';
       }
     });
   }
 
-  // Initialize progress states
-  const progress = ProgressStore.load();
-  const allModIds = new Set<string>();
-  document.querySelectorAll<HTMLElement>('.module-mark-btn').forEach((btn) => {
-    const modId = btn.getAttribute('data-mod-id');
-    if (modId) allModIds.add(modId);
+  // Initialize Read Status from LocalStorage
+  const completedIds = ProgressStore.getCompletedModules();
+  completedIds.forEach((id) => renderModuleMarkState(id, true));
 
-    btn.addEventListener('click', (e) => {
+  // Handle Mark as Done Clicks
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const markBtn = target.closest<HTMLElement>('.module-mark-btn');
+
+    if (markBtn) {
       e.stopPropagation();
-      if (!modId) return;
-      const isDone = ProgressStore.toggleModuleCompleted(modId);
-      renderModuleMarkState(modId, isDone);
-    });
-  });
-
-  allModIds.forEach((modId) => {
-    renderModuleMarkState(modId, progress.completedModuleIds.includes(modId));
-  });
-
-  // Prevent formula link clicks from triggering card modal
-  document.querySelectorAll<HTMLElement>('[data-stop-card-open]').forEach((el) => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
-  });
-
-  // Modal Open / Close / Switch Logic
-  function openModuleModal(modId: string) {
-    if (!studyModal) return;
-    let found = false;
-    detailPanes.forEach((pane) => {
-      if (pane.getAttribute('data-module-pane') === modId) {
-        pane.classList.remove('hidden');
-        found = true;
-      } else {
-        pane.classList.add('hidden');
+      const modId = markBtn.getAttribute('data-mod-id');
+      if (modId) {
+        const isDone = ProgressStore.toggleModuleCompleted(modId);
+        renderModuleMarkState(modId, isDone);
       }
-    });
-    if (!found) return;
+    }
+  });
 
-    studyModal.classList.remove('hidden');
-    studyModal.scrollTop = 0;
-    document.body.style.overflow = 'hidden';
-    (window as any).lenis?.stop();
-  }
-
-  function closeModuleModal() {
-    if (!studyModal) return;
-    studyModal.classList.add('hidden');
-    document.body.style.overflow = '';
-    (window as any).lenis?.start();
-  }
-
+  // Open Drawer Modal on Card Click
   moduleCards.forEach((card) => {
-    const modId = card.getAttribute('data-open-module');
-    if (!modId) return;
+    card.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-stop-card-open]')) {
+        return;
+      }
 
-    card.addEventListener('click', () => {
-      openModuleModal(modId);
+      const modId = card.getAttribute('data-open-module');
+      if (!modId || !studyModal) return;
+
+      detailPanes.forEach((pane) => {
+        if (pane.getAttribute('data-module-pane') === modId) {
+          pane.classList.remove('hidden');
+        } else {
+          pane.classList.add('hidden');
+        }
+      });
+
+      studyModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
     });
+  });
 
+  // Keyboard accessibility
+  moduleCards.forEach((card) => {
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        openModuleModal(modId);
+        card.click();
       }
     });
   });
-
-  document.querySelectorAll<HTMLElement>('[data-close-modal]').forEach((btn) => {
-    btn.addEventListener('click', () => closeModuleModal());
-  });
-
-  document.querySelectorAll<HTMLElement>('[data-switch-module]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-switch-module');
-      if (targetId) openModuleModal(targetId);
-    });
-  });
-
-  studyModal?.addEventListener('click', (e) => {
-    if (e.target === studyModal) {
-      closeModuleModal();
-    }
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && studyModal && !studyModal.classList.contains('hidden')) {
-      closeModuleModal();
-    }
-  });
-
-  // Init filter based on localStorage
-  const savedFocus = localStorage.getItem('ds_final_focus');
-  applyFilter(savedFocus !== null ? savedFocus === 'true' : true);
 </script>

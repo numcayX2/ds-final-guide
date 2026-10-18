@@ -5,133 +5,135 @@ import { allFormulas } from '../data/formulas/index';
 ---
 
 <Layout title="10301351 Data Science - แดชบอร์ดวิเคราะห์ความพร้อม (Mastery Dashboard)" activeTab="dashboard">
-  <!-- Dashboard Hero -->
-  <div class="border-2 border-[#171719] bg-[#171719] text-[#F4F1EA] p-6 mb-8 shadow-[5px_5px_0px_#A3E635]">
-    <div class="flex flex-wrap justify-between items-center gap-4">
-      <div>
-        <div class="flex items-center gap-2 mb-2">
-          <span class="tape-label bg-[#A3E635] text-[#171719] text-xs py-0.5 px-2">MASTERY TRACKER</span>
-          <span class="text-xs font-mono uppercase tracking-wider text-gray-300">Phase 5 Delivery</span>
+  <!-- Dashboard Hero: Workbench Instrument Container -->
+  <div class="bg-white rounded-2xl p-6 sm:p-7 mb-8 border border-slate-200 shadow-xs">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+      <div class="lg:col-span-8">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-slate-500 mb-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+          <span>PERSONAL DIAGNOSTIC & MASTERY TRACKER</span>
         </div>
-        <h1 class="text-2xl sm:text-4xl font-black font-['Space_Grotesk'] text-white">
-          MASTERY PROGRESS & READINESS
+        <h1 class="text-2xl sm:text-3xl font-extrabold font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] text-slate-900 tracking-tight">
+          Mastery Progress & Readiness
         </h1>
-        <p class="text-xs sm:text-sm text-gray-300 font-mono mt-1">
-          ระบบติดตามความพร้อมรายบุคคล วิเคราะห์จุดอ่อนจากผลสอบจำลอง และบันทึกสถานะลงเครื่อง (LocalStorage)
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl">
+          ระบบติดตามความพร้อมรายบุคคล วิเคราะห์จุดอ่อนจากผลสอบจำลอง และจัดลำดับแผนทบทวน 6 รอบ
         </p>
       </div>
 
-      <!-- Overall Readiness Meter -->
-      <div class="border-2 border-[#F4F1EA] bg-[#222226] p-4 text-center min-w-[160px]">
-        <div class="text-[10px] font-mono text-gray-400 uppercase">ระดับความพร้อมรวม</div>
-        <div class="text-3xl font-black font-['Space_Grotesk'] text-[#A3E635] mt-1" id="overall-pct">
+      <!-- Dominant Readiness Index Indicator -->
+      <div class="lg:col-span-4 bg-slate-50 border border-slate-200 p-4 rounded-xl text-center font-mono">
+        <div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">ดัชนีความพร้อมรวม (Overall Readiness)</div>
+        <div class="text-3xl sm:text-4xl font-extrabold text-blue-600 mt-1 tabular-nums" id="overall-pct">
           0%
         </div>
-        <div class="text-[10px] font-mono text-gray-300 mt-1" id="overall-status">
+        <div class="text-[11px] text-slate-600 font-medium mt-1" id="overall-status">
           ยังไม่ได้เริ่มทดสอบ
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 3-Column Diagnostic Summary -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 font-mono text-xs">
+  <!-- Telemetry Diagnostic Metrics: Asymmetric 3-Row Telemetry Panel -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 font-mono text-xs">
     <!-- Stat 1: Modules Read -->
-    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
       <div class="flex justify-between items-center mb-2">
-        <span class="font-bold text-[#171719] uppercase">บทเรียนที่อ่านจบแล้ว</span>
-        <span class="tape-label bg-[#EAE6DC] text-[#171719] text-[10px]" id="stat-mod-ratio">0 / 9</span>
+        <span class="font-bold text-slate-800 uppercase">บทเรียนที่อ่านจบแล้ว</span>
+        <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold tabular-nums" id="stat-mod-ratio">0 / 10</span>
       </div>
-      <div class="w-full bg-[#EAE6DC] h-3 border border-[#171719] overflow-hidden my-2">
-        <div id="bar-mod" class="bg-[#A3E635] h-full transition-all duration-500" style="width: 0%"></div>
+      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden my-2">
+        <div id="bar-mod" class="bg-blue-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
       </div>
-      <p class="text-gray-500 text-[11px]">ครอบคลุมเนื้อหาทั้ง 9 เลกเชอร์ของวิชา</p>
+      <p class="text-slate-500 text-[11px]">ครอบคลุมเนื้อหา 10 เลกเชอร์ของวิชา</p>
     </div>
 
     <!-- Stat 2: Formula Mastery -->
-    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
       <div class="flex justify-between items-center mb-2">
-        <span class="font-bold text-[#171719] uppercase">สูตรที่เข้าใจแล้ว (14 สูตร)</span>
-        <span class="tape-label bg-[#EAE6DC] text-[#171719] text-[10px]" id="stat-formula-ratio">0 / 14</span>
+        <span class="font-bold text-slate-800 uppercase">สูตรที่เข้าใจแล้ว</span>
+        <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold tabular-nums" id="stat-formula-ratio">0 / 14</span>
       </div>
-      <div class="w-full bg-[#EAE6DC] h-3 border border-[#171719] overflow-hidden my-2">
-        <div id="bar-formula" class="bg-[#2563EB] h-full transition-all duration-500" style="width: 0%"></div>
+      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden my-2">
+        <div id="bar-formula" class="bg-blue-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
       </div>
-      <p class="text-gray-500 text-[11px]">แอนิเมชัน KaTeX In-Equation Morphing ทั้งหมด</p>
+      <p class="text-slate-500 text-[11px]">14 แอนิเมชัน KaTeX Morphing</p>
     </div>
 
     <!-- Stat 3: Exam Score -->
-    <div class="border-2 border-[#171719] bg-white p-5 shadow-[3px_3px_0px_#171719]">
+    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
       <div class="flex justify-between items-center mb-2">
-        <span class="font-bold text-[#171719] uppercase">คะแนนสอบจำลองล่าสุด</span>
-        <span class="tape-label bg-[#E11D48] text-white text-[10px]" id="stat-exam-ratio">ยังไม่ได้สอบ</span>
+        <span class="font-bold text-slate-800 uppercase">คะแนนสอบจำลองล่าสุด</span>
+        <span class="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold tabular-nums" id="stat-exam-ratio">ยังไม่ได้สอบ</span>
       </div>
-      <div class="w-full bg-[#EAE6DC] h-3 border border-[#171719] overflow-hidden my-2">
-        <div id="bar-exam" class="bg-[#E11D48] h-full transition-all duration-500" style="width: 0%"></div>
+      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden my-2">
+        <div id="bar-exam" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
       </div>
-      <p class="text-gray-500 text-[11px]">เป้าหมายห้องสอบ: 12 / 14 คะแนนขึ้นไป (Grade A)</p>
+      <p class="text-slate-500 text-[11px]">เป้าหมาย: ≥ 12 / 14 ข้อ (เกณฑ์เกรด A)</p>
     </div>
   </div>
 
   <!-- Detailed Checklists Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Left: Modules Checklist -->
-    <div class="border-2 border-[#171719] bg-white p-6 shadow-[4px_4px_0px_#171719]">
-      <div class="flex justify-between items-center mb-4 border-b-2 border-[#171719] pb-3">
-        <h3 class="font-bold text-base font-['Space_Grotesk'] text-[#171719] flex items-center gap-2">
-          <span>01. เช็กลิสต์ความเข้าใจรายบทเรียน (9 บท)</span>
+    <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs">
+      <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-sm sm:text-base font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] text-slate-900">
+          01. เช็กลิสต์ความเข้าใจรายบทเรียน (10 บท)
         </h3>
-        <span class="text-xs font-mono text-gray-500">คลิกเพื่อเช็กสถานะ</span>
+        <span class="text-xs font-mono text-slate-500">คลิกเพื่อเช็กสถานะ</span>
       </div>
 
       <div class="space-y-2">
         {allModules.map((mod) => (
           <div
-            class="flex items-center justify-between p-2.5 border border-[#171719]/40 hover:bg-[#F4F1EA] transition-colors font-mono text-xs"
+            class="flex items-center justify-between p-2.5 border border-slate-200 bg-slate-50 hover:bg-slate-100/80 rounded-lg transition-colors font-mono text-xs"
             data-mod-row={mod.id}
           >
             <div class="flex items-center gap-2.5">
               <input
                 type="checkbox"
-                class="mod-check w-4 h-4 border-2 border-[#171719] accent-[#171719] cursor-pointer"
+                class="mod-check w-4 h-4 border border-slate-300 bg-white rounded accent-blue-600 cursor-pointer"
                 data-mod-id={mod.id}
               />
-              <span class="font-bold text-[#171719]">
+              <span class="font-bold text-slate-900">
                 {mod.moduleNumber}. {mod.title}
               </span>
             </div>
-            <span class="text-[10px] text-gray-500">{mod.lectureCode}</span>
+            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-[10px] text-slate-600">
+              {mod.lectureCode}
+            </span>
           </div>
         ))}
       </div>
     </div>
 
     <!-- Right: Formulas Mastery Grid -->
-    <div class="border-2 border-[#171719] bg-white p-6 shadow-[4px_4px_0px_#171719]">
-      <div class="flex justify-between items-center mb-4 border-b-2 border-[#171719] pb-3">
-        <h3 class="font-bold text-base font-['Space_Grotesk'] text-[#171719] flex items-center gap-2">
-          <span>02. เช็กลิสต์ความเชี่ยวชาญ 14 สูตรคำนวณ</span>
+    <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs">
+      <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-sm sm:text-base font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] text-slate-900">
+          02. เช็กลิสต์ความเชี่ยวชาญ 14 สูตรคำนวณ
         </h3>
-        <span class="text-xs font-mono text-gray-500">คลิกเพื่อเช็กสถานะ</span>
+        <span class="text-xs font-mono text-slate-500">คลิกเพื่อเช็กสถานะ</span>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {allFormulas.map((formula, i) => (
           <div
-            class="p-2 border border-[#171719]/40 hover:bg-[#F4F1EA] transition-colors font-mono text-xs flex items-center justify-between"
+            class="p-2 border border-slate-200 bg-slate-50 hover:bg-slate-100/80 rounded-lg transition-colors font-mono text-xs flex items-center justify-between"
             data-formula-row={formula.id}
           >
             <div class="flex items-center gap-2 truncate pr-1">
               <input
                 type="checkbox"
-                class="formula-check w-4 h-4 border-2 border-[#171719] accent-[#171719] cursor-pointer shrink-0"
+                class="formula-check w-4 h-4 border border-slate-300 bg-white rounded accent-blue-600 cursor-pointer shrink-0"
                 data-formula-id={formula.id}
               />
-              <a href={`/formulas#${formula.id}`} class="truncate hover:underline font-semibold text-[#171719]">
+              <a href={`/formulas#${formula.id}`} class="truncate hover:text-blue-600 font-medium text-slate-800 transition-colors">
                 {String(i + 1).padStart(2, '0')}. {formula.name}
               </a>
             </div>
-            <span class="text-[9px] uppercase px-1 bg-gray-100 border border-gray-300 shrink-0">
+            <span class="text-[9px] uppercase px-1.5 py-0.2 bg-white border border-slate-200 text-slate-500 rounded-md shrink-0 font-bold">
               {formula.category}
             </span>
           </div>
@@ -140,15 +142,81 @@ import { allFormulas } from '../data/formulas/index';
     </div>
   </div>
 
+  <!-- Section 3: 6-Round Study Plan from Friend's Guide -->
+  <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs mb-8 font-mono text-xs">
+    <div class="border-b border-slate-100 pb-3 mb-4 flex justify-between items-center">
+      <div>
+        <span class="text-xs font-bold text-blue-600 uppercase">STUDY ROADMAP</span>
+        <h3 class="font-bold text-base text-slate-900 font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] mt-0.5">
+          แผนทบทวน 6 รอบตามลำดับความสำคัญ (Priority A → B → C)
+        </h3>
+      </div>
+      <span class="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-md text-[10px] text-slate-600 font-bold">
+        RECOMMENDED SCHEDULE
+      </span>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl border border-slate-200">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-slate-50 text-slate-600 text-[11px] border-b border-slate-200">
+          <tr>
+            <th class="p-3 w-32 font-bold">รอบที่</th>
+            <th class="p-3 font-bold">สิ่งที่ต้องทำ</th>
+            <th class="p-3 w-32 font-bold">เวลาโดยประมาณ</th>
+            <th class="p-3 w-28 text-center font-bold">สถานะ</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 bg-white text-slate-700">
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-bold text-slate-900">R1 Diagnostic</td>
+            <td class="p-3">ทำคำถาม Active Recall แบบปิดสไลด์ เพื่อวินิจฉัยจุดอ่อนของตนเอง</td>
+            <td class="p-3 tabular-nums text-slate-500">60–90 นาที</td>
+            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-bold text-[10px]">Step 1</span></td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-bold text-rose-700">R2 Priority A</td>
+            <td class="p-3">Responsible DS (Proxy, Obermeyer, Consent), Validation vs Test, Confusion Matrix</td>
+            <td class="p-3 tabular-nums text-slate-500">90–120 นาที</td>
+            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 font-bold text-[10px]">ด่วนที่สุด</span></td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-bold text-amber-700">R3 Priority B</td>
+            <td class="p-3">ฝึกคำนวณมือ: Gini Impurity/Gain, K-Means Centroid Update, Outlier Fences</td>
+            <td class="p-3 tabular-nums text-slate-500">90–120 นาที</td>
+            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px]">คำนวณมือ</span></td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-bold text-slate-900">R4 Priority C</td>
+            <td class="p-3">6 Data Roles, Decision Contract vs Memo, ห่วงโซ่ส่งมอบ และ Backtrack Task</td>
+            <td class="p-3 tabular-nums text-slate-500">60–90 นาที</td>
+            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold text-[10px]">เชื่อมโยง</span></td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-bold text-slate-900">R5 Mixed Mock</td>
+            <td class="p-3">ทำข้อสอบจำลอง 14 ข้อใน Exam Arena จับเวลา 45 นาที และบันทึก Error Log</td>
+            <td class="p-3 tabular-nums text-slate-500">90 นาที</td>
+            <td class="p-3 text-center"><a href="/exam" class="text-blue-600 font-bold hover:underline">เข้าห้องสอบ →</a></td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-bold text-emerald-700">R6 วันก่อนสอบ</td>
+            <td class="p-3">อ่าน 5 ธีมหลัก ทบทวนตารางคู่สับสนบ่อย คำนวณสูตรมือ 1 ข้อ และพักผ่อนให้เพียงพอ</td>
+            <td class="p-3 tabular-nums text-slate-500">45–60 นาที</td>
+            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px]">พร้อมสอบ</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Bottom: Actions & Storage Reset -->
-  <div class="mt-8 pt-6 border-t-2 border-[#171719] flex flex-wrap justify-between items-center gap-4 text-xs font-mono">
-    <div class="text-gray-600">
-      💾 สถานะการเรียนรู้ทั้งหมดถูกบันทึกลงในเบราว์เซอร์ของคุณโดยอัตโนมัติ (LocalStorage API)
+  <div class="pt-4 border-t border-slate-200 flex flex-wrap justify-between items-center gap-4 text-xs font-mono">
+    <div class="text-slate-500">
+      สถานะการเรียนรู้ทั้งหมดถูกบันทึกลงในเบราว์เซอร์ของคุณโดยอัตโนมัติ (LocalStorage API)
     </div>
     <button
       type="button"
       id="reset-progress-btn"
-      class="px-3 py-1.5 text-xs font-bold text-[#E11D48] border border-[#E11D48] hover:bg-[#E11D48] hover:text-white transition-all cursor-pointer"
+      class="px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-lg transition-colors cursor-pointer"
     >
       รีเซ็ตข้อมูลความก้าวหน้าทั้งหมด
     </button>
@@ -157,10 +225,11 @@ import { allFormulas } from '../data/formulas/index';
 
 <script>
   import { ProgressStore } from '../lib/progress-store';
+  import { allModules } from '../data/modules/index';
 
   function refreshDashboard() {
     const progress = ProgressStore.load();
-    const totalModules = 9;
+    const totalModules = allModules.length;
     const totalFormulas = 14;
 
     const completedMods = progress.completedModuleIds.length;

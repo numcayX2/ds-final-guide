@@ -29,8 +29,7 @@ def get_token():
             return token
     except Exception:
         pass
-    # Fallback to recorded session token
-    return "REDACTED_API_KEY"
+    return os.environ.get("OPENROUTER_API_KEY", "")
 
 API_KEY = get_token()
 

@@ -11,13 +11,13 @@ const { modules } = Astro.props;
 <!-- Ultra-Detailed Visual Study Drawer / Modal -->
 <div
   id="module-study-modal"
-  class="fixed inset-0 z-50 hidden bg-[#171719]/80 backdrop-blur-[2px] overflow-y-auto p-2 sm:p-4 md:p-6"
+  class="fixed inset-0 z-50 hidden bg-[#0F172A]/40 backdrop-blur-[2px] overflow-y-auto p-2 sm:p-4 md:p-6"
   role="dialog"
   aria-modal="true"
   aria-labelledby="modal-module-title"
   data-lenis-prevent
 >
-  <div class="max-w-5xl mx-auto my-2 sm:my-4 border-2 border-[#171719] bg-[#F4F1EA] shadow-[8px_8px_0px_#171719] overflow-hidden">
+  <div class="max-w-5xl mx-auto my-4 sm:my-8 bg-white text-[#0F172A] border border-slate-200/90 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.15)] overflow-hidden rounded-3xl">
     {modules.map((mod, idx) => {
       const prevMod = idx > 0 ? modules[idx - 1] : null;
       const nextMod = idx < modules.length - 1 ? modules[idx + 1] : null;
@@ -28,23 +28,23 @@ const { modules } = Astro.props;
           data-module-pane={mod.id}
         >
           <!-- Sticky Top Bar -->
-          <div class="sticky top-0 z-30 bg-[#171719] text-[#F4F1EA] px-4 sm:px-6 py-3.5 border-b-2 border-[#171719] flex flex-wrap justify-between items-center gap-3">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <span class="w-8 h-8 bg-[#A3E635] text-[#171719] font-['Space_Grotesk'] font-black text-sm flex items-center justify-center border border-[#171719] shrink-0">
+          <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-md text-[#0F172A] px-5 sm:px-8 py-3.5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 shadow-2xs">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="w-9 h-9 bg-[#EFF6FF] text-[#2563EB] font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] font-bold text-sm flex items-center justify-center border border-[#BFDBFE] rounded-xl shrink-0">
                 {mod.moduleNumber}
               </span>
               <div class="min-w-0">
-                <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono text-gray-300">
-                  <span class="text-[#A3E635] font-bold">{mod.lectureCode}</span>
+                <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono text-slate-500">
+                  <span class="text-[#2563EB] font-bold">{mod.lectureCode}</span>
                   <span>•</span>
                   <span>เวลาทบทวน ~{mod.timeEstimateMinutes} นาที</span>
                   {mod.isFinalFocus && (
-                    <span class="bg-[#E11D48] text-white px-1.5 py-0.2 font-bold text-[10px]">
+                    <span class="soft-pill bg-rose-50 border-rose-200 text-rose-700 px-2 py-0.2 font-bold text-[10px]">
                       ออกสอบเน้นๆ (FINAL FOCUS)
                     </span>
                   )}
                 </div>
-                <h2 id="modal-module-title" class="font-['Space_Grotesk'] font-bold text-base sm:text-xl text-white truncate">
+                <h2 id="modal-module-title" class="font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] font-extrabold text-base sm:text-xl text-[#0F172A] truncate">
                   {mod.title}
                 </h2>
               </div>
@@ -54,10 +54,10 @@ const { modules } = Astro.props;
               <!-- Synced Read Status Toggle Button -->
               <button
                 type="button"
-                class="module-mark-btn inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#F4F1EA]/40 bg-[#222226] text-[#F4F1EA] hover:border-[#A3E635] text-xs font-mono font-bold transition-all cursor-pointer"
+                class="module-mark-btn inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 bg-slate-50 text-slate-700 hover:text-slate-900 hover:border-slate-400 rounded-lg text-xs font-mono font-semibold transition-colors cursor-pointer"
                 data-mod-id={mod.id}
               >
-                <span class="mark-icon w-3.5 h-3.5 border border-current flex items-center justify-center text-[10px]"></span>
+                <span class="mark-icon w-3.5 h-3.5 border border-slate-300 bg-white rounded-sm flex items-center justify-center text-[10px]"></span>
                 <span class="mark-label">ทำเครื่องหมายว่าทบทวนแล้ว</span>
               </button>
 
@@ -65,7 +65,7 @@ const { modules } = Astro.props;
               <button
                 type="button"
                 data-close-modal
-                class="px-3 py-1.5 bg-[#E11D48] hover:bg-[#BE123C] text-white font-mono font-bold text-xs border border-[#171719] cursor-pointer transition-colors"
+                class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg font-mono font-semibold text-xs cursor-pointer transition-colors"
                 aria-label="ปิดหน้าต่างสรุปบทเรียน (ESC)"
               >
                 ✕ ปิด [ESC]
@@ -74,22 +74,22 @@ const { modules } = Astro.props;
           </div>
 
           <!-- Modal Body Content -->
-          <div class="p-4 sm:p-6 md:p-8 space-y-8">
+          <div class="p-4 sm:p-6 md:p-8 space-y-8 bg-[#F8FAFC]">
             <!-- Quick Overview Banner -->
-            <div class="bg-white border-2 border-[#171719] p-4 sm:p-5 shadow-[4px_4px_0px_#171719]">
-              <div class="text-[11px] font-mono font-bold uppercase text-gray-500 mb-1">
+            <div class="bg-white border border-[#E2E8F0] p-4 sm:p-5 rounded-[4px] shadow-xs">
+              <div class="text-[11px] font-mono font-bold uppercase text-[#2563EB] mb-1">
                 OVERVIEW • แก่นสำคัญของบทเรียน ({mod.titleEn})
               </div>
-              <p class="text-sm sm:text-base text-[#171719] font-medium leading-relaxed">
+              <p class="text-sm sm:text-base text-[#334155] font-medium leading-relaxed">
                 {mod.quickSummary}
               </p>
               {mod.coreFormulas.length > 0 && (
-                <div class="mt-3 pt-3 border-t border-[#171719]/20 flex flex-wrap items-center gap-2">
-                  <span class="text-xs font-mono font-bold text-[#171719]">สูตรคำนวณที่เกี่ยวข้อง:</span>
+                <div class="mt-3 pt-3 border-t border-[#E2E8F0] flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-mono font-bold text-[#64748B]">สูตรคำนวณที่เกี่ยวข้อง:</span>
                   {mod.coreFormulas.map((fId) => (
                     <a
                       href={`/formulas#${fId}`}
-                      class="px-2.5 py-1 bg-[#A3E635] hover:bg-[#84CC16] text-[#171719] border border-[#171719] font-mono text-xs font-bold shadow-[2px_2px_0px_#171719] transition-all"
+                      class="px-2.5 py-1 bg-[#EFF6FF] hover:bg-[#66A1EE] hover:text-white text-[#2563EB] border border-[#BFDBFE] rounded-[3px] font-mono text-xs font-bold transition-all"
                     >
                       เปิดแอนิเมชัน {fId} →
                     </a>
@@ -101,550 +101,835 @@ const { modules } = Astro.props;
             <!-- ========================================================= -->
             <!-- VISUAL MEMORY BLUEPRINTS (เฉพาะแต่ละบทเรียน เพื่อการจำเข้าห้องสอบ) -->
             <!-- ========================================================= -->
-            <div class="border-2 border-[#171719] bg-white p-4 sm:p-6 shadow-[4px_4px_0px_#171719]">
-              <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#171719] pb-3 mb-5">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-mono text-xs font-bold">
-                    VISUAL MEMORY BLUEPRINT
+            <!-- ========================================================= -->
+            <!-- VISUAL MEMORY BLUEPRINTS (สไลด์จริงจากคาบบรรยาย สำหรับทบทวนสอบ) -->
+            <!-- ========================================================= -->
+            <div class="bg-white p-5 sm:p-7 border border-slate-200/80 rounded-3xl shadow-2xs space-y-6">
+              <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
+                <div class="flex items-center gap-2.5">
+                  <span class="px-2.5 py-1 bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB] font-mono text-xs font-bold rounded-lg">
+                    LECTURE SLIDES
                   </span>
-                  <h3 class="font-['Space_Grotesk'] font-black text-base sm:text-lg text-[#171719]">
-                    แผนภาพจำภาพรวมและจุดออกสอบ (Visual Schematic)
+                  <h3 class="font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] font-bold text-base sm:text-lg text-slate-900">
+                    แผนภาพสรุปจากสไลด์บรรยายจริง ({mod.lectureCode})
                   </h3>
                 </div>
-                <span class="text-[11px] font-mono text-gray-500">อ้างอิงตรงตามสไลด์ {mod.lectureCode}</span>
+                <span class="text-[11px] font-mono text-slate-500">
+                  🔍 คลิกที่ภาพสไลด์เพื่อเปิดดูภาพขนาดใหญ่เต็มจอ [ZOOM]
+                </span>
               </div>
 
-              {/* MODULE 04 VISUAL: Boxplot & Tukey's Fences + EDA Role */}
+              {/* MODULE 01: CRISP-DS Lifecycle Slides */}
+              {mod.id === 'module-01-crisp-ds' && (
+                <div class="space-y-6">
+                  <!-- Slide 1: Full CRISP-DS Workflow -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>วงจร CRISP-DS ทั้ง 8 ขั้นตอน (The Complete CRISP-DS Workflow)</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 06 p02</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L06_p02.png"
+                        alt="The Complete CRISP-DS Workflow"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L06_p02.png"
+                        data-slide-title="วงจร CRISP-DS ทั้ง 8 ขั้นตอน (The Complete CRISP-DS Workflow)"
+                        data-slide-ref="Lect 06 p02"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ สาระสำคัญ:</span>
+                        <span class="leading-relaxed"><strong>Modeling เป็นเพียงหนึ่งในขั้นตอนของ Data Science Journey—not the whole journey</strong> โดยกระบวนการทั้ง 8 ขั้นตอนเชื่อมโยงกันเป็นวงจรวนซ้ำ (Iterative) และสามารถย้อนกลับไปแก้ไขได้ตลอดเวลา</span>
+                      </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ กับดักข้อสอบ:</span>
+                        <span class="leading-relaxed">ขั้นตอน <strong>Data Preparation กินเวลามากที่สุดถึง 60–80%</strong> ของโปรเจกต์ และขั้นตอน <strong>AI-assisted Improvement</strong> ต้องเฝ้าระวัง Drift ร่วมกับการมี Human-in-the-Loop</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Slide 2: EDA Position in CRISP-DS -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>ตำแหน่งของ EDA ในกระบวนการ CRISP-DS (CRISP-DS Iterative Workflow)</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 05 p02</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L05_p02.png"
+                        alt="ตำแหน่งของ EDA ในกระบวนการ CRISP-DS"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L05_p02.png"
+                        data-slide-title="ตำแหน่งของ EDA ในกระบวนการ CRISP-DS"
+                        data-slide-ref="Lect 05 p02"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                      <span class="font-bold text-slate-900 font-mono">★ สาระสำคัญ:</span>
+                      <span class="ml-1 leading-relaxed"><strong>Initial EDA สามารถเริ่มต้นได้ตั้งแต่ขั้น Data Understanding</strong> และทำซ้ำอีกครั้งหลังขั้นตอน Data Preparation เพื่อตรวจทานความถูกต้องก่อนเข้าสู่ Modeling</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 02: Data Cleaning Visual Blueprint */}
+              {mod.id === 'module-02-data-cleaning' && (
+                <div class="space-y-6">
+                  <!-- Slide: Best Measure of Center -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>การเลือกใช้ค่ากลางตามลักษณะข้อมูล (Mean vs Median vs Mode)</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 05 p06</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L05_p06.png"
+                        alt="The Best Measure of Center Depends on the Evidence"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L05_p06.png"
+                        data-slide-title="การเลือกใช้ค่ากลางตามลักษณะข้อมูล (Mean vs Median vs Mode)"
+                        data-slide-ref="Lect 05 p06"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ สาระสำคัญ:</span>
+                        <span class="leading-relaxed"><strong>Mean:</strong> ใช้กับ Quantitative Data เหมาะเมื่อไม่มี Outlier ครอบงำ / <strong>Median:</strong> ค่ากึ่งกลาง เหมาะเมื่อข้อมูลเบ้หรือมีค่าสุดขั้ว (Skewed/Outlier) / <strong>Mode:</strong> ใช้กับ Categorical Data ที่พบบ่อยที่สุด</span>
+                      </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ กฎ Clean Before Impute:</span>
+                        <span class="leading-relaxed">ตัด Known Invalid (-40,000 หรือพิมพ์ศูนย์เกิน 904,000) ออกก่อนคำนวณ Imputation เสมอ และต้องสร้างคอลัมน์ Flag เช่น <code>income_imputed = 1</code> เพื่อ Traceability</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 03: Feature Engineering Visual Blueprint */}
+              {mod.id === 'module-03-feature-engineering' && (
+                <div class="space-y-6">
+                  <!-- Slide: Spread Shows What the Center Leaves Out -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>การวัดการกระจายของข้อมูล (Spread Shows What Center Leaves Out)</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 05 p07</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L05_p07.png"
+                        alt="Spread Shows What the Center Leaves Out"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L05_p07.png"
+                        data-slide-title="การวัดการกระจายของข้อมูล (Spread Shows What Center Leaves Out)"
+                        data-slide-ref="Lect 05 p07"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ สาระสำคัญ:</span>
+                        <span class="leading-relaxed"><strong>ค่ากลางเท่ากัน ≠ ข้อมูลเหมือนกัน:</strong> Variance มีหน่วยยกกำลังสอง ส่วน SD มีหน่วยเดียวกับข้อมูลเดิม มอง Spread ผ่าน Range, IQR และ SD เพื่อตรวจความแปรปรวน</span>
+                      </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ กับดัก Data Leakage & Z-Score:</span>
+                        <span class="leading-relaxed"><strong>Fit เฉพาะบน Training Set</strong> แล้วนำ min, max, μ, σ ไป Transform บน Val และ Test เท่านั้น! และ <strong>Z-Score ไม่เปลี่ยนรูปทรงความเบ้ (Shape)</strong> หากข้อมูลเดิมเบ้ขวา ทำ Z-Score แล้วก็ยังคงเบ้ขวาเหมือนเดิม</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODULE 04: EDA & Outliers (The real PDF slides requested by user) */}
               {mod.id === 'module-04-eda-outliers' && (
                 <div class="space-y-6">
-                  <!-- Boxplot & Whisker Rule SVG Diagram -->
-                  <div class="bg-[#F4F1EA] border border-[#171719] p-4">
-                    <div class="text-xs font-mono font-bold text-[#171719] mb-3 flex flex-wrap justify-between gap-2">
-                      <span>แผนภาพโครงสร้าง Boxplot & กฎเส้นหนวดของ Tukey (Lect 05 p17–18)</span>
-                      <span class="text-[#E11D48]">★ จุดหลอกข้อสอบ: เส้นหนวดหยุดที่ข้อมูลจริงในรั้ว ไม่ได้ลากไปชน Fence!</span>
+                  <!-- Slide 1: Boxplot & IQR Rule -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>โครงสร้าง Boxplot & กฎ 1.5 × IQR ของ Tukey (Fences & Whiskers)</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 05 p17</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
                     </div>
-                    <div class="overflow-x-auto">
-                      <svg viewBox="0 0 760 190" class="w-full min-w-[600px] h-auto bg-white border border-[#171719] p-2">
-                        <!-- Number line axis -->
-                        <line x1="40" y1="150" x2="720" y2="150" stroke="#171719" stroke-width="2" />
-                        <!-- Lower Fence = 40 -->
-                        <line x1="110" y1="35" x2="110" y2="155" stroke="#E11D48" stroke-width="2" stroke-dasharray="5,5" />
-                        <text x="110" y="25" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#E11D48">Lower Fence = 40</text>
-                        <text x="110" y="172" text-anchor="middle" font-family="monospace" font-size="10" fill="#666">Q1 − 1.5(IQR)</text>
-
-                        <!-- Min Actual Data inside fence = 65 -->
-                        <line x1="200" y1="75" x2="200" y2="115" stroke="#171719" stroke-width="3" />
-                        <line x1="200" y1="95" x2="250" y2="95" stroke="#171719" stroke-width="2.5" />
-                        <circle cx="200" cy="95" r="4" fill="#171719" />
-                        <text x="200" y="65" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">Min ในรั้ว (65)</text>
-
-                        <!-- IQR Box [Q1=70 to Q3=90] -->
-                        <rect x="250" y="65" width="180" height="60" fill="#A3E635" fill-opacity="0.35" stroke="#171719" stroke-width="2.5" />
-                        <!-- Median = 82.5 -->
-                        <line x1="355" y1="65" x2="355" y2="125" stroke="#171719" stroke-width="3.5" />
-                        <text x="250" y="55" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">Q1 = 70</text>
-                        <text x="355" y="55" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#2563EB">Median = 82.5</text>
-                        <text x="430" y="55" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">Q3 = 90</text>
-                        <text x="340" y="100" text-anchor="middle" font-family="monospace" font-size="12" font-weight="bold" fill="#171719">IQR = 90 − 70 = 20</text>
-
-                        <!-- Right Whisker stops at 115 (Last actual data point inside fence) -->
-                        <line x1="430" y1="95" x2="520" y2="95" stroke="#171719" stroke-width="2.5" />
-                        <line x1="520" y1="75" x2="520" y2="115" stroke="#2563EB" stroke-width="3.5" />
-                        <circle cx="520" cy="95" r="4.5" fill="#2563EB" />
-                        <text x="520" y="62" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#2563EB">ปลาย Whisker (115)</text>
-                        <text x="520" y="138" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#2563EB">หยุดที่ข้อมูลจริงตัวสุดท้าย!</text>
-
-                        <!-- Gap between Whisker end and Upper Fence -->
-                        <text x="565" y="98" text-anchor="middle" font-family="monospace" font-size="10" fill="#E11D48">← ห้ามลากชนรั้ว!</text>
-
-                        <!-- Upper Fence = 120 / 130 -->
-                        <line x1="610" y1="35" x2="610" y2="155" stroke="#E11D48" stroke-width="2" stroke-dasharray="5,5" />
-                        <text x="610" y="25" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#E11D48">Upper Fence (120 / 130)</text>
-                        <text x="610" y="172" text-anchor="middle" font-family="monospace" font-size="10" fill="#666">Q3 + 1.5(IQR)</text>
-
-                        <!-- Potential Outlier = 140 -->
-                        <circle cx="685" cy="95" r="7" fill="#E11D48" stroke="#171719" stroke-width="2" />
-                        <text x="685" y="70" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#E11D48">จุด 140 (Outlier)</text>
-                        <text x="685" y="135" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#BE123C">Potential Outlier != Error</text>
-                      </svg>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L05_p17.png"
+                        alt="Boxplots and IQR Flag Potential Outliers"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L05_p17.png"
+                        data-slide-title="โครงสร้าง Boxplot & กฎ 1.5 × IQR ของ Tukey (Fences & Whiskers)"
+                        data-slide-ref="Lect 05 p17"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-2 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ สาระสำคัญ:</span>
+                        <span class="leading-relaxed"><strong>Boxplot + IQR = Screening ไม่ใช่ Verdict:</strong> ค่า Lower Fence = Q1 − 1.5×IQR, Upper Fence = Q3 + 1.5×IQR และจุดที่อยู่นอกรั้วคือ Potential Outlier ที่ควรตรวจสอบต่อ แต่ไม่ได้แปลว่าเป็น Error</span>
+                      </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ จุดหลอกข้อสอบยอดฮิต:</span>
+                        <span class="leading-relaxed"><strong>Fence เป็นเกณฑ์ ส่วน Whisker สิ้นสุดที่ค่าจริงสุดท้ายซึ่งยังอยู่ภายใน Fence!</strong> เส้นหนวดไม่ได้ลากไปจรดขอบ Fence (เช่น หาก Fence = 120/130 แต่ข้อมูลจริงสูงสุดก่อนหลุดรั้วคือ 115 เส้น Whisker จะหยุดที่ 115 เสมอ ห้ามลากชนรั้ว!)</span>
+                      </div>
                     </div>
                   </div>
 
-                  <!-- EDA Role & Confounder Visual Grid -->
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                    <div class="p-4 border border-[#171719] bg-[#A3E635]/15">
-                      <div class="font-bold text-[#171719] mb-2">บทบาทที่แท้จริงของ EDA (Lect 05 p04)</div>
-                      <div class="flex items-center gap-2 bg-white p-2.5 border border-[#171719]">
-                        <span class="px-2 py-1 bg-[#171719] text-[#A3E635] font-bold">EDA</span>
-                        <span>→</span>
-                        <span class="font-bold text-[#171719]">"Informs modeling decisions"</span>
+                  <!-- Slide 2: Outlier Action Framework -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>การจัดการ Outlier: สืบค้นก่อนตัดสินใจ (Investigate Before Acting)</span>
                       </div>
-                      <p class="text-[11px] text-gray-700 mt-2">
-                        ชี้แนะแนวทางให้ Data Scientist เห็นความเบ้, Outlier และความสัมพันธ์ แต่ <strong>"ไม่ได้เลือกอัลกอริทึมให้อัตโนมัติ"</strong>
-                      </p>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 05 p18</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
                     </div>
-                    <div class="p-4 border border-[#171719] bg-[#E11D48]/10">
-                      <div class="font-bold text-[#BE123C] mb-2">กับดักตัวแปรกวน (Confounding Variable)</div>
-                      <div class="bg-white p-2.5 border border-[#171719] text-center">
-                        <span class="font-bold text-[#E11D48]">[อุณหภูมิฤดูร้อน (Confounder)]</span>
-                        <div class="text-[11px] mt-1">↙ ส่งผลทั้งคู่ ↘</div>
-                        <div class="flex justify-around font-bold mt-1">
-                          <span>ยอดขายไอศกรีม ↑</span>
-                          <span>≠</span>
-                          <span>อัตราจมน้ำ ↑</span>
-                        </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L05_p18.png"
+                        alt="Investigate an Outlier Before Acting"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L05_p18.png"
+                        data-slide-title="การจัดการ Outlier: สืบค้นก่อนตัดสินใจ (Investigate Before Acting)"
+                        data-slide-ref="Lect 05 p18"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                      <span class="font-bold text-slate-900 font-mono">★ สาระสำคัญ:</span>
+                      <span class="ml-1 leading-relaxed"><strong>ผิดสังเกต ≠ ต้องลบ:</strong> การจัดการ Outlier ต้องตามหลักฐานและ Domain Context ไม่ใช่ลบโดยอัตโนมัติ โดย Outlier อาจเป็น 1) Data Error, 2) Influential Observation, หรือ 3) Rare but Valid Event ทางธุรกิจ</span>
+                    </div>
+                  </div>
+
+                  <!-- Slide 3 & 4: Correlation vs Causation & EDA Decision Guide -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Slide 3: Confounding Variable -->
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">สหสัมพันธ์ไม่ใช่สาเหตุ (Confounder Trap)</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 05 p13</span>
                       </div>
-                      <p class="text-[11px] text-gray-700 mt-2">
-                        <strong>Correlation != Causation:</strong> มีสหสัมพันธ์กันไม่ได้แปลว่าเป็นต้นเหตุของกันและกัน
-                      </p>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L05_p13.png"
+                          alt="Correlation Is Association, Not Causation"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L05_p13.png"
+                          data-slide-title="สหสัมพันธ์ไม่ใช่สาเหตุ (Correlation Is Association, Not Causation)"
+                          data-slide-ref="Lect 05 p13"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>Association != Causation:</strong> ก่อนอ้างเหตุผล ให้ตรวจคำอธิบายอื่น เช่น Confounding Variable, Reverse Direction หรือ Coincidence</p>
+                      </div>
+                    </div>
+
+                    <!-- Slide 4: EDA Guides ML Selection -->
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">บทบาทที่แท้จริงของ EDA</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 05 p28</span>
+                      </div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L05_p28.png"
+                          alt="EDA Evidence Guides Machine Learning Selection"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L05_p28.png"
+                          data-slide-title="บทบาทที่แท้จริงของ EDA"
+                          data-slide-ref="Lect 05 p28"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>EDA "informs modeling decisions" ไม่ใช่ "automatically selects an algorithm"</strong> โดยเลือก Model จาก Problem และ Evidence ไม่ใช่ความนิยม</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* MODULE 05 VISUAL: 3-Way Partitioning & 4 Candidate Models */}
+              {/* MODULE 05: Modeling Framework (Partitioning, Algorithm vs Model) */}
               {mod.id === 'module-05-modeling-framework' && (
                 <div class="space-y-6">
-                  <!-- 3-Way Partitioning Visual Bar -->
-                  <div class="bg-[#F4F1EA] border border-[#171719] p-4">
-                    <div class="text-xs font-mono font-bold text-[#171719] mb-3">
-                      แผนภาพการแบ่งข้อมูล 3 ส่วน & กฎ Protect the Test Set (Lect 07 p07, p32)
+                  <!-- Slide 1: 3-Way Partitioning Roles -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>หน้าที่ของการแบ่งข้อมูล 3 ส่วน (Training, Validation, and Test Roles)</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 07 p07</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
                     </div>
-                    <div class="grid grid-cols-12 border-2 border-[#171719] text-xs font-mono overflow-hidden">
-                      <div class="col-span-12 md:col-span-7 bg-[#A3E635] p-3.5 border-b-2 md:border-b-0 md:border-r-2 border-[#171719]">
-                        <div class="font-black text-sm text-[#171719]">1. TRAINING SET (60% – 70%)</div>
-                        <div class="text-[11px] text-[#171719] mt-1">• ใช้สอนโมเดล (Fit Parameters & เรียนรู้กฎ)</div>
-                        <div class="text-[11px] font-bold text-[#171719] mt-1">• ทำงานคู่กับ Validation ในลูปปรับจูน</div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L07_p07.png"
+                        alt="Training, Validation, and Test Roles"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L07_p07.png"
+                        data-slide-title="หน้าที่ของการแบ่งข้อมูล 3 ส่วน (Training, Validation, and Test Roles)"
+                        data-slide-ref="Lect 07 p07"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ สาระสำคัญ:</span>
+                        <span class="leading-relaxed"><strong>Training Data:</strong> ใช้เรียนรู้ต้นไม้ (Features, Thresholds) / <strong>Validation Data:</strong> ใช้เปรียบเทียบ Candidate Models และตัดสินใจจูนพารามิเตอร์ เช่น max_depth / <strong>Test Data:</strong> ใช้เป็นหลักฐานสุดท้ายหลังตรึงทุกการตัดสินใจแล้ว</span>
                       </div>
-                      <div class="col-span-12 md:col-span-3 bg-[#F59E0B]/40 p-3.5 border-b-2 md:border-b-0 md:border-r-4 border-[#171719]">
-                        <div class="font-black text-sm text-[#171719]">2. VALIDATION (15–20%)</div>
-                        <div class="text-[11px] text-[#171719] mt-1">• จูน Hyperparameter (เช่น max_depth)</div>
-                        <div class="text-[11px] font-bold text-[#171719] mt-1">• คัดเลือกผู้ชนะจาก 4 Candidate Models</div>
-                      </div>
-                      <div class="col-span-12 md:col-span-2 bg-[#E11D48] text-white p-3.5 flex flex-col justify-between">
-                        <div class="font-black text-sm">3. TEST SET (15–20%)</div>
-                        <div class="text-[10px] mt-1 leading-snug">
-                          <strong>PROTECTED EVIDENCE!</strong> ห้ามแตะต้องตอนจูน ใช้ประเมินครั้งเดียวตอนจบเท่านั้น
-                        </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ กฎ Protect the Test Set:</span>
+                        <span class="leading-relaxed">การนำ Test Data มาใช้ซ้ำเพื่อช่วยตัดสินใจเลือกโมเดลจะทำให้หลักฐานขั้นสุดท้ายอ่อนลงและเกิด Overfitting/Leakage!</span>
                       </div>
                     </div>
                   </div>
 
-                  <!-- 4 Candidate Models Visual Cards -->
-                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
-                    <div class="p-3.5 border-2 border-[#171719] bg-white">
-                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 01</div>
-                      <div class="font-bold text-sm text-[#171719]">Decision Tree</div>
-                      <p class="text-[11px] text-gray-600 mt-1">แตกกิ่ง If-Else ด้วย Gini Impurity อ่านกฎเข้าใจง่าย (White-box) ไม่ต้องทำ Scaling</p>
+                  <!-- Slide 2 & 3: Algorithm vs Model & DS Modeling Techniques -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">Algorithm vs Training vs Model</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 06 p40</span>
+                      </div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L06_p40.png"
+                          alt="Recap: From Algorithm to Trained Model Candidate"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L06_p40.png"
+                          data-slide-title="Algorithm vs Training vs Model"
+                          data-slide-ref="Lect 06 p40"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>Algorithm = วิธีการเรียนรู้, Training = กระบวนการเรียนรู้, Model = ผลลัพธ์ที่เรียนรู้แล้ว</strong> ทั้งสามสิ่งนี้ไม่สามารถใช้สลับคำกันได้</p>
+                      </div>
                     </div>
-                    <div class="p-3.5 border-2 border-[#171719] bg-white">
-                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 02</div>
-                      <div class="font-bold text-sm text-[#171719]">5-NN (Nearest Neighbors)</div>
-                      <p class="text-[11px] text-gray-600 mt-1">โหวตจากเพื่อนบ้านใกล้สุด 5 จุด <strong>ต้องทำ Feature Scaling เสมอ</strong> เพราะใช้ระยะทาง</p>
-                    </div>
-                    <div class="p-3.5 border-2 border-[#171719] bg-white">
-                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 03</div>
-                      <div class="font-bold text-sm text-[#171719]">Naive Bayes</div>
-                      <p class="text-[11px] text-gray-600 mt-1">คำนวณความน่าจะเป็น Bayes P(Y|X) สมมติให้ทุกตัวแปรเป็นอิสระต่อกัน</p>
-                    </div>
-                    <div class="p-3.5 border-2 border-[#171719] bg-white">
-                      <div class="px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold inline-block text-[10px] mb-2">MODEL 04</div>
-                      <div class="font-bold text-sm text-[#171719]">Neural Network</div>
-                      <p class="text-[11px] text-gray-600 mt-1">โครงข่ายประสาทเทียมหลายชั้น จับ Non-linear ซับซ้อนได้สูง แต่เป็น Black-box</p>
+
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">ผังเทคนิค Data Science Modeling</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 06 p10</span>
+                      </div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L06_p10.png"
+                          alt="Modeling Techniques"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L06_p10.png"
+                          data-slide-title="ผังเทคนิค Data Science Modeling"
+                          data-slide-ref="Lect 06 p10"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>Descriptive/Unsupervised:</strong> Description, Clustering, Associations / <strong>Predictive/Supervised:</strong> Classification, Estimation/Regression, Prediction</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* MODULE 06 VISUAL: Candidate A vs B Gini Battle & Tree Depth Ladder */}
+              {/* MODULE 06: Decision Tree & Gini Impurity (Candidate A vs B & Depth) */}
               {mod.id === 'module-06-decision-tree' && (
                 <div class="space-y-6">
-                  <!-- Candidate A vs B Visual Tree Battle -->
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                    <div class="border-2 border-[#171719] bg-[#A3E635]/20 p-4 relative">
-                      <span class="absolute top-3 right-3 px-2 py-0.5 bg-[#171719] text-[#A3E635] font-bold text-[10px]">
-                        SELECTED (เลือกกิ่งนี้)
-                      </span>
-                      <div class="font-black text-sm text-[#171719] mb-2">CANDIDATE SPLIT A (Lect 07 p11)</div>
-                      <div class="bg-white border border-[#171719] p-2.5 text-center mb-2">
-                        Parent Node (N=12): <strong>[6 Play, 6 No]</strong> → Gini = <strong>0.500</strong>
+                  <!-- Slide 1: Weighted Gini Compares Candidate Splits -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>การเลือกกิ่งที่ดีที่สุด: Candidate A vs Candidate B ด้วย Weighted Gini</span>
                       </div>
-                      <div class="grid grid-cols-2 gap-2 text-center mb-3">
-                        <div class="bg-white border border-[#171719] p-2">
-                          <div class="font-bold">Left (n=6): [5, 1]</div>
-                          <div class="text-[#2563EB] font-bold">Gini = 0.278</div>
-                        </div>
-                        <div class="bg-white border border-[#171719] p-2">
-                          <div class="font-bold">Right (n=6): [1, 5]</div>
-                          <div class="text-[#2563EB] font-bold">Gini = 0.278</div>
-                        </div>
-                      </div>
-                      <div class="bg-[#171719] text-white p-2.5 flex justify-between items-center">
-                        <span>Gini_split = <strong>0.278</strong> (ต่ำสุด)</span>
-                        <span class="text-[#A3E635] font-black">Gini Gain = 0.222 (สูงสุด)</span>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 07 p12</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
                       </div>
                     </div>
-
-                    <div class="border-2 border-[#171719] bg-[#F4F1EA] p-4 relative opacity-90">
-                      <span class="absolute top-3 right-3 px-2 py-0.5 bg-gray-300 text-[#171719] font-bold text-[10px]">
-                        NOT SELECTED (คละกันมากกว่า)
-                      </span>
-                      <div class="font-black text-sm text-[#171719] mb-2">CANDIDATE SPLIT B (Lect 07 p12)</div>
-                      <div class="bg-white border border-[#171719] p-2.5 text-center mb-2">
-                        Parent Node (N=12): <strong>[6 Play, 6 No]</strong> → Gini = <strong>0.500</strong>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L07_p12.png"
+                        alt="Weighted Gini Compares Candidate Splits"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L07_p12.png"
+                        data-slide-title="การเลือกกิ่งที่ดีที่สุด: Candidate A vs Candidate B ด้วย Weighted Gini"
+                        data-slide-ref="Lect 07 p12"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ ผลการคำนวณจริง:</span>
+                        <span class="leading-relaxed">โหนดแม่ (N=12, [6,6]) Gini = 0.500 $ightarrow$ <strong>Candidate A:</strong> Weighted Gini = 0.278, Gini Gain = 0.222 (สูงสุด) vs <strong>Candidate B:</strong> Weighted Gini = 0.444, Gini Gain = 0.056 $ightarrow$ <strong>เลือก Candidate A!</strong></span>
                       </div>
-                      <div class="grid grid-cols-2 gap-2 text-center mb-3">
-                        <div class="bg-white border border-[#171719] p-2">
-                          <div class="font-bold">Left (n=6): [4, 2]</div>
-                          <div class="text-[#E11D48] font-bold">Gini = 0.444</div>
-                        </div>
-                        <div class="bg-white border border-[#171719] p-2">
-                          <div class="font-bold">Right (n=6): [2, 4]</div>
-                          <div class="text-[#E11D48] font-bold">Gini = 0.444</div>
-                        </div>
-                      </div>
-                      <div class="bg-gray-200 text-[#171719] border border-[#171719] p-2.5 flex justify-between items-center">
-                        <span>Gini_split = <strong>0.444</strong> (สูงกว่า)</span>
-                        <span class="text-[#E11D48] font-bold">Gini Gain = 0.056 (ต่ำ)</span>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ หลักการตัดสินใจ:</span>
+                        <span class="leading-relaxed">Split ที่ดีที่สุดต้องให้ Weighted Gini ของโหนดลูกต่ำที่สุด หรือทำให้ Gini Gain (Impurity Reduction) สูงสุด</span>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Tree Complexity Visual Ladder -->
-                  <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs">
-                    <div class="font-bold text-[#171719] mb-3">
-                      แผนภาพระดับความลึกต้นไม้ (Tree Complexity vs Validation Performance — Lect 07 p19, p31)
+                  <!-- Slide 2 & 3: Gini Impurity Formula & Tree Complexity -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">สูตรและการคำนวณ Gini Impurity</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 07 p11</span>
+                      </div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L07_p11.png"
+                          alt="Gini Impurity Measures Class Mixing"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L07_p11.png"
+                          data-slide-title="สูตรและการคำนวณ Gini Impurity"
+                          data-slide-ref="Lect 07 p11"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>Gini(t) = 1 − ∑ p_k²:</strong> [5 Active, 1 Inactive] $ightarrow$ 1 − (5/6)² − (1/6)² = <strong>0.278</strong> (0 = Pure, ยิ่งต่ำยิ่งบริสุทธิ์)</p>
+                      </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-                      <div class="p-3 bg-white border border-[#171719]">
-                        <div class="text-[10px] font-bold text-gray-500">1. SHALLOW (depth = 1)</div>
-                        <div class="font-black text-[#E11D48] mt-1">Underfitting</div>
-                        <div class="text-[11px] mt-1">High Bias / Low Variance</div>
-                        <div class="mt-2 text-[11px] bg-gray-100 p-1">ตื้นเกินไป จับ Pattern ไม่ได้</div>
+
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">การเลือกระดับความลึก (Tree Depth)</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 07 p19</span>
                       </div>
-                      <div class="p-3 bg-[#A3E635]/30 border-2 border-[#171719] shadow-[2px_2px_0px_#171719]">
-                        <div class="text-[10px] font-black text-[#171719]">2. MODERATE (depth = 3) ★</div>
-                        <div class="font-black text-[#171719] mt-1">Appropriate Fit</div>
-                        <div class="text-[11px] mt-1">Low Bias / Low Variance</div>
-                        <div class="mt-2 text-[11px] bg-[#171719] text-[#A3E635] font-bold p-1">Validation สูงสุด (เลือก)</div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L07_p19.png"
+                          alt="Validation Evidence Selects Tree Complexity"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L07_p19.png"
+                          data-slide-title="การเลือกระดับความลึก (Tree Depth)"
+                          data-slide-ref="Lect 07 p19"
+                        />
                       </div>
-                      <div class="p-3 bg-white border border-[#171719]">
-                        <div class="text-[10px] font-bold text-gray-500">3. DEEP (depth ≥ 6)</div>
-                        <div class="font-black text-[#F59E0B] mt-1">Overfitting</div>
-                        <div class="text-[11px] mt-1">Low Bias / High Variance</div>
-                        <div class="mt-2 text-[11px] bg-gray-100 p-1">เริ่มจำ Noise คะแนน Val ลดลง</div>
-                      </div>
-                      <div class="p-3 bg-[#E11D48]/10 border border-[#E11D48]">
-                        <div class="text-[10px] font-bold text-[#BE123C]">4. UNRESTRICTED</div>
-                        <div class="font-black text-[#E11D48] mt-1">Extreme Overfit</div>
-                        <div class="text-[11px] mt-1">Bias ≈ 0 / Variance สูงสุด</div>
-                        <div class="mt-2 text-[11px] bg-white p-1 border border-[#E11D48]/40">Train สูงสุด แต่ Validation Error พุ่งสูง</div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>เลือก max_depth = 3</strong> เพราะให้ผลบน Validation สูงสุด (depth=1 Underfitting, depth≥6 Overfitting เริ่มจำ Noise)</p>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* MODULE 07 VISUAL: 2x2 Confusion Matrix Blueprint & 3 Case Studies */}
+              {/* MODULE 07: Evaluation Metrics (Confusion Matrix, Precision vs Recall) */}
               {mod.id === 'module-07-evaluation-metrics' && (
                 <div class="space-y-6">
-                  <!-- 2x2 Confusion Matrix Visual Schematic -->
-                  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 font-mono text-xs">
-                    <div class="lg:col-span-7 bg-[#F4F1EA] border border-[#171719] p-4">
-                      <div class="flex justify-between items-center mb-2">
-                        <span class="font-bold text-[#171719]">ผังโครงสร้าง Confusion Matrix มาตรฐาน (Lect 07 p22)</span>
-                        <span class="px-2 py-0.5 bg-[#E11D48] text-white font-bold text-[10px]">Positive Class = ต้องเขียนก่อนเสมอ</span>
+                  <!-- Slide 1: Confusion Matrix Architecture -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>ผังโครงสร้าง Confusion Matrix มาตรฐานตามสไลด์อาจารย์</span>
                       </div>
-                      <table class="w-full border-collapse border-2 border-[#171719] bg-white text-center">
-                        <thead>
-                          <tr class="bg-[#171719] text-white">
-                            <th class="p-2 border border-[#171719] text-[10px]">แกนตารางในสไลด์</th>
-                            <th class="p-2 border border-[#171719] text-[#A3E635]">Predicted: POSITIVE (+)</th>
-                            <th class="p-2 border border-[#171719] text-gray-300">Predicted: NEGATIVE (−)</th>
-                            <th class="p-2 border border-[#171719] bg-[#2563EB] text-white">แนวนอน = RECALL</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td class="p-2.5 border border-[#171719] font-bold bg-gray-100 text-left">Actual: POSITIVE (+)</td>
-                            <td class="p-3 border-2 border-[#171719] bg-[#A3E635]/35 font-black text-sm">
-                              TP (True Pos)<br /><span class="text-[10px] font-normal">ของจริง + ทายว่า +</span>
-                            </td>
-                            <td class="p-3 border-2 border-[#171719] bg-[#E11D48]/20 font-black text-sm text-[#BE123C]">
-                              FN (False Neg)<br /><span class="text-[10px] font-normal">ของจริง + แต่ทายหลุดเป็น −</span>
-                            </td>
-                            <td class="p-2 border border-[#171719] bg-[#2563EB]/10 font-bold text-[#1D4ED8]">
-                              Recall =<br />TP / (TP + FN)
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="p-2.5 border border-[#171719] font-bold bg-gray-100 text-left">Actual: NEGATIVE (−)</td>
-                            <td class="p-3 border-2 border-[#171719] bg-[#F59E0B]/30 font-black text-sm text-[#B45309]">
-                              FP (False Pos)<br /><span class="text-[10px] font-normal">ของจริง − แต่ทายเกินเป็น +</span>
-                            </td>
-                            <td class="p-3 border-2 border-[#171719] bg-gray-100 font-black text-sm">
-                              TN (True Neg)<br /><span class="text-[10px] font-normal">ของจริง − ทายว่า −</span>
-                            </td>
-                            <td class="p-2 border border-[#171719] text-gray-500 text-[10px]">
-                              Actual Negative Row
-                            </td>
-                          </tr>
-                          <tr class="bg-[#F59E0B]/15 font-bold">
-                            <td class="p-2 border border-[#171719] text-left">แนวตั้ง = PRECISION</td>
-                            <td class="p-2 border border-[#171719] text-[#B45309]">
-                              Precision = TP / (TP + FP)
-                            </td>
-                            <td class="p-2 border border-[#171719] text-gray-500" colspan="2">
-                              Accuracy = (TP + TN) / Total
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 07 p25</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L07_p25.png"
+                        alt="The Confusion Matrix Organizes Prediction Outcomes"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L07_p25.png"
+                        data-slide-title="ผังโครงสร้าง Confusion Matrix มาตรฐานตามสไลด์อาจารย์"
+                        data-slide-ref="Lect 07 p25"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ กฎการอ่านแกนตาราง:</span>
+                        <span class="leading-relaxed"><strong>Rows = Actual Class (y_true), Columns = Predicted Class (y_pred)</strong> โดยต้องตรวจสอบ Positive Class ก่อนเสมอ: ในสไลด์กำหนด <code>Inactive = Yes</code> เป็น Positive Class</span>
+                      </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ การหลอกสลับแกน:</span>
+                        <span class="leading-relaxed">อาจารย์อาจสลับแกนในข้อสอบ (เช่น แนวนอนเป็น Predicted หรือสลับ Yes/No) จึงต้องอ่านหัวตารางและตีความความหมายของเซลล์เสมอ ห้ามจำแค่ตำแหน่งมุมซ้ายบนขวาล่าง!</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Slide 2 & 3: Precision vs Recall & Error Meaning -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">Precision vs Recall Trade-offs</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 07 p28</span>
+                      </div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L07_p28.png"
+                          alt="Precision and Recall Describe Different Error Trade-offs"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L07_p28.png"
+                          data-slide-title="Precision and Recall Describe Different Error Trade-offs"
+                          data-slide-ref="Lect 07 p28"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>Precision ไวต่อ FP</strong> (ถามว่า Alerts แม่นแค่ไหน) vs <strong>Recall ไวต่อ FN</strong> (ถามว่าจับ Actual Positive สำคัญได้ครบแค่ไหน)</p>
+                      </div>
                     </div>
 
-                    <!-- Business Decision Rule Visual Box -->
-                    <div class="lg:col-span-5 flex flex-col justify-between gap-3">
-                      <div class="p-3.5 border-2 border-[#171719] bg-[#2563EB]/10">
-                        <div class="font-black text-[#1D4ED8] text-sm">เกณฑ์การเลือก RECALL สูงสุด</div>
-                        <p class="text-[11px] text-[#171719] mt-1">
-                          เมื่อ <strong>False Negative (FN / การปล่อยหลุด)</strong> มีความเสียหายรุนแรง เช่น:
-                        </p>
-                        <ul class="text-[11px] mt-1.5 space-y-1 font-bold text-[#171719]">
-                          <li>• คัดกรองผู้ป่วยโรคร้ายแรง / บาดเจ็บ (FIFA Medical)</li>
-                          <li>• ลูกค้ากำลังจะย้ายค่าย (Customer Churn HW#2 → เลือก Model B ได้ Recall 0.90)</li>
-                        </ul>
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">การให้ความหมายของ Error แต่ละชนิด</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 07 p24</span>
                       </div>
-                      <div class="p-3.5 border-2 border-[#171719] bg-[#F59E0B]/15">
-                        <div class="font-black text-[#B45309] text-sm">เกณฑ์การเลือก PRECISION สูงสุด</div>
-                        <p class="text-[11px] text-[#171719] mt-1">
-                          เมื่อ <strong>False Positive (FP / การทายเกินว่าใช่)</strong> มีต้นทุนสูง เช่น:
-                        </p>
-                        <ul class="text-[11px] mt-1.5 space-y-1 font-bold text-[#171719]">
-                          <li>• ระบบบล็อกอีเมลขยะ (ห้ามบล็อกอีเมลงานสำคัญของลูกค้า)</li>
-                          <li>• แคมเปญแจกส่วนลดราคาแพง (HW#2 → Model A ได้ Precision 0.89)</li>
-                        </ul>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L07_p24.png"
+                          alt="The Positive Class Gives Errors Meaning"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L07_p24.png"
+                          data-slide-title="The Positive Class Gives Errors Meaning"
+                          data-slide-ref="Lect 07 p24"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>FP:</strong> ติดต่อลูกค้าที่ยัง Active เสียทรัพยากร / <strong>FN:</strong> ปล่อยลูกค้าหลุด ไม่ได้กอบกู้สถานการณ์ (เลือก Recall สูงสุดเมื่อ FN เสียหายหนัก)</p>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* MODULE 08 VISUAL: K-Means 8-Point Coordinate Grid & Silhouette Bar */}
+              {/* MODULE 08: K-Means Clustering & Silhouette Score */}
               {mod.id === 'module-08-kmeans' && (
                 <div class="space-y-6">
-                  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 font-mono text-xs">
-                    <!-- SVG 2D Plot of A1-A8 -->
-                    <div class="lg:col-span-7 bg-[#F4F1EA] border border-[#171719] p-4">
-                      <div class="font-bold text-[#171719] mb-2">
-                        แผนภาพพิกัด 8 จุดจริง (A1–A8) และการขยับ Centroid รอบที่ 1 (Lect 08 p25–28)
+                  <!-- Slide 1: Actual 8-Point Scatter & Initial Centroids -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>จุดข้อมูล 8 จุดจริง (A1–A8) และพิกัด Centroid ตั้งต้น c1, c2, c3</span>
                       </div>
-                      <svg viewBox="0 0 420 260" class="w-full h-auto bg-white border border-[#171719] p-2">
-                        <!-- Grid lines -->
-                        <line x1="45" y1="225" x2="395" y2="225" stroke="#171719" stroke-width="2" />
-                        <line x1="45" y1="20" x2="45" y2="225" stroke="#171719" stroke-width="2" />
-                        <text x="220" y="250" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold">แกน X1 (1 ถึง 10)</text>
-                        <text x="15" y="125" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" transform="rotate(-90 15 125)">แกน X2 (1 ถึง 10)</text>
-
-                        <!-- Cluster 1 region: A1(2,10) -->
-                        <circle cx="105" cy="35" r="22" fill="#A3E635" fill-opacity="0.25" stroke="#4D7C0F" stroke-dasharray="3,3" />
-                        <circle cx="105" cy="35" r="6" fill="#4D7C0F" />
-                        <text x="140" y="38" font-family="monospace" font-size="10" font-weight="bold" fill="#171719">A1(2,10) = C1_new(2,10)</text>
-
-                        <!-- Cluster 3 region: A2(2,5), A7(1,2) -> C3_new(1.5, 3.5) -->
-                        <ellipse cx="92" cy="165" rx="45" ry="48" fill="#F59E0B" fill-opacity="0.2" stroke="#B45309" stroke-dasharray="3,3" />
-                        <circle cx="105" cy="135" r="5" fill="#B45309" />
-                        <text x="115" y="138" font-family="monospace" font-size="10" font-weight="bold">A2(2,5)</text>
-                        <circle cx="75" cy="195" r="5" fill="#B45309" />
-                        <text x="85" y="208" font-family="monospace" font-size="10" font-weight="bold">A7(1,2)=C3เดิม</text>
-                        <!-- New C3(1.5, 3.5) -->
-                        <rect x="85" y="160" width="10" height="10" fill="#E11D48" stroke="#171719" />
-                        <text x="102" y="170" font-family="monospace" font-size="10" font-weight="bold" fill="#E11D48">★ C3_new(1.5, 3.5)</text>
-
-                        <!-- Cluster 2 region: A4(5,8), A8(4,9), A5(7,5), A6(6,4), A3(8,4) -> C2_new(6,6) -->
-                        <ellipse cx="245" cy="115" rx="85" ry="68" fill="#2563EB" fill-opacity="0.15" stroke="#1D4ED8" stroke-dasharray="3,3" />
-                        <circle cx="165" cy="55" r="5" fill="#1D4ED8" />
-                        <text x="173" y="55" font-family="monospace" font-size="10" font-weight="bold">A8(4,9)</text>
-                        <circle cx="195" cy="75" r="5" fill="#1D4ED8" />
-                        <text x="203" y="75" font-family="monospace" font-size="10" font-weight="bold">A4(5,8)=C2เดิม</text>
-                        <circle cx="255" cy="135" r="5" fill="#1D4ED8" />
-                        <text x="263" y="135" font-family="monospace" font-size="10" font-weight="bold">A5(7,5)</text>
-                        <circle cx="225" cy="155" r="5" fill="#1D4ED8" />
-                        <text x="175" y="165" font-family="monospace" font-size="10" font-weight="bold">A6(6,4)</text>
-                        <circle cx="285" cy="155" r="5" fill="#1D4ED8" />
-                        <text x="293" y="158" font-family="monospace" font-size="10" font-weight="bold">A3(8,4)</text>
-
-                        <!-- C2_new(6,6) -->
-                        <line x1="195" y1="75" x2="225" y2="115" stroke="#E11D48" stroke-width="2" />
-                        <rect x="220" y="110" width="11" height="11" fill="#A3E635" stroke="#171719" stroke-width="2" />
-                        <text x="236" y="115" font-family="monospace" font-size="11" font-weight="bold" fill="#171719">★ C2_new = (6, 6)</text>
-                      </svg>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 08 p25</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
                     </div>
-
-                    <!-- Distance Formula Trap & Silhouette Spectrum -->
-                    <div class="lg:col-span-5 flex flex-col justify-between gap-3">
-                      <div class="p-3.5 border-2 border-[#171719] bg-[#E11D48]/10">
-                        <div class="font-black text-[#BE123C] text-sm">ข้อควรระวัง: แยกแยะ 2 สูตรระยะทางในห้องสอบ</div>
-                        <div class="mt-2 p-2 bg-white border border-[#171719]">
-                          <div class="font-bold text-[#171719]">1. ตอนจัดจุดเข้ากลุ่ม (Assign Step — p25):</div>
-                          <div class="text-[#2563EB] font-bold mt-0.5">Manhattan = |x1 − c1| + |x2 − c2|</div>
-                        </div>
-                        <div class="mt-2 p-2 bg-white border border-[#171719]">
-                          <div class="font-bold text-[#171719]">2. ตอนคำนวณความแน่น Inertia/WCSS (p35):</div>
-                          <div class="text-[#E11D48] font-bold mt-0.5">Squared Euclidean = ∑ ||x − C_k||²</div>
-                        </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L08_p25.png"
+                        alt="Example: K-Mean Clustering (A1 to A8 coordinates and initial centroids)"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L08_p25.png"
+                        data-slide-title="จุดข้อมูล 8 จุดจริง (A1–A8) และพิกัด Centroid ตั้งต้น c1, c2, c3"
+                        data-slide-ref="Lect 08 p25"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ พิกัดจริงในสไลด์:</span>
+                        <span class="leading-relaxed">A1(2,10), A2(2,5), A3(8,4), A4(5,8), A5(7,5), A6(6,4), A7(1,2), A8(4,9) และ Centroid ตั้งต้น <strong>c1(2,10), c2(5,8), c3(1,2)</strong></span>
                       </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ ข้อควรระวังสูตรระยะทาง:</span>
+                        <span class="leading-relaxed">ในตัวอย่างข้อสอบนี้ ใช้ <strong>Manhattan Distance: d(A,Y) = |x1 − y1| + |x2 − y2|</strong> ในการคำนวณหาระยะห่างเพื่อจัดกลุ่มจุดเข้าคลัสเตอร์</span>
+                      </div>
+                    </div>
+                  </div>
 
-                      <div class="p-3.5 border-2 border-[#171719] bg-white">
-                        <div class="font-black text-[#171719] text-sm mb-2">สเกลวัดผล Silhouette Score s(i)</div>
-                        <div class="grid grid-cols-3 text-center border border-[#171719] font-bold text-[11px]">
-                          <div class="p-2 bg-[#E11D48]/25 text-[#BE123C] border-r border-[#171719]">
-                            −1.0<br /><span class="text-[9px] font-normal">อยู่ผิดคลัสเตอร์</span>
-                          </div>
-                          <div class="p-2 bg-[#F59E0B]/25 text-[#B45309] border-r border-[#171719]">
-                            0.0<br /><span class="text-[9px] font-normal">ก้ำกึ่งขอบกลุ่ม</span>
-                          </div>
-                          <div class="p-2 bg-[#A3E635]/40 text-[#171719]">
-                            +1.0<br /><span class="text-[9px] font-normal">เกาะกลุ่มสมบูรณ์</span>
-                          </div>
-                        </div>
-                        <p class="text-[11px] text-gray-600 mt-2">
-                          <strong>s(i) = [b(i) − a(i)] / max(a(i), b(i))</strong> โดยต้องการให้ <strong>a(i) น้อย</strong> (ในกลุ่มชิดกัน) และ <strong>b(i) มาก</strong> (ห่างกลุ่มอื่น)
-                        </p>
+                  <!-- Slide 2: Grouping Result & New Centroids -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>การจัดกลุ่มรอบที่ 1 & การคำนวณตำแหน่ง Centroid ใหม่</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 08 p29</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L08_p29.png"
+                        alt="K-Means Clustering: Cluster assignment and new centroids"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L08_p29.png"
+                        data-slide-title="การจัดกลุ่มรอบที่ 1 & การคำนวณตำแหน่ง Centroid ใหม่"
+                        data-slide-ref="Lect 08 p29"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                      <span class="font-bold text-slate-900 font-mono">★ ผลการคำนวณ Centroid ใหม่:</span>
+                      <span class="ml-1 leading-relaxed"><strong>Cluster 1:</strong> [A1] $ightarrow$ C1_new = (2, 10) / <strong>Cluster 2:</strong> [A3, A4, A5, A6, A8] $ightarrow$ C2_new = ((8+5+7+6+4)/5, (4+8+5+4+9)/5) = <strong>(6, 6)</strong> / <strong>Cluster 3:</strong> [A2, A7] $ightarrow$ C3_new = ((2+1)/2, (5+2)/2) = <strong>(1.5, 3.5)</strong></span>
+                    </div>
+                  </div>
+
+                  <!-- Slide 3: Silhouette Score -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>การวัดคุณภาพคลัสเตอร์ด้วย Silhouette Score (Compactness & Separation)</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 08 p36</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L08_p36.png"
+                        alt="Silhouette Evidence: Internal Evaluation"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L08_p36.png"
+                        data-slide-title="การวัดคุณภาพคลัสเตอร์ด้วย Silhouette Score"
+                        data-slide-ref="Lect 08 p36"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ สูตรและการตีความ:</span>
+                        <span class="leading-relaxed"><strong>s(i) = [b(i) − a(i)] / max(a(i), b(i))</strong> โดย a(i) วัดความแน่นในกลุ่ม และ b(i) วัดความห่างจากกลุ่มอื่น การจัดกลุ่มที่ดีต้อง <strong>a เล็ก และ b ใหญ่</strong></span>
+                      </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ สเกลคะแนน:</span>
+                        <span class="leading-relaxed">ค่าอยู่ในช่วง -1 ถึง +1 โดย +1 หมายถึงเกาะกลุ่มสมบูรณ์, 0 หมายถึงก้ำกึ่งขอบคลัสเตอร์ และ -1 หมายถึงจุดนั้นถูกจัดกลุ่มผิดคลัสเตอร์</span>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* MODULE 09 VISUAL: 3 Biases, SHAP Force Plot & 3 Decision Gates */}
+              {/* MODULE 09: Responsible AI (Proxy Features, Concept Drift, XAI, Rite Aid) */}
               {mod.id === 'module-09-responsible-ai' && (
-                <div class="space-y-6 font-mono text-xs">
-                  <!-- Proxy Feature & Concept Drift Visual -->
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="p-4 border-2 border-[#171719] bg-[#E11D48]/10">
-                      <div class="font-black text-[#BE123C] text-sm mb-2">กลไก Proxy Feature (Lect 09 p13)</div>
-                      <div class="bg-white p-3 border border-[#171719] space-y-2">
-                        <div class="flex items-center justify-between text-gray-400 line-through">
-                          <span>คอลัมน์: เชื้อชาติ / ศาสนา (Race)</span>
-                          <span class="px-1.5 py-0.5 bg-gray-200 text-gray-700 text-[10px] no-underline">ถูกลบออกแล้ว</span>
-                        </div>
-                        <div class="flex items-center justify-between font-bold text-[#E11D48]">
-                          <span>คอลัมน์: รหัสไปรษณีย์ (Postal Code)</span>
-                          <span>→ สะท้อนเขตที่อยู่อาศัย & เชื้อชาติ</span>
-                        </div>
+                <div class="space-y-6">
+                  <!-- Slide 1: Proxy Feature & SHAP -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>ตัวแปรตัวแทน (Proxy Feature) และการอธิบายผลด้วย SHAP</span>
                       </div>
-                      <p class="text-[11px] text-gray-700 mt-2">
-                        การลบตัวแปรอ่อนไหวออกอย่างเดียวไม่ทำให้โมเดลยุติธรรม เพราะยังมี <strong>Proxy Feature</strong> ซ่อนอยู่
-                      </p>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 09 p13</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L09_p13.png"
+                        alt="Proxy Feature may leak sensitive data indirectly"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L09_p13.png"
+                        data-slide-title="ตัวแปรตัวแทน (Proxy Feature) และการอธิบายผลด้วย SHAP"
+                        data-slide-ref="Lect 09 p13"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 space-y-1.5 text-xs">
+                      <div class="flex items-start gap-2 text-slate-700">
+                        <span class="font-bold text-slate-900 shrink-0 font-mono">★ สาระสำคัญ:</span>
+                        <span class="leading-relaxed"><strong>การลบชื่อข้อมูลอ่อนไหว ไม่ได้ลบตัวแทนของข้อมูลนั้น:</strong> แม้จะลบคอลัมน์เชื้อชาติออก แต่ Postal Code (รหัสไปรษณีย์) ยังทำหน้าที่เป็น Proxy Feature ส่งผ่านความลำเอียง ทำให้โมเดลทำนายความเสี่ยงต่างกัน 42% vs 67% (SHAP ชี้ว่า Postal Code มีน้ำหนักมากถึง +0.41)</span>
+                      </div>
+                      <div class="flex items-start gap-2 text-rose-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 font-medium">
+                        <span class="font-bold text-rose-800 shrink-0 font-mono">⚠️ ข้อสรุปสำคัญ:</span>
+                        <span class="leading-relaxed">ไม่เห็นข้อมูลอ่อนไหว ไม่ได้แปลว่าโมเดลมองไม่เห็นตัวแทนของมัน ต้องตรวจสอบความเป็นธรรมที่ผลลัพธ์ปลายทาง (Outcome Fairness)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Slide 2: Concept Drift -->
+                  <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                    <div class="bg-slate-50/90 px-4 py-2.5 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-[#66A1EE]"></span>
+                        <span>Concept Drift: เมื่อโลกเปลี่ยน รูปแบบเดิมก็เปลี่ยน</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 09 p11</span>
+                        <span class="text-[#2563EB] text-[11px] font-semibold cursor-pointer">🔍 ขยายภาพ</span>
+                      </div>
+                    </div>
+                    <div class="p-2 sm:p-4 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                      <img
+                        src="/slides/L09_p11.png"
+                        alt="Concept Drift: When the world changes, patterns change"
+                        class="slide-img w-full max-w-3xl h-auto rounded-xl border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                        loading="lazy"
+                        data-slide-src="/slides/L09_p11.png"
+                        data-slide-title="Concept Drift: เมื่อโลกเปลี่ยน รูปแบบเดิมก็เปลี่ยน"
+                        data-slide-ref="Lect 09 p11"
+                      />
+                    </div>
+                    <div class="px-4 py-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                      <span class="font-bold text-slate-900 font-mono">★ สาระสำคัญ:</span>
+                      <span class="ml-1 leading-relaxed"><strong>โมเดลล้าสมัยได้แม้ไม่มีใครแก้ Code:</strong> เมื่อสภาพแวดล้อมหรือพฤติกรรมลูกค้าเปลี่ยน ความสัมพันธ์ระหว่าง Feature กับ Target จะเปลี่ยนตาม (เช่น หลังเปิดบริการ Subscription กฎ 'ไม่ซื้อเกิน 45 วัน = Inactive' ทำนายผิดมากขึ้นทันที)</span>
+                    </div>
+                  </div>
+
+                  <!-- Slide 3 & 4: XAI + Human-in-the-loop & Rite Aid Case Study -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">XAI และ Human Checkpoint</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 09 p20</span>
+                      </div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L09_p20.png"
+                          alt="XAI is evidence, not the full answer"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L09_p20.png"
+                          data-slide-title="XAI และ Human Checkpoint"
+                          data-slide-ref="Lect 09 p20"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>อธิบายโมเดลได้ ≠ อธิบายการตัดสินใจได้ครบ:</strong> ต้องเชื่อมโยงบริบททางธุรกิจและมี Human Review ก่อนดำเนินการจริงเสมอ</p>
+                      </div>
                     </div>
 
-                    <div class="p-4 border-2 border-[#171719] bg-[#F59E0B]/15">
-                      <div class="font-black text-[#B45309] text-sm mb-2">Concept Drift (Lect 09 p11, p20)</div>
-                      <div class="bg-white p-3 border border-[#171719] space-y-2">
-                        <div class="flex justify-between">
-                          <span>พฤติกรรมเดิมตอนเทรน:</span>
-                          <span class="font-bold">ไม่ซื้อ &gt; 45 วัน = Inactive</span>
+                    <div class="slide-card rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden transition-all hover:border-slate-300">
+                      <div class="bg-slate-50/90 px-4 py-2 border-b border-slate-200/70 flex items-center justify-between text-xs font-mono">
+                        <span class="font-bold text-slate-900">คดี Rite Aid: False Positive สู่ความเสียหาย</span>
+                        <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 text-[11px]">Lect 09 p28</span>
+                      </div>
+                      <div class="p-2 bg-slate-900/[0.02] flex justify-center cursor-zoom-in">
+                        <img
+                          src="/slides/L09_p28.png"
+                          alt="Rite Aid: False Positive becomes harm"
+                          class="slide-img w-full h-auto rounded-lg border border-slate-200/70 shadow-xs hover:brightness-[1.01] transition-all object-contain"
+                          loading="lazy"
+                          data-slide-src="/slides/L09_p28.png"
+                          data-slide-title="คดี Rite Aid: False Positive สู่ความเสียหาย"
+                          data-slide-ref="Lect 09 p28"
+                        />
+                      </div>
+                      <div class="p-3 bg-white border-t border-slate-100 text-xs text-slate-700">
+                        <p class="leading-relaxed"><strong>Responsible AI ต้องคุมทั้ง Workflow:</strong> เมื่อนำ Alert ไปลงมือค้นตัวลูกค้าทันทีโดยไม่มีมนุษย์ตรวจสอบซ้ำ จนถูก FTC แบนระบบ Facial Recognition 5 ปี</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {mod.id === 'module-10-crisp-action' && (
+                <div class="space-y-6">
+                  <!-- Blueprint 1: 6 Roles in Modern Data Team -->
+                  <div class="rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+                    <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                        <span>6 บทบาทในทีมข้อมูลยุคใหม่ (Different Roles, One Goal)</span>
+                      </div>
+                      <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 10 p02</span>
+                    </div>
+                    <div class="p-4 bg-slate-50/50">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 font-mono text-xs">
+                        <div class="p-3 bg-white border border-slate-200 rounded-lg">
+                          <div class="font-bold text-slate-900">1. Data Engineer</div>
+                          <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Build the Foundation</div>
+                          <p class="text-slate-600 text-[11px] mt-1">Data Pipeline, Data Platform, ควบคุมความปลอดภัย (Airflow, dbt, AWS)</p>
                         </div>
-                        <div class="flex justify-between text-[#E11D48] font-bold">
-                          <span>พฤติกรรมโลกจริงเปลี่ยน:</span>
-                          <span>ไม่ซื้อ &gt; 70 วัน = Inactive</span>
+                        <div class="p-3 bg-white border-slate-200 border rounded-lg">
+                          <div class="font-bold text-slate-900">2. Analytics Engineer</div>
+                          <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Prepare for Analysis</div>
+                          <p class="text-slate-600 text-[11px] mt-1">Data Model, Data Mart, Feature Contract ป้องกัน Leakage (SQL, Snowflake)</p>
                         </div>
-                        <div class="pt-1 border-t border-gray-200 text-center font-black text-[#BE123C]">
-                          ผลลัพธ์: ค่า Recall ลดลงเหลือเพียง 54%
+                        <div class="p-3 bg-white border border-slate-200 rounded-lg">
+                          <div class="font-bold text-slate-900">3. Data Analyst</div>
+                          <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Understand the Business</div>
+                          <p class="text-slate-600 text-[11px] mt-1">EDA Finding (ไม่ใช่แค่ภาพกราฟ), KPI Dashboard ตอบโจทย์ธุรกิจ (Tableau, Power BI)</p>
+                        </div>
+                        <div class="p-3 bg-white border border-slate-200 rounded-lg">
+                          <div class="font-bold text-slate-900">4. Data Scientist</div>
+                          <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Discover & Predict</div>
+                          <p class="text-slate-600 text-[11px] mt-1">สร้างโมเดล ML (Tree, K-Means), ทดสอบสมมติฐานทางสถิติ (Python, scikit-learn)</p>
+                        </div>
+                        <div class="p-3 bg-white border border-slate-200 rounded-lg">
+                          <div class="font-bold text-slate-900">5. ML Engineer</div>
+                          <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Build & Deploy Models</div>
+                          <p class="text-slate-600 text-[11px] mt-1">Controlled Handoff, Pilot Runbook, API Deployment, CI/CD (Docker, MLflow)</p>
+                        </div>
+                        <div class="p-3 bg-white border border-slate-200 rounded-lg">
+                          <div class="font-bold text-slate-900">6. AI Engineer</div>
+                          <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Build AI Applications</div>
+                          <p class="text-slate-600 text-[11px] mt-1">LLM, RAG, AI Agent/Chatbot ประยุกต์กับระบบจริง (LangChain, Hugging Face)</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- SHAP Force Plot & 3 Decision Gates -->
-                  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                    <div class="md:col-span-7 p-4 border-2 border-[#171719] bg-[#F4F1EA]">
-                      <div class="font-black text-[#171719] text-sm mb-2">แผนภาพ SHAP Force Plot (Local Explanation)</div>
-                      <div class="bg-white border border-[#171719] p-3">
-                        <div class="flex justify-between text-[10px] text-gray-500 mb-1">
-                          <span>ค่าเฉลี่ยตั้งต้น Base Value E[f(x)]</span>
-                          <span>คำทำนายสุทธิรายบุคคล f(x)</span>
-                        </div>
-                        <div class="grid grid-cols-12 h-8 border border-[#171719] font-bold text-[11px] text-white">
-                          <div class="col-span-7 bg-[#E11D48] flex items-center justify-center">
-                            แรงผลักบวก (+SHAP) ดันคะแนนขึ้น →
-                          </div>
-                          <div class="col-span-5 bg-[#2563EB] flex items-center justify-center">
-                            ← แรงผลักลบ (−SHAP)
-                          </div>
-                        </div>
-                        <p class="text-[11px] text-gray-700 mt-2">
-                          อธิบายระดับรายบุคคล (Local XAI) ว่าตัวแปรใดผลักให้เคสนี้ถูกตัดสินใจไปในทิศทางบวกหรือลบเท่าใด
+                  <!-- Blueprint 2: Decision Contract vs Decision Memo -->
+                  <div class="rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+                    <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 font-bold text-slate-900">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        <span>คู่เปรียบเทียบข้อสอบออกบ่อย: Decision Contract vs Decision Memo</span>
+                      </div>
+                      <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[11px]">Lect 10 p06, p12</span>
+                    </div>
+                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+                      <div class="p-3.5 bg-blue-50/50 border border-blue-200 rounded-lg">
+                        <div class="font-bold text-blue-900 text-sm">DECISION CONTRACT</div>
+                        <div class="text-blue-700 text-[11px] mt-1">ทำที่: <strong>ต้นโครงการ (Business Understanding)</strong></div>
+                        <div class="text-slate-700 text-[11px] mt-1">ผู้จัดทำ: <strong>Business Analyst + Business Unit</strong></div>
+                        <p class="text-slate-600 text-[11px] mt-2 leading-relaxed">
+                          ตกลงกันว่าจะตัดสินใจอะไร ขอบเขตลูกค้าคือกลุ่มใด และผลที่ต้องตรวจก่อนขอข้อมูลหรือสร้างโมเดล เพื่อไม่ให้สร้างโมเดลที่ไร้ประโยชน์ทางธุรกิจ
                         </p>
                       </div>
-                    </div>
-
-                    <div class="md:col-span-5 p-4 border-2 border-[#171719] bg-white">
-                      <div class="font-black text-[#171719] text-sm mb-2">3 ทางเลือกที่ Decision Gates (Lect 09 p36)</div>
-                      <div class="space-y-1.5">
-                        <div class="p-2 bg-[#A3E635]/30 border border-[#171719] font-bold">
-                          1. ACCEPT: อนุมัติใช้งานจริงพร้อม Monitoring
-                        </div>
-                        <div class="p-2 bg-[#F59E0B]/30 border border-[#171719] font-bold">
-                          2. REVISE: ส่งกลับไปแก้ไขในขั้นตอน CRISP-DS ก่อนหน้า
-                        </div>
-                        <div class="p-2 bg-[#E11D48]/20 border border-[#171719] font-bold text-[#BE123C]">
-                          3. REJECT: ระงับการนำโมเดลไปใช้งานเด็ดขาด
-                        </div>
+                      <div class="p-3.5 bg-emerald-50/50 border border-emerald-200 rounded-lg">
+                        <div class="font-bold text-emerald-900 text-sm">DECISION MEMO</div>
+                        <div class="text-emerald-700 text-[11px] mt-1">ทำที่: <strong>ช่วง Evaluation (ก่อนเข้า Pilot)</strong></div>
+                        <div class="text-slate-700 text-[11px] mt-1">ผู้จัดทำ: <strong>BA + Data Scientist + Privacy Officer</strong></div>
+                        <p class="text-slate-600 text-[11px] mt-2 leading-relaxed">
+                          บันทึกคำตัดสินจริง (Accept / Revise / Reject) เหตุผลประกอบ งานที่ต้องทำต่อ และเงื่อนไขการทดสอบ Pilot โดย BU ต้องเป็นผู้อนุมัติ
+                        </p>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* MODULES 01-03 VISUAL: Foundation Visuals */}
-              {mod.id === 'module-01-crisp-ds' && (
-                <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
-                  <div class="font-bold text-[#171719]">วงจร CRISP-DS 8 ขั้นตอน (Iterative Cycle — ย้อนกลับไปแก้ไขได้ตลอด)</div>
-                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <div class="p-2.5 bg-white border border-[#171719]"><strong>1. Business</strong><br />ตั้งเป้าหมายธุรกิจ</div>
-                    <div class="p-2.5 bg-white border border-[#171719]"><strong>2. Data Underst.</strong><br />สำรวจโครงสร้างข้อมูล</div>
-                    <div class="p-2.5 bg-[#A3E635] border-2 border-[#171719] font-bold"><strong>3. Data Prep ★</strong><br />กินเวลา 60–80% ของงาน</div>
-                    <div class="p-2.5 bg-white border border-[#171719]"><strong>4. EDA</strong><br />หา Pattern & Outlier</div>
-                    <div class="p-2.5 bg-white border border-[#171719]"><strong>5. Modeling</strong><br />ฝึกสอนโมเดล</div>
-                    <div class="p-2.5 bg-white border border-[#171719]"><strong>6. Evaluation</strong><br />วัดผลเทียบเกณฑ์ธุรกิจ</div>
-                    <div class="p-2.5 bg-white border border-[#171719]"><strong>7. Deployment</strong><br />ใช้งานจริง & Storytelling</div>
-                    <div class="p-2.5 bg-white border border-[#171719]"><strong>8. AI Improvement</strong><br />เฝ้าระวัง Drift & HITL</div>
-                  </div>
-                </div>
-              )}
-
-              {mod.id === 'module-02-data-cleaning' && (
-                <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
-                  <div class="font-bold text-[#171719]">กฎ Clean Before Impute (Lect 04.1 p29, p34)</div>
-                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div class="p-3 bg-[#E11D48]/15 border border-[#171719]">
-                      <div class="font-bold text-[#BE123C]">STEP 1: ตัด Known Invalid ก่อน</div>
-                      <p class="mt-1 text-[11px]">ตัดค่าผิดปกติชัดเจน เช่น รายได้ติดลบ (-40,000) หรือพิมพ์ศูนย์เกิน (904,000) ออกจากตัวหารก่อนเสมอ</p>
-                    </div>
-                    <div class="p-3 bg-white border border-[#171719]">
-                      <div class="font-bold text-[#171719]">STEP 2: คำนวณค่าแทนที่ (Impute)</div>
-                      <p class="mt-1 text-[11px]">หา Valid Mean หรือ Cluster-based Median จากข้อมูลที่สะอาดแล้วเท่านั้น</p>
-                    </div>
-                    <div class="p-3 bg-[#A3E635]/30 border border-[#171719]">
-                      <div class="font-bold text-[#171719]">STEP 3: สร้างคอลัมน์ Flag เสมอ</div>
-                      <p class="mt-1 text-[11px]">บันทึกหลักฐาน Traceability เช่นตั้งค่า <code>income_imputed = 1</code></p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {mod.id === 'module-03-feature-engineering' && (
-                <div class="bg-[#F4F1EA] border border-[#171719] p-4 font-mono text-xs space-y-3">
-                  <div class="font-bold text-[#171719]">กฎป้องกัน Data Leakage ในการทำ Feature Scaling (Lect 04.2 p21, p27)</div>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="p-3 bg-[#A3E635]/25 border border-[#171719]">
-                      <div class="font-bold text-[#171719]">กฎ Fit เฉพาะบน Training Set</div>
-                      <p class="mt-1 text-[11px]">คำนวณค่า min, max, μ, σ จาก <strong>Training Set เท่านั้น</strong> แล้วนำค่าพารามิเตอร์เดิมนั้นไปแปลง (Transform) บน Validation และ Test Set</p>
-                    </div>
-                    <div class="p-3 bg-white border border-[#171719]">
-                      <div class="font-bold text-[#E11D48]">ข้อควรระวัง: Z-Score ไม่เปลี่ยนรูปทรงความเบ้ (Shape)</div>
-                      <p class="mt-1 text-[11px]">Z-Score ปรับเพียง Mean = 0, SD = 1 แต่ถ้าข้อมูลเดิมเบ้ขวา หลังทำ Z-Score ก็ยังคงเบ้ขวาเหมือนเดิม (แก้ความเบ้ต้องใช้ Log Transform)</p>
                     </div>
                   </div>
                 </div>
@@ -656,39 +941,39 @@ const { modules } = Astro.props;
             <!-- ========================================================= -->
             <div class="space-y-3">
               <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 bg-[#E11D48] text-white font-mono text-xs font-bold">
+                <span class="soft-pill bg-rose-50 text-rose-700 border-rose-200 font-mono text-xs font-bold">
                   EXAM TRAPS ({mod.examTraps.length} จุดต้องระวัง)
                 </span>
-                <h3 class="font-['Space_Grotesk'] font-black text-base sm:text-lg text-[#171719]">
+                <h3 class="font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] font-bold text-base sm:text-lg text-[#0F172A]">
                   กับดักข้อสอบอาจารย์ & วิธีคิดที่ถูกต้องตามสไลด์
                 </h3>
               </div>
 
               <div class="grid grid-cols-1 gap-4">
                 {mod.examTraps.map((trap, tIdx) => (
-                  <div class="border-2 border-[#171719] bg-white shadow-[3px_3px_0px_#E11D48] overflow-hidden">
-                    <div class="bg-[#171719] text-white px-4 py-2 flex flex-wrap justify-between items-center gap-2 font-mono text-xs">
-                      <span class="font-bold text-[#A3E635]">
+                  <div class="rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden">
+                    <div class="bg-[#0F172A] text-white px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 font-mono text-xs">
+                      <span class="font-bold text-[#66A1EE]">
                         TRAP #{tIdx + 1}: {trap.trapTitle}
                       </span>
-                      <span class="px-2 py-0.5 bg-[#222226] border border-gray-600 text-gray-200 text-[11px]">
+                      <span class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[11px]">
                         อ้างอิง: {trap.slideRef}
                       </span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#171719]">
-                      <div class="p-4 bg-[#E11D48]/5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+                      <div class="p-4 bg-rose-50/30">
                         <div class="text-xs font-mono font-bold text-[#BE123C] mb-1">
                           [MISCONCEPTION] สิ่งที่โจทย์หลอก / ความเข้าใจผิดที่พบบ่อย:
                         </div>
-                        <p class="text-xs sm:text-sm text-gray-800 leading-relaxed">
+                        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
                           {trap.trapDescription}
                         </p>
                       </div>
-                      <div class="p-4 bg-[#A3E635]/15">
-                        <div class="text-xs font-mono font-bold text-[#171719] mb-1">
+                      <div class="p-4 bg-emerald-50/30">
+                        <div class="text-xs font-mono font-bold text-emerald-800 mb-1">
                           [SLIDE PRINCIPLE] หลักการที่ถูกต้องตามสไลด์อาจารย์:
                         </div>
-                        <p class="text-xs sm:text-sm text-[#171719] font-semibold leading-relaxed">
+                        <p class="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed">
                           {trap.correctApproach}
                         </p>
                       </div>
@@ -704,29 +989,29 @@ const { modules } = Astro.props;
             <!-- ========================================================= -->
             <div class="space-y-6">
               {mod.sections.map((sec) => (
-                <div class="border-2 border-[#171719] bg-white p-4 sm:p-6 shadow-[4px_4px_0px_#171719]">
-                  <h4 class="font-['Space_Grotesk'] font-black text-base sm:text-lg text-[#171719] border-b-2 border-[#171719] pb-2 mb-2">
+                <div class="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-[0_4px_24px_-4px_rgba(15,23,42,0.04)]">
+                  <h4 class="font-['Space_Grotesk',_'Google_Sans',_'Google_Sans_Thai',_sans-serif] font-bold text-base sm:text-lg text-[#0F172A] border-b border-slate-100 pb-2.5 mb-2">
                     {sec.title}
                   </h4>
-                  <p class="text-xs sm:text-sm font-mono text-gray-600 mb-4">
+                  <p class="text-xs sm:text-sm font-mono text-slate-500 mb-4">
                     {sec.conceptSummary}
                   </p>
 
                   {sec.tableData && (
-                    <div class="overflow-x-auto mb-4">
-                      <table class="w-full text-left text-xs font-mono border-collapse border-2 border-[#171719]">
+                    <div class="overflow-x-auto mb-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+                      <table class="w-full text-left text-xs font-mono border-collapse bg-white">
                         <thead>
-                          <tr class="bg-[#171719] text-[#A3E635]">
+                          <tr class="bg-slate-50 text-slate-700 border-b border-slate-200">
                             {sec.tableData.headers.map((h) => (
-                              <th class="p-2.5 border border-[#171719] font-bold">{h}</th>
+                              <th class="p-2.5 border-r border-slate-200 font-bold last:border-r-0">{h}</th>
                             ))}
                           </tr>
                         </thead>
-                        <tbody class="divide-y divide-[#171719]/30">
+                        <tbody class="divide-y divide-slate-100">
                           {sec.tableData.rows.map((row, rIdx) => (
-                            <tr class={rIdx % 2 === 0 ? 'bg-white' : 'bg-[#F4F1EA]/60'}>
+                            <tr class={rIdx % 2 === 0 ? 'bg-white hover:bg-slate-50/50' : 'bg-slate-50/40 hover:bg-slate-50/70'}>
                               {row.map((cell, cIdx) => (
-                                <td class={`p-2.5 border border-[#171719]/30 leading-relaxed ${cIdx === 0 ? 'font-bold text-[#171719]' : 'text-gray-800'}`}>
+                                <td class={`p-2.5 border-r border-slate-100 last:border-r-0 leading-relaxed ${cIdx === 0 ? 'font-bold text-[#0F172A]' : 'text-slate-700'}`}>
                                   {cell}
                                 </td>
                               ))}
@@ -739,8 +1024,8 @@ const { modules } = Astro.props;
 
                   <ul class="space-y-2">
                     {sec.keyPoints.map((pt) => (
-                      <li class="flex items-start gap-2.5 text-xs sm:text-sm text-[#171719] leading-relaxed bg-[#F4F1EA]/70 p-2.5 border-l-4 border-[#171719]">
-                        <span class="font-mono font-bold text-[#171719] shrink-0">▪</span>
+                      <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50/80 p-3 rounded-xl border border-slate-200/70">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#66A1EE] shrink-0 mt-2"></span>
                         <span>{pt}</span>
                       </li>
                     ))}
@@ -750,13 +1035,13 @@ const { modules } = Astro.props;
             </div>
 
             <!-- Modal Footer Navigation -->
-            <div class="pt-4 border-t-2 border-[#171719] flex flex-wrap justify-between items-center gap-3 font-mono text-xs">
+            <div class="pt-5 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3 font-mono text-xs">
               <div class="flex items-center gap-2">
                 {prevMod && (
                   <button
                     type="button"
                     data-switch-module={prevMod.id}
-                    class="px-3.5 py-2 bg-white hover:bg-[#EAE6DC] text-[#171719] font-bold border-2 border-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer"
+                    class="btn-secondary rounded-full px-4 py-2 text-xs font-bold font-mono cursor-pointer"
                   >
                     ← บทที่ {prevMod.moduleNumber}
                   </button>
@@ -765,7 +1050,7 @@ const { modules } = Astro.props;
                   <button
                     type="button"
                     data-switch-module={nextMod.id}
-                    class="px-3.5 py-2 bg-[#171719] hover:bg-[#222226] text-[#A3E635] font-bold border-2 border-[#171719] shadow-[2px_2px_0px_#171719] cursor-pointer"
+                    class="btn-primary rounded-full px-4 py-2 text-xs font-bold font-mono cursor-pointer"
                   >
                     บทที่ {nextMod.moduleNumber}: {nextMod.title.slice(0, 22)}... →
                   </button>
@@ -775,7 +1060,7 @@ const { modules } = Astro.props;
               <button
                 type="button"
                 data-close-modal
-                class="px-4 py-2 bg-white hover:bg-gray-100 text-[#171719] font-bold border-2 border-[#171719] cursor-pointer"
+                class="btn-secondary rounded-full px-5 py-2 text-xs font-bold font-mono cursor-pointer"
               >
                 กลับไปยังหน้ารวมบทเรียน
               </button>
@@ -786,3 +1071,104 @@ const { modules } = Astro.props;
     })}
   </div>
 </div>
+
+
+<!-- Slide Lightbox Modal for Full-Resolution Viewing -->
+<div
+  id="slide-lightbox-modal"
+  class="fixed inset-0 z-60 hidden bg-slate-950/85 backdrop-blur-sm p-3 sm:p-6 flex flex-col items-center justify-center"
+  role="dialog"
+  aria-modal="true"
+  aria-label="ขยายภาพสไลด์บรรยาย"
+>
+  <div class="w-full max-w-5xl max-h-[92vh] flex flex-col bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+    <div class="px-4 py-3 bg-slate-900 text-white flex items-center justify-between font-mono text-xs">
+      <div class="flex items-center gap-2 truncate">
+        <span id="lightbox-ref" class="px-2 py-0.5 rounded bg-slate-800 text-[#66A1EE] font-bold"></span>
+        <span id="lightbox-title" class="font-bold text-white truncate"></span>
+      </div>
+      <button
+        id="lightbox-close-btn"
+        type="button"
+        class="px-3 py-1 bg-slate-800 hover:bg-rose-600 text-white rounded-lg font-bold text-xs cursor-pointer transition-colors"
+      >
+        ✕ ปิด [ESC]
+      </button>
+    </div>
+    <div class="p-2 sm:p-4 overflow-auto flex items-center justify-center bg-slate-950/5">
+      <img
+        id="lightbox-img"
+        src=""
+        alt="Expanded Slide"
+        class="max-w-full max-h-[78vh] object-contain rounded-lg shadow-md border border-slate-200/80"
+      />
+    </div>
+  </div>
+</div>
+
+<script>
+  // Slide Lightbox Modal Interactivity
+  const lightbox = document.getElementById('slide-lightbox-modal');
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxRef = document.getElementById('lightbox-ref');
+  const lightboxClose = document.getElementById('lightbox-close-btn');
+
+  const openLightbox = (src: string, title?: string, ref?: string) => {
+    if (!lightbox || !lightboxImg) return;
+    lightboxImg.src = src;
+    if (lightboxTitle) lightboxTitle.textContent = title || 'สไลด์บรรยายจริง';
+    if (lightboxRef) lightboxRef.textContent = ref || '';
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+  };
+
+  const closeLightbox = () => {
+    if (!lightbox) return;
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    if (lightboxImg) lightboxImg.src = '';
+  };
+
+  if (lightboxClose) {
+    lightboxClose.addEventListener('click', closeLightbox);
+  }
+
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox && !lightbox.classList.contains('hidden')) {
+      e.stopPropagation();
+      closeLightbox();
+    }
+  });
+
+  // Delegate click for any .slide-img or slide card trigger
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+
+    if (target.matches('.slide-img')) {
+      const src = target.getAttribute('data-slide-src') || (target as HTMLImageElement).src;
+      const title = target.getAttribute('data-slide-title') || '';
+      const ref = target.getAttribute('data-slide-ref') || '';
+      if (src) openLightbox(src, title, ref);
+      return;
+    }
+
+    const card = target.closest('.slide-card');
+    if (card && (target.closest('[data-slide-src]') || target.textContent?.includes('ขยายภาพ') || target.closest('button'))) {
+      const img = card.querySelector('.slide-img') as HTMLImageElement | null;
+      if (img) {
+        const src = img.getAttribute('data-slide-src') || img.src;
+        const title = img.getAttribute('data-slide-title') || '';
+        const ref = img.getAttribute('data-slide-ref') || '';
+        if (src) openLightbox(src, title, ref);
+      }
+    }
+  });
+</script>

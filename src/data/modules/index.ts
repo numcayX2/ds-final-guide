@@ -8,6 +8,7 @@ import { module06DecisionTree } from './module-06-decision-tree';
 import { module07EvaluationMetrics } from './module-07-evaluation-metrics';
 import { module08Kmeans } from './module-08-kmeans';
 import { module09ResponsibleAi } from './module-09-responsible-ai';
+import { module10CrispAction } from './module-10-crisp-action';
 
 export {
   module01CrispDs,
@@ -19,6 +20,7 @@ export {
   module07EvaluationMetrics,
   module08Kmeans,
   module09ResponsibleAi,
+  module10CrispAction,
 };
 
 export const allModules: StudyModule[] = [
@@ -31,6 +33,7 @@ export const allModules: StudyModule[] = [
   module07EvaluationMetrics,
   module08Kmeans,
   module09ResponsibleAi,
+  module10CrispAction,
 ];
 
 export const moduleMap: Record<string, StudyModule> = Object.fromEntries(

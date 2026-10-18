@@ -160,6 +160,10 @@ export class FormulaMorphEngine {
     const allCells = this.container.querySelectorAll<HTMLElement>('[data-source-cell-id]');
     allCells.forEach((cell) => {
       cell.classList.remove(
+        'cell-highlight-tp',
+        'cell-highlight-fp',
+        'cell-highlight-fn',
+        'cell-highlight-neutral',
         'bg-[#A3E635]/30',
         'bg-[#F59E0B]/30',
         'bg-[#E11D48]/30',
@@ -175,13 +179,13 @@ export class FormulaMorphEngine {
         if (cell) {
           const status = cell.getAttribute('data-semantic') || 'tp';
           if (status === 'tp' || status === 'success') {
-            cell.classList.add('bg-[#A3E635]/30', 'border-2', 'border-[#171719]');
+            cell.classList.add('cell-highlight-tp');
           } else if (status === 'fp' || status === 'caution') {
-            cell.classList.add('bg-[#F59E0B]/30', 'border-2', 'border-[#171719]');
+            cell.classList.add('cell-highlight-fp');
           } else if (status === 'fn' || status === 'invalid') {
-            cell.classList.add('bg-[#E11D48]/30', 'border-2', 'border-[#171719]');
+            cell.classList.add('cell-highlight-fn');
           } else {
-            cell.classList.add('bg-[#2563EB]/30', 'border-2', 'border-[#171719]');
+            cell.classList.add('cell-highlight-neutral');
           }
         }
       });
