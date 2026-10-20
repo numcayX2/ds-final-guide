@@ -637,6 +637,16 @@ const moduleSummaries = allModules.map((m) => ({
       return allQuestions.filter((q) => selectedModuleIds.has(q.moduleRef));
     }
 
+    // 1b. Fisher-Yates Shuffle Helper (สลับลำดับข้อสอบแบบสุ่มทุกครั้งที่เริ่มสอบ)
+    function shuffleArray<T>(arr: T[]): T[] {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
     // 2. Format Time Helper
     function formatTime(totalSeconds: number): string {
       const minutes = Math.floor(totalSeconds / 60);
@@ -908,9 +918,10 @@ const moduleSummaries = allModules.map((m) => ({
       document.documentElement.classList.add('exam-mode-active');
       document.body.classList.add('exam-mode-active');
 
-      // Slice questions to active count
-      actualActiveCount = Math.min(selectedModeCount, available.length);
-      activeQuestions = available.slice(0, actualActiveCount);
+      // Shuffle available questions randomly every time the exam begins
+      const shuffled = shuffleArray(available);
+      actualActiveCount = Math.min(selectedModeCount, shuffled.length);
+      activeQuestions = shuffled.slice(0, actualActiveCount);
 
       currentQIndex = 0;
       lastRenderedQIndex = -1;
@@ -1619,6 +1630,10 @@ const moduleSummaries = allModules.map((m) => ({
       lastRenderedQIndex = -1;
       for (const k in userAnswers) delete userAnswers[k];
       resultCard?.classList.add('hidden');
+      
+      // Shuffle questions again on retake
+      activeQuestions = shuffleArray(activeQuestions);
+
       renderOmrSheet();
       updateAnsweredCount();
       resetTimer();
