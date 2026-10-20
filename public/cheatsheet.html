@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Cheatsheet Test Balance 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500;600;700&family=Google+Sans:wght@500;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --color-paper:        #fafaf9;
+  --color-paper-card:   #ffffff;
+  --color-paper-subtle: #f8fafc;
+  --color-paper-muted:  #f1f5f9;
+  --color-ink:          #24292f;
+  --color-ink-2:        #475569;
+  --color-ink-muted:    #64748b;
+  --color-rule:         #e2e8f0;
+  --color-rule-card:    #cbd5e1;
+  --color-accent:       #3b82f6;
+  --color-alert:        #be123c;
+  --color-success:      #15803d;
+  --color-qtag-bg:      #f1f5f9;
+  --color-qtag-border:  #cbd5e1;
+  --color-qtag-text:    #334155;
+}
+
+@page { size: A4 portrait; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--color-paper); color: var(--color-ink); }
+body {
+  font-family: 'Google Sans Text', 'Google Sans', 'Sarabun', 'Leelawadee UI', sans-serif;
+  font-size: 7.85pt;
+  line-height: 1.18;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  padding: 1.6mm 3.0mm 1.0mm;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: min-content;
+  gap: 0.35mm 1.6mm;
+  align-content: start;
+}
+.page + .page { break-before: page; }
+
+.span-12 { grid-column: span 12; }
+.span-8  { grid-column: span 8; }
+.span-7  { grid-column: span 7; }
+.span-6  { grid-column: span 6; }
+.span-5  { grid-column: span 5; }
+.span-4  { grid-column: span 4; }
+
+.bento {
+  border: 0.55pt solid var(--color-rule-card);
+  border-radius: 0.6mm;
+  padding: 0.36mm 0.95mm 0.38mm;
+  background: var(--color-paper-card);
+  break-inside: avoid;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.bento-h {
+  font-family: 'Google Sans', 'Sarabun', sans-serif;
+  font-size: 8.15pt;
+  font-weight: 700;
+  color: var(--color-ink);
+  background: var(--color-paper-muted);
+  margin: -0.36mm -0.95mm 0.28mm -0.95mm;
+  padding: 0.22mm 0.95mm;
+  border-bottom: 0.5pt solid var(--color-rule-card);
+  border-top-left-radius: 0.5mm;
+  border-top-right-radius: 0.5mm;
+  line-height: 1.14;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  white-space: nowrap;
+}
+.bento-h small {
+  font-family: 'Google Sans Text', 'Sarabun', sans-serif;
+  font-weight: 500;
+  color: var(--color-ink-muted);
+  font-size: 6.6pt;
+  letter-spacing: 0;
+  margin-left: 0.8mm;
+}
+
+p, li { font-size: 7.75pt; color: var(--color-ink); }
+ul { padding-left: 2.4mm; }
+li { margin-bottom: 0.08mm; }
+li::marker { color: var(--color-ink-muted); font-size: 6.5pt; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 7.3pt;
+  margin: 0.08mm 0;
+}
+table.fx { font-size: 6.9pt; table-layout: fixed; }
+th, td {
+  border: 0.5pt solid var(--color-rule);
+  padding: 0.16mm 0.45mm;
+  vertical-align: top;
+  line-height: 1.14;
+}
+th {
+  background: var(--color-paper-subtle);
+  font-weight: 600;
+  color: var(--color-ink);
+  text-align: left;
+}
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+
+.f { font-family: "Cambria Math", "Times New Roman", serif; font-size: 8.15pt; color: var(--color-ink); }
+.mono { font-family: Consolas, "Courier New", monospace; font-size: 7.2pt; color: var(--color-ink); }
+
+.k { color: var(--color-alert); font-weight: 600; }
+.g { color: var(--color-success); font-weight: 600; }
+.b-txt { color: var(--color-accent); font-weight: 600; }
+.dim { color: var(--color-ink-muted); }
+
+.qtag {
+  display: inline-block;
+  background: var(--color-qtag-bg);
+  border: 0.45pt solid var(--color-qtag-border);
+  color: var(--color-qtag-text);
+  font-weight: 600;
+  font-size: 6.55pt;
+  padding: 0.02mm 0.35mm;
+  border-radius: 0.3mm;
+  margin-right: 0.25mm;
+  vertical-align: baseline;
+  line-height: 1.05;
+}
+
+.solve {
+  border: 0.5pt solid var(--color-rule);
+  border-left: 1.5pt solid var(--color-ink-2);
+  background: var(--color-paper-subtle);
+  border-radius: 0.3mm;
+  padding: 0.18mm 0.55mm;
+  margin-top: 0.10mm;
+  font-size: 7.5pt;
+  line-height: 1.15;
+}
+.trap {
+  border: 0.5pt solid #fecdd3;
+  border-left: 1.5pt solid #fb7185;
+  background: #fff1f2;
+  border-radius: 0.3mm;
+  padding: 0.18mm 0.55mm;
+  margin-top: 0.10mm;
+  font-size: 7.5pt;
+  line-height: 1.15;
+}
+
+.bento-band {
+  grid-column: span 12;
+  border: 0.55pt solid var(--color-rule-card);
+  border-radius: 0.6mm;
+  background: var(--color-paper-card);
+  padding: 0.18mm 0.60mm;
+  margin-top: 0.05mm;
+  min-width: 0;
+  overflow: hidden;
+}
+.bento-band .bento-h {
+  background: #e2e8f0;
+  color: var(--color-ink);
+  border-bottom: 0.5pt solid var(--color-rule-card);
+  margin: -0.28mm -0.75mm 0.22mm -0.75mm;
+  padding: 0.20mm 0.75mm;
+}
+.bento-band .bento-h small { color: var(--color-ink-muted); }
+
+</style>
+</head>
+<body>
+
+<section class="page">
+<div class="bento span-12">
+      <div class="bento-h">1 · บทบาท EDA &amp; Anscombe's Quartet <small>Lect05 p04,08 · W4 Q2–3</small></div>
+      <ul>
+        <li><span class="qtag">W4-Q2</span><b>บทบาท EDA ใน CRISP-DS:</b> เป็น <b>Iterative Checkpoint</b> ย้อนกลับไปทบทวนคำถาม/Data Prep ได้เมื่อพบปัญหา · <b class="g">Informs modeling</b> แต่ <b class="k">ไม่ได้เลือกโมเดลให้อัตโนมัติ</b></li>
+        <li><span class="qtag">W4-Q3</span><b>ห้ามเริ่มด้วยการสร้างทุกกราฟ:</b> ต้องเริ่มจาก <b class="g">Analytical Question</b> กำหนดตัวแปรและการเปรียบเทียบที่ตรงเป้าหมาย (Start with Question, Not Dataset)</li>
+        <li><b>Anscombe's Quartet (p08):</b> ข้อมูล 4 ชุดค่าสถิติเท่ากันเป๊ะ (<span class="f">x̄=9, Var(X)=11, ȳ=7.5, Var(Y)=4.125, r=0.816, y=3+0.5x</span>) แต่พล็อตกราฟแล้วต่างกันสิ้นเชิง (เชิงเส้น, พาราโบลา, 1 Outlier ดึง, จุดเกาะกลุ่มมี 1 Leverage Point) → <b class="k">ห้ามเชื่อแค่ตัวเลขสถิติ ต้องพล็อตกราฟเสมอ!</b></li>
+      </ul>
+    </div><div class="bento span-6">
+      <div class="bento-h">2 · สถิติค่ากลาง &amp; การกระจายตามรูปร่างข้อมูล <small>Lect05 p06–07 · W4 Q4–5</small></div>
+      <table>
+        <tr><th style="width:25%">ลักษณะข้อมูล</th><th style="width:34%">คู่สถิติที่ต้องเลือกใช้</th><th>เหตุผลทางสถิติและจุดหลอก</th></tr>
+        <tr><td><b>Symmetric (สมมาตร)</b></td><td><b>Mean + SD</b> (หรือ Variance)</td><td><span class="f">Mean ≈ Median ≈ Mode</span> ไม่มีค่าสุดขั้วดึง</td></tr>
+        <tr><td><b>Skewed / มี Outlier</b></td><td><b class="g">Median + IQR</b> <span class="qtag">W4-Q4</span></td><td><b>Robust (ทนทาน):</b> Mean และ SD ไวต่อค่าสุดขั้วมาก</td></tr>
+        <tr><td><b>Categorical (กลุ่ม)</b></td><td><b>Mode</b> (ความถี่สูงสุด)</td><td>ห้ามใช้ Mean/Median กับข้อมูลนามบัญญัติ</td></tr>
+      </table>
+      <div class="solve">
+        • <b>ทิศทางเบ้:</b> <b>เบ้ขวา (+):</b> หางยาวขวา <span class="f">Mode &lt; Median &lt; Mean</span> · <b>เบ้ซ้าย (−):</b> <span class="f">Mean &lt; Median &lt; Mode</span><br>
+        • <span class="qtag">W4-Q5</span><b>กราฟ 2 ยอด (Bimodal):</b> ตีความว่า <b class="g">มีกลุ่มย่อย (Sub-groups) มากกว่า 1 กลุ่มแฝงอยู่</b> (ห้ามตัดทิ้ง หรือตอบว่า SD = 0)
+      </div>
+    </div><div class="bento span-6">
+      <div class="bento-h">3 · Boxplot Outlier &amp; กฎ Tukey's Fences <small>Lect05 p07,17 · W4 Q6–7</small></div>
+      <p class="f">Range = Max − Min · <b>IQR = Q3 − Q1</b> · Var(σ²) = Σ(xᵢ−μ)²/N · SD(σ) = √Var</p>
+      <div class="solve">
+        <b>สูตรรั้ว Boxplot:</b> <span class="f"><b>Lower = Q1 − 1.5×IQR</b> &nbsp;|&nbsp; <b>Upper = Q3 + 1.5×IQR</b></span> <span class="qtag">W4-Q6</span><br>
+        • <b>ตัวอย่างคำนวณ:</b> <span class="f">Q1=30, Q3=70 → IQR=40 → Upper = 70+1.5(40) = <b>130</b></span> (ถ้าพบ <span class="f">x=140 &gt; 130</span> ถือว่าอยู่นอกรั้ว)<br>
+        • <b>กฎเส้นหนวด (Whisker):</b> ลากไปหยุดที่ <b class="g">ค่าจริงในชุดข้อมูลที่ไม่เกินรั้ว</b> (ไม่ได้ลากไปหยุดที่ค่า Fence!)<br>
+        • <span class="qtag">W4-Q7</span><b>พบค่านอกรั้วทำอย่างไร:</b> ถือเป็นเพียง <b class="g">Potential Outlier เพื่อสืบค้นบริบทก่อน</b> (อาจเป็น Error หรือเป็น Real Event เช่น ยอดซื้อ VIP) <b class="k">ห้ามลบทิ้งหรือแทนที่อัตโนมัติ!</b>
+      </div>
+      <div class="trap"><b class="k">ตัวลวง W4-Q6:</b> ช้อยส์หลอกใช้ <span class="f">Q3 + 3.0×IQR</span> (extreme outlier) หรือใช้ <span class="f">Median + 1.5×IQR</span> (ผิดตัวตั้งต้น)</div>
+    </div><div class="bento span-7">
+      <div class="bento-h">4 · การเลือกชาร์ต · สี · Accessibility · ความเป็นธรรม <small>Lect05 p14–25 · W4 Q8,10,11</small></div>
+      <table>
+        <tr><th style="width:24%">วัตถุประสงค์</th><th style="width:34%">กราฟที่ถูกต้อง</th><th>กฎเหล็กการออกแบบและเปรียบเทียบ</th></tr>
+        <tr><td>Distribution / Outlier</td><td>Histogram, <b>Boxplot</b></td><td>Boxplot เห็น Median, IQR, Skewness, Outlier ชัดสุด</td></tr>
+        <tr><td>Comparison</td><td>Bar / Column Chart</td><td><b class="k">แกนตัวเลขต้องเริ่มที่ 0 เสมอ</b> ห้ามตัดแกน (Truncate)</td></tr>
+        <tr><td>Relationship</td><td>Scatter Plot</td><td>ดูทิศทาง/กลุ่ม · Pie Chart ใช้เมื่อหมวดหมู่ <b>≤ 5 ส่วน</b></td></tr>
+        <tr><td>Trend over Time</td><td>Line Chart</td><td>แกน X เวลาต้องเรียงตามลำดับต่อเนื่อง ห้ามสลับหมวด</td></tr>
+      </table>
+      <div class="solve">
+        • <span class="qtag">W4-Q8</span><b>Color Palettes 3 แบบ:</b> ① <b>Sequential:</b> เรียงต่ำ→สูง · ② <b class="g">Diverging:</b> มี <b>ค่ากลางอ้างอิง (Meaningful Midpoint)</b> เช่น อุณหภูมิเทียบเป้าหมาย · ③ <b>Qualitative:</b> หมวดหมู่ไม่มีลำดับ<br>
+        • <span class="qtag">W4-Q10</span><b>Accessibility (ตาบอดสี):</b> ใช้ <b class="g">Redundant Encoding</b> (สี + รูปร่าง/เส้น/ป้ายกำกับ) · <b class="k">ห้ามใช้คู่สีแดง-เขียวเด็ดขาด!</b><br>
+        • <span class="qtag">W4-Q11</span><b>Responsible Comparison:</b> ตรวจว่า <b class="g">กลุ่มย่อยเล็กเกินจนเสี่ยงระบุตัวตน (Privacy Risk)</b> หรือไม่ และตรวจ Differential Missingness (ห้ามตัดทิ้งดื้อๆ)
+      </div>
+    </div><div class="bento span-5">
+      <div class="bento-h">5 · Correlation vs Causation <small>Lect05 p09 · W4 Q9</small></div>
+      <ul>
+        <li><span class="qtag">W4-Q9</span><b>ความต่างสำคัญ:</b> Correlation (<span class="f">r ∈ [−1, +1]</span>) บอกการแปรผันร่วม <b class="k">แต่ไม่ได้พิสูจน์ว่าเป็นเหตุเป็นผล (Causation)</b> แม้ <span class="f">r ≈ ±1</span> ก็สรุปเหตุผลทันทีไม่ได้</li>
+        <li><b>4 ทางเลือกที่ต้องตรวจก่อนสรุปเหตุผล:</b> ① <b>Confounding</b> (ตัวแปรที่ 3 ซ่อนอยู่) · ② <b>Reverse Direction</b> (<span class="f">Y → X</span>) · ③ <b>Selection Effects</b> (อคติการสุ่ม) · ④ <b>Coincidence</b> (บังเอิญพ้องกัน)</li>
+      </ul>
+    </div><div class="bento span-5">
+      <div class="bento-h">6 · Feature Scaling &amp; วิธีคำนวณโจทย์จริง <small>Lect04.2 p20–22 · W7 Q4</small></div>
+      <table>
+        <tr><th style="width:20%">วิธี Scale</th><th style="width:42%">สูตรคำนวณ</th><th>คุณสมบัติและการตีความ</th></tr>
+        <tr><td><b>Min-Max</b></td><td class="f">x′ = [(x−x<sub>min</sub>)÷(x<sub>max</sub>−x<sub>min</sub>)]·(U−L)+L</td><td>บีบค่าลงช่วง [0,1] หรือ [L,U] · ไวต่อ Outlier</td></tr>
+        <tr><td><b>Z-Score</b></td><td class="f">z = (x − μ) ÷ σ</td><td>ได้ μ = 0, σ = 1 · บอกว่าห่างจาก μ กี่เท่าของ SD</td></tr>
+      </table>
+      <div class="solve">
+        • <b>ตัวอย่างคำนวณสไลด์:</b> รายได้ <span class="f">Min=55k, Max=150k</span> ลูกค้าได้ <span class="f">x=75k</span><br>
+        &nbsp;&nbsp;– <b>Min-Max [0, 1]:</b> <span class="f">(75k − 55k) ÷ (150k − 55k) = 20k ÷ 95k = <b>0.211</b></span><br>
+        &nbsp;&nbsp;– <b>Z-Score (<span class="f">μ=90,833, σ=35,286</span>):</b> <span class="f">z = (75,000 − 90,833) ÷ 35,286 = <b>−0.45</b></span> (ต่ำกว่าเฉลี่ย 0.45 SD)<br>
+        • <span class="qtag">W7-Q4</span><b>กฎเหล็ก:</b> <b>ต้อง Scale</b> ก่อนใช้ <b>K-Means, 5-NN, SVM, PCA</b> เพื่อ <b class="g">ป้องกันไม่ให้ตัวแปรหน่วยใหญ่ (เช่น Spending) ครอบงำระยะห่างทั้งหมด</b> · ส่วน <b>Decision Tree / Random Forest ไม่ต้อง Scale</b>
+      </div>
+    </div><div class="bento span-7">
+      <div class="bento-h">7 · Modeling Framework &amp; การแยกองค์ประกอบโจทย์ <small>Lect06 · W5 Q1–8</small></div>
+      <ul>
+        <li><span class="qtag">W5-Q1</span><b>บทบาท Modeling:</b> ส่งสัญญาณย้อนกลับไปปรับปรุง Data Prep หรือ EDA ได้ (ไม่ใช่ One-way)</li>
+        <li><span class="qtag">W5-Q2</span><b>โจทย์ที่ไม่ต้องใช้ ML (ใช้แค่ Descriptive):</b> คำถามที่ถาม <b>สถิติสรุปอดีต</b> เช่น <b class="g">"เดือนที่แล้วมูลค่าคำสั่งซื้อมัธยฐานเท่าใด"</b> · ถ้าทายยอด 60 วัน / ใครจะเลิกใช้ = ต้องใช้ ML</li>
+        <li><span class="qtag">W5-Q3</span><b>ลำดับ 5 ขั้น:</b> Problem → Setting → Task → Algorithm (สูตรต้นไม้) → <b>Trained Model (<b class="g">Fitted Decision Tree ที่ผ่านการ Train แล้ว</b>)</b></li>
+      </ul>
+      <table style="margin-top:.2mm">
+        <tr><th style="width:26%">องค์ประกอบ <span class="qtag">W5-Q4</span></th><th>วิธีแยกแยะจากโจทย์ "ทำนายลูกค้าหยุดซื้อใน 60 วัน"</th></tr>
+        <tr><td><b>Observation Unit</b></td><td>ลูกค้าแต่ละราย ณ วัน Observation Date (หน่วยที่ถูกสังเกต)</td></tr>
+        <tr><td><b>Feature (X)</b></td><td><b class="g">ความถี่สั่งซื้อในอดีต และระยะเวลาจากการซื้อล่าสุด (Recency/Frequency)</b></td></tr>
+        <tr><td><b>Target / Label (Y)</b></td><td>สถานะหยุดซื้อหรือไม่หยุดซื้อภายใน 60 วันข้างหน้า (คำตอบที่ใช้สอนโมเดล)</td></tr>
+        <tr><td><b>Output (Ŷ)</b></td><td>ความน่าจะเป็น หรือคลาสที่ตัวแบบคำนวณออกมาเป็นผลลัพธ์</td></tr>
+      </table>
+      <div class="solve">
+        • <span class="qtag">W5-Q5,6,7</span><b>เลือก Task:</b> มี Target = <b>Supervised</b> [ทายตัวเลขต่อเนื่อง (กี่บาท) = <b class="g">Regression</b> | ทายหมวดหมู่ = <b class="g">Classification</b>] · ไม่มี Target = <b>Unsupervised</b> [จัดกลุ่มตามความคล้าย = <b class="g">Clustering</b>]<br>
+        • <span class="qtag">W5-Q8</span><b>Simple Baseline:</b> เริ่มต้นเพื่อสร้าง <b class="g">จุดอ้างอิงวัดว่าโมเดลซับซ้อนให้ผลคุ้มค่าหรือไม่</b>
+      </div>
+    </div><div class="bento span-5">
+      <div class="bento-h">8 · 3-Way Split &amp; การวินิจฉัย Overfitting <small>Lect06–07 · W5 Q9–10 · W6 Q2,6,7</small></div>
+      <table>
+        <tr><th style="width:27%">ชุดข้อมูล <span class="qtag">W5-Q9</span></th><th style="width:15%">สัดส่วน</th><th>หน้าที่หลัก (ห้ามสลับ Validation กับ Test เด็ดขาด!)</th></tr>
+        <tr><td><b>Training Data</b></td><td class="n">60–70%</td><td>ใช้ <b>เรียนรู้พารามิเตอร์</b> (Fit model / สร้างกิ่งการตัดสินใจ)</td></tr>
+        <tr><td><b>Validation Data</b></td><td class="n">15–20%</td><td>ใช้ <b>ตัดสินใจระหว่างพัฒนา</b>, จูน Hyperparameter (<span class="f">max_depth</span> <span class="qtag">W6-Q6</span>), เลือกโมเดล</td></tr>
+        <tr><td><b>Test Data</b></td><td class="n">15–20%</td><td>ใช้ <b>ตรวจสอบขั้นสุดท้ายด้วยหลักฐานอิสระ</b> ครั้งเดียวจบ <b class="k">(ห้ามนำมาจูนซ้ำ! W6-Q2)</b></td></tr>
+      </table>
+      <div class="solve">
+        <span class="qtag">W5-Q10</span><span class="qtag">W6-Q7</span><b>วิธีดูอาการโมเดล:</b> <b>Train สูง (~100%) แต่ Val/Test ต่ำมาก</b> = <b class="k">Overfitting (High Variance)</b> (เกิดเมื่อใช้ <b>Unrestricted Tree</b> <span class="qtag">W6-Q5</span>) · <b>ต่ำทั้งคู่</b> = <b>Underfitting (High Bias)</b> · <b>สูงใกล้เคียงกัน</b> = <b class="g">Appropriate Fit</b>
+      </div>
+    </div><div class="bento span-7">
+      <div class="bento-h">9 · 4 Candidate Models &amp; โครงสร้างต้นไม้ <small>Lect07 p09,33 · W6 Q3–4</small></div>
+      <ul>
+        <li><span class="qtag">W6-Q4</span><b>โครงสร้างต้นไม้:</b> <b>Root Node</b> (บนสุด) → <b>Internal Node</b> (จุดแยกเงื่อนไข) → <b>Branch</b> (กิ่ง) → <b class="g">Leaf Node (จุดสิ้นสุดที่ให้ผลลัพธ์เป็น Predicted Class)</b></li>
+        <li><span class="qtag">W6-Q3</span><b>กลไกแตกกิ่ง:</b> ทำงานแบบ <b class="g">Greedy Algorithm</b> เลือกคู่ Feature + Threshold ที่ได้ <b>Weighted Gini ต่ำสุด</b> ณ Node ปัจจุบัน <b class="k">โดยไม่รับประกัน Global Optimum ทั้งต้น!</b></li>
+      </ul>
+      <table style="margin-top:.2mm">
+        <tr><th style="width:24%">Candidate Model</th><th style="width:38%">จุดแข็งสำคัญ</th><th>ข้อจำกัด / ข้อควรระวัง</th></tr>
+        <tr><td><b>Decision Tree</b></td><td>อธิบายกฎง่าย (White-box), <b>ไม่ต้อง Scale</b></td><td>Overfit ง่ายถ้าไม่คุม <span class="f">max_depth</span> / Prune</td></tr>
+        <tr><td><b>5-NN (k-NN)</b></td><td>เทียบเพื่อนบ้านใกล้สุด 5 จุด ไม่ต้องเทรนสมการ</td><td><b class="k">ไวต่อ Scale มาก</b>, ทายช้าเมื่อข้อมูลใหญ่</td></tr>
+        <tr><td><b>Naive Bayes</b></td><td>คำนวณความน่าจะเป็นเร็วมาก</td><td>สมมติว่าทุก Feature เป็นอิสระต่อกัน</td></tr>
+        <tr><td><b>Neural Network</b></td><td>จับความสัมพันธ์ซับซ้อน Non-linear ได้ดี</td><td><b class="k">Black-box ชัดสุด (Hidden Layers นับร้อย)</b> มนุษย์แกะเหตุผลยาก</td></tr>
+      </table>
+    </div><div class="bento span-7">
+      <div class="bento-h">10 · วิธีคำนวณ Gini Impurity &amp; การเลือก Split <small>Lect07 p11–12</small></div>
+      <p class="f"><b>Gini(t) = 1 − Σ pᵢ²</b> &nbsp;(Pure = <b>0</b>, 50:50 แย่สุด = <b>0.500</b>) &nbsp;·&nbsp; <b>Gini<sub>split</sub> = (n<sub>L</sub>/N)Gini(L) + (n<sub>R</sub>/N)Gini(R)</b></p>
+      <div class="solve">
+        <b>วิธีทำโจทย์เทียบ Split (N=12: 6 Active, 6 Inactive → Gini(Parent) = 0.500):</b><br>
+        1. <b>หา Gini กิ่งย่อย:</b> กิ่ง <span class="f">[5,1]</span> → <span class="f">1 − (5/6)² − (1/6)² = 10/36 = <b>0.278</b></span> · กิ่ง <span class="f">[2,4]</span> → <span class="f">1 − (2/6)² − (4/6)² = 16/36 = <b>0.444</b></span><br>
+        2. <b>เทียบถ่วงน้ำหนัก (Gini<sub>split</sub>) &amp; Gain (<span class="f">Gini(Parent) − Gini<sub>split</sub></span>):</b><br>
+        &nbsp;&nbsp;• <b>Split A (<span class="f">days ≤ 45</span> แบ่ง [5,1] | [1,5]):</b> <span class="f">Gini<sub>split</sub> = 0.278</span> → <span class="f">Gain = 0.500 − 0.278 = <b class="g">0.222 (ชนะ!)</b></span><br>
+        &nbsp;&nbsp;• <b>Split B (<span class="f">purchases ≤ 2</span> แบ่ง [2,4] | [4,2]):</b> <span class="f">Gini<sub>split</sub> = 0.444</span> → <span class="f">Gain = 0.500 − 0.444 = 0.056</span><br>
+        3. <b>กฎตัดสิน:</b> เลือก Split ที่ <b class="g">Gini<sub>split</sub> ต่ำสุด (= Gain สูงสุดเสมอ)</b><br>
+        • <b>การทำนายที่ Leaf Node (p17):</b> โหนดมี [4 Inactive, 1 Active] → ทาย Inactive ด้วยค่าความน่าจะเป็น <span class="f">P = 4/5 = <b>0.80</b></span>
+      </div>
+    </div><div class="bento span-5">
+      <div class="bento-h">11 · Tree Depth · Bias–Variance · Ensemble <small>Lect07 p19,31 · W6 Q5–6</small></div>
+      <table>
+        <tr><th style="width:24%">ความลึกต้นไม้</th><th style="width:16%">Bias</th><th style="width:18%">Variance</th><th>พฤติกรรมโมเดลในสไลด์และข้อสอบ</th></tr>
+        <tr><td><b>Depth = 1</b> (ตื้น)</td><td>สูง</td><td>ต่ำ</td><td><b>Underfitting</b> (กฎง่ายเกินไป จับรูปแบบไม่พอ)</td></tr>
+        <tr><td><b>Depth = 3</b> (พอดี)</td><td>ต่ำพอดี</td><td>ต่ำพอดี</td><td><b class="g">Appropriate Fit — ถูกเลือกใช้ในสไลด์ (Val ดีสุด)</b> <span class="qtag">W6-Q6</span></td></tr>
+        <tr><td><b>Unrestricted</b> (ไม่จำกัด)</td><td>~0</td><td>สูงสุด</td><td><b class="k">Train Acc 100% แต่เสี่ยง Overfitting สูงมาก!</b> <span class="qtag">W6-Q5</span></td></tr>
+      </table>
+      <p style="margin-top:.15mm"><b>วิธีแก้ Overfit:</b> Pre-pruning (คุม <span class="f">max_depth</span>) · Post-pruning · <b>Bagging/Random Forest</b> (ลด Variance) · <b>Boosting</b> (ลด Bias)</p>
+    </div>
+</section>
+
+<section class="page">
+<div class="bento span-12">
+      <div class="bento-h">12 · Confusion Matrix &amp; เลือก Metric ธุรกิจ <small>Lect07 p22–35 · W6 Q8–11</small></div>
+      <p><b>โครงสร้างสไลด์อาจารย์:</b> <b>แถว (Row) = Actual (จริง)</b> · <b>คอลัมน์ (Col) = Predicted (ทำนาย)</b></p>
+      <div style="display:grid; grid-template-columns: 1.18fr 0.82fr; gap: 1.5mm; align-items: start;"><table>
+        <tr><th style="width:18%">Metric</th><th style="width:36%">สูตรคำนวณ</th><th>เกณฑ์การเลือกใช้ตามสถานการณ์ธุรกิจ</th></tr>
+        <tr><td><b>Accuracy</b></td><td class="f">(TP+TN) ÷ N<sub>total</sub></td><td>ใช้เมื่อคลาสสมดุล · <span class="qtag">W6-Q8</span><b>ห้ามใช้เดี่ยวๆ เมื่อ Imbalance!</b> (ทายทุกคน Active 95% ก็ได้ Acc 95% ทั้งที่ไม่เจอกลุ่มเสี่ยง)</td></tr>
+        <tr><td><b>Precision</b></td><td class="f">TP ÷ (TP + <b>FP</b>)</td><td><span class="qtag">W6-Q9</span><b>เน้นลด FP:</b> ใช้เมื่อ <b class="g">ทีมงานติดต่อจำกัด / ต้นทุนยื่นข้อเสนอแพง</b> / Spam filter (ไม่อยากทายบวกมั่วจนเสียเงินฟรี)</td></tr>
+        <tr><td><b>Recall</b></td><td class="f">TP ÷ (TP + <b>FN</b>)</td><td><b>เน้นลด FN:</b> ใช้เมื่อ <b class="g">การหลุดกลุ่มเสี่ยงเสียหายหนักมาก</b> (คัดกรองโรคร้าย, ทุจริต Fraud, ลูกค้า VIP เสี่ยงเลิกใช้)</td></tr>
+        <tr><td><b>F1-Score</b></td><td class="f">2·P·R ÷ (P + R)</td><td>ค่าเฉลี่ยฮาร์โมนิก ใช้เมื่อต้องการ <b>สมดุลทั้ง Precision และ Recall</b></td></tr>
+      </table><div class="solve">
+        <span class="qtag">W6-Q10</span><b>วิธีตีความ FP vs FN (ยึด Positive Class ที่โจทย์กำหนดเป็นหลัก!):</b><br>
+        • <b>ตัวอย่างนักกีฬา (Positive = พร้อมลงเล่น <span class="mono">play</span>):</b><br>
+        &nbsp;&nbsp;– <b>False Negative (FN = ทายว่าไม่พร้อม แต่จริงพร้อม):</b> <b class="g">ทำให้ทีมพลาดโอกาสส่งนักกีฬาที่ฟิตพร้อมลงสนาม!</b><br>
+        &nbsp;&nbsp;– <b>False Positive (FP = ทายว่าพร้อม แต่จริงเจ็บ):</b> ส่งนักกีฬาที่ยังไม่พร้อมลงสนาม เสี่ยงบาดเจ็บซ้ำ!<br>
+        • <b>Threshold:</b> ลด (&lt;0.5) ทายบวกง่ายขึ้น → <b>Recall ↑, Precision ↓</b> · เพิ่ม (&gt;0.5) → <b>Precision ↑, Recall ↓</b>
+      </div></div>
+    </div><div class="bento span-12">
+      <div class="bento-h">13 · ตัวเลข 3 เคสจริงในสไลด์ (FIFA · HW#1 · HW#2) <small>Lect07 p23–35</small></div>
+      <table class="fx">
+        <tr><th style="width:28%">กรณีศึกษาในสไลด์</th><th class="n">TP</th><th class="n">FN</th><th class="n">FP</th><th class="n">TN</th><th class="n">Acc</th><th class="n">Prec</th><th class="n">Rec</th><th class="n">F1</th></tr>
+        <tr><td><b>1. FIFA</b> (Pos=play, N=10)</td><td class="n">4</td><td class="n">2</td><td class="n">1</td><td class="n">3</td><td class="n">.70</td><td class="n">.80</td><td class="n">.67</td><td class="n">.73</td></tr>
+        <tr><td><b>2. HW#1</b> (Pos=Inactive, N=10)</td><td class="n">3</td><td class="n">2</td><td class="n">2</td><td class="n">3</td><td class="n">.60</td><td class="n">.60</td><td class="n">.60</td><td class="n">.60</td></tr>
+        <tr><td><b>3. HW#2 Model A</b> (N=100)</td><td class="n">24</td><td class="n">16</td><td class="n">3</td><td class="n">57</td><td class="n">.81</td><td class="n"><b class="g">.89</b></td><td class="n">.60</td><td class="n">.72</td></tr>
+        <tr><td><b>3. HW#2 Model B</b></td><td class="n">36</td><td class="n">4</td><td class="n">18</td><td class="n">42</td><td class="n">.78</td><td class="n">.67</td><td class="n"><b class="g">.90</b></td><td class="n">.77</td></tr>
+        <tr><td><b>3. HW#2 Model C (ชนะ)</b></td><td class="n">32</td><td class="n">8</td><td class="n">7</td><td class="n">53</td><td class="n"><b class="g">.85</b></td><td class="n">.82</td><td class="n">.80</td><td class="n"><b class="g">.81</b></td></tr>
+      </table>
+      <p class="dim" style="margin-top:.15mm"><b>HW#1 ไล่นับ 10 แถว:</b> 01(Y/Y) 02(N/N) 03(Y/N) 04(N/Y) 05(Y/Y) 06(N/N) 07(N/Y) 08(Y/Y) 09(N/N) 10(Y/N) → TP=3, TN=3, FP=2, FN=2 ได้ 0.60 เท่ากันหมด · <b>HW#2:</b> งบจำกัดเลือก <b>A</b> (Prec .89) · กลัวพลาดคนเสี่ยงเลือก <b>B</b> (Rec .90) · สมดุลเลือก <b>C</b> (Acc .85, F1 .81 ชนะ)</p>
+    </div><div class="bento span-12">
+      <div class="bento-h">14 · K-Means Centroid ละเอียดทุกสเต็ป ครบ 3 รอบจน Converge + เฉลยการบ้าน <small>Lect08 p10–44 · W7 Q2–8</small></div>
+      
+      <!-- Top Rules & Principles Banner (2-col grid) -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5mm; margin-bottom: 0.08mm; font-size: 7.4pt; line-height: 1.12;">
+        <div>
+          • <span class="qtag">W7-Q3</span><b>เป้าหมาย Good Clustering:</b> <b class="g">Maximize Intra-cluster</b> (สมาชิกในกลุ่มแน่นสุด) + <b class="g">Minimize Inter-cluster</b> (ระยะห่างข้ามกลุ่มมากสุด)<br>
+          • <span class="qtag">W7-Q4</span><b>กฎเหล็ก Scaling:</b> ต้องทำ Standardize/Scale ก่อน K-Means เสมอ ป้องกันตัวแปรค่าใหญ่กลืนระยะทาง · <span class="qtag">W7-Q8</span><b>ไวต่อ Outliers, ติด Local Optimum</b> แต่เร็วมาก <b class="g">O(tkn)</b>
+        </div>
+        <div>
+          • <b>คุณสมบัติ Metric ระยะทาง D(A,B):</b> ① Symmetry: D(A,B)=D(B,A) · ② Self-similarity: D=0 ⟺ A=B · ③ Positivity: D ≥ 0 · ④ Triangle Inequality: D(A,C) ≤ D(A,B)+D(B,C)<br>
+          • <b class="k">กฎ Tie-Breaking (สไลด์หน้า 44):</b> ถ้าระยะทางเท่ากันพอดี <b class="g">ให้เลือกเข้า Cluster หมายเลขต่ำกว่าเสมอ</b> (เช่น d(C₁)=d(C₂)=2 ให้เลือก C₁)
+        </div>
+      </div>
+
+      <!-- Centroid Calculation: 3 Columns Grid -->
+      <div style="display:grid; grid-template-columns: 0.95fr 1.05fr 1fr; gap: 1.4mm; background: var(--color-paper-subtle); border: 0.5pt solid var(--color-rule); border-radius: 0.4mm; padding: 0.16mm 0.45mm; font-size: 7.3pt; line-height: 1.12;">
+        <div>
+          <b>พิกัด 8 จุดตั้งต้น (สไลด์ p25):</b><br>
+          A₁(2,10), A₂(2,5), A₃(8,4), A₄(5,8)<br>
+          A₅(7,5), A₆(6,4), A₇(1,2), A₈(4,9)<br>
+          <hr style="border:0; border-top:0.4pt dashed var(--color-rule); margin:0.10mm 0;">
+          <span class="qtag">W7-Q5</span><b>รอบที่ 1: เริ่ม C₁(2,10), C₂(5,8), C₃(1,2)</b><br>
+          • คิด Manhattan เช่น A₂ เทียบ C₃: <span class="f">|2−1|+|5−2| = 1+3 = <b class="g">4</b></span><br>
+          • สรุปกลุ่มรอบ 1: C₁={A₁}, C₂={A₃,A₄,A₅,A₆,A₈}, C₃={A₂,A₇}<br>
+          <span class="qtag">W7-Q7</span><b>Centroid ใหม่รอบ 1 (แจกแจงสูตร):</b><br>
+          • <span class="f">C₁ = (2, 10)</span> (มีจุดเดียว)<br>
+          • <span class="f">C₂ = ((8+5+7+6+4)/5, (4+8+5+4+9)/5) = (30/5, 30/5) = <b>(6.0, 6.0)</b></span><br>
+          • <span class="f">C₃ = ((2+1)/2, (5+2)/2) = (3/2, 7/2) = <b>(1.5, 3.5)</b></span>
+        </div>
+
+        <div>
+          <b>รอบที่ 2 (เทียบ C₁(2,10), C₂(6,6), C₃(1.5,3.5)):</b><br>
+          • ตรวจสอบจุด A₈(4,9):<br>
+          &nbsp;&nbsp;<span class="f">d(A₈, C₁) = |4−2| + |9−10| = 2 + 1 = <b>3</b></span><br>
+          &nbsp;&nbsp;<span class="f">d(A₈, C₂) = |4−6| + |9−6| = 2 + 3 = 5</span><br>
+          &nbsp;&nbsp;→ ระยะห่างเข้า C₁ น้อยกว่า! <b class="k">A₈ จึงย้ายจากกลุ่ม 2 ไปกลุ่ม 1!</b><br>
+          &nbsp;&nbsp;ผลกลุ่ม: C₁={A₁,A₈}, C₂={A₃,A₄,A₅,A₆}, C₃={A₂,A₇}<br>
+          • <b>Centroid ใหม่รอบ 2:</b><br>
+          &nbsp;&nbsp;<span class="f">C₁ = ((2+4)/2, (10+9)/2) = (6/2, 19/2) = <b>(3.0, 9.5)</b></span><br>
+          &nbsp;&nbsp;<span class="f">C₂ = ((8+5+7+6)/4, (4+8+5+4)/4) = (26/4, 21/4) = <b>(6.5, 5.25)</b></span><br>
+          &nbsp;&nbsp;<span class="f">C₃ = <b>(1.5, 3.5)</b></span>
+        </div>
+
+        <div>
+          <b>รอบที่ 3 (เทียบ C₁(3,9.5), C₂(6.5,5.25), C₃(1.5,3.5)):</b><br>
+          • จุด A₄(5,8): <span class="f">d(C₁)=|5−3|+|8−9.5|=3.5 &lt; d(C₂)=4.25</span><br>
+          &nbsp;&nbsp;→ <b class="k">A₄ ย้ายจากกลุ่ม 2 เข้ากลุ่ม 1!</b><br>
+          • <b>Centroid ใหม่รอบ 3:</b> C₁={A₁,A₈,A₄}=<b>(3.67, 9.0)</b>, C₂={A₃,A₅,A₆}=<b>(7.0, 4.33)</b>, C₃={A₂,A₇}=<b>(1.5, 3.5)</b><br>
+          • รอบ 4: ไม่มีจุดใดย้ายกลุ่มอีก → <b class="g">Converges หยุดทำงาน!</b><br>
+          <hr style="border:0; border-top:0.4pt dashed var(--color-rule); margin:0.10mm 0;">
+          <b>เฉลยการบ้านสไลด์หน้า 44 (ออกสอบบ่อย):</b><br>
+          • <b>ข้อ 1 (K=2, Manhattan, C₁=A₃(8,4), C₂=A₆(6,4)):</b><br>
+          &nbsp;&nbsp;จุด A₅(7,5) ได้ <span class="f">d(C₁)=2 = d(C₂)=2</span> → <b>Tie-Break เลือก C₁!</b><br>
+          &nbsp;&nbsp;จบรอบ 1 ได้: <span class="f">C₁=<b>(7.5, 4.5)</b>, C₂=<b>(3.33, 6.33)</b></span><br>
+          • <b>ข้อ 2 (K=3, Euclidean, C₁=A₂, C₂=A₅, C₃=A₈):</b><br>
+          &nbsp;&nbsp;จบรอบ 1: C₁=<b>(1.5, 3.5)</b>, C₂=<b>(7.0, 4.33)</b>, C₃=<b>(3.67, 9.0)</b> Converge ทันที!
+        </div>
+      </div>
+    </div><div class="bento span-6">
+      <div class="bento-h">15 · ประเมิน Cluster: Elbow · Silhouette · Profiling <small>Lect08 p30–38 · W7 Q9–11</small></div>
+      <ul>
+        <li><span class="qtag">W7-Q9</span><b>Inertia (WCSS):</b> <span class="f">Σ ‖x − Cₖ‖²</span> (ใช้ <b>Squared Euclidean</b>) · เพิ่ม K ค่า Inertia ย่อมลดเสมอ → <b>Elbow Method</b> เลือกค่า K ณ <b class="g">จุดหักศอกที่อัตราการลดลงเริ่มชะลอตัวชัดเจน</b> (ไม่ใช่จุดที่ Inertia = 0)</li>
+        <li><span class="qtag">W7-Q10</span><b>Silhouette Score:</b> <span class="f">s(i) = [b(i) − a(i)] ÷ max[a(i), b(i)]</span> มีค่า <span class="f">[−1, +1]</span> · <b class="g">เข้าใกล้ +1 = ดีเยี่ยม</b> (ในกลุ่มแน่น <span class="f">a</span> ต่ำ, ห่างกลุ่มอื่น <span class="f">b</span> สูง) · ใกล้ 0 = ก้ำกึ่ง · ติดลบ = จัดผิดกลุ่ม</li>
+        <li><span class="qtag">W7-Q11</span><b>Responsible Clustering:</b> ได้ Cluster 0/1/2 แล้ว <b class="g">ต้องทำ Cluster Profiling เพื่อแปลงเป็น Business Persona</b> ก่อนนำไปใช้ (ห้ามใช้เลขกลุ่มตัดสิทธิ์ลูกค้าอัตโนมัติ)</li>
+      </ul>
+    </div><div class="bento span-6">
+      <div class="bento-h">16 · Black-Box vs White-Box &amp; XAI อธิบายผล (SHAP) <small>Lect09 p04–09 · W8 Q1–5</small></div>
+      <ul>
+        <li><span class="qtag">W8-Q1</span><b>Black-Box Model:</b> โมเดลที่มีความซับซ้อนสูงมากจนมนุษย์ไม่สามารถทำความเข้าใจโครงสร้างภายใน หรืออธิบายเหตุผลทีละขั้นตอนได้อย่างชัดเจนว่าโมเดลคำนวณผลลัพธ์ออกมาได้อย่างไร แม้เราจะรู้ผลลัพธ์ (Output) จากข้อมูลที่ป้อนเข้าไป (Input) ก็ตาม · <b class="g">ตัวอย่างชัดเจนที่สุด: Deep Neural Network ที่ซับซ้อนและมี Hidden Layer นับร้อย</b> เนื่องจากมีพารามิเตอร์และเส้นทางการคำนวณเชื่อมโยงมหาศาล (รวมถึง Random Forest, Complex Ensembles) · ต่างจาก <b>White-Box (Interpretable):</b> มนุษย์เข้าใจตรรกะได้ตรงไปตรงมา เช่น <b>Decision Tree ตื้น</b>, Linear / Logistic Regression</li>
+        <li><span class="qtag">W8-Q2,3</span><b>ทำไม Acc 84% ยังไม่อนุมัติ:</b> บดบังผลต่ำในกลุ่มย่อย (<b class="k">Recall ลูกค้าใหม่แค่ 54%</b>) ยังไม่ได้ตรวจผลกระทบ/จริยธรรม · ภาพรวมพึ่งพาปัจจัยใด = <b class="g">Global Explanation</b> · ทำไมลูกค้ารายนี้ได้ 65% = <b>Local Explanation</b></li>
+        <li><span class="qtag">W8-Q4</span><b>Model-Specific vs Agnostic:</b> Specific อิงโครงสร้างเฉพาะ · <b class="g">Agnostic</b> มองโมเดลเป็น Black-Box ตรวจผ่าน Input–Output ใช้ได้กับทุกโมเดล (<b>SHAP, LIME</b>)</li>
+      </ul>
+      <div class="solve">
+        <span class="qtag">W8-Q5</span><b>วิธีอ่านค่า SHAP (สไลด์ p09):</b> Base = <b>32%</b>, ทายรายนี้ = <b>65%</b> · สมการ: <span class="f">32% <b>+ 29% (ไม่ซื้อนาน)</b> + 12% − 8% = <b>65%</b></span><br>
+        • <b>คำแปลผล SHAP = +29%:</b> ปัจจัย "ไม่ซื้อนาน" ดันความน่าจะเป็น Inactive <b class="g">เพิ่มขึ้น 29 จุดเปอร์เซ็นต์ (Percentage Points) เทียบค่าฐาน</b> (ไม่ใช่เพิ่ม 29% หรือ 29 วัน)
+      </div>
+    </div><div class="bento span-6">
+      <div class="bento-h">17 · Concept Drift · Bias · Proxy · คดีจริยธรรม AI <small>Lect09 p10–28 · W8 Q6–11</small></div>
+      <ul>
+        <li><span class="qtag">W8-Q6,7</span><b>Concept Drift:</b> โลกเปลี่ยนทำให้ <b class="g">ความสัมพันธ์ P(Y|X) เปลี่ยน</b> (เปิด Sub ส่งของอัตโนมัติ กฎเดิมพัง Recall ตกเหลือ 54%) ต่างจาก <b>Data Drift</b> ที่เปลี่ยนแค่ <span class="f">P(X)</span> · <b>Proxy:</b> ลบเพศ/สีผิวไม่พอ เพราะตัวแปรอื่น (เช่น <b class="g">รหัสไปรษณีย์ Postal Code</b>) ทำหน้าที่แทนโดยอ้อม</li>
+        <li><span class="qtag">W8-Q9</span><b>Data Privacy &amp; Governance:</b> <b>Purpose Limitation</b> (ใช้ตามวัตถุประสงค์ที่แจ้ง) + <b>Data Minimization</b> (เก็บเท่าที่จำเป็น) · <b class="k">Consent ไม่ใช่ฐานเดียว</b> และห้ามส่งข้อมูลเข้า GenAI ภายนอกแค่ตัดชื่อออก!</li>
+      </ul>
+      <table style="margin-top:.15mm">
+        <tr><th style="width:28%">กรณีศึกษาในสไลด์</th><th>สาเหตุความผิดพลาดเชิงจริยธรรม &amp; บทลงโทษที่ออกสอบ</th></tr>
+        <tr><td><b>Health-risk</b> <span class="qtag">W8-Q8</span><br><span class="dim">(Obermeyer 2019)</span></td><td>ใช้ <b>ค่ารักษาในอดีตเป็น Proxy ความต้องการรักษา</b> → <b class="g">ผู้ป่วยผิวดำที่ป่วยหนักเท่ากันได้คะแนนความเสี่ยงต่ำกว่าจริง</b> เพราะเข้าถึงการรักษาน้อยกว่า (แก้แล้วได้สิทธิ์เพิ่ม 17.7% → 46.5%)</td></tr>
+        <tr><td><b>Rite Aid</b> <span class="qtag">W8-Q10</span><br><span class="dim">(FTC 2023–24)</span></td><td>ระบบจดจำใบหน้าเกิด False Positive แล้ว <b class="g">พนักงานจับกุมทันทีโดยไม่มี Human Checkpoint ตรวจซ้ำ</b> → FTC สั่งแบนระบบใบหน้า 5 ปี</td></tr>
+        <tr><td><b>iTutor / Meta</b></td><td><b>iTutorGroup:</b> กรองอายุอัตโนมัติ (หญิง&gt;55, ชาย&gt;60) ปรับ $365k · <b>Meta:</b> โฆษณาบ้านคัดเพศ/สีผิว ปรับ $115k</td></tr>
+      </table>
+      <p style="margin-top:.12mm"><span class="qtag">W8-Q11</span><b>การสื่อสารกับ Stakeholders:</b> ปรับภาษาตามผู้ฟังได้ <b class="g">แต่ห้ามเปลี่ยนข้อเท็จจริง</b> ต้องแจ้งข้อจำกัด ความไม่แน่นอน และมี <b>Human Oversight</b> กำกับเสมอ</p>
+    </div><div class="bento span-6">
+      <div class="bento-h">18 · CRISP-DS in Action: ทีมข้อมูล · สัญญา · Handoff <small>Lect10 · W9 Q2–11</small></div>
+      
+      <table class="fx">
+        <tr>
+          <th style="width:50%; font-size:6.8pt;">บทบาทสาย Business / Infra <span class="qtag">W9-Q2,3,4</span></th>
+          <th style="width:50%; font-size:6.8pt;">บทบาทสาย Data Science / MLE <span class="qtag">W9-Q5,6,10</span></th>
+        </tr>
+        <tr>
+          <td><b>BA:</b> ทำ <b class="g">Decision Contract</b> ร่วมกับ BU ล็อกเป้าหมาย <span class="qtag">W9-Q3</span></td>
+          <td><b>DA:</b> ทำ EDA ส่งมอบ <b class="g">ข้อค้นพบทางสถิติ/ข้อจำกัดข้อมูล</b> (ไม่ใช่โค้ด/แดชบอร์ด) <span class="qtag">W9-Q5</span></td>
+        </tr>
+        <tr>
+          <td><b>DE:</b> <b class="g">สร้าง Data Pipeline ดูแล Platform & โครงสร้างพื้นฐาน</b> <span class="qtag">W9-Q2</span></td>
+          <td><b>DS:</b> สร้างโมเดล: <b class="g">Decision Tree ทำนายเสี่ยง · K-Means ดูพฤติกรรม</b> <span class="qtag">W9-Q6</span></td>
+        </tr>
+        <tr>
+          <td><b>AE:</b> สร้าง Customer Table & <b class="g">Feature Contract</b> (กัน Leakage) <span class="qtag">W9-Q4</span></td>
+          <td><b>MLE:</b> <b class="g">เตรียมผลตาม Pilot Runbook</b> ส่วนฝ่ายธุรกิจเป็นผู้อนุมัติใช้ <span class="qtag">W9-Q10</span></td>
+        </tr>
+      </table>
+
+      
+      <div class="solve">
+        <b>เจาะลึก 5 ประเด็นสำคัญที่ออกสอบสั้น Week 9:</b>
+        • <span class="qtag">W9-Q3,9</span> <b>Decision Contract</b> ทำตอนเริ่ม (ล็อกขอบเขต) · <b>Decision Memo</b> ทำตอนประเมิน (บันทึกผล/เงื่อนไขทดสอบ ไม่ใช่รับรองถาวร!)
+        • <span class="qtag">W9-Q4</span> <b>Feature Contract:</b> เกิดก่อนเวลาตัดสินใจ (<span class="f">T &lt; T₀</span>) เท่านั้น
+        • <span class="qtag">W9-Q7,8,11</span> <b>Predictive→Prescriptive:</b> แนะสิ่งที่ควรทำ (Action+Constraints) · <b>AI Assistant:</b> Draft ให้คนอนุมัติ · <b>Recall ตก:</b> สั่งพักใช้ (Pause Pilot)
+      </div>
+
+    </div>
+    </div><div class="bento-band">
+    <div class="bento-h">19 · สรุปทางลัดตัดช้อยส์ไว (Quick Exam Elimination Rules จากข้อสอบในห้องเรียน 60 ข้อ) <small>ทบทวนก่อนเข้าห้องสอบ</small></div>
+    <table style="font-size:7.0pt">
+      <tr>
+        <th style="width:25%">หมวด EDA &amp; Data Prep (W4)</th>
+        <th style="width:25%">หมวด Modeling &amp; Tree (W5–W6)</th>
+        <th style="width:25%">หมวด Metrics &amp; K-Means (W6–W7)</th>
+        <th style="width:25%">หมวด Responsible AI &amp; Action (W8–W9)</th>
+      </tr>
+      <tr>
+        <td>• เบ้ขวาหนัก/มี Outlier → <b>Median + IQR</b><br>• 2 ยอด (Bimodal) → <b>มีกลุ่มย่อยแฝงอยู่</b><br>• นอกรั้ว <span class="f">Q3+1.5·IQR</span> → <b>สืบค้นก่อน ห้ามลบทิ้ง</b><br>• มีจุดกลางเทียบเป้าหมาย → <b>Diverging Palette</b></td>
+        <td>• ถามสถิติเดือนที่แล้ว → <b>Descriptive (ไม่ใช้ ML)</b><br>• Trained Model → <b>Fitted Tree ที่เทรนแล้ว</b><br>• จูน <span class="f">max_depth</span> → <b>ดูผลบน Validation เท่านั้น</b><br>• ช้อยส์บอก "จูนบน Test Set" → <b class="k">กาผิดทันที!</b></td>
+        <td>• งบ/ทีมจำกัด (กลัวทายบวกผิด) → <b>Precision</b><br>• ห้ามหลุดกลุ่มเสี่ยง/โรคร้าย → <b>Recall</b><br>• K-Means: <b>Max Intra + Min Inter</b>, เร็ว <span class="f">O(tkn)</span><br>• Centroid ใหม่ = <b>ค่าเฉลี่ย (Mean) ของสมาชิก</b></td>
+        <td>• Black-Box ตัวอย่างชัดสุด → <b>Deep Neural Net (Hidden Layers นับร้อย)</b><br>• ลบเพศ/สีผิวแล้วยังอคติ → <b>Proxy (รหัสไปรษณีย์)</b> · Drift → <b>P(Y|X) เปลี่ยน</b><br>• Rite Aid → <b>ขาด Human Checkpoint</b> · เริ่ม = <b>Contract</b> · ประเมิน = <b>Memo</b></td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+</body>
+</html>

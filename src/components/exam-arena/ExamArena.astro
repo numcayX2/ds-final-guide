@@ -342,8 +342,8 @@ const moduleSummaries = allModules.map((m) => ({
                   {examQuestions[0].title}
                 </span>
                 <span class="text-slate-300 hidden sm:inline">·</span>
-                <span class="text-[11px] px-2 py-0.5 rounded bg-white/90 border border-slate-200 text-slate-600 font-mono shrink-0" id="current-q-slide">
-                  {examQuestions[0].slideRef}
+                <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-sans font-medium shrink-0" id="current-q-slide">
+                  หมวด: CRISP-DS Process
                 </span>
               </div>
               <div class="flex items-center gap-2 shrink-0">
@@ -1175,7 +1175,21 @@ const moduleSummaries = allModules.map((m) => ({
 
       if (qNumEl) qNumEl.textContent = String(displayNum).padStart(2, '0');
       if (qTitleEl) qTitleEl.textContent = q.title;
-      if (qSlideEl) qSlideEl.textContent = q.slideRef;
+      if (qSlideEl) {
+        const moduleNames: Record<string, string> = {
+          'module-01-crisp-ds': 'CRISP-DS Process',
+          'module-02-data-cleaning': 'Data Cleaning',
+          'module-03-feature-engineering': 'Feature Engineering',
+          'module-04-eda-outliers': 'EDA & Outliers',
+          'module-05-modeling-framework': 'Modeling Framework',
+          'module-06-decision-tree': 'Decision Tree & Models',
+          'module-07-evaluation-metrics': 'Model Evaluation',
+          'module-08-kmeans': 'K-Means Clustering',
+          'module-09-responsible-ai': 'XAI & Responsible AI',
+          'module-10-crisp-action': 'CRISP-DS in Action'
+        };
+        qSlideEl.textContent = `หมวด: ${moduleNames[q.moduleRef] || 'Data Science'}`;
+      }
       if (qProgressEl) qProgressEl.textContent = `${String(displayNum).padStart(2, '0')} / ${String(activeQuestions.length).padStart(2, '0')}`;
 
       // Polish difficulty badge with subtle semantic tinting
@@ -1277,7 +1291,7 @@ const moduleSummaries = allModules.map((m) => ({
                 <span class="px-2 py-0.5 rounded bg-blue-600 text-white font-mono font-bold text-xs">เฉลยข้อ ${correctOpt?.id}</span>
                 <span class="font-bold text-blue-950 font-sans text-xs sm:text-sm">คำอธิบายและแนวคิดหลัก</span>
               </div>
-              <span class="text-xs text-blue-700 font-mono font-semibold">${q.slideRef}</span>
+              <span class="text-xs text-blue-700 font-mono font-semibold">จุดทบทวนในสไลด์: ${q.slideRef}</span>
             </div>
             <div class="text-slate-800 leading-relaxed font-sans text-xs sm:text-sm pt-0.5">${escapeHtml(correctOpt?.explanation || '')}</div>
             ${correctOpt?.distractorTrap ? `
@@ -1513,7 +1527,7 @@ const moduleSummaries = allModules.map((m) => ({
           const item = document.createElement('div');
           item.className = 'p-3 rounded-xl bg-slate-800 border border-rose-500/40 text-[11px] text-slate-200 space-y-1 font-mono';
           item.innerHTML = `
-            <div class="font-bold text-rose-400">ข้อ ${displayNum}: ${q.title} (${q.slideRef})</div>
+            <div class="font-bold text-rose-400">ข้อ ${displayNum}: ${q.title} <span class="text-slate-400 font-normal text-[10px]">(จุดทบทวน: ${q.slideRef})</span></div>
             <div>คุณตอบ: <span class="text-rose-300 font-bold">${userChoice || 'ไม่ได้ตอบ'}</span> | คำตอบที่ถูก: <span class="text-emerald-400 font-bold">${correctOpt?.id}</span></div>
             <div class="text-[10px] text-slate-300 leading-relaxed font-sans mt-0.5">${correctOpt?.explanation}</div>
             ${correctOpt?.distractorTrap ? `<div class="text-[10px] text-amber-300 font-sans mt-0.5">⚠️ กับดัก: ${correctOpt.distractorTrap}</div>` : ''}

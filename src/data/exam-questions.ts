@@ -364,7 +364,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p3-4",
     "title": "จุดเริ่มต้นของ EDA ในวงจร CRISP-DS",
-    "scenario": "ตามสไลด์ Lect 05 กระบวนการสำรวจข้อมูลเบื้องต้น (EDA) ควรดำเนินการในช่วงใดของวงจร CRISP-DS?",
+    "scenario": "ในวงจรการทำงานวิทยาการข้อมูลมาตรฐาน CRISP-DS กระบวนการสำรวจข้อมูลเบื้องต้น (EDA) ควรเริ่มต้นและดำเนินการในช่วงใดจึงจะถูกต้องที่สุด?",
     "options": [
       {
         "id": "A",
@@ -399,7 +399,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p4",
     "title": "หลักการ Begin EDA with an Analytical Question",
-    "scenario": "เหตุใดหลักการทำ EDA ใน Lect 05 จึงเน้นย้ำว่า 'ต้องเริ่มต้นด้วยคำถามเชิงวิเคราะห์ (Analytical Question)' เสมอ?",
+    "scenario": "ในกระบวนการสำรวจข้อมูลเบื้องต้น (EDA) เหตุใดหลักการปฏิบัติที่ดีจึงเน้นย้ำว่า 'ต้องเริ่มต้นด้วยคำถามเชิงวิเคราะห์ (Analytical Question)' เสมอ?",
     "options": [
       {
         "id": "A",
@@ -505,7 +505,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p13-14",
     "title": "หลักการเปรียบเทียบกลุ่มอย่างเป็นธรรม (Responsible Group Comparison)",
-    "scenario": "ตามสไลด์ Lect 05 p13-14 ก่อนนำผลการเปรียบเทียบความแตกต่างระหว่างกลุ่มไปรายงาน ทีมวิเคราะห์ต้องตรวจสอบเงื่อนไขความรับผิดชอบ 4 ประการในข้อใด?",
+    "scenario": "ในการวิเคราะห์เปรียบเทียบความแตกต่างระหว่างกลุ่มข้อมูล (Group Comparison) เพื่อความถูกต้องและมีความรับผิดชอบ (Responsible Analysis) ก่อนนำผลไปรายงาน ทีมวิเคราะห์ต้องตรวจสอบเงื่อนไขสำคัญในข้อใด?",
     "options": [
       {
         "id": "A",
@@ -611,7 +611,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p18",
     "title": "เกณฑ์ตรวจจับ Extreme Outlier",
-    "scenario": "ตามเกณฑ์การคัดกรองของ Tukey ใน Lect 05 ข้อมูลจุดใดจะถูกจัดประเภทเป็น 'Extreme Outlier' (ค่าผิดปกติระดับรุนแรง)?",
+    "scenario": "ตามเกณฑ์การตรวจจับค่าผิดปกติของ Tukey (Tukey's Fences) ข้อมูลจุดใดจะถูกจัดประเภทเป็น 'Extreme Outlier' (ค่าผิดปกติระดับรุนแรง)?",
     "options": [
       {
         "id": "A",
@@ -646,7 +646,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p23",
     "title": "วินัยการเลือกชุดสี (Palette Discipline) ใน Visualization",
-    "scenario": "ข้อใดจับคู่ประเภทของชุดสี (Color Palette) กับธรรมชาติของข้อมูลได้ถูกต้องตามหลักการสื่อสารข้อมูลใน Lect 05 p23?",
+    "scenario": "ข้อใดจับคู่ประเภทของชุดสี (Color Palette) กับธรรมชาติของข้อมูลได้อย่างถูกต้องและเหมาะสมที่สุดตามหลักการ Data Visualization?",
     "options": [
       {
         "id": "A",
@@ -681,7 +681,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p25",
     "title": "หลักการ Redundant Encoding และ Accessibility",
-    "scenario": "หลักการ 'Never rely on color alone' ในการออกแบบกราฟตามสไลด์ Lect 05 p25 หมายถึงแนวทางปฏิบัติในข้อใด?",
+    "scenario": "หลักการออกแบบกราฟเพื่อการเข้าถึงอย่างเท่าเทียม (Accessibility) ที่ระบุว่า 'Never rely on color alone' (ห้ามพึ่งพาการใช้สีเพียงอย่างเดียว) หมายถึงแนวทางปฏิบัติในข้อใด?",
     "options": [
       {
         "id": "A",
@@ -716,7 +716,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p28",
     "title": "โครงสร้างการเล่าเรื่องข้อมูล (Data Story)",
-    "scenario": "โครงสร้างการนำเสนอ Data Story ตามมาตรฐานในสไลด์ Lect 05 p28 ประกอบด้วย 5 องค์ประกอบที่เรียงลำดับอย่างไร?",
+    "scenario": "ในการนำเสนอผลลัพธ์ข้อมูลเชิงธุรกิจ (Data Storytelling Framework) โครงสร้างการเล่าเรื่องที่ดีประกอบด้วย 5 องค์ประกอบที่เรียงลำดับอย่างไร?",
     "options": [
       {
         "id": "A",
@@ -786,7 +786,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p7-8",
     "title": "ลำดับชั้น 5 ระดับจากโจทย์สู่โมเดล",
-    "scenario": "ตามกรอบแนวคิดในสไลด์ Lect 06 p7-8 ลำดับชั้น 5 ระดับในการเปลี่ยนโจทย์ปัญหาให้กลายเป็นโมเดลที่พร้อมใช้งานคือข้อใด?",
+    "scenario": "ในกระบวนการแปลงโจทย์ปัญหาทางธุรกิจไปสู่การพัฒนาโมเดลแมชชีนเลิร์นนิง ลำดับชั้น 5 ระดับในการเปลี่ยนปัญหาให้กลายเป็นโมเดลที่พร้อมใช้งานคือข้อใด?",
     "options": [
       {
         "id": "A",
@@ -821,7 +821,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p9",
     "title": "ความแตกต่างระหว่าง Algorithm กับ Trained Model",
-    "scenario": "ข้อใดอธิบายความแตกต่างระหว่าง 'Algorithm' และ 'Trained Model' ได้ถูกต้องตามหลักการใน Lect 06 p9?",
+    "scenario": "ในการพัฒนาระบบ Machine Learning ข้อใดอธิบายความแตกต่างระหว่าง 'Algorithm' และ 'Trained Model' ได้ถูกต้องและชัดเจนที่สุด?",
     "options": [
       {
         "id": "A",
@@ -927,7 +927,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p16",
     "title": "คลัสเตอร์ไม่ใช่คลาสสำเร็จรูป (Cluster != Predefined Class)",
-    "scenario": "เหตุใดสไลด์ Lect 06 p16 จึงเน้นย้ำว่าผลลัพธ์จากการทำ Clustering ไม่เท่ากับ Predefined Class และไม่เท่ากับ Ground Truth?",
+    "scenario": "ในการประยุกต์ใช้โมเดลการจัดกลุ่ม (Clustering) ในทางธุรกิจ เหตุใดจึงต้องตระหนักเสมอว่า 'ผลลัพธ์ของ Cluster ID ไม่เท่ากับ Ground Truth หรือ Predefined Class'?",
     "options": [
       {
         "id": "A",
@@ -1032,7 +1032,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p24",
     "title": "หลักการแยกเก็บชุดข้อมูลทดสอบ (Test Data Isolation)",
-    "scenario": "ข้อใดกล่าวถึงบทบาทและแนวทางการใช้งานชุดข้อมูล Test Set ได้ถูกต้องตามหลักการในสไลด์ Lect 06 p24?",
+    "scenario": "ในหลักการแบ่งชุดข้อมูลเพื่อฝึกสอนและทดสอบโมเดล (Train / Validation / Test Split) ข้อใดกล่าวถึงบทบาทและข้อห้ามในการใช้งานชุดข้อมูล Test Set ได้ถูกต้องที่สุด?",
     "options": [
       {
         "id": "A",
@@ -1138,7 +1138,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p19, p31",
     "title": "บันไดความลึกต้นไม้ max_depth & Overfitting",
-    "scenario": "ในการฝึกสอน Decision Tree ตามสไลด์ Lect 07 p19 เหตุใดต้นไม้ระดับความลึกปานกลาง (Moderate Tree, max_depth = 3) จึงถูกเลือกแทนต้นไม้ที่ไม่จำกัดความลึก (Unrestricted Tree)?",
+    "scenario": "ในการฝึกสอนโมเดล Decision Tree เพื่อนำไปใช้งานจริง เหตุใดต้นไม้ระดับความลึกปานกลาง (Moderate Tree เช่น max_depth = 3) จึงเหมาะสมและถูกเลือกใช้งานมากกว่าต้นไม้ที่ไม่จำกัดความลึก (Unrestricted Tree)?",
     "options": [
       {
         "id": "A",
@@ -1243,7 +1243,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p15",
     "title": "การแปลผลความน่าจะเป็นใน Leaf Node",
-    "scenario": "เมื่อพิจารณาโหนดใบ (Leaf Node) ของ Decision Tree ที่แสดงค่า P(Inactive) = 4/5 = 0.80 ข้อใดตีความค่าตัวเลขนี้ได้ถูกต้องตามสไลด์ Lect 07 p15?",
+    "scenario": "เมื่อพิจารณาโหนดใบ (Leaf Node) ของ Decision Tree ที่มีข้อมูลตกอยู่ 5 รายการ และมีสัดส่วนคลาสแสดงค่า P(Inactive) = 4/5 = 0.80 ข้อใดตีความค่าตัวเลขนี้ได้ถูกต้องที่สุด?",
     "options": [
       {
         "id": "A",
@@ -1455,7 +1455,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p23",
     "title": "ความหมายของ False Negative (FN) ในโจทย์ฟุตบอล",
-    "scenario": "ในการคัดเลือกนักฟุตบอลลงสนามโดยกำหนด Positive Class = 'play' ความผิดพลาดแบบ False Negative (FN) ส่งผลกระทบต่อทีมอย่างไรตามสไลด์ Lect 07 p23?",
+    "scenario": "ในการพัฒนาโมเดลคัดเลือกนักฟุตบอลลงแข่งขัน โดยกำหนด Positive Class = 'play' (พร้อมลงเล่น) ความผิดพลาดแบบ False Negative (FN) ส่งผลกระทบต่อทีมอย่างไร?",
     "options": [
       {
         "id": "A",
@@ -1630,7 +1630,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p25-31",
     "title": "K-Means Centroid Update (Iteration 1)",
-    "scenario": "จากการจัดกลุ่ม K-Means รอบที่ 1 ในสไลด์อาจารย์ พบว่า Cluster 2 มีสมาชิก 5 จุด ได้แก่ A3(8,4), A4(5,8), A5(7,5), A6(6,4) และ A8(4,9) พิกัดจุดศูนย์กลางใหม่ (C2_new) มีค่าเท่าใด?",
+    "scenario": "ในการจัดกลุ่ม K-Means ด้วยพิกัด 2 มิติ ในรอบที่ 1 พบว่า Cluster 2 มีสมาชิก 5 จุด ได้แก่ A3(8,4), A4(5,8), A5(7,5), A6(6,4) และ A8(4,9) พิกัดจุดศูนย์กลางใหม่ (C2_new) มีค่าเท่าใด?",
     "options": [
       {
         "id": "A",
@@ -1736,7 +1736,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p6",
     "title": "เป้าหมายหลักของการจัดกลุ่ม (Good Clustering Objective)",
-    "scenario": "ตามหลักการของ Unsupervised Clustering ในสไลด์ Lect 08 p6 คุณลักษณะของการจัดกลุ่มที่ดี (Good Clustering) คือข้อใด?",
+    "scenario": "ตามหลักการของ Unsupervised Clustering เป้าหมายและคุณลักษณะของการจัดกลุ่มข้อมูลที่ดี (Good Clustering) คือข้อใด?",
     "options": [
       {
         "id": "A",
@@ -1771,7 +1771,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p15",
     "title": "การคำนวณระยะทาง Manhattan และ Euclidean",
-    "scenario": "กำหนดจุดข้อมูล 2 จุดจากสไลด์ Lect 08 p15 ได้แก่ X = (2, 10, 5, 3) และ Y = (2, 5, 5, 4) ระยะทางแบบ Manhattan และ Euclidean ระหว่างสองจุดนี้มีค่าเท่าใด?",
+    "scenario": "กำหนดจุดข้อมูล 4 มิติ 2 จุด ได้แก่ X = (2, 10, 5, 3) และ Y = (2, 5, 5, 4) ระยะทางแบบ Manhattan Distance และ Euclidean Distance ระหว่างสองจุดนี้มีค่าเท่าใด?",
     "options": [
       {
         "id": "A",
@@ -1841,7 +1841,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p22",
     "title": "กฎ Tie-Breaking ในการมอบหมายคลัสเตอร์",
-    "scenario": "ในขั้นตอนการมอบหมายกลุ่ม (Assignment Step) ของ K-Means หากจุดข้อมูลจุดหนึ่งมีระยะห่างไปยังจุดศูนย์กลางของสองคลัสเตอร์เท่ากันพอดี ข้อตกลงในสไลด์ Lect 08 p22 กำหนดให้ทำอย่างไร?",
+    "scenario": "ในขั้นตอนการมอบหมายกลุ่ม (Assignment Step) ของ K-Means หากจุดข้อมูลจุดหนึ่งมีระยะห่างไปยังจุดศูนย์กลางของสองคลัสเตอร์เท่ากันพอดี (เกิด Tie) กฎ Tie-Breaking มาตรฐานกำหนดให้ทำอย่างไร?",
     "options": [
       {
         "id": "A",
@@ -1876,7 +1876,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p24",
     "title": "จุดเด่นด้าน Time Complexity ของ K-Means",
-    "scenario": "ข้อใดอธิบายคุณสมบัติด้านความซับซ้อนเชิงเวลา (Time Complexity) ของอัลกอริทึม K-Means ได้ถูกต้องตามสไลด์ Lect 08 p24?",
+    "scenario": "ข้อใดอธิบายคุณสมบัติด้านความซับซ้อนเชิงเวลา (Time Complexity) และประสิทธิภาพในการประมวลผลของอัลกอริทึม K-Means ได้ถูกต้อง?",
     "options": [
       {
         "id": "A",
@@ -1982,7 +1982,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p38",
     "title": "ลำดับขั้นจาก Cluster สู่การตัดสินใจธุรกิจ (Profile First)",
-    "scenario": "หลังจากอัลกอริทึม K-Means แบ่งลูกค้าออกเป็น Cluster 0, Cluster 1 และ Cluster 2 เสร็จสิ้น ขั้นตอนการทำงานที่ถูกต้องต่อไปตามสไลด์ Lect 08 p38 คือข้อใด?",
+    "scenario": "หลังจากอัลกอริทึม K-Means แบ่งลูกค้าออกเป็นกลุ่ม Cluster 0, Cluster 1 และ Cluster 2 เสร็จสิ้น ขั้นตอนการทำงานที่ถูกต้องและมีความรับผิดชอบ (Responsible Clustering) ในลำดับถัดไปคือข้อใด?",
     "options": [
       {
         "id": "A",
@@ -2087,7 +2087,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p11, p20",
     "title": "Concept Drift & Recall Degradation",
-    "scenario": "ตามสไลด์ Lect 09 p11 และ p20 เดิมโมเดลฝึกสอนภายใต้บริบทที่ลูกค้าไม่ซื้อสินค้า 45 วันถือว่า Inactive แต่ต่อมาพฤติกรรมตลาดเปลี่ยนไปเป็นรอบการซื้อทุก 70 วัน ปรากฏการณ์นี้เรียกว่าอะไรและส่งผลอย่างไร?",
+    "scenario": "สมมติเดิมโมเดลฝึกสอนภายใต้บริบทที่ลูกค้าไม่ซื้อสินค้า 45 วันถือว่าเป็นลูกค้าเลิกใช้งาน (Inactive) แต่ต่อมาพฤติกรรมผู้บริโภคเปลี่ยนไปเป็นรอบการซื้อทุก 70 วัน ปรากฏการณ์นี้เรียกว่าอะไรและส่งผลกระทบต่อโมเดลอย่างไร?",
     "options": [
       {
         "id": "A",
@@ -2157,7 +2157,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p8",
     "title": "การจำแนก Model-Specific vs Model-Agnostic XAI",
-    "scenario": "ข้อใดจำแนกเครื่องมืออธิบายผลโมเดล (XAI) ระหว่างแบบ Model-Specific และแบบ Model-Agnostic ได้ถูกต้องตามสไลด์ Lect 09 p8?",
+    "scenario": "ในการประยุกต์ใช้ Explainable AI (XAI) เพื่ออธิบายการตัดสินใจของโมเดล ข้อใดจำแนกประเภทเครื่องมือระหว่างแบบ Model-Specific และ Model-Agnostic ได้ถูกต้อง?",
     "options": [
       {
         "id": "A",
@@ -2297,7 +2297,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p8, p14",
     "title": "ความแตกต่างระหว่าง Decision Contract กับ Decision Memo",
-    "scenario": "ตามแนวทาง CRISP-DS in Action (Lect 10) เอกสาร 'Decision Contract' และ 'Decision Memo' มีบทบาทและช่วงเวลาจัดทำแตกต่างกันอย่างไร?",
+    "scenario": "ในกระบวนการทำงานวิทยาการข้อมูลเชิงประยุกต์ (CRISP-DS Workflow) เอกสารข้อตกลง 'Decision Contract' และ 'Decision Memo' มีบทบาทและช่วงเวลาในการจัดทำแตกต่างกันอย่างไร?",
     "options": [
       {
         "id": "A",
@@ -2332,7 +2332,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p3-5",
     "title": "บทบาทหน้าที่ของ Analytics Engineer",
-    "scenario": "ในการแบ่งบทบาทหน้าที่ของทีมข้อมูลยุคใหม่ตามสไลด์ Lect 10 p3-5 ตำแหน่งใดมีหน้าที่รับผิดชอบการสร้าง 'Customer Table & Feature Contract' และควบคุมไม่ให้เกิดการรั่วไหลของข้อมูลตามเวลา?",
+    "scenario": "ในการจัดโครงสร้างบทบาทหน้าที่ของทีมข้อมูลยุคใหม่ (Modern Data Team) ตำแหน่งใดมีหน้าที่รับผิดชอบหลักในการสร้าง 'Customer Table & Feature Contract' พร้อมทั้งควบคุมไม่ให้เกิดการรั่วไหลของข้อมูลตามเวลา (Point-in-Time Correctness)?",
     "options": [
       {
         "id": "A",
@@ -2367,7 +2367,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p12-14",
     "title": "การอนุมัติการกระทำทางธุรกิจ (Human Approval Gate)",
-    "scenario": "ก่อนนำผลการทำนายของโมเดลไปเริ่มส่งแคมเปญหาลูกค้าจริงในระยะทดลอง (Pilot Runbook) ข้อกำหนดธรรมาภิบาลในสไลด์ Lect 10 กำหนดให้ใครเป็นผู้มีอำนาจลงนามอนุมัติ?",
+    "scenario": "ก่อนนำผลการทำนายของโมเดลไปเริ่มส่งแคมเปญหาลูกค้าจริงในระยะทดลอง (Pilot Runbook) ตามหลักธรรมาภิบาลข้อมูล ใครเป็นผู้มีอำนาจหน้าที่ในการลงนามอนุมัติขั้นสุดท้าย?",
     "options": [
       {
         "id": "A",
@@ -2402,7 +2402,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p16-18",
     "title": "การตรวจจับความผิดปกติและ Backtrack Task",
-    "scenario": "ระหว่างการรันระบบจริง ระบบ MLOps แจ้งเตือนว่าค่า Recall ของกลุ่มลูกค้าใหม่ลดลงเหลือ 42% (ต่ำกว่าเกณฑ์ขั้นต่ำที่ตกลงไว้ที่ 70%) ขั้นตอนการปฏิบัติตาม Runbook ในสไลด์ Lect 10 คือข้อใด?",
+    "scenario": "ระหว่างการรันระบบใช้งานจริง (Production) ระบบ MLOps แจ้งเตือนว่าค่า Recall ของกลุ่มลูกค้าใหม่ลดลงเหลือ 42% (ต่ำกว่าเกณฑ์ SLA ที่ตกลงไว้ที่ 70%) ขั้นตอนการปฏิบัติงานตาม Pilot Runbook คือข้อใด?",
     "options": [
       {
         "id": "A",
@@ -2437,7 +2437,7 @@ export const examQuestions: ExamQuestion[] = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p7",
     "title": "ข้อกำหนดในการส่งต่อ EDA Finding",
-    "scenario": "ในการส่งมอบงานจากนักวิเคราะห์ข้อมูล (Data Analyst) ไปยังทีมสร้างโมเดล เอกสาร 'EDA Finding' ที่ได้มาตรฐานตามสไลด์ Lect 10 p7 ต้องประกอบด้วยข้อมูลใด?",
+    "scenario": "ในการส่งมอบงาน (Handoff) จากนักวิเคราะห์ข้อมูล (Data Analyst) ไปยังทีมพัฒนาโมเดล เอกสารส่งมอบ 'EDA Findings' ที่ได้มาตรฐานและถูกต้องควรประกอบด้วยข้อมูลใดเป็นสำคัญ?",
     "options": [
       {
         "id": "A",
