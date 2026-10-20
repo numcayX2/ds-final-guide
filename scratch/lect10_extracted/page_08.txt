@@ -1,0 +1,9 @@
+**Slide 8: Analytics Engineer: Customer Table & Feature Contract**
+
+*   **Phase:** Stage 3: Data Preparation
+*   **Owner:** Analytics Engineer (AE)
+*   **The Golden Rule: Point-in-Time Correctness**
+    *   ค่าของ Features ทุกตัวต้องเกิดขึ้นจริง **ก่อนช่วงเวลาการตัดสินใจ ($T < T_0$)**
+    *   ห้ามนำข้อมูลในอนาคตหลัง $T_0$ มาคำนวณเป็น Feature เด็ดขาด เพื่อป้องกัน **Future Data Leakage**
+    *   *ตัวอย่าง:* Feature `total_purchase_past_90d` ต้องคำนวณย้อนหลังจากจุดตัด $T_0$ ห้ามนำยอดซื้อที่เกิดขึ้นหลังวันที่ทำนายมาใส่ในตารางฝึก
+*   **Takeaway:** Feature Contract กำหนดขอบเขตข้อมูลทางเทคนิคที่โปร่งใสและตรวจสอบย้อนกลับได้

@@ -1,0 +1,10 @@
+**Slide 14: Decision Memo: การตัดสินใจ "ปรับก่อนใช้" (Conditional Rollout Gate)**
+
+*   **Phase:** Stage 6: Evaluation
+*   **Co-Authors:** Business Analyst + Data Scientist + Data Privacy Officer
+*   **The 3 Decision Gates:**
+    1.  **Accept:** อนุมัติใช้งานเต็มรูปแบบพร้อมระบบเฝ้าระวังปกติ
+    2.  **Revise (ปรับก่อนใช้):** อนุมัติให้ทดลองใช้ในขอบเขตจำกัด (Controlled Pilot) พร้อมเงื่อนไขแก้ไขจุดบกพร่อง
+    3.  **Reject:** ระงับโครงการทันทีหากความเสี่ยงทางสถิติ กฎหมาย หรือจริยธรรมสูงเกินรับได้
+*   **Case Outcome:** ในกรณีลูกค้านี้ คณะทำงานลงมติเป็น **"ปรับก่อนใช้ (Conditional Rollout)"** เนื่องจากพบว่า Recall ในกลุ่มลูกค้าใหม่ต่ำเพียง 54% และมีความเสี่ยงเรื่อง Concept Drift จึงต้องจำกัดขอบเขต Pilot และติดตามกลุ่มใหม่อย่างใกล้ชิด
+*   **Takeaway:** Decision Memo ต้องบันทึกทั้งผลการทดสอบ ความเสี่ยงที่พบ และเงื่อนไขการส่งต่ออย่างเป็นทางการ

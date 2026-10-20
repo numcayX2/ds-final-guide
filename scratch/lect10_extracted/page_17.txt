@@ -1,0 +1,18 @@
+**Slide 17: MLOps ทำ Monitoring Contract และหลักฐานหลังใช้**
+
+The slide defines the pre-pilot Monitoring Contract and operational signal flows.
+
+---
+
+### Monitoring Contract — ก่อนเริ่ม Pilot:
+| สิ่งที่ต้องติดตาม (Monitoring Signal) | ผู้รับสัญญาณเตือน (Signal Receivers) | การดำเนินการ |
+| :--- | :--- | :--- |
+| **คุณภาพข้อมูล & Recall แยกกลุ่ม** | **MLOps + Data Scientist** | เฝ้าระวัง Data Drift, Concept Drift, ค่าสูญหาย และ Recall ในกลุ่มลูกค้าใหม่ |
+| **ข้อร้องเรียน / ผลกระทบต่อลูกค้า** | **Business Unit** | ตรวจสอบ Feedback เชิงลบ ความพึงพอใจ และสิทธิผู้บริโภค |
+| **การกลับมาซื้อซ้ำเทียบกับเป้าหมาย (ROI)** | **Business Analyst + Data Analyst** | ตรวจสอบอัตรา Conversion Rate และผลตอบแทนทางการเงินจริง |
+
+---
+
+**Role of AI Assistant:**
+*   AI Assistant ช่วยสรุป Log และส่งสัญญาณแจ้งเตือน (Trigger Alert)
+*   มี **MLOps ตรวจสอบ** ความถูกต้องของสัญญาณเตือนก่อนสั่งการ

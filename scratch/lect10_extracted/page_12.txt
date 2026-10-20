@@ -1,0 +1,17 @@
+**Slide 12: ลำดับชั้นคุณค่าของการวิเคราะห์ข้อมูล (The Analytics Continuum)**
+
+The slide illustrates the evolution of analytics maturity from basic questions to AI-driven actions.
+
+---
+
+### The 5 Levels of the Analytics Continuum:
+1.  **Descriptive Analytics:** เกิดอะไรขึ้น? (*What happened?*) — รายงาน, แดชบอร์ด, ตัวเลขสรุปยอดขายในอดีต
+2.  **Diagnostic Analytics:** ทำไมจึงเกิด? (*Why did it happen?*) — การสำรวจ EDA, ค้นหาสาเหตุรากเหง้า, Correlation
+3.  **Predictive Analytics:** จะเกิดอะไรขึ้นต่อไป? (*What will happen?*) — การพยากรณ์ด้วย Machine Learning, Decision Tree ทายการหยุดซื้อ
+4.  **Prescriptive Analytics:** ควรทำอย่างไรเพื่อให้ได้ผลลัพธ์ที่ดีที่สุด? (*What should we do?*) — การแนะนำแผนปฏิบัติการ, A/B Testing, Optimization
+5.  **AI-assisted:** การนำ AI Agents / LLMs มาช่วยร่าง สรุป แจ้งเตือน และอำนวยความสะดวก แต่ยังคงมีมนุษย์เป็นผู้กำกับ
+
+---
+
+**Takeaway:**
+*   คุณค่าทางธุรกิจจะเพิ่มขึ้นเมื่อเลื่อนขั้นจาก Descriptive ไปสู่ Prescriptive และ AI-assisted

@@ -1,0 +1,12 @@
+**Slide 10: Data Scientist: Predictive vs Explanatory Modeling**
+
+*   **Phase:** Stage 5: Modeling
+*   **Owner:** Data Scientist (DS)
+*   **The Roles of Two Models in the Case Study:**
+    1.  **Decision Tree (Predictive Model):** ทำหน้าที่จำแนกความเสี่ยงว่า *"ใครคือลูกค้าที่มีความเสี่ยงจะหยุดซื้อ (Inactive Risk)?"*
+    2.  **K-Means Clustering (Explanatory Model):** ทำหน้าที่แบ่งกลุ่มพฤติกรรมว่า *"กลุ่มลูกค้าที่เสี่ยงหยุดซื้อมีลักษณะแตกต่างกันอย่างไร (Profiles)?"*
+*   **Critical Exam Warning: Correlation vs Causality**
+    *   ทั้ง Decision Tree และ K-Means เพียงอย่างเดียว **"ยังไม่พิสูจน์ผลลัพธ์ของการติดต่อ (Outreach Causality)"**
+    *   การที่โมเดลบอกว่าลูกค้าเสี่ยง ไม่ได้เป็นหลักประกันว่าเมื่อเราติดต่อหรือส่งโปรโมชันไปแล้วลูกค้าจะยอมกลับมาซื้อจริง
+    *   การพิสูจน์ผลลัพธ์เชิงเหตุและผลต้องอาศัยการทดสอบจริง (Prescriptive / A-B Testing ใน Pilot)
+*   **Takeaway:** แยกแยะระหว่าง "การทำนายความเสี่ยง" กับ "การการันตีประสิทธิผลของการแก้ไข" ออกจากกันเสมอ

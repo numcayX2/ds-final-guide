@@ -1,0 +1,16 @@
+**Slide 19: กิจกรรม: ทำ Handoff Board ของโครงงานหนึ่งเรื่อง (E-commerce Case)**
+
+The slide outlines the 4-step framework for presenting a Data Science project via a Handoff Board.
+
+---
+
+### 4 ขั้นตอนการทำ Handoff Board 1 หน้า:
+1.  **เลือก 3 จุดส่งต่อ:** ระบุ Phase, หลักฐาน (Artifact), และ Owner / ผู้รับถัดไป
+2.  **ระบุ Analytics Level:** ระบุระดับการวิเคราะห์ที่โครงงานตอบได้ (Descriptive / Diagnostic / Predictive / Prescriptive) และระดับที่ยังขาด
+3.  **ระบุงาน AI Assistant:** กำหนดงานที่ให้ AI ช่วย 1 อย่าง พร้อมระบุชื่อคนตรวจ (Human Oversight)
+4.  **สรุปภาพรวม:** ระบุ คำตัดสินใจ, ผู้อนุมัติ, สิ่งที่ต้องติดตาม, และจุดหยุด/ย้อนกลับ (Circuit Breaker)
+
+---
+
+**Takeaway:**
+*   การเล่างาน Data Science ให้ครบถ้วน ต้องเชื่อมโยง Workflow ระดับคำตอบ และคนรับผิดชอบเข้ากับการตัดสินใจของธุรกิจ

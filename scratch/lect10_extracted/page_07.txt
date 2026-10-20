@@ -1,0 +1,9 @@
+**Slide 7: Data Engineer: Data Intake & Lineage Check**
+
+*   **Phase:** Stage 2: Data Understanding
+*   **Owner:** Data Engineer (DE)
+*   **3 Vital Integrity Checks:**
+    1.  **Customer Key Linkage:** ตรวจสอบความถูกต้องในการเชื่อมโยง Key ลูกค้าข้ามระบบต่างๆ (เช่น POS สาขา, Web Application, CRM) ข้อมูลต้องไม่เกิด Duplicate หรือ Orphan records
+    2.  **Temporal Completeness:** ตรวจสอบความสมบูรณ์เชิงเวลา ข้อมูลต้องต่อเนื่อง ไม่มีประวัติธุรกรรมขาดหายเป็นช่วงๆ
+    3.  **Usage Rights & Consent:** ตรวจสอบสิทธิ์การนำข้อมูลไปใช้งานตามข้อตกลงความเป็นส่วนตัวและกฎหมาย PDPA ลูกค้าต้องให้ความยินยอมในวัตถุประสงค์ที่ระบุ
+*   **Takeaway:** หากรากฐานข้อมูลไม่ถูกต้อง โมเดลที่สร้างบนข้อมูลนั้นจะพังทลายทั้งหมด (Garbage In, Garbage Out)

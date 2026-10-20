@@ -1,0 +1,9 @@
+**Slide 4: การตั้งโจทย์ปัญหาธุรกิจ (Problem Framing & Customer Inactivity Case)**
+
+*   **Business Context:** กรณีศึกษาลูกค้าหยุดซื้อ (Customer Inactivity Case Study)
+*   **The Ambiguous BU Question:** Business Unit มักตั้งคำถามกว้างๆ เช่น *"จะดูแลลูกค้าที่ไม่เคลื่อนไหวอย่างไรดี?"*
+*   **Data Science Framing:** นักวิทยาศาสตร์ข้อมูลต้องแปลงคำถามกว้างให้เป็น Analytical Question และสร้างเครื่องมือช่วยตัดสินใจ
+*   **Decision Support vs Automation:**
+    *   ค่าความเสี่ยง Inactive Score (เช่น 65%) เป็น **"เครื่องมือช่วยตัดสินใจ (Decision Support)"** ให้เจ้าหน้าที่พิจารณา
+    *   **ไม่ใช่คำสั่งอัตโนมัติ (Automated Mandate)** ที่ระบบจะสั่งการหรือยิงโปรโมชันหาลูกค้าทันทีโดยไม่มีมนุษย์ตรวจสอบ
+*   **Takeaway:** AI และโมเดลทำหน้าที่เป็น Support Tool ไม่ใช่เจ้านายที่สั่งการธุรกิจโดยปราศจากคนควบคุม

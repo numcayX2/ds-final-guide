@@ -1,21 +1,39 @@
 import json
 import os
 
-# Complete 70 Questions covering all 10 modules
 questions = [
-  # --- Module 01: CRISP-DS Life Cycle (Lect 01-02) ---
   {
     "id": "q01-crisp-time",
     "questionNumber": 1,
     "moduleRef": "module-01-crisp-ds",
     "slideRef": "Lect 02 p20",
     "title": "สัดส่วนเวลาการทำงานในวงจร Data Science",
-    "scenario": "ในวงจรการทำงาน Data Science Process Cycle (CRISP-DS 8 ขั้นตอน) ขั้นตอนใดที่กินเวลาและทรัพยากรของทีมงานมากที่สุด?",
+    "scenario": "ในวงจรการทำงาน Data Science Process Cycle (CRISP-DS) ขั้นตอนใดที่ใช้เวลาและทรัพยากรของทีมงานมากที่สุด?",
     "options": [
-      {"id": "A", "text": "Modeling (การทดลองและฝึกสอน Candidate Models หลายสิบแบบ)", "isCorrect": False, "explanation": "ผิด: Modeling กินเวลาเฉลี่ยเพียง 10-20% เท่านั้น"},
-      {"id": "B", "text": "Data Preparation (Data Cleaning & Feature Engineering) กินเวลา 60–80%", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 02 p20: การเตรียมและคลีนข้อมูลใช้เวลามากที่สุดถึง 60–80% ของงานทั้งหมด"},
-      {"id": "C", "text": "Deployment & Communication (การขึ้นระบบและทำ Dashboard)", "isCorrect": False, "explanation": "ผิด: ไม่ใช่ขั้นตอนที่กินเวลามากที่สุด"},
-      {"id": "D", "text": "Business Understanding (การประชุมนิยามปัญหา)", "isCorrect": False, "explanation": "ผิด: แม้จะสำคัญที่สุดในการตั้งเป้า แต่ไม่ได้กินเวลา 60-80%"}
+      {
+        "id": "A",
+        "text": "Data Preparation (การทำความสะอาดข้อมูลและทำ Feature Engineering)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 02 p20: การเตรียมและทำความสะอาดข้อมูลใช้เวลามากที่สุดถึง 60–80% ของเวลาทั้งหมด"
+      },
+      {
+        "id": "B",
+        "text": "Deployment & Monitoring (การนำโมเดลขึ้นระบบจริงและติดตามผล)",
+        "isCorrect": False,
+        "explanation": "ผิด: เป็นขั้นตอนปลายน้ำหลังพัฒนาโมเดลเสร็จสิ้น ไม่ได้กินเวลาสูงสุด"
+      },
+      {
+        "id": "C",
+        "text": "Modeling (การคัดเลือกอัลกอริทึมและปรับจูนพารามิเตอร์ของโมเดล)",
+        "isCorrect": False,
+        "explanation": "ผิด: ขั้นตอน Modeling ใช้เวลาเฉลี่ยเพียง 10–20% ของโครงการ"
+      },
+      {
+        "id": "D",
+        "text": "Business Understanding (การวิเคราะห์โจทย์และกำหนดตัวชี้วัดธุรกิจ)",
+        "isCorrect": False,
+        "explanation": "ผิด: แม้จะเป็นจุดตั้งต้นที่สำคัญที่สุด แต่ไม่ได้ใช้เวลา 60–80% ของโครงการ"
+      }
     ],
     "difficulty": "direct"
   },
@@ -25,12 +43,32 @@ questions = [
     "moduleRef": "module-01-crisp-ds",
     "slideRef": "Lect 02 p18-22",
     "title": "การจัดการ Feedback Loop เมื่อโมเดลไม่ผ่านเกณฑ์",
-    "scenario": "ในขั้นตอน Evaluation หากพบว่าผลการประเมินโมเดลไม่ผ่านเกณฑ์ทางธุรกิจ วงจร CRISP-DS กำหนดให้ทีมงานปฏิบัติตามแนวทางใดจึงจะถูกต้องตามหลักการ?",
+    "scenario": "ในขั้นตอน Evaluation หากพบว่าผลการประเมินโมเดลไม่ผ่านเกณฑ์ทางธุรกิจที่ตั้งไว้ วงจร CRISP-DS กำหนดแนวทางปฏิบัติไว้อย่างไร?",
     "options": [
-      {"id": "A", "text": "ลดเกณฑ์ประเมินทางธุรกิจลงเพื่อให้โมเดลผ่านการตรวจสอบ", "isCorrect": False, "explanation": "ผิดมหันต์: ห้ามลดเกณฑ์เพื่อเอาใจโมเดล"},
-      {"id": "B", "text": "นำชุดข้อมูล Test Set ไปร่วมเทรนกับ Training Set เพื่อเร่งคะแนน", "isCorrect": False, "explanation": "ผิด: เกิด Data Leakage ร้ายแรง"},
-      {"id": "C", "text": "หมุน Feedback Loop ย้อนกลับไปแก้ที่ต้นเหตุ เช่น ทบทวน Business Understanding หรือกลับไปปรับปรุง Data Preparation", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 02: CRISP-DS เป็นกระบวนการวนซ้ำ (Iterative) เมื่อพบปัญหาต้องย้อนไปแก้ต้นเหตุ"},
-      {"id": "D", "text": "ยกเลิกโครงการข้อมูลทันทีโดยไม่ต้องวิเคราะห์สาเหตุ", "isCorrect": False, "explanation": "ผิด: การย้อนกลับไปปรับปรุงคือหัวใจของ Data Science Cycle"}
+      {
+        "id": "A",
+        "text": "ปรับลดเกณฑ์ความสำเร็จทางธุรกิจลงเพื่อให้สอดคล้องกับขีดจำกัดของข้อมูลที่มีอยู่",
+        "isCorrect": False,
+        "explanation": "ผิด: ห้ามลดเกณฑ์ทางธุรกิจลงเพื่อเอาใจผลลัพธ์ของโมเดล"
+      },
+      {
+        "id": "B",
+        "text": "ย้อนกลับไปทบทวนขั้นตอนต้นเหตุ เช่น นิยามปัญหาทางธุรกิจใหม่หรือปรับปรุงการเตรียมข้อมูล",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 02: CRISP-DS เป็นกระบวนการวนซ้ำ (Iterative) เมื่อไม่ผ่านเกณฑ์ต้องหมุน Feedback Loop กลับไปแก้ที่ต้นเหตุ"
+      },
+      {
+        "id": "C",
+        "text": "นำข้อมูลจากชุด Test Set มารวมเข้ากับ Training Set เพื่อเพิ่มขนาดตัวอย่างในการเรียนรู้",
+        "isCorrect": False,
+        "explanation": "ผิด: การนำ Test Set มาเทรนทำให้เกิด Data Leakage อย่างร้ายแรง"
+      },
+      {
+        "id": "D",
+        "text": "ส่งมอบโมเดลขึ้นระบบ Production ไปก่อน แล้วจึงค่อยปรับปรุงแก้ไขในขั้นตอน Monitoring",
+        "isCorrect": False,
+        "explanation": "ผิด: โมเดลที่ไม่ผ่านเกณฑ์ Evaluation ห้ามนำไปใช้งานจริงเพราะจะสร้างความเสียหายต่อธุรกิจ"
+      }
     ],
     "difficulty": "direct"
   },
@@ -40,29 +78,68 @@ questions = [
     "moduleRef": "module-01-crisp-ds",
     "slideRef": "Lect 02 p15",
     "title": "จุดเริ่มต้นของการกำหนดเป้าหมายใน CRISP-DS",
-    "scenario": "ข้อใดคือเป้าหมายหลักของขั้นตอน Business Understanding ในวงจร CRISP-DS?",
+    "scenario": "ข้อใดคือวัตถุประสงค์หลักของขั้นตอน Business Understanding ในวงจร CRISP-DS?",
     "options": [
-      {"id": "A", "text": "การเขียนโค้ดภาษา Python เพื่อดึงข้อมูลเข้า GPU", "isCorrect": False, "explanation": "ผิด: นั่นคือเรื่องทางเทคนิคในขั้น Data Preparation"},
-      {"id": "B", "text": "การทำความเข้าใจความต้องการของธุรกิจ นิยามปัญหา แปลงเป้าหมายธุรกิจเป็นโจทย์ Data Science และกำหนดเกณฑ์ประเมินความสำเร็จ", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 02 p15: Business Understanding ต้องนิยามปัญหาและเกณฑ์วัดผลให้ชัดก่อนแตะต้องข้อมูล"},
-      {"id": "C", "text": "การเปรียบเทียบค่าความแม่นยำระหว่าง Decision Tree กับ Random Forest", "isCorrect": False, "explanation": "ผิด: นั่นคือขั้นตอน Modeling และ Evaluation"},
-      {"id": "D", "text": "การทำ Data Imputation แทนค่าที่สูญหาย", "isCorrect": False, "explanation": "ผิด: นั่นคือ Data Cleaning"}
+      {
+        "id": "A",
+        "text": "การคัดเลือกสถาปัตยกรรมโมเดลและวางแผนการจัดสรรทรัพยากรประมวลผลสำหรับฝึกสอน",
+        "isCorrect": False,
+        "explanation": "ผิด: การเลือกอัลกอริทึมและฝึกสอนโมเดลอยู่ในขั้นตอน Modeling"
+      },
+      {
+        "id": "B",
+        "text": "การสำรวจคุณภาพของฐานข้อมูลเบื้องต้นเพื่อประเมินสัดส่วนของค่าที่สูญหายและค่าผิดปกติ",
+        "isCorrect": False,
+        "explanation": "ผิด: การสำรวจคุณภาพข้อมูลและค่าสูญหายอยู่ในขั้นตอน Data Understanding"
+      },
+      {
+        "id": "C",
+        "text": "การแปลงโจทย์ปัญหาทางธุรกิจให้เป็นเป้าหมายทางเทคนิคและกำหนดเกณฑ์วัดผลความสำเร็จ",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 02 p15: Business Understanding ต้องนิยามปัญหา แปลงเป็นโจทย์ข้อมูล และตั้งเกณฑ์วัดผลก่อนเริ่มงาน"
+      },
+      {
+        "id": "D",
+        "text": "การออกแบบโครงสร้างตารางและสร้างตัวแปรใหม่ให้พร้อมสำหรับอัลกอริทึมการเรียนรู้",
+        "isCorrect": False,
+        "explanation": "ผิด: การแปลงตารางและสร้างฟีเจอร์อยู่ในขั้นตอน Data Preparation"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 02: Data Cleaning & Imputation (Lect 03-04.1) ---
   {
     "id": "q02-valid-mean",
     "questionNumber": 4,
     "moduleRef": "module-02-data-cleaning",
     "slideRef": "Lect 04.1 p29, p34",
     "title": "การแทนค่าด้วยค่าเฉลี่ยที่ถูกต้อง (Clean Before Impute)",
-    "scenario": "ลูกค้า 1003 ขาดข้อมูลรายได้ (Missing) โดยบันทึกรายได้ของลูกค้าคนอื่นคือ [75,000, -40,000, 50,000, 99,999] หากใช้วิธี Valid Mean Imputation จะได้ค่าแทนที่เท่าใด?",
+    "scenario": "ลูกค้า 1003 ขาดข้อมูลรายได้ (Missing) โดยบันทึกรายได้ของลูกค้ารายอื่นคือ [75,000, -40,000, 50,000, 99,999] หากใช้วิธี Valid Mean Imputation จะได้ค่าแทนที่เท่าใด?",
     "options": [
-      {"id": "A", "text": "46,249.75 บาท (นำทั้ง 4 ค่ารวมกันแล้วหารด้วย 4)", "isCorrect": False, "explanation": "ผิดมหันต์! ติดกับดักนำ -40,000 ซึ่งเป็น Known Invalid มารวมคำนวณ", "distractorTrap": "ลืมตัดค่าติดลบทิ้ง"},
-      {"id": "B", "text": "62,500 บาท (ตัด 99,999 ทิ้งเพราะคิดว่าเป็นเลข 9 ซ้ำ)", "isCorrect": False, "explanation": "ผิด: 99,999 ในสไลด์นี้ถือเป็นรายได้จริงที่ถูกต้อง ไม่ใช่ค่าขยะ"},
-      {"id": "C", "text": "75,000 บาท (ตัด -40,000 ออกก่อน แล้วเฉลี่ย 3 ค่า: (75k + 50k + 99.999k)/3)", "isCorrect": True, "explanation": "ถูกต้องตามกฎ Clean Known Errors Before Calculating: ตัด -40,000 ทิ้ง เหลือ Valid 3 ค่า รวมได้ 224,999 หาร 3 = 75,000 บาท"},
-      {"id": "D", "text": "50,000 บาท (ใช้มัธยฐานแทนค่าเฉลี่ย)", "isCorrect": False, "explanation": "ผิด: โจทย์ระบุให้ใช้ Valid Mean"}
+      {
+        "id": "A",
+        "text": "46,249.75 บาท",
+        "isCorrect": False,
+        "explanation": "ผิด: เกิดจากการนำค่า -40,000 ซึ่งเป็นค่าผิดปกติที่ไม่ได้มาตรฐาน (Invalid Value) มารวมคำนวณด้วย (184,999 / 4)",
+        "distractorTrap": "ลืมตัดค่าติดลบทิ้งก่อนคำนวณ"
+      },
+      {
+        "id": "B",
+        "text": "50,000.00 บาท",
+        "isCorrect": False,
+        "explanation": "ผิด: โจทย์กำหนดให้ใช้วิธี Valid Mean ไม่ใช่การเลือกค่าต่ำสุดหรือค่ามัธยฐาน"
+      },
+      {
+        "id": "C",
+        "text": "62,500.00 บาท",
+        "isCorrect": False,
+        "explanation": "ผิด: เกิดจากการเผลอตัด 99,999 ทิ้งไปด้วย ทั้งที่ในสไลด์อาจารย์ระบุว่า 99,999 เป็นรายได้จริงที่ถูกต้อง ((75,000 + 50,000) / 2)"
+      },
+      {
+        "id": "D",
+        "text": "75,000.00 บาท",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามกฎ Clean Known Errors Before Calculating: ตัด -40,000 ออก เหลือข้อมูลที่ถูกต้อง 3 ค่า คือ (75,000 + 50,000 + 99,999) / 3 = 74,999.67 ≈ 75,000 บาท"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -72,12 +149,32 @@ questions = [
     "moduleRef": "module-02-data-cleaning",
     "slideRef": "Lect 04.1 p22",
     "title": "อันตรายของการลบแถวทิ้ง (Listwise Deletion)",
-    "scenario": "ในการจัดการข้อมูลขาดหาย (Missing Data) ทำไมอาจารย์จึงเตือนว่าการใช้วิธีลบทั้งแถวทิ้ง (Listwise Deletion) อาจก่อให้เกิดปัญหา Selection Bias?",
+    "scenario": "ในการจัดการข้อมูลขาดหาย (Missing Data) เพราะเหตุใดการใช้วิธีลบแถวที่มีค่าว่างทิ้งทั้งหมด (Listwise Deletion) จึงเสี่ยงต่อการเกิด Selection Bias?",
     "options": [
-      {"id": "A", "text": "เพราะทำให้โมเดลรันเร็วขึ้นจน GPU ไหม้", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับฮาร์ดแวร์"},
-      {"id": "B", "text": "เพราะหากข้อมูลไม่ได้ขาดหายแบบสุ่มแท้จริง (Not Random) การลบแถวจะทำให้กลุ่มประชากรที่เหลืออยู่สูญเสียความเป็นตัวแทนของประชากรจริง", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 04.1 p22: การลบแถวที่มี missing อาจตัดกลุ่มลูกค้าเฉพาะเจาะจงทิ้งไปจนเกิด Selection Bias"},
-      {"id": "C", "text": "เพราะภาษาสถิติไม่อนุญาตให้ลบแถวข้อมูล", "isCorrect": False, "explanation": "ผิด: สามารถลบได้หาก missing เล็กน้อยและเป็นสุ่มสมบูรณ์ (MCAR)"},
-      {"id": "D", "text": "เพราะทำให้ค่า Accuracy กลายเป็น 100% เสมอ", "isCorrect": False, "explanation": "ผิด: ไม่มีผลบังคับให้ Accuracy เป็น 100%"}
+      {
+        "id": "A",
+        "text": "เพราะหากข้อมูลไม่ได้สูญหายแบบสุ่มสมบูรณ์ การลบแถวจะทำให้ตัวอย่างที่เหลือไม่เป็นตัวแทนของประชากรจริง",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 04.1 p22: หากการหายของข้อมูลมีนัยสำคัญ (Not MCAR) การลบแถวจะตัดกลุ่มประชากรบางกลุ่มออกไปจนเกิด Selection Bias"
+      },
+      {
+        "id": "B",
+        "text": "เพราะการลบแถวทำให้ความแปรปรวนของข้อมูลเพิ่มขึ้นจนอัลกอริทึมไม่สามารถลู่เข้าสู่คำตอบได้",
+        "isCorrect": False,
+        "explanation": "ผิด: การลบแถวมักทำให้ขนาดตัวอย่างลดลง แต่ประเด็นของ Selection Bias คือเรื่องความลำเอียงของตัวแทนประชากร"
+      },
+      {
+        "id": "C",
+        "text": "เพราะการลบแถวจะส่งผลให้ตัวแปรเป้าหมาย (Target Variable) เปลี่ยนชนิดจากข้อมูลต่อเนื่องเป็นข้อมูลหมวดหมู่",
+        "isCorrect": False,
+        "explanation": "ผิด: การลบแถวไม่ได้เปลี่ยนชนิดข้อมูล (Data Type) ของคอลัมน์"
+      },
+      {
+        "id": "D",
+        "text": "เพราะการลบแถวทำให้ข้อมูลในชุด Test Set รั่วไหลเข้ามาปะปนในชุด Training Set โดยอัตโนมัติ",
+        "isCorrect": False,
+        "explanation": "ผิด: การลบแถวไม่ได้ทำให้เกิดการข้ามชุดข้อมูลระหว่าง Train และ Test"
+      }
     ],
     "difficulty": "direct"
   },
@@ -87,29 +184,68 @@ questions = [
     "moduleRef": "module-02-data-cleaning",
     "slideRef": "Lect 04.1 p36",
     "title": "การแทนค่าตามกลุ่มย่อย (Cluster/Group Median)",
-    "scenario": "เมื่อต้องการแทนค่าสูญหายของตัวแปร 'รายได้' สำหรับลูกค้าในกลุ่มอาชีพต่างๆ ทำไมการใช้ Group/Cluster Median จึงดีกว่าการใช้ Overall Mean ทั้งตาราง?",
+    "scenario": "เมื่อต้องการแทนค่าสูญหายของตัวแปร 'รายได้' สำหรับลูกค้าในกลุ่มอาชีพต่างๆ เพราะเหตุใดการใช้ Group Median จึงเหมาะสมกว่าการใช้ Overall Mean ทั้งตาราง?",
     "options": [
-      {"id": "A", "text": "เพราะ Group Median สะท้อนระดับรายได้ที่แท้จริงตามบริบทของแต่ละสายอาชีพ และทนทานต่อค่าสุดขั้วในแต่ละกลุ่ม", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 04.1 p36: Group Median รักษาความสัมพันธ์ภายในกลุ่มและไม่บิดเบือนสถิติเหมือน Overall Mean"},
-      {"id": "B", "text": "เพราะไม่ต้องเขียนโค้ดคำนวณ", "isCorrect": False, "explanation": "ผิด: ต้องเขียนโค้ด GroupBy ในการคำนวณ"},
-      {"id": "C", "text": "เพราะทำให้ขนาดข้อมูลเพิ่มขึ้นเป็น 2 เท่า", "isCorrect": False, "explanation": "ผิด: ขนาดข้อมูลคงที่เท่าเดิม"},
-      {"id": "D", "text": "เพื่อให้ได้ตัวเลขที่เป็นจำนวนเต็มเสมอ", "isCorrect": False, "explanation": "ผิด: Median อาจเป็นทศนิยมได้"}
+      {
+        "id": "A",
+        "text": "ช่วยปรับให้การกระจายตัวของข้อมูลในทุกสายอาชีพกลายเป็นโค้งปกติ (Normal Distribution) ทันที",
+        "isCorrect": False,
+        "explanation": "ผิด: การแทนค่าด้วยมัธยฐานไม่ได้เปลี่ยนรูปทรงการกระจายตัวของข้อมูลให้เป็นโค้งปกติ"
+      },
+      {
+        "id": "B",
+        "text": "สะท้อนระดับรายได้ตามบริบทของแต่ละสายอาชีพได้ตรงจริงและทนทานต่อค่าสุดขั้วในกลุ่ม",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 04.1 p36: Group Median รักษาบริบทความต่างของแต่ละกลุ่มย่อยและไม่ถูกดึงด้วยค่าสุดขั้ว"
+      },
+      {
+        "id": "C",
+        "text": "ช่วยลดจำนวนมิติของตัวแปร (Dimensionality Reduction) ก่อนนำเข้าสู่อัลกอริทึมการเรียนรู้",
+        "isCorrect": False,
+        "explanation": "ผิด: การทำ Imputation เป็นการเติมค่าว่าง ไม่ได้ลดจำนวนคอลัมน์หรือมิติของข้อมูล"
+      },
+      {
+        "id": "D",
+        "text": "รับประกันได้ว่าค่าความคลาดเคลื่อนของการทำนายบนชุดข้อมูลทดสอบจะลดลงเป็นศูนย์เสมอ",
+        "isCorrect": False,
+        "explanation": "ผิด: ไม่มีวิธี Imputation ใดที่รับประกันว่าความคลาดเคลื่อนของโมเดลจะเป็นศูนย์"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 03: Feature Engineering & Scaling (Lect 04.2) ---
   {
     "id": "q03-data-leakage",
     "questionNumber": 7,
     "moduleRef": "module-03-feature-engineering",
     "slideRef": "Lect 04.2 p27",
     "title": "กฎเหล็กป้องกัน Data Leakage ในการ Scaling",
-    "scenario": "ในการทำ Feature Scaling เช่น Min-Max หรือ Z-Score Standardization วิศวกรข้อมูลต้องคำนวณพารามิเตอร์ (min, max, mean, sd) จากชุดข้อมูลใด?",
+    "scenario": "ในการทำ Feature Scaling เช่น Min-Max หรือ Z-Score Standardization วิศวกรข้อมูลต้องคำนวณพารามิเตอร์สถิติ (min, max, mean, sd) ตามแนวทางใด?",
     "options": [
-      {"id": "A", "text": "คำนวณจากชุด Training Set เท่านั้น แล้วนำกฎเดียวกันไป Transform บน Validation และ Test Set", "isCorrect": True, "explanation": "ถูกต้องตามกฎ Lect 04.2 p27: ห้ามนำ Validation/Test Set มาร่วม Fit เด็ดขาด เพื่อป้องกันข้อมูลอนาคตรั่วไหล (Data Leakage)"},
-      {"id": "B", "text": "คำนวณจากชุดข้อมูลทั้งหมด (Full Dataset) รวมกันก่อนแบ่ง Train/Test เพื่อให้ได้สถิติที่แท้จริงของประชากร", "isCorrect": False, "explanation": "ผิดอย่างยิ่ง! นี่คือสาเหตุหลักของการเกิด Data Leakage", "distractorTrap": "คิดว่ายิ่งข้อมูลเยอะยิ่งดี"},
-      {"id": "C", "text": "คำนวณแยกกันอย่างอิสระ Train ก็หาของ Train, Test ก็หาของ Test", "isCorrect": False, "explanation": "ผิด: ถ้าคำนวณแยกกัน สเกลของตัวเลขจะบิดเบี้ยว ไม่ตรงกับที่โมเดลเรียนรู้"},
-      {"id": "D", "text": "คำนวณเฉพาะบน Validation Set", "isCorrect": False, "explanation": "ผิด: Validation Set มีไว้สำหรับประเมินเท่านั้น"}
+      {
+        "id": "A",
+        "text": "ประมวลผลจากชุดข้อมูลทั้งหมด (Full Dataset) ก่อนแยกชุดข้อมูล เพื่อให้ได้ค่าสถิติรวม",
+        "isCorrect": False,
+        "explanation": "ผิดอย่างยิ่ง: การคำนวณสถิติรวมทั้งตารางก่อนแบ่งชุดข้อมูลจะทำให้ข้อมูลจาก Test Set รั่วไหล (Data Leakage)",
+        "distractorTrap": "คิดว่าคำนวณจากข้อมูลทั้งหมดจะได้ค่าสถิติที่แม่นยำกว่า"
+      },
+      {
+        "id": "B",
+        "text": "คำนวณแยกกันอย่างอิสระภายในแต่ละชุดข้อมูล โดยใช้ค่าสถิติของชุดใครชุดมันในการแปลงค่า",
+        "isCorrect": False,
+        "explanation": "ผิด: หากคำนวณแยกกัน สเกลของ Validation/Test จะไม่ตรงกับฐานที่โมเดลเรียนรู้มาจาก Training Set"
+      },
+      {
+        "id": "C",
+        "text": "ประมวลผลจากชุดข้อมูล Training Set เท่านั้น แล้วนำพารามิเตอร์เดิมไปแปลงค่าบน Validation และ Test Set",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 04.2 p27: ต้อง Fit พารามิเตอร์จาก Training Set เท่านั้น แล้วนำไป Transform ชุดอื่นๆ เพื่อป้องกัน Data Leakage"
+      },
+      {
+        "id": "D",
+        "text": "ประมวลผลจากชุดข้อมูล Validation Set เป็นหลัก แล้วนำพารามิเตอร์ไปปรับใช้กับทั้ง Training และ Test Set",
+        "isCorrect": False,
+        "explanation": "ผิด: Validation Set มีไว้สำหรับประเมินและเลือกโมเดล ห้ามใช้เป็นฐานคำนวณพารามิเตอร์การแปลงข้อมูล"
+      }
     ],
     "difficulty": "direct"
   },
@@ -121,10 +257,30 @@ questions = [
     "title": "การคำนวณ Min-Max Normalization",
     "scenario": "กำหนดตัวแปรรายได้มีค่าต่ำสุด min = 20,000 บาท และสูงสุด max = 100,000 บาท หากลูกค้าคนหนึ่งมีรายได้ x = 60,000 บาท เมื่อทำ Min-Max Normalization ให้อยู่ในช่วง [0, 1] จะได้ค่าเท่าใด?",
     "options": [
-      {"id": "A", "text": "0.40", "isCorrect": False, "explanation": "ผิด: คำนวณเศษส่วนผิด"},
-      {"id": "B", "text": "0.50 (คำนวณจาก (60,000 - 20,000) / (100,000 - 20,000) = 40,000 / 80,000 = 0.50)", "isCorrect": True, "explanation": "ถูกต้องตามสูตร: x_norm = (x - min) / (max - min) = 40,000 / 80,000 = 0.50"},
-      {"id": "C", "text": "0.60", "isCorrect": False, "explanation": "ผิด: ลืมลบค่า min ออกจากตัวเศษและส่วน"},
-      {"id": "D", "text": "0.75", "isCorrect": False, "explanation": "ผิด: คำนวณผิดพลาด"}
+      {
+        "id": "A",
+        "text": "0.40",
+        "isCorrect": False,
+        "explanation": "ผิด: คำนวณตัวเศษผิดพลาด (40,000 / 100,000)"
+      },
+      {
+        "id": "B",
+        "text": "0.50",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสูตร: x_norm = (x - min) / (max - min) = (60,000 - 20,000) / (100,000 - 20,000) = 40,000 / 80,000 = 0.50"
+      },
+      {
+        "id": "C",
+        "text": "0.60",
+        "isCorrect": False,
+        "explanation": "ผิด: เกิดจากการนำ 60,000 หารด้วย 100,000 โดยลืมลบค่า min ทั้งตัวเศษและตัวส่วน"
+      },
+      {
+        "id": "D",
+        "text": "0.75",
+        "isCorrect": False,
+        "explanation": "ผิด: เกิดจากการนำ 60,000 หารด้วยช่วงพิสัย 80,000 โดยลืมลบค่า min ที่ตัวเศษ"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -134,29 +290,67 @@ questions = [
     "moduleRef": "module-03-feature-engineering",
     "slideRef": "Lect 04.2 p32",
     "title": "กับดักตัวแปรหุ่น (Dummy Variable Trap)",
-    "scenario": "ตัวแปรหมวดหมู่ 'ภูมิภาค' มี 4 ค่า (เหนือ, ใต้, ออก, ตก) หากทำ One-Hot Encoding สำหรับนำไปใช้ในโมเดล Regression ทำไมจึงต้องลบออก 1 คอลัมน์ให้เหลือเพียง 3 คอลัมน์?",
+    "scenario": "ตัวแปรหมวดหมู่ 'ภูมิภาค' มี 4 ค่า (เหนือ, ใต้, ออก, ตก) หากทำ One-Hot Encoding สำหรับใช้ในโมเดล Linear/Logistic Regression ทำไมจึงต้องตัดออก 1 คอลัมน์ให้เหลือ k-1 (3 คอลัมน์)?",
     "options": [
-      {"id": "A", "text": "เพื่อประหยัดหน่วยความจำ RAM", "isCorrect": False, "explanation": "ผิด: ไม่ใช่เหตุผลหลักทางคณิตศาสตร์"},
-      {"id": "B", "text": "เพื่อป้องกันปัญหา Perfect Multicollinearity (Dummy Variable Trap) เพราะผลรวมของทั้ง 4 คอลัมน์จะบวกกันได้ 1 เสมอ ทำให้เมทริกซ์คำนวณผกผันไม่ได้", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 04.2 p32: ต้องตัดออก 1 หมวดเพื่อเป็น Base Category ป้องกัน multicollinearity"},
-      {"id": "C", "text": "เพราะภูมิภาคที่สี่ไม่มีลูกค้าอาศัยอยู่จริง", "isCorrect": False, "explanation": "ผิด: ภูมิภาคที่ถูกตัดจะกลายเป็นฐานเปรียบเทียบ"},
-      {"id": "D", "text": "เพื่อทำให้ตัวแปรกลายเป็น Normal Distribution", "isCorrect": False, "explanation": "ผิด: One-Hot เป็นข้อมูลแบบ binary (0/1)"}
+      {
+        "id": "A",
+        "text": "เพื่อป้องกันภาวะ Perfect Multicollinearity เนื่องจากผลรวมของทุกคอลัมน์จะมีค่าเท่ากับ 1 เสมอ",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 04.2 p32: การเก็บครบ k คอลัมน์ทำให้ทำนายกันเองได้สมบูรณ์ (Dummy Variable Trap) จึงต้องตัดออก 1 คอลัมน์เพื่อเป็น Base Category"
+      },
+      {
+        "id": "B",
+        "text": "เพื่อบังคับให้ค่าสัมประสิทธิ์ของทุกภูมิภาคมีค่าเป็นบวกเสมอในการประมาณค่าพารามิเตอร์",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่าสัมประสิทธิ์เมื่อเทียบกับกลุ่มฐานสามารถเป็นได้ทั้งค่าบวกและค่าลบ"
+      },
+      {
+        "id": "C",
+        "text": "เพื่อปรับสเกลของตัวแปรหมวดหมู่ให้มีค่าเฉลี่ยเป็นศูนย์และส่วนเบี่ยงเบนมาตรฐานเป็นหนึ่ง",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือหลักการของ Z-Score Standardization สำหรับข้อมูลเชิงปริมาณ"
+      },
+      {
+        "id": "D",
+        "text": "เพื่อลดความเสี่ยงของการเกิด Overfitting จากการที่ต้นไม้ตัดสินใจแตกกิ่งตามภูมิภาคมากเกินไป",
+        "isCorrect": False,
+        "explanation": "ผิด: ต้นไม้ตัดสินใจไม่ได้รับผลกระทบจากเมทริกซ์เอกฐานเหมือนตระกูล Linear Model"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 04: EDA, Distribution & Outliers (Lect 05) ---
   {
     "id": "q04-tukey-outlier",
     "questionNumber": 10,
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p17",
     "title": "การตรวจจับ Outlier ด้วยรั้วของ Tukey",
-    "scenario": "ชุดข้อมูลหนึ่งมี Q1 = 30 และ Q3 = 70 เมื่อตรวจสอบพบจุดข้อมูล x = 140 จงพิจารณาว่าจุดนี้เป็น Potential Outlier หรือไม่ เพราะเหตุใด?",
+    "scenario": "ชุดข้อมูลหนึ่งมี Q1 = 30 และ Q3 = 70 เมื่อตรวจสอบพบจุดข้อมูล x = 140 ข้อใดสรุปสถานะของจุดข้อมูลนี้ตามเกณฑ์ Tukey's Fences ได้ถูกต้อง?",
     "options": [
-      {"id": "A", "text": "ไม่เป็น Outlier เพราะค่า IQR = 40 และรั้วบนอยู่ที่ 150", "isCorrect": False, "explanation": "ผิด: รั้วบนไม่ใช่ 70 + (2*40)"},
-      {"id": "B", "text": "เป็น Potential Outlier เพราะรั้วบน Upper Fence = 70 + (1.5 * 40) = 130 ซึ่ง 140 > 130", "isCorrect": True, "explanation": "ถูกต้อง: IQR = 70 - 30 = 40, Upper Fence = 70 + 60 = 130 จุด 140 หลุดรั้วบนจึงเป็น Outlier"},
-      {"id": "C", "text": "เป็น Outlier และต้องถูกลบทิ้งออกจากระบบทันทีโดยไม่ต้องตรวจสอบ", "isCorrect": False, "explanation": "ผิด: Potential Outlier != Error! เป็นเพียงการคัดกรอง ห้ามลบทันที", "distractorTrap": "กับดักสั่งลบทิ้งทันที"},
-      {"id": "D", "text": "ไม่สามารถระบุได้จนกว่าจะแปลงข้อมูลเป็น Z-Score", "isCorrect": False, "explanation": "ผิด: สามารถระบุได้ทันทีจากรั้วของ Tukey"}
+      {
+        "id": "A",
+        "text": "ไม่เป็น Potential Outlier เพราะขอบเขตรั้วบน (Upper Fence) มีค่าเท่ากับ 145",
+        "isCorrect": False,
+        "explanation": "ผิด: คำนวณรั้วบนผิดพลาด เพราะ Upper Fence = 70 + 1.5(40) = 130 ไม่ใช่ 145"
+      },
+      {
+        "id": "B",
+        "text": "เป็น Potential Outlier เพราะมีค่าสูงกว่าขอบเขตรั้วบน (Upper Fence) ซึ่งอยู่ที่ 130",
+        "isCorrect": True,
+        "explanation": "ถูกต้อง: IQR = 70 - 30 = 40 และ Upper Fence = 70 + (1.5 * 40) = 130 ดังนั้น x = 140 จึงเกินรั้วบนและเป็น Potential Outlier"
+      },
+      {
+        "id": "C",
+        "text": "ไม่เป็น Potential Outlier เพราะขอบเขตรั้วบน (Upper Fence) มีค่าเท่ากับ 150",
+        "isCorrect": False,
+        "explanation": "ผิด: เกิดจากการใช้ตัวคูณ 2.0*IQR แทนที่จะใช้ 1.5*IQR ตามสูตรของ Tukey"
+      },
+      {
+        "id": "D",
+        "text": "เป็น Potential Outlier เพราะมีค่าสูงกว่าขอบเขตรั้วบน (Upper Fence) ซึ่งอยู่ที่ 110",
+        "isCorrect": False,
+        "explanation": "ผิด: เกิดจากการบวกเพียง 1.0*IQR (70 + 40 = 110) แทนที่จะคูณด้วย 1.5"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -166,12 +360,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p3-4",
     "title": "จุดเริ่มต้นของ EDA ในวงจร CRISP-DS",
-    "scenario": "ตามสไลด์ Lect 05 กระบวนการ Initial EDA สามารถเริ่มต้นได้ตั้งแต่ขั้นตอนใดของ CRISP-DS และสามารถทำซ้ำเมื่อใด?",
+    "scenario": "ตามสไลด์ Lect 05 กระบวนการสำรวจข้อมูลเบื้องต้น (EDA) ควรดำเนินการในช่วงใดของวงจร CRISP-DS?",
     "options": [
-      {"id": "A", "text": "เริ่มต้นในขั้นตอน Modeling และทำซ้ำใน Deployment", "isCorrect": False, "explanation": "ผิด: EDA ต้องทำก่อน Modeling เพื่อทำความเข้าใจข้อมูล"},
-      {"id": "B", "text": "เริ่มต้นได้ตั้งแต่ขั้นตอน Data Understanding และทำซ้ำหลัง Data Preparation เพื่อตรวจสอบความพร้อมของข้อมูล", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p3-4: Initial EDA เริ่มได้ใน Data Understanding และทำซ้ำหลัง Data Preparation เสมอ"},
-      {"id": "C", "text": "เริ่มต้นหลัง Deployment เสร็จสิ้นแล้วเท่านั้น", "isCorrect": False, "explanation": "ผิด: หลัง Deployment เป็นขั้นตอน Monitoring"},
-      {"id": "D", "text": "ทำเพียงครั้งเดียวในขั้นตอน Business Understanding แล้วไม่ต้องทำซ้ำอีก", "isCorrect": False, "explanation": "ผิด: EDA เป็นกระบวนการวนซ้ำ (Iterative Checkpoint)"}
+      {
+        "id": "A",
+        "text": "ดำเนินการเพียงครั้งเดียวในขั้น Business Understanding ก่อนเริ่มเก็บรวบรวมข้อมูลจริงในขั้นตอนการวิเคราะห์ข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: ในขั้น Business Understanding ยังไม่ได้สำรวจตารางข้อมูลจริง และ EDA เป็นกระบวนการที่ทำซ้ำได้"
+      },
+      {
+        "id": "B",
+        "text": "เริ่มเฉพาะหลังจากเสร็จสิ้นขั้น Modeling เพื่อใช้อธิบายสาเหตุที่โมเดลทำนายผิดพลาด",
+        "isCorrect": False,
+        "explanation": "ผิด: EDA ต้องทำตั้งแต่ก่อนสร้างโมเดลเพื่อทำความเข้าใจธรรมชาติและปัญหาของข้อมูล"
+      },
+      {
+        "id": "C",
+        "text": "เริ่มในขั้น Data Understanding และกลับมาทำซ้ำหลังขั้น Data Preparation เพื่อตรวจความพร้อม",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p3-4: Initial EDA เริ่มใน Data Understanding และต้องทำซ้ำหลัง Data Preparation เสมอ"
+      },
+      {
+        "id": "D",
+        "text": "เริ่มหลังจากนำโมเดลขึ้นระบบในขั้น Deployment เพื่อใช้สร้างรายงานสรุปผลประจำเดือน",
+        "isCorrect": False,
+        "explanation": "ผิด: หลัง Deployment เป็นการทำ Model Monitoring ไม่ใช่จุดเริ่มต้นของ Initial EDA"
+      }
     ],
     "difficulty": "direct"
   },
@@ -181,12 +395,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p4",
     "title": "หลักการ Begin EDA with an Analytical Question",
-    "scenario": "ทำไมกฎเหล็กของการทำ EDA จึงระบุว่า 'ต้องเริ่มต้นด้วย Analytical Question เสมอ' แทนที่จะสร้างกราฟทุกรูปแบบขึ้นมาดู?",
+    "scenario": "เหตุใดหลักการทำ EDA ใน Lect 05 จึงเน้นย้ำว่า 'ต้องเริ่มต้นด้วยคำถามเชิงวิเคราะห์ (Analytical Question)' เสมอ?",
     "options": [
-      {"id": "A", "text": "เพราะคำถามที่ชัดเจนจะเป็นตัวกำหนดตัวแปร การสรุปผล การเปรียบเทียบ และ Visualization ที่ตรงเป้าหมาย แทนการสร้างกราฟสะเปะสะปะโดยไร้ทิศทาง", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p4: Question -> Select variables -> Summary & Comparison -> Visualization ที่ตอบโจทย์"},
-      {"id": "B", "text": "เพราะช่วยลดขนาดไฟล์ข้อมูลให้เล็กลงในการประมวลผล", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับขนาดไฟล์ข้อมูล"},
-      {"id": "C", "text": "เพราะทำให้อัลกอริทึม Machine Learning เลือก hyperparameter อัตโนมัติ", "isCorrect": False, "explanation": "ผิด: EDA ไม่ได้เลือกอัลกอริทึมอัตโนมัติ"},
-      {"id": "D", "text": "เพื่อหลีกเลี่ยงขั้นตอน Data Cleaning", "isCorrect": False, "explanation": "ผิด: EDA ไม่สามารถแทนที่ Data Cleaning ได้"}
+      {
+        "id": "A",
+        "text": "เพื่อลดจำนวนแถวของข้อมูลที่ต้องนำมาประมวลผล ทำให้การวาดกราฟใช้หน่วยความจำน้อยลง",
+        "isCorrect": False,
+        "explanation": "ผิด: การตั้งคำถามไม่ได้เป็นเทคนิคการบีบอัดหรือลดจำนวนแถวในฐานข้อมูล"
+      },
+      {
+        "id": "B",
+        "text": "เพื่อทดแทนขั้นตอนการตรวจสอบสมมติฐานทางสถิติและการแบ่งชุดข้อมูลทดสอบในภายหลัง",
+        "isCorrect": False,
+        "explanation": "ผิด: การตั้งคำถามใน EDA ไม่สามารถทดแทนขั้นตอนการประเมินและทดสอบโมเดลได้"
+      },
+      {
+        "id": "C",
+        "text": "เพื่อให้ซอฟต์แวร์สามารถตัดสินใจลบค่าผิดปกติ (Outliers) ออกจากตารางข้อมูลได้โดยอัตโนมัติตามหลักการประเมินผลมาตรฐาน",
+        "isCorrect": False,
+        "explanation": "ผิด: คำถามเชิงวิเคราะห์ไม่ได้ทำหน้าที่สั่งลบ Outliers อัตโนมัติ"
+      },
+      {
+        "id": "D",
+        "text": "เพื่อใช้เป็นกรอบกำหนดการเลือกตัวแปร สถิติสรุป และการเปรียบเทียบที่นำไปสู่กราฟที่ตรงประเด็น",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p4: Analytical Question เป็นตัวกำหนดตัวแปร การเปรียบเทียบ และชนิดของ Visualization ที่เหมาะสม"
+      }
     ],
     "difficulty": "direct"
   },
@@ -196,12 +430,33 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p8-10",
     "title": "การเลือกค่ากลางและการกระจายสำหรับข้อมูลเบ้",
-    "scenario": "หากชุดข้อมูลยอดใช้จ่ายมีความเบ้ขวารุนแรง (Extreme Right-Skewed) และมีค่าสุดขั้วสูงมากปะปนอยู่ ควรเลือกคู่ค่ากลางและค่าวัดการกระจายใดจึงจะเหมาะสมที่สุด?",
+    "scenario": "หากข้อมูลยอดใช้จ่ายของลูกค้ามีการกระจายตัวแบบเบ้ขวารุนแรง (Right-Skewed) และมีค่าสุดขั้วปะปนอยู่ ควรเลือกใช้คู่สถิติวัดค่ากลางและการกระจายตัวข้อใด?",
     "options": [
-      {"id": "A", "text": "Mean + Standard Deviation (SD)", "isCorrect": False, "explanation": "ผิด: Mean และ SD ไวต่อค่าสุดขั้วมาก จะถูกค่าขวาสุดดึงจนบิดเบี้ยว", "distractorTrap": "คุ้นเคยกับ Mean+SD จนลืมดู Skewness"},
-      {"id": "B", "text": "Mean + Variance", "isCorrect": False, "explanation": "ผิด: Variance มีหน่วยยกกำลังสองและถูกกระทบจากค่าสุดขั้วเช่นกัน"},
-      {"id": "C", "text": "Median + Interquartile Range (IQR)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p8-10: ข้อมูลเบ้หรือมี Outlier ต้องใช้ Median คู่กับ IQR เพราะมีความทนทาน (Robust) ต่อค่าสุดขั้ว"},
-      {"id": "D", "text": "Mode + Range", "isCorrect": False, "explanation": "ผิด: Range คำนวณจาก Max - Min ซึ่งไวต่อ Outlier มากที่สุด"}
+      {
+        "id": "A",
+        "text": "Mean และ Standard Deviation (SD)",
+        "isCorrect": False,
+        "explanation": "ผิด: ทั้ง Mean และ SD ไวต่อค่าสุดขั้วมาก จะถูกดึงไปทางหางที่เบ้ขวาจนไม่สะท้อนกลุ่มส่วนใหญ่",
+        "distractorTrap": "เลือกใช้สถิติมาตรฐานโดยลืมพิจารณาความเบ้"
+      },
+      {
+        "id": "B",
+        "text": "Mean และ Interquartile Range (IQR)",
+        "isCorrect": False,
+        "explanation": "ผิด: แม้ IQR จะทนทานต่อค่าสุดขั้ว แต่ค่าเฉลี่ยเลขคณิต (Mean) ยังคงถูกบิดเบือนจากข้อมูลเบ้ขวา"
+      },
+      {
+        "id": "C",
+        "text": "Median และ Standard Deviation (SD)",
+        "isCorrect": False,
+        "explanation": "ผิด: แม้ Median จะทนทานต่อค่าสุดขั้ว แต่การวัดการกระจายด้วย SD ยังคงถูกกระทบอย่างหนักจากค่าสุดขั้ว"
+      },
+      {
+        "id": "D",
+        "text": "Median และ Interquartile Range (IQR)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p8-10: เมื่อข้อมูลเบ้หรือมี Outlier ต้องใช้ Median คู่กับ IQR เพราะมีความทนทาน (Robust) ทั้งคู่"
+      }
     ],
     "difficulty": "direct"
   },
@@ -211,12 +466,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p11",
     "title": "การตีความรูปทรงการกระจายตัวแบบหลายยอด (Multimodal)",
-    "scenario": "เมื่อพล็อตกราฟ Histogram แสดงการกระจายตัวของข้อมูลลูกค้า แล้วพบยอดโด่งสองยอดชัดเจน (Bimodal Distribution) ข้อสรุปใดสมเหตุสมผลที่สุด?",
+    "scenario": "เมื่อสร้างกราฟ Histogram ของตัวแปรรายได้ลูกค้าแล้วพบจุดยอดโด่งแยกกัน 2 ยอดอย่างชัดเจน (Bimodal Distribution) นักวิเคราะห์ควรตีความและดำเนินการอย่างไร?",
     "options": [
-      {"id": "A", "text": "ข้อมูลบันทึกผิดพลาด ต้องตัดข้อมูลยอดที่สองทิ้งทันที", "isCorrect": False, "explanation": "ผิด: ห้ามตัดข้อมูลทิ้งโดยไม่ตรวจสอบ"},
-      {"id": "B", "text": "ข้อมูลอาจมีกลุ่มย่อย (Sub-populations หรือ Hidden Segments) ซ่อนอยู่มากกว่าหนึ่งกลุ่ม ควรทำการจำแนกกลุ่มย่อยเพื่อวิเคราะห์แยกกัน", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p11: Multiple peaks ชี้ว่าอาจมีกลุ่มย่อยซ่อนอยู่ภายในประชากร"},
-      {"id": "C", "text": "เกิด Data Leakage ระหว่าง Train และ Test Set", "isCorrect": False, "explanation": "ผิด: รูปทรงกราฟใน EDA ไม่เกี่ยวกับ Data Leakage"},
-      {"id": "D", "text": "สามารถคำนวณค่า Mean เดียวเพื่อเป็นตัวแทนของข้อมูลทั้งหมดได้อย่างสมบูรณ์", "isCorrect": False, "explanation": "ผิด: ค่า Mean เดียวจะตกอยู่ตรงร่องกลางระหว่างสองยอด ไม่เป็นตัวแทนของกลุ่มใดเลย"}
+      {
+        "id": "A",
+        "text": "สรุปว่าเกิดความผิดพลาดในการบันทึกข้อมูล และให้ตัดข้อมูลบริเวณยอดที่สองทิ้งทันที",
+        "isCorrect": False,
+        "explanation": "ผิด: รูปทรงหลายยอดไม่ใช่ข้อผิดพลาดของระบบเสมอไป ห้ามตัดข้อมูลทิ้งโดยไม่ตรวจสอบ"
+      },
+      {
+        "id": "B",
+        "text": "ตั้งสมมติฐานว่าอาจมีกลุ่มย่อย (Sub-populations) ซ่อนอยู่ และควรแยกวิเคราะห์ตามกลุ่มย่อย",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p11: กราฟหลายยอดบ่งชี้ว่ามีกลุ่มย่อยที่มีพฤติกรรมต่างกันปะปนกันอยู่ เช่น ลูกค้าทั่วไปกับลูกค้าองค์กร"
+      },
+      {
+        "id": "C",
+        "text": "ใช้ค่าเฉลี่ยเลขคณิต (Overall Mean) เพียงค่าเดียวเป็นตัวแทนสรุปลักษณะของประชากรทั้งหมด",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่า Mean รวมจะตกลงในร่องตรงกลางระหว่างสองยอด ซึ่งไม่เป็นตัวแทนของกลุ่มใดเลย"
+      },
+      {
+        "id": "D",
+        "text": "สรุปว่าเกิดปัญหา Data Leakage ระหว่างชุดข้อมูลฝึกสอนและชุดข้อมูลทดสอบในขั้นตอนเตรียมข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: ลักษณะการกระจายตัวแบบสองยอดเป็นธรรมชาติของประชากร ไม่ใช่สัญญาณของ Data Leakage"
+      }
     ],
     "difficulty": "direct"
   },
@@ -226,12 +501,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p13-14",
     "title": "หลักการเปรียบเทียบกลุ่มอย่างเป็นธรรม (Responsible Group Comparison)",
-    "scenario": "สไลด์ Lect 05 p13-14 ระบุว่า 'เปรียบเทียบได้ ≠ รายงานได้ทันที' ก่อนจะรายงานความแตกต่างระหว่างกลุ่ม ต้องผ่านการตรวจสอบ 4 ด้านใดบ้าง?",
+    "scenario": "ตามสไลด์ Lect 05 p13-14 ก่อนนำผลการเปรียบเทียบความแตกต่างระหว่างกลุ่มไปรายงาน ทีมวิเคราะห์ต้องตรวจสอบเงื่อนไขความรับผิดชอบ 4 ประการในข้อใด?",
     "options": [
-      {"id": "A", "text": "ตรวจเฉพาะค่า p-value < 0.05 ก็เพียงพอแล้ว", "isCorrect": False, "explanation": "ผิด: สถิติความมีนัยสำคัญเพียงอย่างเดียวไม่พอ"},
-      {"id": "B", "text": "Sufficient size (ขนาดกลุ่มเพียงพอ), Differential missingness (การขาดหายต่างกัน), Representation (สัดส่วนประชากร), Privacy (ความเป็นส่วนตัว)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p14: Responsible Group Comparison ต้องตรวจทั้ง 4 ข้อก่อนเผยแพร่"},
-      {"id": "C", "text": "ตัดกลุ่มที่มีข้อมูล Missing สูงทิ้งไปโดยไม่ต้องตรวจสอบ", "isCorrect": False, "explanation": "ผิด: การตัดกลุ่มทิ้งสร้าง Selection Bias"},
-      {"id": "D", "text": "บังคับให้ข้อมูลทั้งสองกลุ่มมีขนาดตัวอย่างเท่ากันพอดี", "isCorrect": False, "explanation": "ผิด: ในชีวิตจริงกลุ่มอาจมีขนาดธรรมชาติไม่เท่ากันได้"}
+      {
+        "id": "A",
+        "text": "จำนวนกลุ่มที่เท่ากันทุกกลุ่ม, การแจกแจงแบบโค้งปกติสมบูรณ์, ค่าสหสัมพันธ์เป็นหนึ่ง, และไม่มีค่าว่างเลย",
+        "isCorrect": False,
+        "explanation": "ผิด: ข้อมูลจริงในแต่ละกลุ่มไม่จำเป็นต้องมีขนาดเท่ากันเป๊ะหรือมีการแจกแจงปกติเสมอไป"
+      },
+      {
+        "id": "B",
+        "text": "ความลึกของต้นไม้ตัดสินใจ, ค่าความแม่นยำรวม, ความเร็วในการประมวลผล, และขนาดหน่วยความจำที่ใช้",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือพารามิเตอร์ทางเทคนิคของขั้นตอน Modeling ไม่ใช่เกณฑ์เปรียบเทียบกลุ่มใน EDA"
+      },
+      {
+        "id": "C",
+        "text": "ขนาดกลุ่มเพียงพอ, สัดส่วนค่าว่างไม่ต่างกันผิดปกติ, ความเป็นตัวแทนประชากร, และการคุ้มครองความเป็นส่วนตัว",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p14: ต้องตรวจ Sufficient size, Differential missingness, Representation และ Privacy ก่อนรายงานผล"
+      },
+      {
+        "id": "D",
+        "text": "การแปลงค่าด้วย Z-Score, การตัดค่าสุดขั้วทิ้งทั้งหมด, การรวมกลุ่มย่อยเข้าด้วยกัน, และการตั้งชื่อ Persona",
+        "isCorrect": False,
+        "explanation": "ผิด: การตัดค่าสุดขั้วทิ้งทั้งหมดหรือการตั้งชื่อ Persona ทันทีไม่ใช่เกณฑ์ตรวจสอบความรับผิดชอบใน EDA"
+      }
     ],
     "difficulty": "direct"
   },
@@ -241,12 +536,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p15-16",
     "title": "Correlation vs Causation & Alternative Explanations",
-    "scenario": "นักวิเคราะห์พบว่าความถี่การเปิดแอปพลิเคชันมีค่าสหสัมพันธ์กับยอดซื้อสินค้า r = +0.88 จึงเสนอให้ส่ง Notification รัวๆ เพื่อเพิ่มยอดขาย ข้อเสนอนี้มีข้อบกพร่องอย่างไร?",
+    "scenario": "นักวิเคราะห์พบว่าความถี่ในการเปิดแอปพลิเคชันมีความสัมพันธ์เชิงบวกกับยอดสั่งซื้อ (r = +0.88) จึงสรุปทันทีว่าการบังคับส่งแจ้งเตือนให้คนเปิดแอปจะทำให้ยอดขายพุ่งขึ้น ข้อสรุปนี้บกพร่องเพราะเหตุใด?",
     "options": [
-      {"id": "A", "text": "ไม่มีข้อบกพร่อง เพราะ r = 0.88 ถือเป็นความสัมพันธ์ระดับสูงมากสรุปเหตุผลได้เลย", "isCorrect": False, "explanation": "ผิด: Correlation != Causation"},
-      {"id": "B", "text": "Correlation บอกเพียงทิศทางและความแข็งแกร่งของความสัมพันธ์ แต่ไม่ได้พิสูจน์ความเป็นเหตุและผล (Causation) อาจมีตัวแปรแทรกซ้อน (Confounding) เช่น โปรโมชันหรือความพึงพอใจของลูกค้า", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p15-16: ก่อนอ้างเหตุผลต้องตรวจ Confounding, Reverse direction, Selection effects, Coincidence"},
-      {"id": "C", "text": "ข้อบกพร่องคือค่า r ต้องเป็น +1.00 เท่านั้นจึงจะสรุปได้", "isCorrect": False, "explanation": "ผิด: แม้ r = 1.00 ก็ยังไม่ได้รับประกันความเป็นเหตุและผล"},
-      {"id": "D", "text": "ข้อบกพร่องคือควรคำนวณผ่าน Silhouette Score แทน", "isCorrect": False, "explanation": "ผิด: Silhouette ใช้กับ Clustering ไม่ใช่ความสัมพันธ์ของตัวแปร"}
+      {
+        "id": "A",
+        "text": "ค่าสหสัมพันธ์ r = +0.88 ยังไม่ถึงเกณฑ์ +1.00 จึงยังไม่สามารถยืนยันทิศทางความสัมพันธ์เชิงเส้นได้",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่า r = +0.88 บอกทิศทางความสัมพันธ์เชิงบวกที่แข็งแกร่งได้แล้ว แต่ไม่สามารถใช้พิสูจน์ความเป็นเหตุและผลได้"
+      },
+      {
+        "id": "B",
+        "text": "การวัดความสัมพันธ์ระหว่างตัวแปรต่อเนื่องสองตัวควรใช้ค่า Gini Impurity แทนค่าสหสัมพันธ์เพียร์สัน",
+        "isCorrect": False,
+        "explanation": "ผิด: Gini Impurity ใช้วัดความบริสุทธิ์ของคลาสใน Decision Tree ไม่ได้ใช้วัดสหสัมพันธ์เชิงเส้น"
+      },
+      {
+        "id": "C",
+        "text": "ค่าสหสัมพันธ์ที่เป็นบวกบ่งชี้ว่าตัวแปรทั้งสองแปรผกผันกัน ดังนั้นการส่งแจ้งเตือนจะทำให้ยอดขายลดลงในขั้นตอนการวิเคราะห์ข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่า r เป็นบวกหมายถึงแปรผันตามกัน ไม่ใช่แปรผกผันกัน"
+      },
+      {
+        "id": "D",
+        "text": "ความสัมพันธ์ทางสถิติไม่ได้พิสูจน์ความเป็นเหตุและผล เพราะอาจเกิดจากตัวแปรแทรกซ้อนหรือทิศทางย้อนกลับ",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p15-16: Correlation != Causation ต้องระวัง Confounding, Reverse direction และ Selection effects"
+      }
     ],
     "difficulty": "business_trap"
   },
@@ -258,10 +573,31 @@ questions = [
     "title": "จุดสิ้นสุดของเส้นหนวด Whisker ใน Boxplot",
     "scenario": "ในการสร้างกราฟ Boxplot ตามมาตรฐานของ Tukey เส้นหนวด (Whisker) ด้านบนจะลากไปสิ้นสุดที่ตำแหน่งใด?",
     "options": [
-      {"id": "A", "text": "ลากไปหยุดที่เส้น Upper Fence (Q3 + 1.5*IQR) พอดีเสมอ", "isCorrect": False, "explanation": "ติดกับดัก! Upper Fence เป็นเพียงเส้นเกณฑ์สมมุติ ไม่ใช่จุดสิ้นสุดของหนวด", "distractorTrap": "จำสลับระหว่าง Fence กับ Whisker"},
-      {"id": "B", "text": "ลากไปสิ้นสุดที่ 'ค่าจริงตัวสุดท้าย' ของข้อมูลที่ยังคงอยู่ภายใน Upper Fence", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p17: Whisker สิ้นสุดที่ค่าจริงตัวสุดท้ายที่ยังอยู่ภายใน Fence (Last actual observation within fence)"},
-      {"id": "C", "text": "ลากไปที่จุดข้อมูลที่สูงสุด (Maximum Value) เสมอไม่ว่าจะเป็น Outlier หรือไม่", "isCorrect": False, "explanation": "ผิด: จุดที่เกิน Fence จะถูกพล็อตแยกเป็นจุด Outlier หนวดจะไม่ลากไปถึง"},
-      {"id": "D", "text": "ลากไปที่ค่าเฉลี่ยบวกด้วย 3 เท่าของส่วนเบี่ยงเบนมาตรฐาน", "isCorrect": False, "explanation": "ผิด: Boxplot อิงค่า Quartile ไม่ได้อิง Mean และ SD"}
+      {
+        "id": "A",
+        "text": "ลากไปสิ้นสุดที่ค่าข้อมูลจริงตัวสุดท้ายที่มีค่าไม่เกินขอบเขต Upper Fence (Q3 + 1.5×IQR)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p17: เส้น Whisker จะลากไปหยุดที่ค่าสังเกตจริงตัวสุดท้ายที่ยังอยู่ภายในรั้ว (Last actual observation within fence)"
+      },
+      {
+        "id": "B",
+        "text": "ลากไปหยุดที่ตำแหน่งเส้นขอบเขตสมมติ Upper Fence (Q3 + 1.5×IQR) พอดีในทุกกรณี",
+        "isCorrect": False,
+        "explanation": "ติดกับดัก! Upper Fence เป็นเพียงเส้นเกณฑ์คัดกรองสมมติ ไม่ใช่จุดที่เส้นหนวดลากไปหยุดหากไม่มีข้อมูลอยู่ตรงนั้น",
+        "distractorTrap": "จำสลับระหว่างเส้น Fence กับจุดสิ้นสุดของ Whisker"
+      },
+      {
+        "id": "C",
+        "text": "ลากไปจนถึงค่าสูงสุดของชุดข้อมูล (Maximum Value) เสมอโดยไม่คำนึงว่าจะมีค่าผิดปกติหรือไม่",
+        "isCorrect": False,
+        "explanation": "ผิด: หากค่าสูงสุดอยู่นอกรั้ว Upper Fence จะถูกพล็อตแยกเป็นจุด Outlier และเส้นหนวดจะไม่ลากไปถึง"
+      },
+      {
+        "id": "D",
+        "text": "ลากไปหยุดที่ตำแหน่งค่าเฉลี่ยเลขคณิตบวกด้วยสองเท่าของส่วนเบี่ยงเบนมาตรฐาน (Mean + 2SD)",
+        "isCorrect": False,
+        "explanation": "ผิด: โครงสร้าง Boxplot ของ Tukey อ้างอิงระบบ Quartile และ IQR ไม่ได้ใช้ Mean และ SD"
+      }
     ],
     "difficulty": "direct"
   },
@@ -271,12 +607,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p18",
     "title": "เกณฑ์ตรวจจับ Extreme Outlier",
-    "scenario": "ตามบันทึกการเรียนการสอน (Lect 05 และ dailytest) ข้อมูลจะถูกจัดประเภทเป็น 'Extreme Outlier' เมื่อมีค่าหลุดพ้นขอบเขตใด?",
+    "scenario": "ตามเกณฑ์การคัดกรองของ Tukey ใน Lect 05 ข้อมูลจุดใดจะถูกจัดประเภทเป็น 'Extreme Outlier' (ค่าผิดปกติระดับรุนแรง)?",
     "options": [
-      {"id": "A", "text": "Q1 - 1.5*IQR ถึง Q3 + 1.5*IQR", "isCorrect": False, "explanation": "ผิด: นั่นคือขอบเขต Fence ปกติ สำหรับ Potential Outlier"},
-      {"id": "B", "text": "น้อยกว่า Q1 - 3.0*IQR หรือมากกว่า Q3 + 3.0*IQR", "isCorrect": True, "explanation": "ถูกต้องตามโน้ต Lect 05: ขอบเขต 1.5*IQR คือ Potential Outlier ส่วน 3.0*IQR คือเกณฑ์ของ Extreme Outlier"},
-      {"id": "C", "text": "ค่าที่เกิน 2 เท่าของค่ามัธยฐาน", "isCorrect": False, "explanation": "ผิด: ไม่มีเกณฑ์ 2 เท่าของมัธยฐาน"},
-      {"id": "D", "text": "ค่าที่มี Z-Score เกิน 1.5", "isCorrect": False, "explanation": "ผิด: Tukey Fence อิง IQR ไม่ใช่อิง Z-Score"}
+      {
+        "id": "A",
+        "text": "ข้อมูลที่มีค่าน้อยกว่า Q1 - 1.5×IQR หรือมากกว่า Q3 + 1.5×IQR",
+        "isCorrect": False,
+        "explanation": "ผิด: ขอบเขต 1.5×IQR เป็นเกณฑ์เริ่มต้นสำหรับคัดกรอง Potential (Mild) Outlier ทั่วไป"
+      },
+      {
+        "id": "B",
+        "text": "ข้อมูลที่มีค่าน้อยกว่า Q1 - 3.0×IQR หรือมากกว่า Q3 + 3.0×IQR",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามเนื้อหา Lect 05: ระยะ 1.5×IQR คือขอบเขตของ Potential Outlier ส่วนระยะ 3.0×IQR คือเกณฑ์ของ Extreme Outlier"
+      },
+      {
+        "id": "C",
+        "text": "ข้อมูลที่มีค่าน้อยกว่า Q1 - 2.0×IQR หรือมากกว่า Q3 + 2.0×IQR",
+        "isCorrect": False,
+        "explanation": "ผิด: มาตรฐานของ Tukey ใช้ตัวคูณ 1.5 สำหรับ Inner Fence และ 3.0 สำหรับ Outer Fence"
+      },
+      {
+        "id": "D",
+        "text": "ข้อมูลที่มีค่าน้อยกว่า Q2 - 3.0×IQR หรือมากกว่า Q2 + 3.0×IQR",
+        "isCorrect": False,
+        "explanation": "ผิด: การวัดรั้วต้องวัดออกจากขอบกล่อง Q1 และ Q3 ไม่ใช่วัดออกจากค่ามัธยฐาน Q2"
+      }
     ],
     "difficulty": "direct"
   },
@@ -286,12 +642,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p23",
     "title": "วินัยการเลือกชุดสี (Palette Discipline) ใน Visualization",
-    "scenario": "ข้อใดจับคู่ประเภทของชุดสี (Color Palette) กับลักษณะของข้อมูลได้ถูกต้องตามหลักการออกแบบสถิติใน Lect 05 p23?",
+    "scenario": "ข้อใดจับคู่ประเภทของชุดสี (Color Palette) กับธรรมชาติของข้อมูลได้ถูกต้องตามหลักการสื่อสารข้อมูลใน Lect 05 p23?",
     "options": [
-      {"id": "A", "text": "ข้อมูลหมวดหมู่ไม่มีลำดับ -> Qualitative | ข้อมูลตัวเลขน้อยไปมาก -> Sequential | ข้อมูลเบี่ยงเบนจากจุดกึ่งกลาง -> Diverging", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p23: Qualitative (หมวดหมู่), Sequential (ไล่ระดับค่า), Diverging (เบี่ยงจาก midpoint)"},
-      {"id": "B", "text": "ข้อมูลหมวดหมู่ไม่มีลำดับ -> Sequential | ข้อมูลตัวเลขน้อยไปมาก -> Qualitative | ข้อมูลเบี่ยงเบน -> Diverging", "isCorrect": False, "explanation": "ผิด: สลับระหว่าง Qualitative กับ Sequential"},
-      {"id": "C", "text": "ข้อมูลตัวเลขน้อยไปมาก -> Diverging | ข้อมูลเบี่ยงเบน -> Sequential | หมวดหมู่ -> Qualitative", "isCorrect": False, "explanation": "ผิด: Diverging ใช้เมื่อมี meaningful midpoint"},
-      {"id": "D", "text": "ใช้สีรุ้ง (Rainbow Palette) กับข้อมูลทุกชนิดเพื่อดึงดูดสายตา", "isCorrect": False, "explanation": "ผิด: Rainbow Palette บิดเบือนการรับรู้ของมนุษย์และไม่เป็นไปตามหลัก Accessibility"}
+      {
+        "id": "A",
+        "text": "ข้อมูลหมวดหมู่ไร้ลำดับใช้ Sequential | ข้อมูลตัวเลขเรียงลำดับใช้ Qualitative | ข้อมูลมีจุดกึ่งกลางใช้ Diverging",
+        "isCorrect": False,
+        "explanation": "ผิด: สลับการใช้งานระหว่างชุดสี Sequential กับ Qualitative"
+      },
+      {
+        "id": "B",
+        "text": "ข้อมูลหมวดหมู่ไร้ลำดับใช้ Qualitative | ข้อมูลตัวเลขเรียงลำดับใช้ Diverging | ข้อมูลมีจุดกึ่งกลางใช้ Sequential",
+        "isCorrect": False,
+        "explanation": "ผิด: สลับการใช้งานระหว่างชุดสี Diverging กับ Sequential"
+      },
+      {
+        "id": "C",
+        "text": "ข้อมูลหมวดหมู่ไร้ลำดับใช้ Qualitative | ข้อมูลตัวเลขเรียงลำดับใช้ Sequential | ข้อมูลมีจุดกึ่งกลางใช้ Diverging",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p23: Qualitative แยกหมวดหมู่, Sequential ไล่ระดับมากน้อย, Diverging เน้นการเบี่ยงเบนออกจากจุดกึ่งกลาง"
+      },
+      {
+        "id": "D",
+        "text": "ข้อมูลหมวดหมู่ไร้ลำดับใช้ Diverging | ข้อมูลตัวเลขเรียงลำดับใช้ Sequential | ข้อมูลมีจุดกึ่งกลางใช้ Qualitative",
+        "isCorrect": False,
+        "explanation": "ผิด: ข้อมูลหมวดหมู่ต้องใช้สีที่แตกต่างกันชัดเจน (Qualitative) และข้อมูลมีจุดกึ่งกลางต้องใช้ Diverging"
+      }
     ],
     "difficulty": "direct"
   },
@@ -301,12 +677,32 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p25",
     "title": "หลักการ Redundant Encoding และ Accessibility",
-    "scenario": "ข้อความ 'Never rely on color alone' ในการสื่อสารข้อมูล หมายถึงข้อปฏิบัติใดตามสไลด์ Lect 05 p25?",
+    "scenario": "หลักการ 'Never rely on color alone' ในการออกแบบกราฟตามสไลด์ Lect 05 p25 หมายถึงแนวทางปฏิบัติในข้อใด?",
     "options": [
-      {"id": "A", "text": "ห้ามใช้สีในกราฟเด็ดขาด ให้ใช้ภาพขาวดำล้วนเท่านั้น", "isCorrect": False, "explanation": "ผิด: สามารถใช้สีได้ แต่ห้ามใช้เป็นตัวแยกแยะเพียงอย่างเดียว"},
-      {"id": "B", "text": "ต้องใช้สีควบคู่กับสัญลักษณ์อื่นเสมอ (Redundant Encoding เช่น สี + รูปร่าง/ป้ายกำกับ/ชนิดเส้น) พร้อมจำลองมุมมองผู้มีความบกพร่องทางสายตา (CVD)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p25: Redundant Encoding ป้องกันความเข้าใจผิดและรองรับ Color-vision deficiency"},
-      {"id": "C", "text": "ใช้คู่สีแดงและเขียวเป็นตัวแยกแยะหลักในทุกกรณี", "isCorrect": False, "explanation": "ผิด: คู่สีแดง-เขียวเป็นปัญหาหลักของผู้มีภาวะตาบอดสี (Red-Green CVD)"},
-      {"id": "D", "text": "ให้ผู้ใช้งานปรับแต่งสีหน้าจอคอมพิวเตอร์ด้วยตนเอง", "isCorrect": False, "explanation": "ผิด: เป็นหน้าที่ของผู้ออกแบบกราฟ"}
+      {
+        "id": "A",
+        "text": "หลีกเลี่ยงการใช้สีในแผนภูมิทุกชนิด และเปลี่ยนไปใช้การแรเงาขาวดำแทนเพื่อความคมชัดในการพิมพ์ตามเกณฑ์การวัดผลทางสถิติ",
+        "isCorrect": False,
+        "explanation": "ผิด: สามารถใช้สีช่วยสื่อสารได้ตามปกติ แต่ห้ามใช้สีเป็นช่องทางเดียวในการแยกแยะข้อมูล"
+      },
+      {
+        "id": "B",
+        "text": "เพิ่มจำนวนเฉดสีในกราฟให้หลากหลายที่สุด เพื่อให้แต่ละจุดข้อมูลมีสีเฉพาะตัวที่ไม่ซ้ำกันเลย",
+        "isCorrect": False,
+        "explanation": "ผิด: การใช้สีมากเกินไปทำให้เกิดความสับสนทางสายตาและทำลายลำดับความสำคัญของข้อมูล"
+      },
+      {
+        "id": "C",
+        "text": "กำหนดให้ใช้คู่สีแดงและสีเขียวเป็นมาตรฐานหลักในการเปรียบเทียบผลลัพธ์บวกและลบในทุกแผนภูมิ",
+        "isCorrect": False,
+        "explanation": "ผิด: คู่สีแดง-เขียวเป็นปัญหาหลักของผู้มีภาวะตาบอดสี (Red-Green Color Vision Deficiency)"
+      },
+      {
+        "id": "D",
+        "text": "ใช้สีควบคู่กับรหัสภาพอื่น เช่น รูปร่างจุด ชนิดเส้น หรือป้ายกำกับตรง เพื่อรองรับผู้มีภาวะตาบอดสี",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p25: การทำ Redundant Encoding ช่วยให้ผู้อ่านและผู้มีภาวะ CVD แยกแยะข้อมูลได้โดยไม่พึ่งสีเพียงอย่างเดียว"
+      }
     ],
     "difficulty": "direct"
   },
@@ -316,29 +712,67 @@ questions = [
     "moduleRef": "module-04-eda-outliers",
     "slideRef": "Lect 05 p28",
     "title": "โครงสร้างการเล่าเรื่องข้อมูล (Data Story)",
-    "scenario": "โครงสร้างการนำเสนอ Data Story ที่น่าเชื่อถือตามมาตรฐานใน Lect 05 p28 ประกอบด้วย 5 องค์ประกอบที่เรียงตามลำดับใด?",
+    "scenario": "โครงสร้างการนำเสนอ Data Story ตามมาตรฐานในสไลด์ Lect 05 p28 ประกอบด้วย 5 องค์ประกอบที่เรียงลำดับอย่างไร?",
     "options": [
-      {"id": "A", "text": "Algorithm -> Hyperparameters -> Training -> Testing -> Accuracy", "isCorrect": False, "explanation": "ผิด: นั่นคือขั้นตอนทางเทคนิค ไม่ใช่ Data Story"},
-      {"id": "B", "text": "Context (บริบท) -> Evidence (หลักฐาน) -> Insight (ข้อค้นพบ) -> Limitation (ข้อจำกัด) -> Implication (ข้อเสนอแนะ)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 05 p28: Data Story ต้องระบุบริบท หลักฐาน ข้อค้นพบ ข้อจำกัด และข้อเสนอแนะทางธุรกิจ"},
-      {"id": "C", "text": "Problem -> Code -> Dashboard -> Profit -> Expansion", "isCorrect": False, "explanation": "ผิด: ขาดหลักฐานและข้อจำกัด"},
-      {"id": "D", "text": "Descriptive -> Diagnostic -> Predictive -> Prescriptive -> AI", "isCorrect": False, "explanation": "ผิด: นั่นคือ Analytics Continuum"}
+      {
+        "id": "A",
+        "text": "Context -> Evidence -> Insight -> Limitation -> Implication",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 05 p28: เริ่มจากบริบท -> หลักฐานข้อมูล -> ข้อค้นพบ -> ข้อจำกัดความไม่แน่นอน -> ข้อเสนอแนะเพื่อการตัดสินใจ"
+      },
+      {
+        "id": "B",
+        "text": "Evidence -> Insight -> Context -> Implication -> Limitation",
+        "isCorrect": False,
+        "explanation": "ผิด: ต้องปู Context ก่อนแสดงหลักฐาน และต้องแจ้ง Limitation ก่อนสรุปเป็น Implication"
+      },
+      {
+        "id": "C",
+        "text": "Insight -> Implication -> Context -> Evidence -> Limitation",
+        "isCorrect": False,
+        "explanation": "ผิด: การข้ามไปสรุปข้อเสนอแนะก่อนแสดงบริบทและหลักฐานทำให้ขาดความน่าเชื่อถือ"
+      },
+      {
+        "id": "D",
+        "text": "Context -> Insight -> Implication -> Evidence -> Limitation",
+        "isCorrect": False,
+        "explanation": "ผิด: Insight ต้องเกิดจากการวิเคราะห์ Evidence ตามลำดับ"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 05: Modeling Framework & Setup (Lect 06) ---
   {
     "id": "q26-ml-decision-need",
     "questionNumber": 22,
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p4-5",
     "title": "การตัดสินใจความจำเป็นในการใช้ Machine Learning",
-    "scenario": "หลักการ 'Start with the decision need — not with machine learning' ชี้ว่าปัญหาข้อใดไม่จำเป็นต้องใช้ Machine Learning?",
+    "scenario": "ตามหลักการ 'Start with the decision need — not with machine learning' โจทย์ในข้อใดไม่จำเป็นต้องใช้ Machine Learning?",
     "options": [
-      {"id": "A", "text": "การทำนายว่าลูกค้าคนใดมีโอกาสหยุดซื้อสินค้าในอีก 60 วันข้างหน้า", "isCorrect": False, "explanation": "ผิด: เป็นงาน Predictive Classification ที่ควรใช้ ML"},
-      {"id": "B", "text": "การประมาณการยอดใช้จ่ายล่วงหน้าของลูกค้าใหม่ในไตรมาสถัดไป", "isCorrect": False, "explanation": "ผิด: เป็นงาน Predictive Regression ที่ควรใช้ ML"},
-      {"id": "C", "text": "การหามูลค่าคำสั่งซื้อมัธยฐานของแต่ละสาขาในเดือนที่ผ่านมา", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p4-5: เป็นเพียง Descriptive Summary/Visualization ตอบได้ทันทีโดยไม่ต้องใช้ ML"},
-      {"id": "D", "text": "การตรวจจับธุรกรรมการเงินที่ผิดปกติและอาจเป็นการทุจริตแบบเรียลไทม์", "isCorrect": False, "explanation": "ผิด: เป็นงาน Anomaly Detection/Unsupervised ที่ควรใช้ ML"}
+      {
+        "id": "A",
+        "text": "การทำนายรายชื่อลูกค้าที่มีความเสี่ยงจะยกเลิกบริการภายในอีก 60 วันข้างหน้า",
+        "isCorrect": False,
+        "explanation": "ผิด: เป็นการพยากรณ์เหตุการณ์อนาคตรายบุคคล (Predictive Classification) ซึ่งเหมาะกับการใช้ ML"
+      },
+      {
+        "id": "B",
+        "text": "การคำนวณยอดสั่งซื้อมัธยฐานและสัดส่วนลูกค้าแยกตามภูมิภาคของไตรมาสที่ผ่านมา",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p4-5: เป็นการสรุปข้อมูลในอดีต (Descriptive Summary / EDA) สามารถหาคำตอบได้โดยตรงโดยไม่ต้องพึ่ง ML"
+      },
+      {
+        "id": "C",
+        "text": "การประเมินวงเงินสินเชื่อที่เหมาะสมสำหรับผู้สมัครรายใหม่จากประวัติพฤติกรรมการเงิน",
+        "isCorrect": False,
+        "explanation": "ผิด: เป็นการพยากรณ์ค่าต่อเนื่องหรือความเสี่ยงรายบุคคลสำหรับข้อมูลใหม่ที่ไม่เคยเห็นมาก่อน"
+      },
+      {
+        "id": "D",
+        "text": "การคัดกรองธุรกรรมบัตรเครดิตที่มีรูปแบบผิดปกติและเข้าข่ายการทุจริตแบบเรียลไทม์",
+        "isCorrect": False,
+        "explanation": "ผิด: เป็นงานตรวจจับความผิดปกติที่ซับซ้อนในข้อมูลใหม่ ซึ่งจำเป็นต้องใช้โมเดล"
+      }
     ],
     "difficulty": "direct"
   },
@@ -348,12 +782,32 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p7-8",
     "title": "ลำดับชั้น 5 ระดับจากโจทย์สู่โมเดล",
-    "scenario": "ลำดับ 5 ระดับที่ไม่ควรสลับขั้นตอนในการพัฒนาแบบจำลองตามสไลด์ Lect 06 คือข้อใด?",
+    "scenario": "ตามกรอบแนวคิดในสไลด์ Lect 06 p7-8 ลำดับชั้น 5 ระดับในการเปลี่ยนโจทย์ปัญหาให้กลายเป็นโมเดลที่พร้อมใช้งานคือข้อใด?",
     "options": [
-      {"id": "A", "text": "Algorithm -> Modeling Task -> Problem -> Learning Setting -> Trained Model", "isCorrect": False, "explanation": "ผิด: ต้องเริ่มจาก Problem ไม่ใช่เริ่มจาก Algorithm"},
-      {"id": "B", "text": "Problem -> Learning Setting -> Modeling Task -> Algorithm -> Trained Model", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p7-8: เริ่มจากนิยามปัญหา -> กำหนด setting -> เลือก task -> เลือก algorithm -> ฝึกสอนจนได้ trained model"},
-      {"id": "C", "text": "Modeling Task -> Algorithm -> Problem -> Trained Model -> Evaluation", "isCorrect": False, "explanation": "ผิด: ขาด Learning Setting"},
-      {"id": "D", "text": "Problem -> Algorithm -> Code -> Parameters -> Deployment", "isCorrect": False, "explanation": "ผิด: ไม่ตรงกับกรอบ 5 ระดับในสไลด์"}
+      {
+        "id": "A",
+        "text": "Algorithm -> Modeling Task -> Problem -> Learning Setting -> Trained Model",
+        "isCorrect": False,
+        "explanation": "ผิด: ห้ามเริ่มต้นจากการเลือก Algorithm ก่อนเข้าใจปัญหา"
+      },
+      {
+        "id": "B",
+        "text": "Problem -> Modeling Task -> Algorithm -> Learning Setting -> Trained Model",
+        "isCorrect": False,
+        "explanation": "ผิด: ต้องระบุ Learning Setting (เช่น Supervised/Unsupervised) ก่อนกำหนด Modeling Task"
+      },
+      {
+        "id": "C",
+        "text": "Problem -> Learning Setting -> Modeling Task -> Algorithm -> Trained Model",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p7-8: เริ่มจาก Problem -> Learning Setting -> Modeling Task -> Algorithm -> Trained Model"
+      },
+      {
+        "id": "D",
+        "text": "Learning Setting -> Problem -> Modeling Task -> Trained Model -> Algorithm",
+        "isCorrect": False,
+        "explanation": "ผิด: Problem ต้องเป็นจุดเริ่มต้นเสมอ และ Trained Model คือผลลัพธ์สุดท้ายหลังฝึกสอน Algorithm"
+      }
     ],
     "difficulty": "direct"
   },
@@ -363,12 +817,32 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p9",
     "title": "ความแตกต่างระหว่าง Algorithm กับ Trained Model",
-    "scenario": "ข้อใดระบุความแตกต่างระหว่าง 'Algorithm' และ 'Trained Model' ได้ถูกต้องตามหลักวิทยาศาสตร์ข้อมูล?",
+    "scenario": "ข้อใดอธิบายความแตกต่างระหว่าง 'Algorithm' และ 'Trained Model' ได้ถูกต้องตามหลักการใน Lect 06 p9?",
     "options": [
-      {"id": "A", "text": "Algorithm คือโมเดลที่บันทึกเป็นไฟล์พร้อมใช้งาน ส่วน Trained Model คือโค้ดที่ยังไม่ได้รัน", "isCorrect": False, "explanation": "ผิด: สลับความหมายกัน"},
-      {"id": "B", "text": "Algorithm คือระเบียบวิธีเรียนรู้ทั่วไปที่ยังไม่ได้ผ่านการฝึกสอน ส่วน Trained Model คือผลลัพธ์ที่ได้หลังนำ Algorithm ไป Fit กับชุดข้อมูลเฉพาะจนได้ rules/parameters", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p9: Training turns an Algorithm into a Trained Model"},
-      {"id": "C", "text": "ทั้งสองคำมีความหมายเหมือนกันทุกประการ ใช้แทนกันได้ตามสะดวก", "isCorrect": False, "explanation": "ผิด: มีความหมายต่างกันในระดับสถาปัตยกรรม"},
-      {"id": "D", "text": "Algorithm ใช้ได้เฉพาะกับข้อมูลที่เป็นรูปภาพเท่านั้น", "isCorrect": False, "explanation": "ผิด: Algorithm ใช้ได้กับข้อมูลทุกชนิด"}
+      {
+        "id": "A",
+        "text": "Algorithm คือผลลัพธ์หลังการฝึกสอนด้วยข้อมูลจริง ส่วน Trained Model คือสมการตั้งต้นก่อนเริ่มประมวลผล",
+        "isCorrect": False,
+        "explanation": "ผิด: สลับความหมายกันระหว่างกระบวนการเรียนรู้กับผลลัพธ์หลังฝึกสอน"
+      },
+      {
+        "id": "B",
+        "text": "Algorithm ใช้สำหรับงาน Unsupervised Learning เท่านั้น ส่วน Trained Model ใช้สำหรับงาน Supervised Learningในกระบวนการเตรียมชุดข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: ทั้งการเรียนรู้แบบมีผู้สอนและไม่มีผู้สอนต่างก็มีทั้งส่วนที่เป็น Algorithm และ Trained Model"
+      },
+      {
+        "id": "C",
+        "text": "Algorithm คือขั้นตอนการเตรียมข้อมูลดิบ ส่วน Trained Model คือรายงานสรุปผลการประเมินความแม่นยำ",
+        "isCorrect": False,
+        "explanation": "ผิด: การเตรียมข้อมูลและการทำรายงานประเมินผลเป็นคนละส่วนกับตัวโมเดล"
+      },
+      {
+        "id": "D",
+        "text": "Algorithm คือระเบียบวิธีการเรียนรู้ทั่วไป ส่วน Trained Model คือผลลัพธ์ที่ได้หลังนำข้อมูลไปฝึกสอนจนได้พารามิเตอร์",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p9: การทำ Training บนชุดข้อมูลจะเปลี่ยน Algorithm ให้กลายเป็น Trained Model ที่มีกฎหรือพารามิเตอร์เฉพาะ"
+      }
     ],
     "difficulty": "direct"
   },
@@ -378,12 +852,32 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p12-13",
     "title": "ช่วงเวลาของการสร้าง Feature (Observation Date Rule)",
-    "scenario": "ในการสร้างชุดข้อมูลเพื่อทำนายว่า 'ลูกค้าจะหยุดซื้อสินค้าภายใน 60 วันข้างหน้าหรือไม่' ตัวแปร Feature ที่นำมาฝึกสอนโมเดลจะต้องถูกสร้างจากข้อมูลช่วงเวลาใด?",
+    "scenario": "ในการสร้างชุดข้อมูลเพื่อทำนายว่า 'ลูกค้าจะหยุดซื้อสินค้าภายใน 60 วันข้างหน้าหรือไม่' ตัวแปรต้น (Features) ต้องดึงมาจากช่วงเวลาใด?",
     "options": [
-      {"id": "A", "text": "ข้อมูลพฤติกรรมที่เกิดขึ้นหลังวันสังเกตการณ์ (Observation Date)", "isCorrect": False, "explanation": "ผิด: นั่นคือช่วงเวลาของ Target จะเกิด Data Leakage ทันที"},
-      {"id": "B", "text": "ข้อมูลพฤติกรรมที่มีอยู่จริง 'ก่อนหรือ ณ วันสังเกตการณ์ (Observation Date)' เท่านั้น", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p12-13: Feature ต้องเป็นข้อมูลที่มีอยู่ก่อนเวลาทำนายเท่านั้น"},
-      {"id": "C", "text": "ข้อมูลเฉลี่ยตลอดทั้งปีถัดไปเพื่อความสมบูรณ์", "isCorrect": False, "explanation": "ผิด: เป็นข้อมูลจากอนาคต"},
-      {"id": "D", "text": "ข้อมูลใดก็ได้ที่มีอยู่ในตารางฐานข้อมูล ณ วันที่วิศวกรเขียนโค้ด", "isCorrect": False, "explanation": "ผิด: อาจมีข้อมูลหลังเหตุการณ์ปะปนเข้ามา"}
+      {
+        "id": "A",
+        "text": "ข้อมูลพฤติกรรมที่เกิดขึ้นก่อนหรือ ณ วันสังเกตการณ์ (Observation Date) เท่านั้น",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p12-13: ตัวแปรต้นทุกตัวต้องมีอยู่จริงก่อนหรือ ณ จังหวะเวลาที่สั่งทำนาย เพื่อป้องกัน Data Leakage"
+      },
+      {
+        "id": "B",
+        "text": "ข้อมูลพฤติกรรมที่เกิดขึ้นในช่วง 60 วันหลังวันสังเกตการณ์ (Outcome Window)",
+        "isCorrect": False,
+        "explanation": "ผิด: ช่วงหลังวันสังเกตการณ์คือช่วงเวลาของตัวแปรเป้าหมาย (Target/Outcome) ห้ามนำมาสร้างเป็น Feature"
+      },
+      {
+        "id": "C",
+        "text": "ข้อมูลพฤติกรรมเฉลี่ยรวมทั้งก่อนและหลังวันสังเกตการณ์อย่างละ 30 วันเท่ากัน",
+        "isCorrect": False,
+        "explanation": "ผิด: การดึงข้อมูลหลังวันสังเกตการณ์แม้เพียงวันเดียวก็ทำให้เกิดการรั่วไหลของข้อมูลอนาคต"
+      },
+      {
+        "id": "D",
+        "text": "ข้อมูลทุกช่วงเวลาที่มีอยู่ในคลังข้อมูล ณ วันที่ทีมวิศวกรเริ่มเขียนโค้ดฝึกสอนโมเดล",
+        "isCorrect": False,
+        "explanation": "ผิด: ในคลังข้อมูลอาจมีเหตุการณ์ที่เกิดหลัง Observation Date บันทึกไว้แล้ว ต้องกรองตามเวลาอย่างเคร่งครัด"
+      }
     ],
     "difficulty": "direct"
   },
@@ -393,12 +887,33 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p15",
     "title": "เกณฑ์จำแนก Supervised vs Unsupervised Learning",
-    "scenario": "ข้อใดคือเกณฑ์สำคัญที่สุดในการจำแนกระหว่าง Supervised Learning และ Unsupervised Learning?",
+    "scenario": "เกณฑ์สำคัญที่สุดที่ใช้แยกความแตกต่างระหว่าง Supervised Learning และ Unsupervised Learning คือข้อใด?",
     "options": [
-      {"id": "A", "text": "Supervised คือมีมนุษย์คอยควบคุมระหว่างที่โมเดลกำลังเทรน ส่วน Unsupervised ปล่อยให้รันอัตโนมัติ", "isCorrect": False, "explanation": "ติดกับดัก! สไลด์ระบุชัดเจนว่า 'Supervised != มีคนเฝ้าระหว่าง training'", "distractorTrap": "แปลคำว่า Supervised ตรงตัวว่ามีผู้ควบคุม"},
-      {"id": "B", "text": "แยกกันที่ 'มี Labeled Target (ตัวแปรเป้าหมาย y ที่ทราบค่า)' ในชุดข้อมูลฝึกสอนหรือไม่", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p15: Supervised มี Known Target ส่วน Unsupervised ไม่มีเป้าหมายเฉลยล่วงหน้า"},
-      {"id": "C", "text": "Supervised ใช้กับข้อมูลตัวเลข ส่วน Unsupervised ใช้กับข้อมูลตัวหนังสือ", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับชนิดข้อมูล"},
-      {"id": "D", "text": "Supervised ไม่มีความเสี่ยงต่อการเกิด Overfitting", "isCorrect": False, "explanation": "ผิด: Supervised สามารถเกิด Overfitting ได้เสมอ"}
+      {
+        "id": "A",
+        "text": "การมีผู้เชี่ยวชาญคอยตรวจสอบและปรับแก้พารามิเตอร์ด้วยตนเองในทุกรอบของการฝึกสอน",
+        "isCorrect": False,
+        "explanation": "ติดกับดัก! สไลด์ Lect 06 p15 ระบุชัดเจนว่า Supervised ไม่ได้แปลว่ามีคนนั่งเฝ้าระหว่างเทรน",
+        "distractorTrap": "แปลคำว่า Supervised ตรงตัวว่ามีคนคอยคุม"
+      },
+      {
+        "id": "B",
+        "text": "การมีตัวแปรเป้าหมาย (Labeled Target y) ที่ทราบคำตอบชัดเจนอยู่ในชุดข้อมูลสำหรับฝึกสอน",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p15: Supervised Learning เรียนรู้จากข้อมูลที่มี Target กำกับ ส่วน Unsupervised ไม่มี Target"
+      },
+      {
+        "id": "C",
+        "text": "ชนิดของตัวแปรนำเข้า โดย Supervised ใช้กับข้อมูลตัวเลขและ Unsupervised ใช้กับข้อมูลข้อความ",
+        "isCorrect": False,
+        "explanation": "ผิด: ทั้งสองรูปแบบสามารถประมวลผลข้อมูลตัวเลข หมวดหมู่ หรือข้อความได้ตามอัลกอริทึมที่เลือก"
+      },
+      {
+        "id": "D",
+        "text": "ความจำเป็นในการแบ่งชุดข้อมูล ซึ่ง Unsupervised บังคับต้องใช้ Test Set เสมอในการคำนวณความแม่นยำ",
+        "isCorrect": False,
+        "explanation": "ผิด: Unsupervised ไม่มีคลาสเฉลยสำหรับคำนวณ Accuracy แบบ Supervised"
+      }
     ],
     "difficulty": "direct"
   },
@@ -408,12 +923,32 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p16",
     "title": "คลัสเตอร์ไม่ใช่คลาสสำเร็จรูป (Cluster != Predefined Class)",
-    "scenario": "ทำไมสไลด์ Lect 06 p16 จึงย้ำเตือนว่า 'Cluster != Predefined class != Ground truth'?",
+    "scenario": "เหตุใดสไลด์ Lect 06 p16 จึงเน้นย้ำว่าผลลัพธ์จากการทำ Clustering ไม่เท่ากับ Predefined Class และไม่เท่ากับ Ground Truth?",
     "options": [
-      {"id": "A", "text": "เพราะ Clustering เพียงแค่เสนอแนะกลุ่มผู้สมัคร (Candidate Groups) ตามฟีเจอร์ที่เลือก ไม่ได้รับรองว่ากลุ่มนั้นเป็นความจริงแท้ในธรรมชาติหรือธุรกิจ", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p16: Clustering is subjective กลุ่มขึ้นกับฟีเจอร์ที่เลือกและไม่มี ground truth ยืนยัน"},
-      {"id": "B", "text": "เพราะผลการรัน Clustering มีข้อผิดพลาดทางคณิตศาสตร์เสมอ", "isCorrect": False, "explanation": "ผิด: การคำนวณทางคณิตศาสตร์ถูกต้องตามสูตร"},
-      {"id": "C", "text": "เพราะต้องส่งให้โมเดล Decision Tree ทำนายซ้ำอีกครั้งก่อนจึงจะเป็น Class ได้", "isCorrect": False, "explanation": "ผิด: ไม่จำเป็นต้องใช้ Decision Tree มาเปลี่ยนชื่อ"},
-      {"id": "D", "text": "เพราะโมเดล Clustering ใช้งานจริงในภาคธุรกิจไม่ได้", "isCorrect": False, "explanation": "ผิด: Clustering ใช้งานอย่างแพร่หลายในงาน Customer Segmentation"}
+      {
+        "id": "A",
+        "text": "เพราะอัลกอริทึมจัดกลุ่มมีความคลาดเคลื่อนทางพีชคณิตสูง จึงต้องนำผลลัพธ์ไปเทรนซ้ำด้วยโมเดลจำแนกประเภทตามหลักการประเมินผลมาตรฐาน",
+        "isCorrect": False,
+        "explanation": "ผิด: ประเด็นไม่ได้อยู่ที่ความผิดพลาดของการคำนวณ แต่อยู่ที่นิยามความหมายของกลุ่มที่ขึ้นกับตัวแปรที่เลือก"
+      },
+      {
+        "id": "B",
+        "text": "เพราะผลลัพธ์จาก Clustering ไม่สามารถนำไปใช้วางแผนกลยุทธ์ทางการตลาดหรือแบ่งกลุ่มลูกค้าในชีวิตจริงได้",
+        "isCorrect": False,
+        "explanation": "ผิด: สามารถนำไปใช้ทำ Customer Segmentation ได้ดีหากผ่านการทำ Cluster Profiling อย่างถูกต้อง"
+      },
+      {
+        "id": "C",
+        "text": "เพราะการจัดกลุ่มเป็นเพียงการสำรวจโครงสร้างความคล้ายคลึงตามตัวแปรที่เลือก ไม่ใช่คลาสความจริงที่มีอยู่ตายตัว",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p16: ผลลัพธ์ของ Clustering เปลี่ยนไปตามฟีเจอร์และการตั้งค่า จึงเป็นเพียง Candidate Groups ที่ต้องตีความต่อ"
+      },
+      {
+        "id": "D",
+        "text": "เพราะจำนวนกลุ่มที่ได้จากการทำ Clustering จะเปลี่ยนแปลงแบบสุ่มทุกครั้งที่เปิดอ่านไฟล์ข้อมูลเดิม",
+        "isCorrect": False,
+        "explanation": "ผิด: หากกำหนดค่าเริ่มต้น (Random Seed) และพารามิเตอร์คงที่ ผลลัพธ์จะสามารถทำซ้ำได้"
+      }
     ],
     "difficulty": "direct"
   },
@@ -423,12 +958,32 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p18",
     "title": "การทดสอบ Feature Leakage ในขั้นตอน Feature Engineering",
-    "scenario": "วิศวกรข้อมูลต้องการตรวจสอบว่าฟีเจอร์ใดมีปัญหาข้อมูลอนาคตรั่วไหล (Data Leakage) หรือไม่ คำถามทดสอบ (Leakage Test) ที่ถูกต้องคือข้อใด?",
+    "scenario": "เมื่อต้องการตรวจสอบว่าตัวแปรที่สร้างขึ้นใหม่มีความเสี่ยงเกิดปัญหา Data Leakage หรือไม่ ควรถามคำถามตรวจสอบตามข้อใด?",
     "options": [
-      {"id": "A", "text": "'ฟีเจอร์นี้มีค่าความสัมพันธ์กับตัวแปรอื่นเกิน 0.8 หรือไม่?'", "isCorrect": False, "explanation": "ผิด: นั่นคือการเช็ก Multicollinearity"},
-      {"id": "B", "text": "'ข้อมูลนี้มีอยู่จริง ณ จังหวะเวลาที่โมเดลต้องสร้างคำทำนาย (Prediction Time) ในการใช้งานจริงหรือไม่?'", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p18: ถ้าฟีเจอร์นั้นเกิดหลังเวลาทำนาย (เช่น purchases_next_60_days) จะเกิด Leakage ทันที"},
-      {"id": "C", "text": "'ฟีเจอร์นี้มีค่าขาดหายเกิน 20% หรือไม่?'", "isCorrect": False, "explanation": "ผิด: นั่นคือการเช็ก Missing Value"},
-      {"id": "D", "text": "'ฟีเจอร์นี้ถูกประมวลผลบน RAM หรือ SSD?'", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับสถาปัตยกรรมฮาร์ดแวร์"}
+      {
+        "id": "A",
+        "text": "ตัวแปรนี้มีค่าสหสัมพันธ์กับตัวแปรต้นตัวอื่นในตารางเกินกว่าเกณฑ์ 0.80 หรือไม่?",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือการตรวจสอบปัญหาความซ้ำซ้อนของตัวแปรต้น (Multicollinearity)"
+      },
+      {
+        "id": "B",
+        "text": "ตัวแปรนี้มีสัดส่วนของข้อมูลที่สูญหาย (Missing Values) เกินกว่าเกณฑ์ที่กำหนดหรือไม่?",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือการตรวจสอบความสมบูรณ์ของข้อมูลในขั้น Data Cleaning"
+      },
+      {
+        "id": "C",
+        "text": "ตัวแปรนี้ผ่านการแปลงสเกลด้วยวิธี Min-Max หรือ Z-Score Standardization มาแล้วหรือไม่?สำหรับการประมวลผลในระบบจริง",
+        "isCorrect": False,
+        "explanation": "ผิด: การทำหรือไม่ทำ Feature Scaling เป็นเรื่องของการปรับสเกล ไม่ใช่เกณฑ์ตัดสินว่าตัวแปรนั้นเป็นข้อมูลจากอนาคตหรือไม่"
+      },
+      {
+        "id": "D",
+        "text": "ตัวแปรนี้จะมีข้อมูลพร้อมใช้งานจริง ณ จังหวะเวลาที่โมเดลต้องสร้างคำทำนายในหน้างานจริงหรือไม่?",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p18: หากตัวแปรนั้นอาศัยข้อมูลที่เกิดหลังจุดเวลาทำนาย จะเกิด Target/Feature Leakage ทันที"
+      }
     ],
     "difficulty": "direct"
   },
@@ -438,12 +993,32 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p21",
     "title": "บทบาทและประโยชน์ของการสร้าง Simple Baseline",
-    "scenario": "ทำไมในการทดลองทาง Data Science จึงต้องเริ่มพัฒนาโมเดลแบบ Simple Baseline (เช่น Logistic Regression) ก่อนการใช้โมเดลที่ซับซ้อน?",
+    "scenario": "เหตุใดในการพัฒนาโมเดลทาง Data Science จึงควรเริ่มต้นด้วยการสร้างโมเดลพื้นฐานที่เรียบง่าย (Simple Baseline) ก่อนเสมอ?",
     "options": [
-      {"id": "A", "text": "เพื่อเป็นจุดอ้างอิง (Benchmark) ประเมินว่าความซับซ้อนและต้นทุนที่เพิ่มขึ้นของโมเดลขั้นสูง ให้ผลตอบแทนด้านประสิทธิภาพที่คุ้มค่าจริงหรือไม่", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p21: Baseline ให้จุดเปรียบเทียบว่า complexity ที่เพิ่มคุ้มหรือไม่"},
-      {"id": "B", "text": "เพื่อส่งมอบให้ลูกค้าใช้งานชั่วคราวก่อนโมเดลจริงจะเสร็จ", "isCorrect": False, "explanation": "ผิด: Baseline ใช้ในการทดลองประเมินผล"},
-      {"id": "C", "text": "เพราะโมเดล Simple Baseline มี Accuracy สูงกว่าโมเดลซับซ้อนเสมอ", "isCorrect": False, "explanation": "ผิด: โดยทั่วไปโมเดลซับซ้อนอาจจับความสัมพันธ์ที่ไม่เป็นเชิงเส้นได้ดีกว่า"},
-      {"id": "D", "text": "เพื่อหลีกเลี่ยงการแบ่งข้อมูล Train และ Test", "isCorrect": False, "explanation": "ผิด: ทุกโมเดลต้องแบ่งชุดข้อมูลประเมินผล"}
+      {
+        "id": "A",
+        "text": "เพื่อใช้เป็นเกณฑ์อ้างอิงเปรียบเทียบว่าความซับซ้อนที่เพิ่มขึ้นของโมเดลขั้นสูงให้ประสิทธิภาพที่คุ้มค่าหรือไม่",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p21: Simple Baseline ทำหน้าที่เป็น Benchmark เพื่อดูว่าโมเดลที่ซับซ้อนกว่าให้ผลลัพธ์ดีขึ้นอย่างคุ้มค่าจริงหรือไม่"
+      },
+      {
+        "id": "B",
+        "text": "เพื่อลดขั้นตอนการแบ่งชุดข้อมูล Validation Set และสามารถนำข้อมูลทั้งหมดไปใช้ฝึกสอนได้ในคราวเดียว",
+        "isCorrect": False,
+        "explanation": "ผิด: ไม่ว่าจะใช้โมเดลพื้นฐานหรือซับซ้อน ก็ยังต้องมีการแบ่งชุดข้อมูลเพื่อประเมินผลอย่างเป็นระบบ"
+      },
+      {
+        "id": "C",
+        "text": "เพื่อรับประกันว่าโมเดลจะไม่เกิดปัญหาอคติทางจริยธรรมหรือตัวแปรตัวแทน (Proxy Bias) ในการตัดสินใจ",
+        "isCorrect": False,
+        "explanation": "ผิด: โมเดลพื้นฐานอย่างกฏง่ายๆ หรือ Logistic Regression ก็เกิดอคติได้หากตัวแปรนำเข้ามีความลำเอียง"
+      },
+      {
+        "id": "D",
+        "text": "เพราะโมเดลที่เรียบง่ายจะให้ค่าความแม่นยำบนชุดข้อมูลทดสอบสูงกว่าโมเดลที่ซับซ้อนเสมอในทุกโจทย์ปัญหา",
+        "isCorrect": False,
+        "explanation": "ผิด: โมเดลที่ซับซ้อนอาจให้ผลลัพธ์ดีกว่าได้หากข้อมูลมีความสัมพันธ์ไม่เป็นเชิงเส้น แต่ต้องพิสูจน์เทียบกับ Baseline"
+      }
     ],
     "difficulty": "direct"
   },
@@ -453,12 +1028,33 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p24",
     "title": "หลักการแยกเก็บชุดข้อมูลทดสอบ (Test Data Isolation)",
-    "scenario": "ข้อใดกล่าวถึงบทบาทและการปฏิบัติต่อชุดข้อมูล Test Data ได้อย่างถูกต้องที่สุดตามสไลด์ Lect 06 p24?",
+    "scenario": "ข้อใดกล่าวถึงบทบาทและแนวทางการใช้งานชุดข้อมูล Test Set ได้ถูกต้องตามหลักการในสไลด์ Lect 06 p24?",
     "options": [
-      {"id": "A", "text": "นำ Test Data มาใช้ช่วยตัดสินใจปรับจูน Hyperparameter ทุกรอบของการทดลอง", "isCorrect": False, "explanation": "ผิดมหันต์! การจูนบน Test Data จะทำให้เกิด Overfitting to test set และประเมินผลจริงไม่ได้", "distractorTrap": "คิดว่าใช้ Test Data ปรับจูนโมเดลได้"},
-      {"id": "B", "text": "Test Data คือหลักฐานอิสระขั้นสุดท้าย ต้องเก็บแยกไว้จนกว่าการตัดสินใจเรื่องโมเดลทั้งหมดจะเสร็จสิ้น และแตะต้องได้เพียงครั้งเดียว", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p24: Test Data = Independent final verification แตะได้ครั้งเดียวหลัง modeling เสร็จ"},
-      {"id": "C", "text": "นำ Test Data มารวมกับ Training Data ก่อนคำนวณ Feature Scaling", "isCorrect": False, "explanation": "ผิด: สาเหตุหลักของการเกิด Data Leakage"},
-      {"id": "D", "text": "Test Data มีไว้สำหรับการทำ Data Cleaning เท่านั้น", "isCorrect": False, "explanation": "ผิด: ไม่ใช่หน้าที่ของ Test Data"}
+      {
+        "id": "A",
+        "text": "ใช้สำหรับเปรียบเทียบและคัดเลือกค่า Hyperparameter ที่ดีที่สุดในแต่ละรอบของการทดลองปรับแต่งโมเดล",
+        "isCorrect": False,
+        "explanation": "ผิด: การปรับจูนและเลือกพารามิเตอร์เป็นหน้าที่ของ Validation Set ห้ามใช้ Test Set เด็ดขาด",
+        "distractorTrap": "สับสนหน้าที่ระหว่าง Validation Set กับ Test Set"
+      },
+      {
+        "id": "B",
+        "text": "ใช้เป็นหลักฐานอิสระขั้นสุดท้ายเพื่อประเมินประสิทธิภาพเพียงครั้งเดียวหลังจากเลือกโมเดลเสร็จสมบูรณ์แล้ว",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p24: Test Set ต้องถูกแยกเก็บไว้อย่างเคร่งครัดและเปิดใช้เพื่อยืนยันผลขั้นสุดท้ายเพียงครั้งเดียว"
+      },
+      {
+        "id": "C",
+        "text": "ใช้ร่วมกับชุด Training Set ในการคำนวณค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐานสำหรับการทำ Feature Scalingตามเกณฑ์การวัดผลทางสถิติ",
+        "isCorrect": False,
+        "explanation": "ผิด: การนำ Test Set มาร่วมคำนวณสถิติการแปลงข้อมูลทำให้เกิด Data Leakage"
+      },
+      {
+        "id": "D",
+        "text": "ใช้สำหรับตรวจสอบหาค่าผิดปกติ (Outliers) เพื่อกำหนดเกณฑ์รั้วของ Tukey ก่อนเริ่มแบ่งข้อมูลฝึกสอน",
+        "isCorrect": False,
+        "explanation": "ผิด: การกำหนดเกณฑ์ใดๆ จากข้อมูลต้องอ้างอิงจากชุด Training Set เท่านั้น"
+      }
     ],
     "difficulty": "direct"
   },
@@ -468,29 +1064,67 @@ questions = [
     "moduleRef": "module-05-modeling-framework",
     "slideRef": "Lect 06 p25",
     "title": "การวินิจฉัย Overfitting และ Underfitting จากคะแนน",
-    "scenario": "ผลการทดสอบพบว่าโมเดลได้ Accuracy บน Training Set = 99% แต่ได้บน Validation Set = 68% ผลลัพธ์นี้บ่งชี้ถึงสภาวะใดและควรแก้ไขอย่างไร?",
+    "scenario": "เมื่อฝึกสอนโมเดลจำแนกประเภท พบว่าได้ Accuracy บน Training Set = 99% แต่ได้ Accuracy บน Validation Set = 68% ผลลัพธ์นี้บ่งชี้ถึงสภาวะใดและควรแก้ไขอย่างไร?",
     "options": [
-      {"id": "A", "text": "Likely Underfitting ควรเพิ่มความลึกและพารามิเตอร์ของโมเดลให้มากขึ้น", "isCorrect": False, "explanation": "ผิด: Underfitting คือคะแนนต่ำทั้ง Train และ Validation"},
-      {"id": "B", "text": "Likely Overfitting ควรลดความซับซ้อนของโมเดล (เช่น จำกัด max_depth) หรือเพิ่ม Regularization เพื่อให้ Generalize ได้ดีขึ้น", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 06 p25: Train สูงแต่ Val ต่ำชัดเจน = Overfitting"},
-      {"id": "C", "text": "Appropriate fit โมเดลพร้อมนำไป Deploy บน Production ได้ทันที", "isCorrect": False, "explanation": "ผิด: ผลการทดสอบ Validation ห่างจาก Train มากเกินไป"},
-      {"id": "D", "text": "เกิด Data Leakage ทำให้ Validation Set มีคะแนนต่ำผิดปกติ", "isCorrect": False, "explanation": "ผิด: Data Leakage มักทำให้คะแนนสูงผิดปกติทั้งสองชุด"}
+      {
+        "id": "A",
+        "text": "เกิดภาวะ Underfitting ควรเพิ่มความลึกของโมเดลหรือเพิ่มจำนวนฟีเจอร์เพื่อให้เรียนรู้ได้ละเอียดขึ้นในขั้นตอนการวิเคราะห์ข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: Underfitting คือภาวะที่โมเดลทำคะแนนได้ต่ำทั้งบน Training Set และ Validation Set"
+      },
+      {
+        "id": "B",
+        "text": "เกิดภาวะ Appropriate Fit สามารถนำโมเดลนี้ไปประเมินขั้นสุดท้ายบนชุดข้อมูล Test Set ได้ทันที",
+        "isCorrect": False,
+        "explanation": "ผิด: ช่องว่างคะแนนระหว่าง 99% กับ 68% ห่างกันมากเกินไป แสดงว่าโมเดลไม่พร้อมใช้งานกับข้อมูลใหม่"
+      },
+      {
+        "id": "C",
+        "text": "เกิดภาวะ Overfitting ควรลดความซับซ้อนของโมเดลลง เช่น จำกัดความลึกของต้นไม้หรือเพิ่มเงื่อนไขการหยุด",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 06 p25: คะแนน Train สูงมากแต่ Validation ต่ำแสดงว่าโมเดลจำข้อสอบเก่า (Overfitting) ต้องลดความซับซ้อนลง"
+      },
+      {
+        "id": "D",
+        "text": "เกิดภาวะ Data Leakage ควรนำข้อมูลจาก Validation Set เข้าไปผสมใน Training Set เพื่อปรับสมดุลคะแนน",
+        "isCorrect": False,
+        "explanation": "ผิด: ห้ามนำ Validation Set ไปผสมใน Training Set เพื่อแก้ปัญหา Overfitting"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 06: Decision Tree & Complexity (Lect 07) ---
   {
     "id": "q05-gini-gain",
     "questionNumber": 32,
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p11-12",
     "title": "การเลือกจุดตัดกิ่ง Decision Tree (Candidate A vs B)",
-    "scenario": "โหนดแม่มี Gini = 0.500 อัลกอริทึมเสนอจุดตัดกิ่ง 2 ทางเลือก: Candidate A ให้ Gini_split = 0.278 ส่วน Candidate B ให้ Gini_split = 0.444 ควรเลือกทางใด?",
+    "scenario": "โหนดแม่มีค่า Gini = 0.500 อัลกอริทึมพิจารณาจุดตัดกิ่ง 2 ทางเลือก โดย Candidate A ให้ค่า Gini_split = 0.278 และ Candidate B ให้ค่า Gini_split = 0.444 อัลกอริทึมจะตัดสินใจอย่างไร?",
     "options": [
-      {"id": "A", "text": "เลือก Candidate B เพราะมี Gini_split สูงกว่า", "isCorrect": False, "explanation": "ผิด: Gini_split ยิ่งสูงแปลว่ายิ่งไม่บริสุทธิ์"},
-      {"id": "B", "text": "เลือก Candidate A เพราะให้ Gini Gain สูงกว่า (0.222 > 0.056)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p12: Gain(A) = 0.500 - 0.278 = 0.222 ชนะ Gain(B) = 0.500 - 0.444 = 0.056"},
-      {"id": "C", "text": "เลือกได้ทั้งสองตัวเลือกเพราะมาจากโหนดแม่เดียวกัน", "isCorrect": False, "explanation": "ผิด: ต้องเลือกตัวที่ให้ Gain สูงสุด"},
-      {"id": "D", "text": "ไม่เลือกทั้งสองตัวเลือก และให้หยุดขยายกิ่งทันที", "isCorrect": False, "explanation": "ผิด: Candidate A ลดความไม่บริสุทธิ์ลงได้อย่างมีนัยสำคัญ"}
+      {
+        "id": "A",
+        "text": "เลือก Candidate B เพราะให้ค่า Gini Gain เท่ากับ 0.944 ซึ่งสูงกว่า Candidate A",
+        "isCorrect": False,
+        "explanation": "ผิด: คำนวณสูตร Gini Gain ผิดพลาดด้วยการนำค่ามาบวกกันแทนที่จะลบกัน"
+      },
+      {
+        "id": "B",
+        "text": "เลือก Candidate B เพราะให้ค่า Gini_split เท่ากับ 0.444 ซึ่งสูงกว่า Candidate A",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่า Gini_split คือความไม่บริสุทธิ์หลังแบ่ง ยิ่งสูงแปลว่ายิ่งปะปนมาก เราต้องการให้ Gini_split ต่ำที่สุด (หรือ Gini Gain สูงสุด)"
+      },
+      {
+        "id": "C",
+        "text": "เลือก Candidate A เพราะให้ค่า Gini Gain เท่ากับ 0.778 ซึ่งสูงกว่า Candidate B",
+        "isCorrect": False,
+        "explanation": "ผิด: สูตร Gini Gain คือการนำ Gini_parent ตั้งแล้วลบด้วย Gini_split (0.500 - 0.278 = 0.222) ไม่ใช่การนำมาบวกกัน"
+      },
+      {
+        "id": "D",
+        "text": "เลือก Candidate A เพราะให้ค่า Gini Gain เท่ากับ 0.222 ซึ่งสูงกว่า Candidate B",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p12: Gini Gain(A) = 0.500 - 0.278 = 0.222 ส่วน Gain(B) = 0.500 - 0.444 = 0.056 จึงเลือก A ที่ลดความปะปนได้มากกว่า"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -500,12 +1134,32 @@ questions = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p19, p31",
     "title": "บันไดความลึกต้นไม้ max_depth & Overfitting",
-    "scenario": "ในการฝึกสอน Decision Tree ทำไมอาจารย์จึงเลือก Moderate Tree (max_depth = 3) เป็นโมเดลที่ดีที่สุดแทนที่จะเลือก Unrestricted Depth?",
+    "scenario": "ในการฝึกสอน Decision Tree ตามสไลด์ Lect 07 p19 เหตุใดต้นไม้ระดับความลึกปานกลาง (Moderate Tree, max_depth = 3) จึงถูกเลือกแทนต้นไม้ที่ไม่จำกัดความลึก (Unrestricted Tree)?",
     "options": [
-      {"id": "A", "text": "เพราะ max_depth = 3 ให้ค่า Training Error ต่ำที่สุดเมื่อเทียบกับความลึกทุกแบบ", "isCorrect": False, "explanation": "ผิดตามสไลด์ Lect 07 p19: โมเดลที่กด Training Error ต่ำสุดคือ Unrestricted Tree แต่จะเกิด Overfitting บน Validation Set"},
-      {"id": "B", "text": "เพราะ max_depth = 3 ให้จุดสมดุล Bias-Variance ที่ดีที่สุด ส่งผลให้ได้ประสิทธิภาพสูงสุดบน Validation Set", "isCorrect": True, "explanation": "ถูกต้องตามตาราง Bias-Variance Matrix (p19, p31): Moderate tree ไม่เกิด Underfitting และไม่ Overfitting บน Validation set"},
-      {"id": "C", "text": "เพราะต้นไม้ความลึก 3 คำนวณได้เร็วกว่า", "isCorrect": False, "explanation": "ผิด: ความเร็วไม่ใช่เหตุผลหลักทางสถิติ"},
-      {"id": "D", "text": "เพราะโมเดลต้นไม้ไม่สามารถสร้างลึกเกิน 3 ชั้นได้", "isCorrect": False, "explanation": "ผิด: ต้นไม้สามารถสร้างลึกเท่าใดก็ได้"}
+      {
+        "id": "A",
+        "text": "เพราะความลึกที่ 3 สร้างสมดุลระหว่าง Bias และ Variance ได้ดีที่สุด จึงทำผลงานบน Validation Set ได้สูงสุด",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p19, p31: Moderate Tree ไม่ตื้นเกินไปจน Underfit และไม่ลึกเกินไปจนจดจำ Noise ในข้อมูลฝึกสอน"
+      },
+      {
+        "id": "B",
+        "text": "เพราะความลึกที่ 3 ให้ค่าความคลาดเคลื่อนบนชุดข้อมูลฝึกสอน (Training Error) ต่ำที่สุดเมื่อเทียบกับความลึกอื่น",
+        "isCorrect": False,
+        "explanation": "ผิดตามสไลด์ Lect 07 p19: ต้นไม้ที่กด Training Error ต่ำสุดคือ Unrestricted Tree แต่จะแลกมาด้วยการเกิด Overfitting"
+      },
+      {
+        "id": "C",
+        "text": "เพราะอัลกอริทึม CART มีข้อจำกัดทางคณิตศาสตร์ที่ไม่สามารถแตกกิ่งก้านให้มีความลึกเกินกว่าจำนวนตัวแปรต้นได้",
+        "isCorrect": False,
+        "explanation": "ผิด: ต้นไม้ตัดสินใจสามารถแตกกิ่งซ้ำบนตัวแปรเดิมด้วยจุดตัดใหม่ได้เรื่อยๆ จนกว่าโหนดจะบริสุทธิ์"
+      },
+      {
+        "id": "D",
+        "text": "เพราะความลึกที่ 3 บังคับให้ทุกโหนดใบ (Leaf Nodes) มีค่า Gini Impurity เท่ากับศูนย์อย่างสมบูรณ์",
+        "isCorrect": False,
+        "explanation": "ผิด: การจำกัดความลึกไว้ที่ 3 ชั้นมักจะหยุดการแตกกิ่งก่อนที่โหนดใบทุกโหนดจะมี Gini = 0"
+      }
     ],
     "difficulty": "direct"
   },
@@ -515,12 +1169,32 @@ questions = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p6-7",
     "title": "กลยุทธ์ Greedy Splitting ใน Decision Tree",
-    "scenario": "อัลกอริทึม Decision Tree ใช้หลักการ 'Greedy Recursive Splitting' ซึ่งมีข้อจำกัดทางทฤษฎีที่สำคัญคือข้อใด?",
+    "scenario": "อัลกอริทึม Decision Tree สร้างต้นไม้ด้วยกลยุทธ์ 'Greedy Recursive Splitting' ซึ่งมีคุณลักษณะและข้อจำกัดทางทฤษฎีอย่างไร?",
     "options": [
-      {"id": "A", "text": "ไม่สามารถประมวลผลข้อมูลที่เป็นตัวเลขได้", "isCorrect": False, "explanation": "ผิด: Decision Tree รองรับทั้งข้อมูลตัวเลขและ categorical"},
-      {"id": "B", "text": "เลือกจุดตัดที่ดีที่สุดเฉพาะหน้า ณ โหนดปัจจุบัน (Local Optimum) โดยไม่รับประกันว่าจะได้ต้นไม้ที่ดีที่สุดในภาพรวมทั้งหมด (Global Optimum)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p6-7: Greedy ประเมิน candidate ที่ดีที่สุด ณ จุดนั้น จึงไม่รับประกัน Global Optimum"},
-      {"id": "C", "text": "ไม่สามารถสร้างต้นไม้ที่มีความลึกเกิน 2 ชั้นได้", "isCorrect": False, "explanation": "ผิด: สามารถแตกกิ่งได้ลึกตามพารามิเตอร์ที่กำหนด"},
-      {"id": "D", "text": "ต้องใช้เวลานานกว่า Deep Neural Network ในการฝึกสอนเสมอ", "isCorrect": False, "explanation": "ผิด: Decision Tree ฝึกสอนได้รวดเร็วกว่า Neural Network มาก"}
+      {
+        "id": "A",
+        "text": "ค้นหาโครงสร้างต้นไม้ทุกรูปแบบที่เป็นไปได้พร้อมกัน เพื่อรับประกันว่าจะได้ต้นไม้ที่สมบูรณ์ที่สุดเสมอ",
+        "isCorrect": False,
+        "explanation": "ผิด: การค้นหาต้นไม้ทุกรูปแบบมีต้นทุนคำนวณสูงเกินไป อัลกอริทึมจึงไม่ได้มองภาพรวมทุกชั้นล่วงหน้า"
+      },
+      {
+        "id": "B",
+        "text": "เลือกจุดตัดที่ให้ค่าความบริสุทธิ์เพิ่มขึ้นสูงสุดเฉพาะหน้า ณ โหนดปัจจุบัน โดยไม่รับประกัน Global Optimum",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p6-7: กลยุทธ์แบบ Greedy เลือกจุดตัดที่ดีที่สุดเฉพาะหน้า (Local Optimum) ในแต่ละขั้นโดยไม่ย้อนกลับ"
+      },
+      {
+        "id": "C",
+        "text": "รองรับเฉพาะตัวแปรต้นที่เป็นข้อมูลหมวดหมู่เท่านั้น ไม่สามารถหาจุดตัดบนตัวแปรที่เป็นตัวเลขต่อเนื่องได้ในกระบวนการเตรียมชุดข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: Decision Tree สามารถหาจุดตัด Threshold (เช่น x <= c) บนข้อมูลตัวเลขต่อเนื่องได้โดยตรง"
+      },
+      {
+        "id": "D",
+        "text": "บังคับให้ข้อมูลต้องผ่านการทำ Feature Scaling ด้วยวิธี Z-Score ก่อนเสมอ มิฉะนั้นจุดตัดจะบิดเบี้ยว",
+        "isCorrect": False,
+        "explanation": "ผิด: Decision Tree พิจารณาลำดับค่าของตัวแปรทีละตัว จึงไม่ไวต่อสเกลของตัวแปรเหมือน K-Means"
+      }
     ],
     "difficulty": "direct"
   },
@@ -530,12 +1204,32 @@ questions = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p8",
     "title": "การคำนวณ Gini Impurity ของโหนด",
-    "scenario": "โหนดหนึ่งมีตัวอย่างทั้งหมด 6 รายการ แบ่งเป็น Active 5 รายการ และ Inactive 1 รายการ จงคำนวณค่า Gini Impurity ของโหนดนี้ตามสูตร Gini = 1 - sum(p_k^2)?",
+    "scenario": "โหนดหนึ่งมีข้อมูลตัวอย่างทั้งหมด 6 รายการ แบ่งเป็นคลาส Active 5 รายการ และคลาส Inactive 1 รายการ ค่า Gini Impurity ของโหนดนี้มีค่าเท่าใด?",
     "options": [
-      {"id": "A", "text": "0.500", "isCorrect": False, "explanation": "ผิด: นั่นคือค่า Gini ของโหนดแม่ที่มีสัดส่วน 50/50"},
-      {"id": "B", "text": "0.278 (คำนวณจาก 1 - (5/6)^2 - (1/6)^2 = 1 - 25/36 - 1/36 = 10/36)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p8: Gini = 1 - (25/36) - (1/36) = 10/36 ≈ 0.278"},
-      {"id": "C", "text": "0.167", "isCorrect": False, "explanation": "ผิด: นั่นคือสัดส่วน 1/6"},
-      {"id": "D", "text": "0.833", "isCorrect": False, "explanation": "ผิด: นั่นคือสัดส่วน 5/6"}
+      {
+        "id": "A",
+        "text": "0.167",
+        "isCorrect": False,
+        "explanation": "ผิด: 0.167 คือสัดส่วนของคลาสส่วนน้อย (1/6) ไม่ใช่ค่า Gini Impurity"
+      },
+      {
+        "id": "B",
+        "text": "0.278",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p8: Gini = 1 - (5/6)² - (1/6)² = 1 - 25/36 - 1/36 = 10/36 ≈ 0.278"
+      },
+      {
+        "id": "C",
+        "text": "0.500",
+        "isCorrect": False,
+        "explanation": "ผิด: 0.500 คือค่า Gini สูงสุดเมื่อทั้งสองคลาสมีสัดส่วนเท่ากันพอดี (3 ต่อ 3)"
+      },
+      {
+        "id": "D",
+        "text": "0.722",
+        "isCorrect": False,
+        "explanation": "ผิด: 0.722 คือผลรวมกำลังสองของสัดส่วน (26/36) โดยลืมนำไปลบออกจาก 1"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -545,12 +1239,33 @@ questions = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p15",
     "title": "การแปลผลความน่าจะเป็นใน Leaf Node",
-    "scenario": "เมื่อพิจารณา Leaf Node ของ Decision Tree ที่ระบุว่า P(Inactive) = 4/5 = 0.80 สไลด์ Lect 07 p15 ย้ำเตือนการแปลผลค่านี้ไว้อย่างไร?",
+    "scenario": "เมื่อพิจารณาโหนดใบ (Leaf Node) ของ Decision Tree ที่แสดงค่า P(Inactive) = 4/5 = 0.80 ข้อใดตีความค่าตัวเลขนี้ได้ถูกต้องตามสไลด์ Lect 07 p15?",
     "options": [
-      {"id": "A", "text": "เป็นความน่าจะเป็นที่ Calibrated สมบูรณ์แล้ว สามารถใช้เป็นความมั่นใจในโลกจริงได้ 80% ทันที", "isCorrect": False, "explanation": "ติดกับดัก! สไลด์ระบุชัดว่า 'ไม่ใช่ Calibrated Confidence'", "distractorTrap": "คิดว่าสัดส่วนใน Leaf คือความน่าจะเป็นที่แท้จริงของโลก"},
-      {"id": "B", "text": "เป็นเพียงสัดส่วนตัวอย่างของคลาสใน Training Set ที่ตกอยู่ในโหนดนั้น ไม่ใช่ Calibrated Confidence ที่สะท้อนความจริงในโลกภายนอก", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p15: สัดส่วนใน Leaf เป็นเพียง empirical training ratio ไม่ใช่ calibrated probability"},
-      {"id": "C", "text": "แปลว่าโมเดลทำนายผิดพลาด 20% บน Test Set", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับ Test Set"},
-      {"id": "D", "text": "แปลว่าโหนดนี้มีค่า Gini เท่ากับ 0.80", "isCorrect": False, "explanation": "ผิด: ค่า Gini ไม่ใช่สัดส่วนความน่าจะเป็น"}
+      {
+        "id": "A",
+        "text": "เป็นค่า Recall ของโมเดลเมื่อนำไปทดสอบบนชุดข้อมูล Test Set สำหรับกลุ่มลูกค้าที่มีความเสี่ยงสูง",
+        "isCorrect": False,
+        "explanation": "ผิด: ตัวเลขภายในโหนดของต้นไม้คำนวณมาจากข้อมูล Training Set ที่ตกในกิ่งนั้น ไม่ใช่ค่า Recall บน Test Set"
+      },
+      {
+        "id": "B",
+        "text": "เป็นค่าความน่าจะเป็นที่ผ่านการปรับเทียบมาตรฐาน (Calibrated Confidence) ซึ่งรับรองผลแม่นยำ 80% ในการใช้งานจริงในขั้นตอนการวิเคราะห์ข้อมูล",
+        "isCorrect": False,
+        "explanation": "ติดกับดัก! สไลด์เตือนชัดเจนว่าตัวเลขสัดส่วนใน Leaf Node ของต้นไม้ไม่ใช่ Calibrated Confidence",
+        "distractorTrap": "ตีความสัดส่วนในโหนดใบว่าเป็นความน่าจะเป็นจริงที่ผ่านการปรับเทียบแล้ว"
+      },
+      {
+        "id": "C",
+        "text": "เป็นค่า Gini Impurity ประจำโหนดใบนั้น ซึ่งแสดงว่าโหนดยังมีความไม่บริสุทธิ์เหลืออยู่อีก 80%",
+        "isCorrect": False,
+        "explanation": "ผิด: ตัวเลข 4/5 คือสัดส่วนคลาสในโหนด ส่วนค่า Gini ของโหนดนี้คือ 1 - (0.8² + 0.2²) = 0.32"
+      },
+      {
+        "id": "D",
+        "text": "เป็นเพียงสัดส่วนของตัวอย่างคลาส Inactive จากชุด Training Set ที่ตกลงในโหนดใบนี้ ไม่ใช่ความมั่นใจที่ผ่านการเทียบมาตรฐาน",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p15: ค่าความน่าจะเป็นในโหนดใบเป็นเพียงสัดส่วนนับจำนวนจากข้อมูลฝึกสอน ไม่ใช่ Calibrated Probability"
+      }
     ],
     "difficulty": "direct"
   },
@@ -560,12 +1275,32 @@ questions = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p17",
     "title": "เงื่อนไขการหยุดแตกกิ่งของต้นไม้ (Stopping Rules)",
-    "scenario": "ข้อใดต่อไปนี้ 'ไม่ใช่' เงื่อนไข Stopping Rule มาตรฐานที่ใช้หยุดการแตกกิ่งของ Decision Tree ระหว่างการฝึกสอน?",
+    "scenario": "ข้อใดต่อไปนี้ 'ไม่ใช่' เงื่อนไขการหยุดแตกกิ่ง (Stopping Rules) ตามมาตรฐานในการฝึกสอนโมเดล Decision Tree?",
     "options": [
-      {"id": "A", "text": "ความลึกของต้นไม้ถึงขีดจำกัดที่กำหนดไว้ (max_depth)", "isCorrect": False, "explanation": "เป็น stopping rule หลักในการควบคุมความซับซ้อน"},
-      {"id": "B", "text": "โหนดมีความบริสุทธิ์แล้ว (Gini = 0) หรือไม่มีจุดตัดใดที่ช่วยเพิ่ม Impurity Gain ได้อีก", "isCorrect": False, "explanation": "เป็น stopping rule ตามธรรมชาติของอัลกอริทึม"},
-      {"id": "C", "text": "จำนวนตัวอย่างในโหนดเหลือน้อยกว่าเกณฑ์ขั้นต่ำ (min_samples_split)", "isCorrect": False, "explanation": "เป็น stopping rule เพื่อป้องกัน overfitting"},
-      {"id": "D", "text": "ค่า Accuracy บนชุดข้อมูล Test Set ทะลุเกิน 80%", "isCorrect": True, "explanation": "ถูกต้อง: Test Set ห้ามถูกนำมาใช้ระหว่างขั้นตอนการสร้างต้นไม้เด็ดขาด จึงไม่ใช่ Stopping Rule!"}
+      {
+        "id": "A",
+        "text": "ค่าความแม่นยำในการทำนายบนชุดข้อมูล Test Set เพิ่มขึ้นจนผ่านเกณฑ์ที่กำหนดไว้",
+        "isCorrect": True,
+        "explanation": "ถูกต้อง: ชุดข้อมูล Test Set ห้ามถูกนำมาใช้ตรวจสอบหรือเป็นเงื่อนไขหยุดระหว่างการฝึกสอนโมเดลเด็ดขาด"
+      },
+      {
+        "id": "B",
+        "text": "ตัวอย่างทั้งหมดในโหนดนั้นอยู่ในคลาสเดียวกันอย่างสมบูรณ์ (Gini Impurity เท่ากับ 0)",
+        "isCorrect": False,
+        "explanation": "เป็นเงื่อนไขการหยุดตามธรรมชาติเมื่อโหนดมีความบริสุทธิ์สมบูรณ์แล้ว"
+      },
+      {
+        "id": "C",
+        "text": "จำนวนข้อมูลในโหนดเหลือน้อยกว่าเกณฑ์ขั้นต่ำที่อนุญาตให้แบ่งต่อ (min_samples_split)",
+        "isCorrect": False,
+        "explanation": "เป็นเงื่อนไขการหยุดมาตรฐานเพื่อป้องกันการสร้างโหนดใบที่มีข้อมูลน้อยเกินไป"
+      },
+      {
+        "id": "D",
+        "text": "ความลึกของกิ่งก้านไปถึงระดับสูงสุดที่กำหนดไว้ล่วงหน้าในพารามิเตอร์ max_depth",
+        "isCorrect": False,
+        "explanation": "เป็นเงื่อนไขการหยุดมาตรฐานเพื่อควบคุมความซับซ้อนของต้นไม้"
+      }
     ],
     "difficulty": "direct"
   },
@@ -575,29 +1310,68 @@ questions = [
     "moduleRef": "module-06-decision-tree",
     "slideRef": "Lect 07 p18",
     "title": "ชุดข้อมูลที่ใช้เลือกความลึกของต้นไม้ (max_depth)",
-    "scenario": "ในการคัดเลือกค่าความลึกที่เหมาะสมที่สุดของต้นไม้ (max_depth) วิศวกรข้อมูลจะต้องประเมินและตัดสินใจเลือกจากประสิทธิภาพบนชุดข้อมูลใด?",
+    "scenario": "ในการคัดเลือกค่าพารามิเตอร์ความลึกของต้นไม้ (max_depth) ที่เหมาะสมที่สุด ทีมพัฒนาต้องพิจารณาเปรียบเทียบผลลัพธ์จากชุดข้อมูลใด?",
     "options": [
-      {"id": "A", "text": "Training Set", "isCorrect": False, "explanation": "ผิด: ถ้าเลือกจาก Train จะได้ต้นไม้ลึกที่สุดเสมอ (Unrestricted) ซึ่งเสี่ยงต่อ Overfitting"},
-      {"id": "B", "text": "Validation Set", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p18: เลือก max_depth จาก Validation performance เพื่อหาจุดสมดุล Bias-Variance"},
-      {"id": "C", "text": "Test Set", "isCorrect": False, "explanation": "ผิดมหันต์: ห้ามนำ Test Set มาใช้จูนโมเดล"},
-      {"id": "D", "text": "Raw Uncleaned Data", "isCorrect": False, "explanation": "ผิด: ข้อมูลต้องผ่านการเตรียมก่อนประเมิน"}
+      {
+        "id": "A",
+        "text": "ชุดข้อมูลฝึกสอน (Training Set)",
+        "isCorrect": False,
+        "explanation": "ผิด: การดูแต่ผลบน Training Set จะทำให้เลือกต้นไม้ที่ลึกที่สุดเสมอ ซึ่งนำไปสู่ปัญหา Overfitting"
+      },
+      {
+        "id": "B",
+        "text": "ชุดข้อมูลตรวจสอบ (Validation Set)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p18: การเลือก Hyperparameter เช่น max_depth ต้องตัดสินจากประสิทธิภาพบน Validation Set"
+      },
+      {
+        "id": "C",
+        "text": "ชุดข้อมูลทดสอบขั้นสุดท้าย (Test Set)",
+        "isCorrect": False,
+        "explanation": "ผิด: ห้ามนำชุดข้อมูล Test Set มาใช้ในการปรับจูนหรือเลือกพารามิเตอร์ของโมเดล"
+      },
+      {
+        "id": "D",
+        "text": "ชุดข้อมูลดิบก่อนทำความสะอาด (Raw Dataset)",
+        "isCorrect": False,
+        "explanation": "ผิด: ข้อมูลต้องผ่านการทำความสะอาดและแบ่งแยกชุดข้อมูลอย่างถูกต้องก่อนนำมาประเมิน"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 07: Classifier Evaluation & Metrics (Lect 07) ---
   {
     "id": "q07-fifa-precision",
     "questionNumber": 39,
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p23, p30",
     "title": "FIFA World Cup 2026 Model Precision",
-    "scenario": "โมเดลคัดเลือกนักเตะ 10 คน กำหนด Positive Class = \"play\" ได้ผล Confusion Matrix: TP = 4, FN = 2, FP = 1, TN = 3 จงคำนวณค่า Precision?",
+    "scenario": "โมเดลคัดเลือกนักเตะ 10 คน กำหนด Positive Class = \"play\" ได้ผล Confusion Matrix: TP = 4, FN = 2, FP = 1, TN = 3 ค่า Precision ของโมเดลนี้มีค่าเท่าใด?",
     "options": [
-      {"id": "A", "text": "0.67 หรือ 66.67% (4 / 6)", "isCorrect": False, "explanation": "ผิด: นั่นคือค่า Recall = TP / (TP + FN)", "distractorTrap": "สับสนกับ Recall"},
-      {"id": "B", "text": "0.70 หรือ 70.00% (7 / 10)", "isCorrect": False, "explanation": "ผิด: นั่นคือค่า Accuracy = (TP + TN) / Total"},
-      {"id": "C", "text": "0.80 หรือ 80.00% (4 / (4 + 1) = 4 / 5)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p23, p30: Precision = TP / (TP + FP) = 4 / 5 = 0.80"},
-      {"id": "D", "text": "0.73 หรือ 73.00%", "isCorrect": False, "explanation": "ผิด: นั่นคือค่า F1-Score"}
+      {
+        "id": "A",
+        "text": "0.67 (66.67%)",
+        "isCorrect": False,
+        "explanation": "ผิด: 0.67 คือค่า Recall ซึ่งคำนวณจาก TP / (TP + FN) = 4 / (4 + 2) = 4/6",
+        "distractorTrap": "จำสูตรสลับกับค่า Recall"
+      },
+      {
+        "id": "B",
+        "text": "0.70 (70.00%)",
+        "isCorrect": False,
+        "explanation": "ผิด: 0.70 คือค่า Accuracy ซึ่งคำนวณจาก (TP + TN) / Total = (4 + 3) / 10 = 7/10"
+      },
+      {
+        "id": "C",
+        "text": "0.73 (72.73%)",
+        "isCorrect": False,
+        "explanation": "ผิด: 0.73 คือค่า F1-Score ซึ่งคำนวณจากค่าเฉลี่ยฮาร์มอนิกระหว่าง Precision และ Recall"
+      },
+      {
+        "id": "D",
+        "text": "0.80 (80.00%)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p23, p30: Precision = TP / (TP + FP) = 4 / (4 + 1) = 4/5 = 0.80 (80.00%)"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -607,12 +1381,32 @@ questions = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p35",
     "title": "การเลือกโมเดลตามบริบทธุรกิจ (HW#2 Case Study)",
-    "scenario": "ผลการทดสอบลูกค้า 100 ราย: Model A (Prec=0.89, Rec=0.60) | Model B (Prec=0.67, Rec=0.90) | Model C (Prec=0.82, Rec=0.80, F1=0.81, Acc=0.85) หากบริษัทมีนโยบาย \"ยอมติดต่อลูกค้าฟรี แต่รับไม่ได้เด็ดขาดถ้าลูกค้าจะเลิกใช้บริการแล้วเราไม่รู้ตัว (Missed Churn)\" ควรเลือกโมเดลใด?",
+    "scenario": "ผลการประเมินโมเดลทำนายลูกค้าเลิกใช้บริการ: Model A (Prec=0.89, Rec=0.60, F1=0.71) | Model B (Prec=0.67, Rec=0.90, F1=0.77) | Model C (Prec=0.82, Rec=0.80, F1=0.81) หากผู้บริหารกำหนดนโยบายว่า \"ยอมเสียค่าโทรติดต่อลูกค้าเกินดีกว่าปล่อยให้ลูกค้าที่จะเลิกใช้บริการหลุดรอดไปโดยไม่รู้ตัว\" ควรเลือกโมเดลใด?",
     "options": [
-      {"id": "A", "text": "Model A เพราะโทรไปหาใครแล้วแม่นยำที่สุด (Precision 0.89)", "isCorrect": False, "explanation": "ผิด: Model A มี Recall แค่ 0.60 ปล่อยลูกค้าหลุดมือถึง 40% (FN = 16)"},
-      {"id": "B", "text": "Model B เพราะมีค่า Recall สูงถึง 0.90 สามารถตรวจจับลูกค้าที่จะหนีได้ถึง 90% ตรงกับต้นทุนธุรกิจที่กลัว FN", "isCorrect": True, "explanation": "ถูกต้องตามเฉลย HW#2: เมื่อ Missed Churn เป็นหายนะ ต้องเลือกโมเดลที่ Maximize Recall แม้จะต้องแลกกับ FP=18"},
-      {"id": "C", "text": "Model C เพราะมี F1-Score และ Accuracy รวมสูงสุด", "isCorrect": False, "explanation": "ผิด: Model C เหมาะกับกรณีต้องการความสมดุล แต่โจทย์ระบุว่ากลัวลูกค้าหนีมากเป็นพิเศษ"},
-      {"id": "D", "text": "ไม่สามารถตัดสินใจได้จนกว่าจะนำไปเทรนใหม่", "isCorrect": False, "explanation": "ผิด: สามารถตัดสินใจได้จากความเสี่ยงทางธุรกิจ"}
+      {
+        "id": "A",
+        "text": "เลือก Model A เพราะให้ความแม่นยำในการชี้เป้าสูงสุด ลดการสูญเสียทรัพยากรในการโทรติดต่อผิดคน",
+        "isCorrect": False,
+        "explanation": "ผิด: Model A มี Recall เพียง 0.60 ทำให้ปล่อยลูกค้าที่จะเลิกใช้บริการหลุดรอดไปถึง 40% ซึ่งขัดกับนโยบายธุรกิจ"
+      },
+      {
+        "id": "B",
+        "text": "เลือกใช้ทั้ง Model A และ Model C สลับกันรายวัน เพื่อเฉลี่ยความเสี่ยงของการเกิดความผิดพลาดทั้งสองด้าน",
+        "isCorrect": False,
+        "explanation": "ผิด: การสลับโมเดลรายวันไม่ได้ช่วยแก้ปัญหาความเสี่ยงของ Missed Churn ตามเกณฑ์ที่ธุรกิจต้องการ"
+      },
+      {
+        "id": "C",
+        "text": "เลือก Model C เพราะให้จุดสมดุลระหว่างความแม่นยำและความครอบคลุม โดยมีค่า F1-Score สูงที่สุด",
+        "isCorrect": False,
+        "explanation": "ผิด: Model C เหมาะกับกรณีที่ต้นทุนของ FP และ FN ใกล้เคียงกัน แต่โจทย์นี้ระบุชัดเจนว่าให้น้ำหนักกับการป้องกัน FN เป็นหลัก"
+      },
+      {
+        "id": "D",
+        "text": "เลือก Model B เพราะให้ความครอบคลุมในการดักจับลูกค้ากลุ่มเสี่ยงสูงสุด ลดโอกาสเกิด Missed Churn",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามเฉลย HW#2 (Lect 07 p35): เมื่อธุรกิจกลัวการหลุดรอดของลูกค้า (FN) มากที่สุด ต้องเลือกโมเดลที่ให้ค่า Recall สูงสุด (0.90)"
+      }
     ],
     "difficulty": "business_trap"
   },
@@ -622,12 +1416,32 @@ questions = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p22",
     "title": "ความหมายของ False Positive (FP) ในโจทย์ Churn",
-    "scenario": "ในโจทย์ทำนายลูกค้าจะหยุดใช้บริการ กำหนด Positive Class = 'Inactive' ความผิดพลาดแบบ False Positive (FP) มีความหมายทางธุรกิจตรงกับข้อใด?",
+    "scenario": "ในโจทย์ทำนายการยกเลิกบริการ โดยกำหนดให้ Positive Class = 'Inactive' ความผิดพลาดแบบ False Positive (FP) หมายถึงเหตุการณ์ใด?",
     "options": [
-      {"id": "A", "text": "ลูกค้าหยุดใช้บริการจริง แต่โมเดลทายว่ายังใช้งานอยู่ ทำให้ไม่ได้ติดต่อลูกค้า", "isCorrect": False, "explanation": "ผิด: นั่นคือ False Negative (FN)"},
-      {"id": "B", "text": "ลูกค้ายังคงใช้งานต่อเนื่อง (Active) แต่โมเดลทำนายผิดว่ากำลังจะหยุดใช้บริการ (Inactive) ส่งผลให้ทีมการตลาดโทรไปติดต่อหรือมอบส่วนลดโดยไม่จำเป็น", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p22: Predicted Positive (Inactive) แต่ Actual Negative (Active) = FP"},
-      {"id": "C", "text": "ลูกค้าไม่เคยเข้ามาใช้งานระบบตั้งแต่แรก", "isCorrect": False, "explanation": "ผิด: ไม่ตรงกับนิยาม Confusion Matrix"},
-      {"id": "D", "text": "โมเดลทำนายได้ถูกต้องสมบูรณ์แบบ", "isCorrect": False, "explanation": "ผิด: FP คือความผิดพลาด ไม่ใช่ความถูกต้อง"}
+      {
+        "id": "A",
+        "text": "ลูกค้ายังคงใช้งานปกติ แต่โมเดลทำนายว่ากำลังจะเลิกใช้บริการ ทำให้บริษัทเสียต้นทุนส่งโปรโมชันเกินจำเป็น",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p22: False Positive คือทายว่า Inactive (Positive) แต่ความจริงลูกค้ายัง Active (Negative)"
+      },
+      {
+        "id": "B",
+        "text": "ลูกค้าเลิกใช้บริการจริง แต่โมเดลทำนายว่ายังใช้งานปกติ ทำให้บริษัทเสียโอกาสในการรักษาลูกค้า",
+        "isCorrect": False,
+        "explanation": "ผิด: การที่ลูกค้าเป็น Positive จริง (Inactive) แต่โมเดลทายว่าเป็น Negative (Active) คือ False Negative (FN)"
+      },
+      {
+        "id": "C",
+        "text": "ลูกค้าเลิกใช้บริการจริง และโมเดลสามารถตรวจจับได้ถูกต้อง ทำให้ทีมการตลาดเข้าดูแลได้ทันเวลา",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือกรณีที่โมเดลทำนายคลาสเป้าหมายได้ถูกต้อง หรือ True Positive (TP)"
+      },
+      {
+        "id": "D",
+        "text": "ลูกค้ายังคงใช้งานปกติ และโมเดลทำนายว่ายังใช้งานปกติ ทำให้บริษัทไม่ต้องสิ้นเปลืองงบประมาณแคมเปญ",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือกรณีที่โมเดลทำนายคลาสปกติได้ถูกต้อง หรือ True Negative (TN)"
+      }
     ],
     "difficulty": "direct"
   },
@@ -637,12 +1451,32 @@ questions = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p23",
     "title": "ความหมายของ False Negative (FN) ในโจทย์ฟุตบอล",
-    "scenario": "ในการคัดเลือกนักฟุตบอลลงแข่งขัน กำหนด Positive Class = 'play' ความผิดพลาดแบบ False Negative (FN) ส่งผลกระทบต่อทีมอย่างไรตามสไลด์ Lect 07 p23?",
+    "scenario": "ในการคัดเลือกนักฟุตบอลลงสนามโดยกำหนด Positive Class = 'play' ความผิดพลาดแบบ False Negative (FN) ส่งผลกระทบต่อทีมอย่างไรตามสไลด์ Lect 07 p23?",
     "options": [
-      {"id": "A", "text": "ส่งนักฟุตบอลที่ไม่พร้อมลงสนามจนเล่นแพ้", "isCorrect": False, "explanation": "ผิด: นั่นคือ False Positive (ทายว่าพร้อม แต่จริงไม่พร้อม)"},
-      {"id": "B", "text": "ระบบทำนายว่านักกีฬาไม่พร้อมเล่น (ทาย Negative) ทั้งที่ในความเป็นจริงนักกีฬาพร้อมสมบูรณ์ (Actual Positive) ส่งผลให้ทีมเสียโอกาสส่งผู้เล่นฝีมือดีลงสนาม", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p23: FN คือทายว่าไม่เล่นแต่นักกีฬาพร้อม พลาดโอกาสทองของทีม"},
-      {"id": "C", "text": "นักกีฬาได้รับใบแดงในครึ่งแรก", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับผลการทำนาย"},
-      {"id": "D", "text": "การแข่งขันถูกเลื่อนออกไปเนื่องจากสภาพอากาศ", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับ Confusion Matrix"}
+      {
+        "id": "A",
+        "text": "นักกีฬาไม่พร้อมลงสนาม แต่โมเดลทำนายว่าพร้อมเล่น ส่งผลให้ทีมส่งผู้เล่นที่บาดเจ็บลงไปแข่งขัน",
+        "isCorrect": False,
+        "explanation": "ผิด: การทายว่าพร้อมเล่น (Positive) ทั้งที่จริงไม่พร้อม (Negative) คือความผิดพลาดแบบ False Positive (FP)"
+      },
+      {
+        "id": "B",
+        "text": "นักกีฬาพร้อมลงสนามจริง แต่โมเดลทำนายว่าไม่ควรลงเล่น ส่งผลให้ทีมเสียโอกาสใช้งานผู้เล่นฝีมือดี",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p23: False Negative คือความจริงพร้อมเล่น (Actual Positive) แต่โมเดลทายว่าไม่เล่น (Predicted Negative)"
+      },
+      {
+        "id": "C",
+        "text": "นักกีฬาพร้อมลงสนามและโมเดลทำนายว่าพร้อมเล่น ส่งผลให้ทีมได้ผู้เล่นตัวจริงที่สมบูรณ์ลงแข่งขัน",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือผลการทำนายที่ถูกต้องแบบ True Positive (TP)"
+      },
+      {
+        "id": "D",
+        "text": "นักกีฬาไม่พร้อมลงสนามและโมเดลทำนายว่าไม่ควรลงเล่น ส่งผลให้ทีมสามารถพักผู้เล่นได้อย่างเหมาะสม",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือผลการทำนายที่ถูกต้องแบบ True Negative (TN)"
+      }
     ],
     "difficulty": "direct"
   },
@@ -652,12 +1486,32 @@ questions = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p25",
     "title": "กับดักความแม่นยำสูงในข้อมูลไม่สมดุล (Majority-Class Baseline)",
-    "scenario": "หากชุดข้อมูลมีลูกค้า Active อยู่ถึง 95% และมี Inactive เพียง 5% โมเดลจำลองที่ทายทุกคนเป็น 'Active' เสมอ จะได้ผลการประเมินอย่างไร?",
+    "scenario": "ในชุดข้อมูลที่มีลูกค้า Active 95% และ Inactive (Positive Class) เพียง 5% หากสร้างโมเดลที่ทำนายว่าลูกค้าทุกคนเป็น 'Active' ทั้งหมด จะเกิดผลลัพธ์ตามข้อใด?",
     "options": [
-      {"id": "A", "text": "ได้ Accuracy 50% และถือเป็นโมเดลที่ใช้งานไม่ได้", "isCorrect": False, "explanation": "ผิด: โมเดลทายคลาสใหญ่ถูก 95% ย่อมได้ Accuracy 95%"},
-      {"id": "B", "text": "ได้ Accuracy สูงถึง 95% แต่มี Recall ในคลาส Inactive เท่ากับ 0% กลายเป็นโมเดลที่ไร้ประโยชน์ในการค้นหาลูกค้ากลุ่มเสี่ยง", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p25: Majority-class baseline ชี้ชัดว่า Accuracy ตัวเดียวหลอกตาได้ใน Class Imbalance"},
-      {"id": "C", "text": "ได้ Recall 95% และ Precision 95%", "isCorrect": False, "explanation": "ผิด: ไม่ได้ทาย Inactive เลยสักคน TP จึงเป็น 0"},
-      {"id": "D", "text": "ระบบจะแจ้งเตือน Error ทันทีเนื่องจากข้อมูลเอียงข้าง", "isCorrect": False, "explanation": "ผิด: อัลกอริทึมยังคงคำนวณตัวเลขออกมาได้ตามปกติ"}
+      {
+        "id": "A",
+        "text": "ได้ค่า Accuracy เท่ากับ 50% และค่า F1-Score เท่ากับ 50% เนื่องจากโมเดลเลือกทายเพียงคลาสเดียว",
+        "isCorrect": False,
+        "explanation": "ผิด: Accuracy คำนวณจากสัดส่วนที่ทายถูกทั้งหมด ซึ่งในที่นี้คลาส Active มีอยู่ถึง 95%"
+      },
+      {
+        "id": "B",
+        "text": "ได้ค่า Accuracy เพียง 5% แต่ได้ค่า Recall ของคลาส Inactive สูงถึง 95% จึงเหมาะกับงานค้นหาความเสี่ยง",
+        "isCorrect": False,
+        "explanation": "ผิด: เมื่อทายว่าทุกคนเป็น Active จะทายถูก 95 รายจาก 100 ราย จึงได้ Accuracy 95% ไม่ใช่ 5%"
+      },
+      {
+        "id": "C",
+        "text": "ได้ค่า Accuracy สูงถึง 95% แต่ได้ค่า Recall ของคลาส Inactive เท่ากับ 0% จึงใช้งานจริงไม่ได้",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p25: ในข้อมูลที่ไม่สมดุล โมเดลที่ทายแต่คลาสใหญ่จะได้ Accuracy สูงลวงตา แต่จับคลาสเป้าหมายไม่ได้เลย"
+      },
+      {
+        "id": "D",
+        "text": "ได้ค่า Precision เท่ากับ 95% และค่า Recall เท่ากับ 95% เนื่องจากทายคลาสส่วนใหญ่ได้ถูกต้องทั้งหมด",
+        "isCorrect": False,
+        "explanation": "ผิด: เมื่อกำหนด Positive Class คือ Inactive การไม่ทาย Inactive เลยจะทำให้ TP = 0 และ Recall = 0%"
+      }
     ],
     "difficulty": "direct"
   },
@@ -667,12 +1521,32 @@ questions = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p27",
     "title": "การเลือก Metric เมื่อต้นทุน False Positive สูงมาก",
-    "scenario": "หากธุรกิจมีทีมคอลเซ็นเตอร์จำกัด และของขวัญ Retention แต่ละชิ้นมีต้นทุนสูงมาก หากมอบผิดคนจะเกิดการสิ้นเปลืองงบประมาณอย่างหนัก (FP แพงมาก) ควรเลือกโมเดลที่เน้นค่าใด?",
+    "scenario": "หากธุรกิจมีงบประมาณจำกัดมาก โดยการส่งมอบสิทธิพิเศษให้ลูกค้าผิดคน (False Positive) จะทำให้บริษัทขาดทุนอย่างหนัก ทีมงานควรเลือกโมเดลโดยยึดตัวชี้วัดใดเป็นหลัก?",
     "options": [
-      {"id": "A", "text": "เน้นค่า Recall สูงสุด", "isCorrect": False, "explanation": "ผิด: Recall สูงมักแลกมาด้วย False Positive จำนวนมาก"},
-      {"id": "B", "text": "เน้นค่า Precision สูงสุด", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p27: เมื่อ FP แพงและทีมติดต่อจำกัด ต้องเน้น Precision เพื่อมั่นใจว่าคนที่ทายมานั้น 'ใช่ชัวร์'"},
-      {"id": "C", "text": "เน้นค่า Overall Accuracy เพียงอย่างเดียว", "isCorrect": False, "explanation": "ผิด: Accuracy ไม่ได้สะท้อนความเสียหายของ FP"},
-      {"id": "D", "text": "เน้นลดค่า True Negative ให้น้อยที่สุด", "isCorrect": False, "explanation": "ผิด: TN สูงเป็นเรื่องดี ไม่ควรลด"}
+      {
+        "id": "A",
+        "text": "เลือกโมเดลที่ให้ค่า Recall สูงที่สุด เพื่อกวาดต้อนลูกค้าที่มีโอกาสเลิกใช้บริการมาทั้งหมด",
+        "isCorrect": False,
+        "explanation": "ผิด: การเน้น Recall สูงสุดมักแลกมาด้วยการทายเผื่อจนเกิด False Positive จำนวนมาก ซึ่งทำให้สิ้นเปลืองงบประมาณ"
+      },
+      {
+        "id": "B",
+        "text": "เลือกโมเดลที่ให้ค่า Overall Accuracy สูงที่สุด โดยไม่ต้องพิจารณาตาราง Confusion Matrix",
+        "isCorrect": False,
+        "explanation": "ผิด: Accuracy รวมไม่ได้แยกแยะต้นทุนความเสียหายที่แตกต่างกันระหว่าง FP และ FN"
+      },
+      {
+        "id": "C",
+        "text": "เลือกโมเดลที่ให้ค่า Gini Impurity ในโหนดเริ่มต้นสูงที่สุด เพื่อให้ครอบคลุมความหลากหลายของลูกค้าในกระบวนการเตรียมชุดข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: Gini Impurity เป็นเกณฑ์แตกกิ่งภายในต้นไม้ ไม่ใช่ตัวชี้วัดสำหรับประเมินความคุ้มค่าทางธุรกิจของผลการทำนาย"
+      },
+      {
+        "id": "D",
+        "text": "เลือกโมเดลที่ให้ค่า Precision สูงที่สุด เพื่อให้มั่นใจว่าผู้ที่โมเดลคัดเลือกมาเป็นกลุ่มเป้าหมายจริง",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p27: เมื่อต้นทุนของ FP สูงมากหรือทรัพยากรในการติดต่อมีจำกัด ต้องเน้น Precision เป็นหลัก"
+      }
     ],
     "difficulty": "business_trap"
   },
@@ -682,12 +1556,32 @@ questions = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p28",
     "title": "การเลือก Metric เมื่อความเสี่ยง False Negative สูงมาก",
-    "scenario": "ในทางตรงกันข้าม หากการหลุดรอดของลูกค้าเสี่ยงยกเลิกบริการ (False Negative หรือ Missed Churn) จะสร้างความเสียหายถึงขั้นธุรกิจสูญเสียฐานรายได้หลักถาวร ควรเลือกโมเดลโดยยึดเกณฑ์ใด?",
+    "scenario": "ในระบบคัดกรองความเสี่ยงทางการแพทย์หรือการตรวจจับลูกค้าสำคัญที่จะย้ายค่าย ซึ่งการตรวจไม่พบผู้ที่มีความเสี่ยงจริง (False Negative) จะก่อให้เกิดความเสียหายร้ายแรง ควรยึดตัวชี้วัดใดเป็นหลัก?",
     "options": [
-      {"id": "A", "text": "ยึดโมเดลที่มีค่า Precision สูงสุด แม้ Recall จะต่ำ", "isCorrect": False, "explanation": "ผิด: Precision สูงแต่อาจปล่อยลูกค้าหลุดรอด (FN) เพียบ"},
-      {"id": "B", "text": "ยึดโมเดลที่ Maximize Recall เพื่อดักจับลูกค้ากลุ่มเสี่ยงให้ได้ครอบคลุมที่สุด ลดโอกาสเกิด FN", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p28: เมื่อ Missed Churn แพง ต้องเลือกโมเดลที่เน้น Recall"},
-      {"id": "C", "text": "ยึดโมเดลที่มีจำนวนต้นไม้ลึกที่สุด", "isCorrect": False, "explanation": "ผิด: ความลึกไม่ใช่เมตริกวัดผลทางธุรกิจ"},
-      {"id": "D", "text": "สุ่มเลือกลูกค้าโทรหาวันละ 10 คนโดยไม่ใช้โมเดล", "isCorrect": False, "explanation": "ผิด: การสุ่มไม่มีประสิทธิภาพเท่าโมเดล"}
+      {
+        "id": "A",
+        "text": "ยึดโมเดลที่ให้ค่า Recall สูงที่สุด เพื่อดักจับผู้ที่มีความเสี่ยงจริงให้ตกหล่นน้อยที่สุด",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p28: เมื่อความเสียหายจาก False Negative (Missed Cases) สูงมาก ต้องเลือกโมเดลที่ Maximize Recall"
+      },
+      {
+        "id": "B",
+        "text": "ยึดโมเดลที่ให้ค่า Precision สูงที่สุด แม้ว่าจะตรวจพบผู้มีความเสี่ยงเพียงส่วนน้อยก็ตาม",
+        "isCorrect": False,
+        "explanation": "ผิด: การเน้นแต่ Precision จะทำให้โมเดลทายอย่างระมัดระวังเกินไปจนปล่อยให้เคสสำคัญหลุดรอด (FN สูง)"
+      },
+      {
+        "id": "C",
+        "text": "ยึดโมเดลที่ให้ค่า True Negative สูงที่สุด เพื่อยืนยันจำนวนผู้ที่ไม่มีความเสี่ยงได้อย่างแม่นยำ",
+        "isCorrect": False,
+        "explanation": "ผิด: การเน้นเพิ่ม True Negative จะผลักให้โมเดลทายว่าเป็นคลาสปกติมากขึ้น ซึ่งยิ่งเพิ่มความเสี่ยงในการเกิด FN"
+      },
+      {
+        "id": "D",
+        "text": "ยึดโมเดลที่ใช้จำนวนตัวแปรต้นน้อยที่สุด เพื่อลดเวลาในการประมวลผลคำทำนายต่อหนึ่งรายการ",
+        "isCorrect": False,
+        "explanation": "ผิด: จำนวนตัวแปรต้นไม่ใช่ตัวชี้วัดที่รับประกันว่าจะลดอัตราการเกิด False Negative ได้"
+      }
     ],
     "difficulty": "business_trap"
   },
@@ -697,29 +1591,67 @@ questions = [
     "moduleRef": "module-07-evaluation-metrics",
     "slideRef": "Lect 07 p29",
     "title": "คณิตศาสตร์ของ F1-Score: เหตุผลที่ใช้ Harmonic Mean",
-    "scenario": "ทำไมสูตร F1-Score จึงต้องคำนวณด้วยค่าเฉลี่ยฮาร์มอนิก (Harmonic Mean = 2PR / (P + R)) แทนที่จะใช้ค่าเฉลี่ยเลขคณิตทั่วไป?",
+    "scenario": "เหตุใดการคำนวณ F1-Score จึงเลือกใช้ค่าเฉลี่ยฮาร์มอนิก (Harmonic Mean) แทนการใช้ค่าเฉลี่ยเลขคณิต (Arithmetic Mean) ระหว่าง Precision และ Recall?",
     "options": [
-      {"id": "A", "text": "เพื่อความสะดวกในการเขียนโปรแกรมภาษา Python", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับภาษาโปรแกรม"},
-      {"id": "B", "text": "เพราะ Harmonic Mean จะลงโทษ (Penalize) โมเดลอย่างรุนแรงทันทีหากค่าใดค่าหนึ่งระหว่าง Precision หรือ Recall ต่ำมาก ป้องกันโมเดลที่เอียงข้างสุดโต่ง", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 07 p29: ถ้า Precision = 1.0 แต่ Recall = 0.0 ค่าเฉลี่ยเลขคณิตจะได้ 0.50 แต่ Harmonic Mean จะได้ 0.00 ทันที"},
-      {"id": "C", "text": "เพราะค่าเฉลี่ยเลขคณิตจะคำนวณได้ค่าเกิน 1.0 เสมอ", "isCorrect": False, "explanation": "ผิด: ค่าเฉลี่ยเลขคณิตของค่าระหว่าง 0-1 ย่อมไม่เกิน 1"},
-      {"id": "D", "text": "เพื่อให้ค่า F1 มีค่าเท่ากับ Accuracy เสมอ", "isCorrect": False, "explanation": "ผิด: F1 และ Accuracy มักมีค่าต่างกัน"}
+      {
+        "id": "A",
+        "text": "เพราะค่าเฉลี่ยฮาร์มอนิกช่วยปรับค่าคะแนนให้สูงขึ้นเมื่อชุดข้อมูลมีจำนวนคลาสมากกว่าสองคลาสขึ้นไปในขั้นตอนการวิเคราะห์ข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่าเฉลี่ยฮาร์มอนิกจะมีค่าน้อยกว่าหรือเท่ากับค่าเฉลี่ยเลขคณิตเสมอ ไม่ได้ช่วยดึงคะแนนให้สูงขึ้น"
+      },
+      {
+        "id": "B",
+        "text": "เพราะค่าเฉลี่ยฮาร์มอนิกจะกดคะแนนลงอย่างหนักหากค่าใดค่าหนึ่งต่ำมาก จึงป้องกันโมเดลที่เก่งเพียงด้านเดียว",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 07 p29: หาก Precision = 1.0 แต่ Recall = 0.0 ค่าเฉลี่ยเลขคณิตจะได้ 0.50 แต่ F1 (Harmonic Mean) จะได้ 0.00 ทันที"
+      },
+      {
+        "id": "C",
+        "text": "เพราะค่าเฉลี่ยฮาร์มอนิกจะทำหน้าที่ปรับลดความแปรปรวนของชุดข้อมูลทดสอบให้เท่ากับชุดข้อมูลฝึกสอน",
+        "isCorrect": False,
+        "explanation": "ผิด: F1-Score เป็นเพียงตัวชี้วัดสรุปผลจากตาราง Confusion Matrix ไม่ได้ไปแก้ไขความแปรปรวนของข้อมูล"
+      },
+      {
+        "id": "D",
+        "text": "เพราะค่าเฉลี่ยเลขคณิตไม่สามารถคำนวณได้เมื่อค่า Precision และ Recall มีหน่วยวัดที่แตกต่างกัน",
+        "isCorrect": False,
+        "explanation": "ผิด: ทั้ง Precision และ Recall ต่างก็เป็นสัดส่วนที่ไม่มีหน่วยและอยู่ในช่วง [0, 1] เหมือนกัน"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 08: K-Means Clustering (Lect 08) ---
   {
     "id": "q09-kmeans-centroid",
     "questionNumber": 47,
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p25-31",
     "title": "K-Means Centroid Update (Iteration 1)",
-    "scenario": "ข้อมูล 8 จุดในสไลด์อาจารย์ เมื่อจัดกลุ่มรอบที่ 1 ด้วย Manhattan พบว่า Cluster 2 มีสมาชิก 5 จุด คือ A3(8,4), A4(5,8), A5(7,5), A6(6,4), A8(4,9) จงหาพิกัดจุดศูนย์กลางใหม่ (C2_new)?",
+    "scenario": "จากการจัดกลุ่ม K-Means รอบที่ 1 ในสไลด์อาจารย์ พบว่า Cluster 2 มีสมาชิก 5 จุด ได้แก่ A3(8,4), A4(5,8), A5(7,5), A6(6,4) และ A8(4,9) พิกัดจุดศูนย์กลางใหม่ (C2_new) มีค่าเท่าใด?",
     "options": [
-      {"id": "A", "text": "(5, 8) ซึ่งเป็นพิกัดเดิมตั้งแต่เริ่มต้น", "isCorrect": False, "explanation": "ผิด: จุดศูนย์กลางต้องอัปเดตตามค่าเฉลี่ยสมาชิกใหม่"},
-      {"id": "B", "text": "(6, 6) เพราะแกน x1 เฉลี่ยได้ 30/5 = 6 และแกน x2 เฉลี่ยได้ 30/5 = 6", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p28-31: C2_new = ((8+5+7+6+4)/5, (4+8+5+4+9)/5) = (30/5, 30/5) = (6, 6)"},
-      {"id": "C", "text": "(1.5, 3.5)", "isCorrect": False, "explanation": "ผิด: นั่นคือพิกัดของ C3_new จากสมาชิก {A2, A7}"},
-      {"id": "D", "text": "(7, 5)", "isCorrect": False, "explanation": "ผิด: นั่นคือพิกัดของจุด A5"}
+      {
+        "id": "A",
+        "text": "(5.0, 8.0)",
+        "isCorrect": False,
+        "explanation": "ผิด: (5, 8) คือพิกัดจุดศูนย์กลางตั้งต้น (Initial Centroid) ก่อนการคำนวณค่าเฉลี่ยของสมาชิกในกลุ่ม"
+      },
+      {
+        "id": "B",
+        "text": "(6.0, 5.0)",
+        "isCorrect": False,
+        "explanation": "ผิด: แกนที่สองคำนวณจาก (4 + 8 + 5 + 4 + 9) / 5 = 30 / 5 = 6.0 ไม่ใช่ 5.0 (5.0 คือค่ามัธยฐานของแกนที่สอง)"
+      },
+      {
+        "id": "C",
+        "text": "(6.0, 6.0)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p28-31: C2_new = ((8+5+7+6+4)/5, (4+8+5+4+9)/5) = (30/5, 30/5) = (6.0, 6.0)"
+      },
+      {
+        "id": "D",
+        "text": "(7.0, 5.0)",
+        "isCorrect": False,
+        "explanation": "ผิด: (7, 5) คือพิกัดของจุดข้อมูล A5 เพียงจุดเดียว ไม่ใช่ค่าเฉลี่ยของสมาชิกทั้ง 5 จุดในกลุ่ม"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -729,12 +1661,33 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p25, p35",
     "title": "กับดักสูตร K-Means: Manhattan vs Squared Euclidean",
-    "scenario": "ข้อสอบถามว่า: ในขั้นตอนการคำนวณวัดความแน่นหนาของคลัสเตอร์ (Inertia หรือ WCSS) ตามทฤษฎีต้องใช้ฟังก์ชันระยะทางใด?",
+    "scenario": "ในการคำนวณค่าความแปรปรวนภายในคลัสเตอร์ (Inertia หรือ Within-Cluster Sum of Squares: WCSS) ของอัลกอริทึม K-Means มาตรฐาน ต้องใช้ฟังก์ชันระยะทางในข้อใด?",
     "options": [
-      {"id": "A", "text": "Manhattan Distance (|x - c|) เสมอ เพราะในห้องเรียนอาจารย์ใช้ตัวนี้คิดเลข", "isCorrect": False, "explanation": "ติดกับดักอาจารย์! ในห้องเรียนใช้ Manhattan เพื่อให้คิดเลขง่าย แต่สูตร Inertia ตามทฤษฎีใช้ Squared Euclidean", "distractorTrap": "จำสลับกับวิธีคิดเลขในห้อง"},
-      {"id": "B", "text": "Squared Euclidean Distance (||x - Ck||^2)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p35: Inertia/WCSS ตามนิยามคณิตศาสตร์คือผลรวมของระยะทางแบบ Squared Euclidean Distance"},
-      {"id": "C", "text": "Cosine Similarity", "isCorrect": False, "explanation": "ผิด: K-Means ดั้งเดิมไม่ได้ใช้วัดมุม Cosine"},
-      {"id": "D", "text": "Silhouette Score", "isCorrect": False, "explanation": "ผิด: Silhouette เป็นอีกเมตริกหนึ่ง ไม่ใช่ฟังก์ชันระยะทางของ Inertia"}
+      {
+        "id": "A",
+        "text": "Manhattan Distance (ผลรวมค่าสัมบูรณ์ของผลต่างพิกัด)",
+        "isCorrect": False,
+        "explanation": "ติดกับดัก! ในห้องเรียนใช้ Manhattan เพื่อความสะดวกในการคิดเลขมือ แต่สูตร Inertia มาตรฐานใช้ Squared Euclidean",
+        "distractorTrap": "จำสลับกับตัวอย่างการทดลองคิดเลขมือในชั้นเรียน"
+      },
+      {
+        "id": "B",
+        "text": "Cosine Distance (ระยะห่างเชิงมุมระหว่างเวกเตอร์ของจุดข้อมูลสองจุด)",
+        "isCorrect": False,
+        "explanation": "ผิด: Cosine Distance ใช้ใน Spherical K-Means สำหรับข้อมูลข้อความ ไม่ใช่สูตร WCSS มาตรฐาน"
+      },
+      {
+        "id": "C",
+        "text": "Chebyshev Distance (ค่าผลต่างสูงสุดในมิติใดมิติหนึ่งระหว่างสองจุด)",
+        "isCorrect": False,
+        "explanation": "ผิด: Chebyshev Distance ไม่ได้ใช้เป็นสมการเป้าหมายมาตรฐานของค่า Inertia ใน K-Means"
+      },
+      {
+        "id": "D",
+        "text": "Squared Euclidean Distance (ผลรวมกำลังสองของระยะห่างแบบยูคลิด)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p35: นิยามของ Inertia (WCSS) คือผลรวมของระยะห่างยกกำลังสอง ||x - C_k||² จากจุดข้อมูลไปยังจุดศูนย์กลางกลุ่ม"
+      }
     ],
     "difficulty": "business_trap"
   },
@@ -744,12 +1697,32 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p36-37",
     "title": "การแปลความหมาย Silhouette Score ที่ติดลบ",
-    "scenario": "เมื่อคำนวณ Silhouette Coefficient ของจุดข้อมูลหนึ่งได้ค่า s(i) = -0.42 จะแปลความหมายเชิงเรขาคณิตได้ว่าอย่างไร?",
+    "scenario": "หากคำนวณค่า Silhouette Coefficient ของจุดข้อมูลจุดหนึ่งได้เท่ากับ s(i) = -0.42 ข้อใดแปลความหมายเชิงเรขาคณิตของจุดข้อมูลนี้ได้ถูกต้อง?",
     "options": [
-      {"id": "A", "text": "จุดนี้อยู่ตรงกลางใจกลางกลุ่มพอดี เกาะกลุ่มได้แน่นหนาสูงสุด", "isCorrect": False, "explanation": "ผิด: ถ้าเกาะกลุ่มแน่น ค่าต้องใกล้ +1"},
-      {"id": "B", "text": "จุดนี้อยู่นอกรั้วของ Tukey กลายเป็น Outlier", "isCorrect": False, "explanation": "ผิด: Silhouette ไม่ได้เกี่ยวข้องกับรั้วของ Tukey"},
-      {"id": "C", "text": "จุดนี้น่าจะถูกจัดเข้ากลุ่มผิด (Probable Misclustering) เพราะอยู่ใกล้จุดในกลุ่มอื่นมากกว่ากลุ่มของตนเอง (b(i) < a(i))", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p37: ค่า Silhouette ติดลบเกิดเมื่อ a(i) > b(i) แปลว่าอยู่ใกล้กลุ่มข้างเคียงมากกว่ากลุ่มที่ได้รับมอบหมาย"},
-      {"id": "D", "text": "โมเดลมี Accuracy เท่ากับ 42%", "isCorrect": False, "explanation": "ผิด: Silhouette ใช้กับ Unsupervised ไม่ใช่ Accuracy"}
+      {
+        "id": "A",
+        "text": "จุดข้อมูลนี้อยู่ใกล้กับสมาชิกในคลัสเตอร์อื่นมากกว่าสมาชิกในคลัสเตอร์ของตนเอง จึงอาจถูกจัดกลุ่มผิด",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p37: ค่า s(i) ติดลบเกิดเมื่อ a(i) > b(i) หมายความว่าระยะห่างเฉลี่ยในกลุ่มตัวเองมากกว่ากลุ่มข้างเคียง"
+      },
+      {
+        "id": "B",
+        "text": "จุดข้อมูลนี้อยู่ใกล้จุดศูนย์กลางของคลัสเตอร์ตนเองมากที่สุด และแยกขาดจากคลัสเตอร์อื่นอย่างชัดเจน",
+        "isCorrect": False,
+        "explanation": "ผิด: หากเกาะกลุ่มตนเองแน่นและห่างจากกลุ่มอื่นชัดเจน ค่า s(i) จะต้องมีค่าเป็นบวกเข้าใกล้ +1.0"
+      },
+      {
+        "id": "C",
+        "text": "จุดข้อมูลนี้วางตัวอยู่บนเส้นแบ่งเขตแดนระหว่างสองคลัสเตอร์พอดี โดยมีระยะห่างถึงทั้งสองกลุ่มเท่ากัน",
+        "isCorrect": False,
+        "explanation": "ผิด: หากอยู่กึ่งกลางระหว่างสองกลุ่มพอดี (a(i) ≈ b(i)) ค่า Silhouette Coefficient จะมีค่าเข้าใกล้ 0.0"
+      },
+      {
+        "id": "D",
+        "text": "จุดข้อมูลนี้มีค่าพิกัดติดลบในระบบแกนมุมฉาก จึงส่งผลให้ผลการคำนวณระยะห่างมีเครื่องหมายติดลบ",
+        "isCorrect": False,
+        "explanation": "ผิด: ระยะห่างทางเรขาคณิต a(i) และ b(i) มีค่าเป็นบวกหรือศูนย์เสมอ เครื่องหมายลบเกิดจาก b(i) - a(i) < 0"
+      }
     ],
     "difficulty": "direct"
   },
@@ -759,12 +1732,32 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p6",
     "title": "เป้าหมายหลักของการจัดกลุ่ม (Good Clustering Objective)",
-    "scenario": "ตามทฤษฎีการจัดกลุ่มข้อมูล (Unsupervised Clustering) คุณลักษณะของการจัดกลุ่มที่ดี (Good Clustering) คือข้อใด?",
+    "scenario": "ตามหลักการของ Unsupervised Clustering ในสไลด์ Lect 08 p6 คุณลักษณะของการจัดกลุ่มที่ดี (Good Clustering) คือข้อใด?",
     "options": [
-      {"id": "A", "text": "ทำให้สมาชิกในกลุ่มมีความต่างกันสูงสุด (Maximize Intra-cluster variation)", "isCorrect": False, "explanation": "ผิด: สมาชิกในกลุ่มเดียวกันต้องคล้ายกันมากที่สุด"},
-      {"id": "B", "text": "Maximize Intra-cluster similarity (สมาชิกกลุ่มเดียวกันคล้ายกันมากที่สุด) และ Minimize Inter-cluster similarity (ต่างกลุ่มกันคล้ายกันน้อยที่สุด)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p6: Good clustering = High intra-cluster similarity + Low inter-cluster similarity"},
-      {"id": "C", "text": "ทำให้ได้จำนวนสมาชิกในทุกคลัสเตอร์เท่ากันเป๊ะพอดี", "isCorrect": False, "explanation": "ผิด: ในโลกจริงแต่ละกลุ่มมีขนาดไม่เท่ากันได้"},
-      {"id": "D", "text": "ทำให้ค่า Inertia มีค่าเท่ากับ 0 เสมอ", "isCorrect": False, "explanation": "ผิด: Inertia = 0 เกิดเมื่อ K = n ซึ่งไม่มีประโยชน์ในการจัดกลุ่ม"}
+      {
+        "id": "A",
+        "text": "มีความคล้ายคลึงภายในกลุ่มต่ำที่สุด และมีความคล้ายคลึงระหว่างกลุ่มสูงที่สุด",
+        "isCorrect": False,
+        "explanation": "ผิด: สลับเป้าหมายกันอย่างสิ้นเชิง เพราะจะทำให้สมาชิกในกลุ่มเดียวกันต่างกันแต่ข้ามกลุ่มกลับเหมือนกัน"
+      },
+      {
+        "id": "B",
+        "text": "มีความคล้ายคลึงภายในกลุ่มสูงที่สุด และมีความคล้ายคลึงระหว่างกลุ่มต่ำที่สุด",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p6: Good Clustering ต้อง Maximize Intra-cluster similarity และ Minimize Inter-cluster similarity"
+      },
+      {
+        "id": "C",
+        "text": "มีความคล้ายคลึงภายในกลุ่มสูงที่สุด และมีความคล้ายคลึงระหว่างกลุ่มสูงที่สุด",
+        "isCorrect": False,
+        "explanation": "ผิด: หากความคล้ายคลึงระหว่างกลุ่มสูง กลุ่มต่างๆ จะทับซ้อนกันและแยกแยะออกจากกันไม่ได้"
+      },
+      {
+        "id": "D",
+        "text": "มีความคล้ายคลึงภายในกลุ่มต่ำที่สุด และมีความคล้ายคลึงระหว่างกลุ่มต่ำที่สุด",
+        "isCorrect": False,
+        "explanation": "ผิด: สมาชิกที่อยู่ภายในคลัสเตอร์เดียวกันต้องมีความคล้ายคลึงกันสูง (High Intra-cluster similarity)"
+      }
     ],
     "difficulty": "direct"
   },
@@ -774,12 +1767,32 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p15",
     "title": "การคำนวณระยะทาง Manhattan และ Euclidean",
-    "scenario": "พิจารณาจุด 2 จุดในสไลด์ Lect 08 p15: จุด X = (2, 10, 5, 3) และ จุด Y = (2, 5, 5, 4) จงคำนวณระยะทาง Manhattan และ Euclidean ระหว่างสองจุดนี้?",
+    "scenario": "กำหนดจุดข้อมูล 2 จุดจากสไลด์ Lect 08 p15 ได้แก่ X = (2, 10, 5, 3) และ Y = (2, 5, 5, 4) ระยะทางแบบ Manhattan และ Euclidean ระหว่างสองจุดนี้มีค่าเท่าใด?",
     "options": [
-      {"id": "A", "text": "Manhattan = 10, Euclidean = 6.00", "isCorrect": False, "explanation": "ผิด: คำนวณผลรวมความต่างผิด"},
-      {"id": "B", "text": "Manhattan = 6, Euclidean ≈ 5.10 (คำนวณจาก sqrt(26))", "isCorrect": True, "explanation": "ถูกต้อง: Manhattan = |2-2|+|10-5|+|5-5|+|3-4| = 0+5+0+1 = 6; Euclidean = sqrt(0^2 + 5^2 + 0^2 + (-1)^2) = sqrt(26) ≈ 5.10"},
-      {"id": "C", "text": "Manhattan = 4, Euclidean = 4.00", "isCorrect": False, "explanation": "ผิด: ระยะห่างในมิติที่สองคือ |10-5| = 5"},
-      {"id": "D", "text": "Manhattan = 8, Euclidean = 7.20", "isCorrect": False, "explanation": "ผิด: ตัวเลขไม่ตรงกับผลรวมระยะห่าง"}
+      {
+        "id": "A",
+        "text": "Manhattan = 4, Euclidean = 4.00",
+        "isCorrect": False,
+        "explanation": "ผิด: ผลต่างในมิติที่สองคือ |10 - 5| = 5 และมิติที่สี่คือ |3 - 4| = 1 รวมกันต้องมากกว่า 4"
+      },
+      {
+        "id": "B",
+        "text": "Manhattan = 6, Euclidean ≈ 5.10",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p15: Manhattan = |2-2| + |10-5| + |5-5| + |3-4| = 0 + 5 + 0 + 1 = 6 และ Euclidean = sqrt(0² + 5² + 0² + (-1)²) = sqrt(26) ≈ 5.10"
+      },
+      {
+        "id": "C",
+        "text": "Manhattan = 6, Euclidean = 6.00",
+        "isCorrect": False,
+        "explanation": "ผิด: ระยะทาง Euclidean คำนวณจากรากที่สองของผลรวมกำลังสอง sqrt(25 + 1) = sqrt(26) ≈ 5.10 ไม่ใช่ 6.00"
+      },
+      {
+        "id": "D",
+        "text": "Manhattan = 26, Euclidean ≈ 5.10",
+        "isCorrect": False,
+        "explanation": "ผิด: 26 คือค่า Squared Euclidean Distance (5² + 1²) ส่วนระยะทาง Manhattan คือผลรวมค่าสัมบูรณ์เท่ากับ 6"
+      }
     ],
     "difficulty": "calculated"
   },
@@ -789,12 +1802,32 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p18",
     "title": "ความจำเป็นของการทำ Scaling ใน K-Means",
-    "scenario": "ทำไมในขั้นตอนการทำ Data Preparation สำหรับ K-Means จึงจำเป็นต้องทำ Feature Scaling ก่อนเสมอ?",
+    "scenario": "เหตุใดในขั้นตอนการเตรียมข้อมูลสำหรับอัลกอริทึม K-Means จึงต้องทำ Feature Scaling ให้ตัวแปรทุกตัวอยู่ในสเกลที่เทียบเคียงกันก่อนเสมอ?",
     "options": [
-      {"id": "A", "text": "เพื่อแปลงข้อมูลที่เป็น Categorical ให้เป็นตัวเลข", "isCorrect": False, "explanation": "ผิด: นั่นคือการทำ Encoding ไม่ใช่ Scaling"},
-      {"id": "B", "text": "เพราะ K-Means คำนวณระยะห่างทางเรขาคณิต หากไม่ Scale ฟีเจอร์ที่มีสเกลใหญ่ (เช่น รายได้ 50,000 บาท) จะครอบงำระยะห่างทั้งหมดจนฟีเจอร์สเกลเล็ก (เช่น อายุ 25 ปี) ไร้ผล", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08: Distance metrics อิงตามค่าตัวเลข ฟีเจอร์หน่วยใหญ่จะ dominate ผลการรวมกลุ่ม"},
-      {"id": "C", "text": "เพื่อป้องกันไม่ให้ K-Means สร้างจำนวนกลุ่ม K เกิน 10 กลุ่ม", "isCorrect": False, "explanation": "ผิด: จำนวน K ผู้ใช้เป็นคนกำหนดเอง"},
-      {"id": "D", "text": "เพื่อทำให้ชุดข้อมูลกลายเป็นระฆังคว่ำแบบ Normal Distribution เสมอ", "isCorrect": False, "explanation": "ผิด: Scaling ไม่ได้เปลี่ยนการกระจายตัวให้เป็น Normal เสมอไป"}
+      {
+        "id": "A",
+        "text": "เพื่อแปลงตัวแปรที่เป็นข้อความหมวดหมู่ให้กลายเป็นรหัสตัวเลขที่สามารถคำนวณค่าเฉลี่ยได้",
+        "isCorrect": False,
+        "explanation": "ผิด: การแปลงข้อมูลหมวดหมู่เป็นตัวเลขคือการทำ Encoding ไม่ใช่การทำ Feature Scaling"
+      },
+      {
+        "id": "B",
+        "text": "เพื่อบังคับให้คลัสเตอร์ที่ได้ทุกกลุ่มมีจำนวนสมาชิกเท่ากันอย่างสมบูรณ์หลังจบการประมวลผล",
+        "isCorrect": False,
+        "explanation": "ผิด: การทำ Feature Scaling เป็นการปรับช่วงค่าของตัวแปร ไม่ได้บังคับให้แต่ละกลุ่มมีจำนวนสมาชิกเท่ากัน"
+      },
+      {
+        "id": "C",
+        "text": "เพื่อรับประกันว่าอัลกอริทึมจะค้นพบจุดศูนย์กลางที่เป็น Global Optimum โดยไม่ขึ้นกับจุดเริ่มต้น",
+        "isCorrect": False,
+        "explanation": "ผิด: แม้จะทำ Scaling แล้ว K-Means ก็ยังมีความไวต่อการสุ่มจุดศูนย์กลางเริ่มต้นและอาจติดที่ Local Optimum ได้"
+      },
+      {
+        "id": "D",
+        "text": "เพื่อป้องกันไม่ให้ตัวแปรที่มีหน่วยวัดขนาดใหญ่ครอบงำการคำนวณระยะทางจนตัวแปรอื่นไม่มีผล",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p18: K-Means อาศัยการวัดระยะห่าง หากไม่ปรับสเกล ตัวแปรที่มีค่าหลักหมื่นจะกลบผลของตัวแปรหลักหน่วยทั้งหมด"
+      }
     ],
     "difficulty": "direct"
   },
@@ -804,12 +1837,32 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p22",
     "title": "กฎ Tie-Breaking ในการมอบหมายคลัสเตอร์",
-    "scenario": "ในขั้นตอน Assign ของ K-Means หากจุดข้อมูลจุดหนึ่งมีระยะห่างไปยัง Centroid สองกลุ่มเท่ากันพอดี กฎ Tie-breaking ในสไลด์กำหนดให้ปฏิบัติอย่างไร?",
+    "scenario": "ในขั้นตอนการมอบหมายกลุ่ม (Assignment Step) ของ K-Means หากจุดข้อมูลจุดหนึ่งมีระยะห่างไปยังจุดศูนย์กลางของสองคลัสเตอร์เท่ากันพอดี ข้อตกลงในสไลด์ Lect 08 p22 กำหนดให้ทำอย่างไร?",
     "options": [
-      {"id": "A", "text": "ให้สุ่มโยนเหรียญเลือกกลุ่มใดกลุ่มหนึ่ง", "isCorrect": False, "explanation": "ผิด: อัลกอริทึมต้องมี deterministic rule"},
-      {"id": "B", "text": "มอบหมายให้เข้ากลุ่มที่มีหมายเลข Cluster ต่ำที่สุด (Lowest Cluster Index)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p22: ระยะทางเท่ากัน ให้เลือก cluster หมายเลขต่ำสุด"},
-      {"id": "C", "text": "ลบจุดข้อมูลนั้นทิ้งเนื่องจากเป็นข้อมูลกำกวม", "isCorrect": False, "explanation": "ผิด: ห้ามลบข้อมูลทิ้ง"},
-      {"id": "D", "text": "แตกกิ่งเพิ่มคลัสเตอร์ใหม่ขึ้นมาทันที", "isCorrect": False, "explanation": "ผิด: จำนวน K ถูกตรึงไว้ล่วงหน้า"}
+      {
+        "id": "A",
+        "text": "มอบหมายจุดข้อมูลนั้นให้เข้าสู่คลัสเตอร์ที่มีหมายเลขลำดับน้อยกว่า (Lowest Cluster Index)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p22: กฎ Tie-breaking กำหนดให้เลือกคลัสเตอร์ที่มีหมายเลขลำดับต่ำสุดเพื่อให้ผลลัพธ์คงที่"
+      },
+      {
+        "id": "B",
+        "text": "มอบหมายจุดข้อมูลนั้นให้เข้าสู่คลัสเตอร์ที่มีจำนวนสมาชิกสะสมอยู่น้อยกว่าในรอบนั้น",
+        "isCorrect": False,
+        "explanation": "ผิด: อัลกอริทึม K-Means มาตรฐานไม่ได้ตรวจสอบขนาดกลุ่มเพื่อถ่วงดุลจำนวนสมาชิกในขั้นตอน Assign"
+      },
+      {
+        "id": "C",
+        "text": "คัดแยกจุดข้อมูลนั้นออกเป็นจุดกำกวม และไม่นำมารวมในการคำนวณจุดศูนย์กลางรอบถัดไป",
+        "isCorrect": False,
+        "explanation": "ผิด: K-Means เป็นการแบ่งแบบ Hard Partitioning ทุกจุดข้อมูลต้องถูกจัดเข้ากลุ่มใดกลุ่มหนึ่งเสมอ"
+      },
+      {
+        "id": "D",
+        "text": "นำพิกัดของจุดข้อมูลนั้นไปคำนวณค่าเฉลี่ยร่วมกับทั้งสองคลัสเตอร์ด้วยน้ำหนักที่เท่ากัน",
+        "isCorrect": False,
+        "explanation": "ผิด: การถ่วงน้ำหนักเข้าหลายกลุ่มพร้อมกันเป็นหลักการของ Fuzzy C-Means ไม่ใช่ K-Means มาตรฐาน"
+      }
     ],
     "difficulty": "direct"
   },
@@ -819,12 +1872,33 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p24",
     "title": "จุดเด่นด้าน Time Complexity ของ K-Means",
-    "scenario": "ข้อความใดอธิบายเกี่ยวกับประสิทธิภาพด้านความเร็วและความซับซ้อนเชิงเวลา (Time Complexity) ของ K-Means ได้ถูกต้องตามสไลด์ Lect 08 p24?",
+    "scenario": "ข้อใดอธิบายคุณสมบัติด้านความซับซ้อนเชิงเวลา (Time Complexity) ของอัลกอริทึม K-Means ได้ถูกต้องตามสไลด์ Lect 08 p24?",
     "options": [
-      {"id": "A", "text": "K-Means เป็นอัลกอริทึมที่ทำงานช้ามาก O(n^3) ทำให้ความเร็วเป็นจุดด้อยหลัก", "isCorrect": False, "explanation": "ติดกับดัก! สไลด์ย้ำเตือนชัดเจนว่าความเร็วเป็นจุดเด่น ไม่ใช่จุดด้อย", "distractorTrap": "เข้าใจผิดว่า K-Means ทำงานช้า"},
-      {"id": "B", "text": "K-Means มีประสิทธิภาพค่อนข้างสูงด้วยความซับซ้อน O(t*k*n) (เชิงเส้นกับจำนวนข้อมูล) ทำให้ความเร็วและ Scalability ถือเป็นจุดเด่นสำคัญ", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p24: Relatively efficient O(tkn) ความเร็วเป็นจุดเด่น ไม่ใช่จุดด้อย"},
-      {"id": "C", "text": "K-Means คำนวณได้เร็วเฉพาะเมื่อ K = 1 เท่านั้น", "isCorrect": False, "explanation": "ผิด: คำนวณได้เร็วเมื่อ K มีค่าสมเหตุสมผล"},
-      {"id": "D", "text": "K-Means มีความเร็วช้ากว่า Hierarchical Clustering เสมอ", "isCorrect": False, "explanation": "ผิด: Hierarchical ช้ากว่า K-Means มาก (O(n^2) หรือ O(n^3))"}
+      {
+        "id": "A",
+        "text": "มีความซับซ้อนระดับ O(n³) จึงประมวลผลได้ช้ามากและไม่เหมาะกับชุดข้อมูลขนาดใหญ่",
+        "isCorrect": False,
+        "explanation": "ติดกับดัก! สไลด์ย้ำว่า K-Means มีความเร็วในการประมวลผลสูงซึ่งเป็นจุดแข็งสำคัญ ไม่ใช่จุดอ่อน",
+        "distractorTrap": "เข้าใจผิดว่าความเร็วในการรันเป็นข้อเสียของ K-Means"
+      },
+      {
+        "id": "B",
+        "text": "มีความซับซ้อนระดับ O(t·k·n) ซึ่งแปรผันตรงแบบเชิงเส้นกับจำนวนข้อมูล จึงทำงานได้รวดเร็ว",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p24: K-Means มีความซับซ้อน O(tkn) โดยเมื่อ t และ k มีค่าน้อย อัลกอริทึมจะขยายขนาดตามจำนวนข้อมูล n ได้ดีมาก"
+      },
+      {
+        "id": "C",
+        "text": "มีความซับซ้อนระดับ O(2ⁿ) เนื่องจากต้องทดสอบจับคู่จุดข้อมูลทุกรูปแบบที่เป็นไปได้ทั้งหมด",
+        "isCorrect": False,
+        "explanation": "ผิด: K-Means ใช้การวนซ้ำแบบ Heuristic (Lloyd's algorithm) จึงไม่ต้องค้นหาทุกการจัดกลุ่มที่เป็นไปได้"
+      },
+      {
+        "id": "D",
+        "text": "มีความซับซ้อนคงที่ระดับ O(1) โดยเวลาที่ใช้ในการประมวลผลไม่ขึ้นกับจำนวนแถวของข้อมูลเลย",
+        "isCorrect": False,
+        "explanation": "ผิด: ในแต่ละรอบต้องคำนวณระยะทางของข้อมูลทุกจุด n จุด เวลาจึงแปรผันตรงกับ n"
+      }
     ],
     "difficulty": "direct"
   },
@@ -834,12 +1908,32 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p32",
     "title": "การลู่เข้า Convergence กับความมีประโยชน์ทางธุรกิจ",
-    "scenario": "เมื่อการรัน K-Means เข้าสู่ภาวะ 'Convergence' (จุดศูนย์กลางไม่เปลี่ยนตำแหน่งและไม่มีสมาชิกย้ายกลุ่ม) ภาวะนี้การันตีสิ่งใด?",
+    "scenario": "เมื่ออัลกอริทึม K-Means ทำงานจนเข้าสู่ภาวะลู่เข้า (Convergence) คือไม่มีจุดข้อมูลย้ายกลุ่มและจุดศูนย์กลางไม่เปลี่ยนตำแหน่ง ภาวะนี้ยืนยันสิ่งใด?",
     "options": [
-      {"id": "A", "text": "การันตีว่ากลุ่มที่ได้มีประโยชน์ทางธุรกิจสูงสุดและพร้อมส่งต่อให้ทีมการตลาดใช้งานได้ทันที", "isCorrect": False, "explanation": "ผิด: Convergence ไม่ได้การันตีความมีประโยชน์ทางธุรกิจ"},
-      {"id": "B", "text": "การันตีเพียงว่าการคำนวณทางคณิตศาสตร์หยุดนิ่งแล้วเท่านั้น แต่ไม่ได้พิสูจน์ว่ากลุ่มที่ได้มีความหมายหรือมีประโยชน์ในทางปฏิบัติ (Convergence != Usefulness)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p32: Convergence เป็นเพียงจุดสิ้นสุดทางพีชคณิต ต้องนำผลมาทำ Cluster Profiling เพื่อดู usefulness"},
-      {"id": "C", "text": "การันตีว่าผลการจัดกลุ่มคือ Global Optimum ที่ดีที่สุดในจักรวาล", "isCorrect": False, "explanation": "ผิด: K-Means มักติดที่ Local Optimum"},
-      {"id": "D", "text": "การันตีว่าไม่มี Outlier หลงเหลืออยู่ในกลุ่ม", "isCorrect": False, "explanation": "ผิด: K-Means ไวต่อ Outlier มาก"}
+      {
+        "id": "A",
+        "text": "ยืนยันว่าคลัสเตอร์ที่ได้มีความหมายเชิงธุรกิจที่ชัดเจนและพร้อมนำไปใช้งานได้ทันทีโดยไม่ต้องตรวจสอบซ้ำตามเกณฑ์การวัดผลทางสถิติ",
+        "isCorrect": False,
+        "explanation": "ผิด: สไลด์ Lect 08 p32 เน้นย้ำว่า Convergence != Usefulness การหยุดคำนวณไม่ได้แปลว่ากลุ่มนั้นมีประโยชน์ทางธุรกิจ"
+      },
+      {
+        "id": "B",
+        "text": "ยืนยันว่าผลการจัดกลุ่มที่ได้คือคำตอบที่ดีที่สุดในภาพรวมทั้งหมด (Global Optimum) ของชุดข้อมูลนั้น",
+        "isCorrect": False,
+        "explanation": "ผิด: K-Means รับประกันเพียงการลู่เข้าสู่จุดต่ำสุดเฉพาะที่ (Local Optimum) ซึ่งขึ้นอยู่กับการสุ่มจุดเริ่มต้น"
+      },
+      {
+        "id": "C",
+        "text": "ยืนยันเพียงว่าขั้นตอนการอัปเดตทางคณิตศาสตร์สิ้นสุดลงแล้ว แต่ยังต้องทำ Profiling เพื่อประเมินคุณค่าทางธุรกิจ",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p32: Convergence บอกเพียงว่าอัลกอริทึมหยุดนิ่งแล้ว นักวิเคราะห์ต้องทำ Cluster Profiling เพื่อตีความต่อ"
+      },
+      {
+        "id": "D",
+        "text": "ยืนยันว่าภายในแต่ละคลัสเตอร์ไม่มีจุดข้อมูลที่เป็นค่าผิดปกติ (Outliers) ปะปนอยู่อีกต่อไป",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่าผิดปกติยังคงถูกจัดอยู่ในกลุ่มใดกลุ่มหนึ่งและอาจดึงให้จุดศูนย์กลางบิดเบี้ยวไปตั้งแต่ต้น"
+      }
     ],
     "difficulty": "direct"
   },
@@ -849,12 +1943,32 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p35",
     "title": "หลักการเลือก K ด้วย Elbow Method",
-    "scenario": "ในการพิจารณาเลือกจำนวนกลุ่ม K ที่เหมาะสมจากกราฟ Elbow Method ทำไมเราจึงไม่เลือกค่า K ที่ให้ค่าความแปรปรวนในกลุ่ม (Inertia/WCSS) ต่ำที่สุด?",
+    "scenario": "ในการเลือกจำนวนคลัสเตอร์ K ด้วยวิธี Elbow Method เหตุใดเราจึงไม่เลือกค่า K ที่ทำให้ค่า Inertia (WCSS) มีค่าต่ำที่สุด?",
     "options": [
-      {"id": "A", "text": "เพราะค่า Inertia จะลดลงเรื่อยๆ เสมอเมื่อ K เพิ่มขึ้น (ถ้า K = n ค่า Inertia จะกลายเป็น 0) การเลือก K จึงต้องเลือกตรง 'จุดหักศอก' ที่ผลตอบแทนเริ่มลดน้อยถอยลง", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p35: Inertia decreases monotonically; Best K is balanced & explainable"},
-      {"id": "B", "text": "เพราะค่า Inertia คำนวณได้เฉพาะเมื่อ K ไม่เกิน 3 เท่านั้น", "isCorrect": False, "explanation": "ผิด: คำนวณได้กับทุกค่า K"},
-      {"id": "C", "text": "เพราะค่า Inertia ต่ำแปลว่ากลุ่มกระจัดกระจายไม่แน่นหนา", "isCorrect": False, "explanation": "ผิด: Inertia ต่ำแปลว่ากลุ่มเกาะกันแน่น"},
-      {"id": "D", "text": "เพราะ Elbow Method ใช้วัดเฉพาะโมเดล Decision Tree", "isCorrect": False, "explanation": "ผิด: Elbow Method ใช้กับ Clustering"}
+      {
+        "id": "A",
+        "text": "เพราะค่า Inertia จะเพิ่มขึ้นแบบทวีคูณเมื่อกำหนดค่า K สูงเกินกว่าจำนวนตัวแปรต้นที่มีอยู่ในตารางข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: ตามหลักคณิตศาสตร์ เมื่อเพิ่มจำนวนกลุ่ม K ค่า Inertia จะมีแนวโน้มลดลงหรือเท่าเดิมเสมอ ไม่เพิ่มขึ้น"
+      },
+      {
+        "id": "B",
+        "text": "เพราะค่า Inertia ที่ต่ำเกินไปแสดงว่าสมาชิกภายในคลัสเตอร์เดียวกันอยู่กระจัดกระจายห่างจากจุดศูนย์กลางมาก",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่า Inertia ต่ำหมายถึงระยะห่างภายในกลุ่มน้อย แต่ถ้าต่ำเพราะตั้ง K สูงเกินไปจะทำให้ได้กลุ่มย่อยที่ไร้ความหมาย"
+      },
+      {
+        "id": "C",
+        "text": "เพราะเมื่อค่า Inertia ลดลงต่ำกว่าครึ่งหนึ่งของค่าเริ่มต้น อัลกอริทึมจะไม่สามารถคำนวณค่า Silhouette ได้",
+        "isCorrect": False,
+        "explanation": "ผิด: การคำนวณ Silhouette Score สามารถทำได้ตั้งแต่ K = 2 ถึง n - 1 โดยไม่ติดข้อจำกัดเรื่องครึ่งหนึ่งของ Inertia"
+      },
+      {
+        "id": "D",
+        "text": "เพราะค่า Inertia จะลดลงเสมอเมื่อเพิ่มค่า K จึงต้องเลือกจุดหักศอกที่การลดลงเริ่มชะลอตัวเพื่อความสมดุล",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p35: ยิ่งเพิ่ม K ค่า Inertia ยิ่งลดลงเรื่อยๆ จนเป็น 0 เมื่อ K = n จึงต้องเลือกจุดหักศอกที่จำนวนกลุ่มยังอธิบายได้"
+      }
     ],
     "difficulty": "direct"
   },
@@ -864,29 +1978,67 @@ questions = [
     "moduleRef": "module-08-kmeans",
     "slideRef": "Lect 08 p38",
     "title": "ลำดับขั้นจาก Cluster สู่การตัดสินใจธุรกิจ (Profile First)",
-    "scenario": "เมื่ออัลกอริทึมจัดกลุ่มลูกค้าออกเป็น Cluster 0, Cluster 1, Cluster 2 เรียบร้อยแล้ว ขั้นตอนที่ถูกต้องในการทำงานต่อตามหลัก CRISP-DS คือข้อใด?",
+    "scenario": "หลังจากอัลกอริทึม K-Means แบ่งลูกค้าออกเป็น Cluster 0, Cluster 1 และ Cluster 2 เสร็จสิ้น ขั้นตอนการทำงานที่ถูกต้องต่อไปตามสไลด์ Lect 08 p38 คือข้อใด?",
     "options": [
-      {"id": "A", "text": "ตั้งชื่อ Persona เช่น 'ลูกค้า VIP' หรือ 'ลูกค้าขี้งก' ทันทีจาก Cluster ID", "isCorrect": False, "explanation": "ผิด: Cluster ID เป็นเพียงป้ายกำกับทางคณิตศาสตร์ ไม่มีตัวตนทางธุรกิจในตัวเอง"},
-      {"id": "B", "text": "ทำ Cluster Profiling ก่อน โดยเปรียบเทียบค่าสถิติจริงของคุณลักษณะในแต่ละกลุ่ม แล้วค่อยสร้าง Persona จากหลักฐานเชิงประจักษ์", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 08 p38: Cluster Profile first -> interpret second"},
-      {"id": "C", "text": "ส่งข้อความโปรโมชันไปยัง Cluster 0 ทันที", "isCorrect": False, "explanation": "ผิด: ยังไม่ทราบคุณลักษณะของสมาชิกในกลุ่ม"},
-      {"id": "D", "text": "ลบกลุ่มที่มีจำนวนสมาชิกน้อยที่สุดทิ้งไป", "isCorrect": False, "explanation": "ผิด: กลุ่มเล็กอาจเป็นกลุ่มลูกค้าพิเศษที่มีคุณค่าสูง"}
+      {
+        "id": "A",
+        "text": "ทำ Cluster Profiling เปรียบเทียบสถิติของแต่ละตัวแปรในทุกกลุ่มก่อน แล้วจึงสรุปเป็น Persona และแผนงาน",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 08 p38: ต้องยึดหลัก Profile First, Interpret Second โดยดูตารางสถิติของแต่ละกลุ่มก่อนตั้งชื่อ Persona"
+      },
+      {
+        "id": "B",
+        "text": "ตัดคลัสเตอร์ที่มีจำนวนสมาชิกน้อยที่สุดออกจากการวิเคราะห์ เพื่อลดความซับซ้อนของแผนการตลาด",
+        "isCorrect": False,
+        "explanation": "ผิด: คลัสเตอร์ขนาดเล็กอาจเป็นกลุ่มลูกค้ามูลค่าสูง (VIP) หรือกลุ่มเฉพาะที่สำคัญมากทางธุรกิจ"
+      },
+      {
+        "id": "C",
+        "text": "กำหนดชื่อ Persona ทางธุรกิจให้กับแต่ละคลัสเตอร์ทันทีตามลำดับตัวเลขเพื่อนำไปทำแคมเปญการตลาด",
+        "isCorrect": False,
+        "explanation": "ผิด: หมายเลข Cluster ID เป็นเพียงป้ายกำกับลำดับที่ไร้ความหมายในตัวเอง ห้ามตั้งชื่อโดยยังไม่ดูข้อมูลสถิติ"
+      },
+      {
+        "id": "D",
+        "text": "นำหมายเลขคลัสเตอร์ที่ได้ไปแทนที่ตัวแปรเป้าหมายเดิม เพื่อคำนวณค่า Accuracy ของการจัดกลุ่ม",
+        "isCorrect": False,
+        "explanation": "ผิด: Unsupervised Clustering ไม่มีตัวแปรเป้าหมายเดิมให้ตรวจวัดค่า Accuracy เหมือนงาน Classification"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 09: Responsible AI & Fairness (Lect 09) ---
   {
     "id": "q12-proxy-features",
     "questionNumber": 58,
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p13",
     "title": "ตัวแปรตัวแทน Proxy Features ใน AI Ethics",
-    "scenario": "สถาบันการเงินแห่งหนึ่งต้องการป้องกันการเลือกปฏิบัติ จึงลบคอลัมน์ \"เชื้อชาติ\" และ \"เพศ\" ออกจากโมเดลสินเชื่อ แต่ทำไมโมเดลยังคงแสดงพฤติกรรมเลือกปฏิบัติต่อกลุ่มชาติพันธุ์ได้?",
+    "scenario": "สถาบันการเงินแห่งหนึ่งลบคอลัมน์ 'เชื้อชาติ' และ 'เพศ' ออกจากชุดข้อมูลฝึกสอนแล้ว แต่เหตุใดโมเดลอนุมัติสินเชื่อยังคงแสดงผลลัพธ์ที่เลือกปฏิบัติต่อกลุ่มชาติพันธุ์?",
     "options": [
-      {"id": "A", "text": "เพราะอัลกอริทึมกู้คืนคอลัมน์ที่ถูกลบกลับมาจาก Metadata ของฐานข้อมูลโดยอัตโนมัติ", "isCorrect": False, "explanation": "ผิดตามสไลด์ Lect 09 p13: โมเดลไม่ได้กู้คืนคอลัมน์ที่ถูกลบ แต่เรียนรู้ผ่านตัวแปรอื่นที่มีความสัมพันธ์แทน (Proxy Features)"},
-      {"id": "B", "text": "เพราะตัวแปรอื่น เช่น \"รหัสไปรษณีย์\" (Postal Code) ทำหน้าที่เป็น Proxy Feature ที่สะท้อนฐานะและการกระจุกตัวของเชื้อชาติได้", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p13: Proxy Features สามารถส่งผ่านความสัมพันธ์ของ Sensitive Attributes ได้แม้จะตัดตัวแปรหลักทิ้งไปแล้ว"},
-      {"id": "C", "text": "เพราะเกิด Data Leakage ระหว่าง Train และ Test Set", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับ Data Leakage"},
-      {"id": "D", "text": "เพราะโมเดลมีค่า max_depth ต่ำเกินไป", "isCorrect": False, "explanation": "ผิด: ความลึกไม่เกี่ยวกับอคติของตัวแปร"}
+      {
+        "id": "A",
+        "text": "เพราะอัลกอริทึมสามารถดึงข้อมูลคอลัมน์ที่ถูกลบไปแล้วกลับคืนมาจากประวัติการบันทึกของฐานข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: โมเดลเรียนรู้เฉพาะจากตารางตัวแปรที่ส่งเข้าไปฝึกสอน ไม่สามารถกู้คืนคอลัมน์ที่ถูกตัดออกไปแล้วได้เอง"
+      },
+      {
+        "id": "B",
+        "text": "เพราะตัวแปรอื่นที่เหลืออยู่ เช่น รหัสไปรษณีย์ มีความสัมพันธ์เชื่อมโยงกับเชื้อชาติและทำหน้าที่เป็นตัวแปรตัวแทน",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p13: ตัวแปรอย่างรหัสไปรษณีย์ (Postal Code) สามารถทำหน้าที่เป็น Proxy Feature ที่สะท้อนกลุ่มประชากรเปราะบางได้"
+      },
+      {
+        "id": "C",
+        "text": "เพราะการลบคอลัมน์ออกจากตารางข้อมูลทำให้ค่าความแปรปรวนรวมเพิ่มขึ้นจนโมเดลเกิดภาวะ Overfitting",
+        "isCorrect": False,
+        "explanation": "ผิด: ประเด็นการเลือกปฏิบัติเกิดจากความสัมพันธ์แฝงในตัวแปรตัวแทน ไม่ใช่เรื่องความซับซ้อนเกินไปของโมเดล"
+      },
+      {
+        "id": "D",
+        "text": "เพราะโมเดลไม่ได้ผ่านการปรับสเกลข้อมูลด้วยวิธี Min-Max Normalization ก่อนนำเข้าสู่ขั้นตอนการเรียนรู้สำหรับการประมวลผลในระบบจริง",
+        "isCorrect": False,
+        "explanation": "ผิด: การปรับสเกลข้อมูลไม่ได้ช่วยขจัดความสัมพันธ์เชิงโครงสร้างระหว่าง Proxy Feature กับกลุ่มชาติพันธุ์"
+      }
     ],
     "difficulty": "direct"
   },
@@ -896,12 +2048,32 @@ questions = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p22, p36",
     "title": "คดีจริง Rite Aid & False Positive Hazard",
-    "scenario": "ในคดีประวัติศาสตร์ Rite Aid (FTC 2023-2024) ระบบ AI ตรวจจับใบหน้าขโมยของสร้างความเสียหายจนถูกสั่งแบน 5 ปี ความเสียหายดังกล่าวเกิดจากความผิดพลาดชนิดใดเป็นหลัก?",
+    "scenario": "ในกรณีศึกษาคดี Rite Aid (FTC 2023–2024) ที่ถูกสั่งห้ามใช้ระบบ AI จดจำใบหน้าเป็นเวลา 5 ปี ความเสียหายร้ายแรงต่อผู้บริโภคเกิดจากความผิดพลาดรูปแบบใดเป็นหลัก?",
     "options": [
-      {"id": "A", "text": "เกิด False Negative สูง ทำให้มีขโมยหลุดรอดไปเยอะ", "isCorrect": False, "explanation": "ผิด: ความเสียหายต่อสังคมเกิดจากการกล่าวหาผู้บริสุทธิ์"},
-      {"id": "B", "text": "เกิด False Positive สูง ชี้ตัวผู้บริสุทธิ์และกลุ่มเปราะบางผิดว่าเป็นหัวขโมย จนนำไปสู่การจับกุมผิดตัวโดยไร้ Human Checkpoint", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p22: False Positive ทำให้คนไม่ผิดเดือดร้อน FTC จึงสั่งแบน 5 ปีและบังคับให้มีมนุษย์ตรวจสอบ"},
-      {"id": "C", "text": "เกิด Concept Drift จากการเปลี่ยนระบบกล้องวงจรปิด", "isCorrect": False, "explanation": "ผิด: ปัญหาหลักคือเรื่องการเลือกปฏิบัติและ FP"},
-      {"id": "D", "text": "เกิด Underfitting บนชุดข้อมูลการฝึกสอน", "isCorrect": False, "explanation": "ผิด: ไม่ใช่ประเด็นหลักทางกฎหมาย"}
+      {
+        "id": "A",
+        "text": "เกิด False Negative อัตราสูง ทำให้ผู้กระทำผิดจริงหลุดรอดจากการตรวจจับของพนักงานรักษาความปลอดภัยในกระบวนการเตรียมชุดข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: ประเด็นที่ FTC ลงโทษคือการกล่าวหาและสร้างความเดือดร้อนให้ประชาชนผู้บริสุทธิ์"
+      },
+      {
+        "id": "B",
+        "text": "เกิด Concept Drift จากการที่พฤติกรรมการเลือกซื้อสินค้าของลูกค้าเปลี่ยนแปลงไปตามฤดูกาล",
+        "isCorrect": False,
+        "explanation": "ผิด: คดีนี้เป็นเรื่องระบบจดจำใบหน้าที่มีความแม่นยำต่ำและนำไปใช้กล่าวหาคนผิดโดยไร้การตรวจสอบ"
+      },
+      {
+        "id": "C",
+        "text": "เกิด False Positive อัตราสูง ทำให้ระบบชี้ตัวลูกค้าผู้บริสุทธิ์ผิดว่าเป็นผู้ต้องสงสัยขโมยสินค้าโดยไร้คนตรวจสอบ",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p22: ภาพกล้องคุณภาพต่ำทำให้เกิด False Positive จำนวนมาก นำไปสู่การค้นตัวและกล่าวหาผู้บริสุทธิ์โดยไม่มี Human Checkpoint"
+      },
+      {
+        "id": "D",
+        "text": "เกิด Data Leakage จากการนำภาพใบหน้าของลูกค้าในอนาคตมาใช้ฝึกสอนโมเดลร่วมกับภาพในอดีต",
+        "isCorrect": False,
+        "explanation": "ผิด: ปัญหาของคดี Rite Aid ไม่ได้เกิดจาก Data Leakage ในการแบ่งชุดข้อมูล"
+      }
     ],
     "difficulty": "direct"
   },
@@ -911,12 +2083,32 @@ questions = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p11, p20",
     "title": "Concept Drift & Recall Degradation",
-    "scenario": "สไลด์อาจารย์หน้า 11 และ 20 ระบุว่า: เดิมนิยามว่าลูกค้าที่ไม่ซื้อของเกิน 45 วัน = Inactive ต่อมาพฤติกรรมลูกค้าเปลี่ยนเป็น 70 วัน ส่งผลให้เกิดปรากฏการณ์ใดกับโมเดล?",
+    "scenario": "ตามสไลด์ Lect 09 p11 และ p20 เดิมโมเดลฝึกสอนภายใต้บริบทที่ลูกค้าไม่ซื้อสินค้า 45 วันถือว่า Inactive แต่ต่อมาพฤติกรรมตลาดเปลี่ยนไปเป็นรอบการซื้อทุก 70 วัน ปรากฏการณ์นี้เรียกว่าอะไรและส่งผลอย่างไร?",
     "options": [
-      {"id": "A", "text": "เกิด Data Leakage ทำให้โมเดลมี Accuracy เพิ่มขึ้น", "isCorrect": False, "explanation": "ผิด: ประสิทธิภาพลดลง ไม่ใช่เพิ่มขึ้น"},
-      {"id": "B", "text": "เกิด Overfitting เพราะต้นไม้ลึกเกินไป", "isCorrect": False, "explanation": "ผิด: สาเหตุเกิดจากการเปลี่ยนพฤติกรรมในโลกจริง"},
-      {"id": "C", "text": "เกิด Concept Drift (ความสัมพันธ์ระหว่าง Feature กับ Target เปลี่ยน) ส่งผลให้ค่า Recall ของโมเดลตกลงเหลือเพียง 54%", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p11, p20: เมื่อพฤติกรรมเปลี่ยน นิยามเป้าหมายเปลี่ยน ทำให้ Recall ตกฮวบเหลือ 54%"},
-      {"id": "D", "text": "โมเดลทำงานได้ปกติ ไม่ต้องปรับปรุงใดๆ", "isCorrect": False, "explanation": "ผิด: ต้องส่งเข้า Decision Gate: Revise หรือ Retrain"}
+      {
+        "id": "A",
+        "text": "เกิดภาวะ Data Leakage ส่งผลให้ค่าความแม่นยำบนชุดข้อมูลใช้งานจริงสูงขึ้นอย่างผิดปกติตามเกณฑ์การวัดผลทางสถิติ",
+        "isCorrect": False,
+        "explanation": "ผิด: การที่บริบทโลกจริงเปลี่ยนไปหลังนำโมเดลขึ้นใช้งานทำให้ประสิทธิภาพลดลง ไม่ใช่ Data Leakage"
+      },
+      {
+        "id": "B",
+        "text": "เกิดภาวะ Multicollinearity ส่งผลให้ตัวแปรต้นในโมเดลมีความซ้ำซ้อนกันจนคำนวณค่าไม่ได้",
+        "isCorrect": False,
+        "explanation": "ผิด: การเปลี่ยนพฤติกรรมตามกาลเวลาไม่ใช่ความสัมพันธ์ซ้ำซ้อนระหว่างตัวแปรต้น"
+      },
+      {
+        "id": "C",
+        "text": "เกิดภาวะ Dummy Variable Trap ส่งผลให้โมเดลทำนายลูกค้าทุกคนเป็นคลาสเดียวทั้งหมดทันที",
+        "isCorrect": False,
+        "explanation": "ผิด: Dummy Variable Trap เป็นปัญหาทางพีชคณิตจากการทำ One-Hot Encoding ไม่เกี่ยวกับการเปลี่ยนแปลงตามเวลา"
+      },
+      {
+        "id": "D",
+        "text": "เกิดภาวะ Concept Drift ส่งผลให้ความสัมพันธ์ระหว่างตัวแปรกับเป้าหมายเปลี่ยนไปจนค่า Recall ตกลง",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p11, p20: เมื่อความหมายและพฤติกรรมในโลกจริงเปลี่ยนไปตามเวลา (Concept/Data Drift) ทำให้ Recall ของโมเดลตกลงเหลือ 54%"
+      }
     ],
     "difficulty": "direct"
   },
@@ -926,12 +2118,32 @@ questions = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p6-7",
     "title": "ความแตกต่างระหว่าง Global และ Local Explainability",
-    "scenario": "ในบริบทของ Explainable AI (XAI) ข้อใดระบุความแตกต่างระหว่าง Global Explanation และ Local Explanation ได้ถูกต้อง?",
+    "scenario": "ในกรอบแนวคิด Explainable AI (XAI) ข้อใดระบุความแตกต่างระหว่าง Global Explanation และ Local Explanation ได้ถูกต้อง?",
     "options": [
-      {"id": "A", "text": "Global อธิบายโมเดลที่ใช้งานในระดับสากล ส่วน Local อธิบายโมเดลเฉพาะสาขาในไทย", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับขอบเขตภูมิศาสตร์"},
-      {"id": "B", "text": "Global อธิบายว่าโมเดลในภาพรวมให้น้ำหนักกับ Feature ใด ส่วน Local อธิบายว่าทำไมลูกค้ารายเฉพาะเจาะจงคนหนึ่งจึงได้รับผลการทำนายเช่นนั้น", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p6-7: Global = overall feature importance, Local = individual prediction decision path (เช่น SHAP/LIME)"},
-      {"id": "C", "text": "Global ใช้กับ Unsupervised ส่วน Local ใช้กับ Supervised", "isCorrect": False, "explanation": "ผิด: ทั้งสองใช้ได้กับโมเดลการเรียนรู้หลากหลายประเภท"},
-      {"id": "D", "text": "Global ต้องใช้คอมพิวเตอร์ระดับ Quantum เท่านั้นในการคำนวณ", "isCorrect": False, "explanation": "ผิด: คำนวณได้บนคอมพิวเตอร์ทั่วไป"}
+      {
+        "id": "A",
+        "text": "Global อธิบายน้ำหนักความสำคัญของตัวแปรในภาพรวมทั้งโมเดล ส่วน Local อธิบายเหตุผลของการทำนายรายบุคคล",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p6-7: Global มองพฤติกรรมรวมของโมเดล (เช่น Overall Feature Importance) ส่วน Local เจาะจงอธิบายเคสเดียว"
+      },
+      {
+        "id": "B",
+        "text": "Global อธิบายเหตุผลของการทำนายลูกค้ารายบุคคล ส่วน Local อธิบายโครงสร้างความสำคัญของตัวแปรทั้งระบบ",
+        "isCorrect": False,
+        "explanation": "ผิด: สลับความหมายระหว่างระดับภาพรวม (Global) กับระดับรายกรณี (Local)"
+      },
+      {
+        "id": "C",
+        "text": "Global ใช้ได้เฉพาะกับโมเดลตระกูลต้นไม้ตัดสินใจ ส่วน Local ใช้ได้เฉพาะกับโมเดลโครงข่ายประสาทเทียม",
+        "isCorrect": False,
+        "explanation": "ผิด: ทั้งการอธิบายระดับ Global และ Local สามารถประยุกต์ใช้กับโมเดลได้หลากหลายตระกูล"
+      },
+      {
+        "id": "D",
+        "text": "Global เป็นการอธิบายผลลัพธ์บนชุดข้อมูล Test Set ส่วน Local เป็นการอธิบายผลลัพธ์เฉพาะบนชุด Training Set",
+        "isCorrect": False,
+        "explanation": "ผิด: การแบ่ง Global กับ Local แยกตามขอบเขตของคำอธิบาย (ทั้งโมเดล vs รายเคส) ไม่ได้แยกตามชุดข้อมูล"
+      }
     ],
     "difficulty": "direct"
   },
@@ -941,12 +2153,32 @@ questions = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p8",
     "title": "การจำแนก Model-Specific vs Model-Agnostic XAI",
-    "scenario": "ข้อใดจัดหมวดหมู่เครื่องมือ Explainable AI ระหว่าง Model-Specific และ Model-Agnostic ได้ถูกต้องตามสไลด์ Lect 09 p8?",
+    "scenario": "ข้อใดจำแนกเครื่องมืออธิบายผลโมเดล (XAI) ระหว่างแบบ Model-Specific และแบบ Model-Agnostic ได้ถูกต้องตามสไลด์ Lect 09 p8?",
     "options": [
-      {"id": "A", "text": "Feature Importance จาก Decision Tree เป็น Model-Specific | ส่วน SHAP และ LIME เป็น Model-Agnostic ที่ตรวจสอบพฤติกรรมผ่าน Input-Output ได้กับทุกโมเดล", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p8: Model-specific อาศัยโครงสร้างภายใน (เช่น tree split), Model-agnostic ใช้ได้กับทุกโมเดล (SHAP/LIME)"},
-      {"id": "B", "text": "SHAP เป็น Model-Specific ใช้ได้เฉพาะกับ Logistic Regression", "isCorrect": False, "explanation": "ผิด: SHAP เป็น model-agnostic"},
-      {"id": "C", "text": "Decision Tree Decision Path เป็น Model-Agnostic", "isCorrect": False, "explanation": "ผิด: Decision Path อิงโครงสร้างต้นไม้โดยตรงจึงเป็น model-specific"},
-      {"id": "D", "text": "LIME ใช้ได้เฉพาะกับระบบฐานข้อมูล SQL เท่านั้น", "isCorrect": False, "explanation": "ผิด: LIME ใช้งานกับโมเดล Machine Learning หลากหลาย"}
+      {
+        "id": "A",
+        "text": "SHAP และ LIME เป็นแบบ Model-Specific ส่วนค่าสัมประสิทธิ์ของสมการเส้นตรงเป็นแบบ Model-Agnostic",
+        "isCorrect": False,
+        "explanation": "ผิด: สลับหมวดหมู่กัน เพราะ SHAP และ LIME ถูกออกแบบมาให้ใช้ได้กับทุกโมเดล (Model-Agnostic)"
+      },
+      {
+        "id": "B",
+        "text": "โครงสร้างกิ่งของ Decision Tree เป็นแบบ Model-Specific ส่วน SHAP และ LIME เป็นแบบ Model-Agnostic",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p8: การดูโครงสร้างภายในต้นไม้ใช้ได้เฉพาะโมเดลต้นไม้ (Model-Specific) ส่วน SHAP/LIME ใช้ได้กับทุกโมเดล"
+      },
+      {
+        "id": "C",
+        "text": "ทั้งโครงสร้างกิ่งของ Decision Tree และค่า SHAP จัดเป็นเครื่องมือแบบ Model-Specific เหมือนกันทั้งหมด",
+        "isCorrect": False,
+        "explanation": "ผิด: SHAP เป็นวิธีแบบ Model-Agnostic ที่สามารถใช้อธิบายโมเดลประเภทใดก็ได้"
+      },
+      {
+        "id": "D",
+        "text": "ทั้งค่าสัมประสิทธิ์ของ Logistic Regression และ LIME จัดเป็นเครื่องมือแบบ Model-Agnostic เหมือนกันทั้งหมด",
+        "isCorrect": False,
+        "explanation": "ผิด: การอ่านค่าสัมประสิทธิ์โดยตรงอาศัยโครงสร้างเฉพาะของตระกูลโมเดลเชิงเส้น จึงเป็น Model-Specific"
+      }
     ],
     "difficulty": "direct"
   },
@@ -956,12 +2188,32 @@ questions = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p9-10",
     "title": "การแปลผลค่า SHAP Value แบบ Additive",
-    "scenario": "โมเดล Churn มี Base Value = 32% เมื่อตรวจสอบลูกค้ารายหนึ่งพบว่าตัวแปร 'ระยะเวลาที่ไม่ได้ซื้อสินค้า' มีค่า SHAP = +29% ตัวเลขนี้หมายความว่าอย่างไร?",
+    "scenario": "โมเดลทำนายการเลิกใช้บริการมีค่าเฉลี่ยฐาน (Base Value) อยู่ที่ 32% เมื่อตรวจลูกค้ารายหนึ่งพบว่าตัวแปร 'จำนวนวันที่ไม่ได้ซื้อสินค้า' มีค่า SHAP = +29% ตัวเลขนี้มีความหมายว่าอย่างไร?",
     "options": [
-      {"id": "A", "text": "ตัวแปรนี้เพิ่มความแม่นยำของโมเดลขึ้น 29%", "isCorrect": False, "explanation": "ผิด: SHAP ไม่ได้บอกความแม่นยำของโมเดล"},
-      {"id": "B", "text": "ตัวแปรนี้ผลักดันให้ความน่าจะเป็นที่ลูกค้าจะ Inactive เพิ่มขึ้น 29 จุดเปอร์เซ็นต์ เมื่อเปรียบเทียบกับค่าเฉลี่ยฐาน (Base Value)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p9-10: Base value + sum of SHAP contributions = Final prediction (+29% ดันความเสี่ยงขึ้น 29 จุดเปอร์เซ็นต์)"},
-      {"id": "C", "text": "ลูกค้ารายนี้มีโอกาสเลิกใช้บริการ 29%", "isCorrect": False, "explanation": "ผิด: ค่าความน่าจะเป็นสุดท้ายคือ 32% + 29% + ตัวแปรอื่น"},
-      {"id": "D", "text": "โมเดลมีความผิดพลาด 29% ในการทำนายลูกค้ารายนี้", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับ error"}
+      {
+        "id": "A",
+        "text": "ลูกค้ารายนี้มีความน่าจะเป็นสุทธิที่จะเลิกใช้บริการเท่ากับ 29% พอดีโดยไม่ต้องคำนึงถึงตัวแปรอื่น",
+        "isCorrect": False,
+        "explanation": "ผิด: +29% เป็นเพียงส่วนเพิ่มจากตัวแปรเดียว ต้องนำไปบวกเข้ากับ Base Value 32% และค่า SHAP ของตัวแปรอื่นๆ"
+      },
+      {
+        "id": "B",
+        "text": "ตัวแปรนี้ช่วยเพิ่มค่าความแม่นยำรวม (Overall Accuracy) ของโมเดลในการทำนายลูกค้ารายนี้ขึ้นอีก 29%",
+        "isCorrect": False,
+        "explanation": "ผิด: ค่า SHAP อธิบายทิศทางและขนาดของผลกระทบต่อค่าทำนาย ไม่ใช่ค่าความแม่นยำของโมเดล"
+      },
+      {
+        "id": "C",
+        "text": "ตัวแปรนี้ผลักดันให้โอกาสที่ลูกค้ารายนี้จะถูกทำนายว่าเลิกใช้บริการเพิ่มขึ้น 29 จุดเปอร์เซ็นต์จากค่าเฉลี่ยฐาน",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p9-10: ตามหลัก Additive Explanation ค่า SHAP +29% คือแรงผลักที่เพิ่มความเสี่ยงขึ้นจาก Base Value 32%"
+      },
+      {
+        "id": "D",
+        "text": "ตัวแปรนี้มีน้ำหนักความสำคัญคิดเป็นสัดส่วน 29% จากตัวแปรต้นทั้งหมดที่ใช้ในการฝึกสอนโมเดลระดับภาพรวมสำหรับการประมวลผลในระบบจริง",
+        "isCorrect": False,
+        "explanation": "ผิด: นั่นคือการตีความแบบ Global Feature Importance ไม่ใช่ค่า Local SHAP ของลูกค้ารายบุคคล"
+      }
     ],
     "difficulty": "direct"
   },
@@ -971,12 +2223,32 @@ questions = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p16",
     "title": "กรณีศึกษาอัลกอริทึมโรงพยาบาล (Obermeyer et al., Science 2019)",
-    "scenario": "ในคดีประวัติศาสตร์ระบบคัดกรองผู้ป่วยของโรงพยาบาลในสหรัฐฯ (Obermeyer 2019) ความลำเอียงต่อผู้ป่วยผิวสีเกิดขึ้นจากสาเหตุใด?",
+    "scenario": "ในกรณีศึกษาระบบคัดกรองผู้ป่วยของโรงพยาบาลในสหรัฐฯ (Obermeyer et al., 2019) ความลำเอียงที่ทำให้ผู้ป่วยผิวสีได้รับการส่งต่อเข้าโครงการดูแลพิเศษน้อยกว่าที่ควรเกิดจากสาเหตุใด?",
     "options": [
-      {"id": "A", "text": "โปรแกรมเมอร์แอบใส่โค้ดลดคะแนนผู้ป่วยผิวสีโดยเจตนา", "isCorrect": False, "explanation": "ผิด: ไม่ได้เกิดจากเจตนาของโปรแกรมเมอร์"},
-      {"id": "B", "text": "การใช้ 'ค่าใช้จ่ายสุขภาพในอดีต' เป็น Proxy ของ 'ความต้องการการรักษา' ทั้งที่คนผิวสีมีกำลังจ่ายน้อยกว่า ทำให้ผู้ป่วยผิวสีที่ป่วยหนักเท่ากันได้คะแนนความเสี่ยงต่ำกว่าคนผิวขาว", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p16: ทำนาย proxy ได้แม่น != จัดสรรเป็นธรรม เมื่อแก้ proxy สัดส่วนผู้ป่วยผิวสีที่ได้รับความช่วยเหลือพุ่งจาก 17.7% เป็น 46.5%"},
-      {"id": "C", "text": "เกิดจากโมเดลมีค่า max_depth ต่ำเกินไปทำให้ Underfit", "isCorrect": False, "explanation": "ผิด: ปัญหาเกิดจากการเลือกตัวแปรเป้าหมายและ proxy"},
-      {"id": "D", "text": "เกิดจากการใช้ K-Means แทนที่จะใช้ Decision Tree", "isCorrect": False, "explanation": "ผิด: ไม่เกี่ยวกับอัลกอริทึมจัดกลุ่ม"}
+      {
+        "id": "A",
+        "text": "การกำหนดให้ใช้ตัวแปรเชื้อชาติเป็นตัวแปรต้นหลักในการหักคะแนนความเสี่ยงของผู้ป่วยผิวสีโดยตรง",
+        "isCorrect": False,
+        "explanation": "ผิด: ระบบไม่ได้ใส่ตัวแปรเชื้อชาติเข้าไปหักคะแนนโดยตรง แต่เกิดจากการเลือกตัวแปรเป้าหมายแทน (Target Proxy) ที่ผิดพลาด"
+      },
+      {
+        "id": "B",
+        "text": "การลืมทำ Feature Scaling ให้กับตัวแปรอายุและระดับความดันโลหิตก่อนนำข้อมูลเข้าฝึกสอนโมเดล",
+        "isCorrect": False,
+        "explanation": "ผิด: สาเหตุหลักของคดีนี้คือเรื่อง Label/Target Proxy Bias ไม่ใช่เรื่องการปรับสเกลของตัวแปร"
+      },
+      {
+        "id": "C",
+        "text": "การเลือกใช้อัลกอริทึมที่มีความลึกมากเกินไปจนเกิดภาวะ Overfitting กับข้อมูลผู้ป่วยเฉพาะในเขตเมืองใหญ่ในกระบวนการเตรียมชุดข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: โมเดลทำนายค่าใช้จ่ายได้แม่นยำตามเป้าหมายที่ตั้งไว้ แต่ตัวเป้าหมายที่ตั้งไว้มีความลำเอียงเชิงโครงสร้าง"
+      },
+      {
+        "id": "D",
+        "text": "การใช้ 'ค่าใช้จ่ายรักษาพยาบาลในอดีต' เป็นตัวแทนของ 'ความรุนแรงของโรค' ทั้งที่ผู้ป่วยผิวสีเข้าถึงบริการได้น้อยกว่า",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p16: คนผิวสีที่ป่วยหนักเท่ากันมีประวัติค่าใช้จ่ายต่ำกว่าเนื่องจากอุปสรรคการเข้าถึงระบบ ทำให้โมเดลประเมินความเสี่ยงต่ำเกินจริง"
+      }
     ],
     "difficulty": "direct"
   },
@@ -986,29 +2258,67 @@ questions = [
     "moduleRef": "module-09-responsible-ai",
     "slideRef": "Lect 09 p21",
     "title": "กรณีศึกษาโฆษณาที่อยู่อาศัย Meta (DOJ 2022)",
-    "scenario": "บทเรียนสำคัญด้าน Responsible AI จากกรณีศึกษาคดีโฆษณาที่อยู่อาศัยของ Meta (กระทรวงยุติธรรมสหรัฐฯ 2022) คือข้อใด?",
+    "scenario": "บทเรียนสำคัญด้าน Responsible AI จากกรณีศึกษาคดีระบบนำส่งโฆษณาที่อยู่อาศัยของ Meta (กระทรวงยุติธรรมสหรัฐฯ ปี 2022) คือข้อใด?",
     "options": [
-      {"id": "A", "text": "ความเป็นธรรม (Fairness) ต้องตรวจสอบที่ผลลัพธ์ปลายทาง (Eligible vs Actual Audience) ไม่ใช่ตรวจสอบแค่ตัวแปรนำเข้า (Input Features)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 09 p21: แม้จะลบตัวแปรต้องห้ามออก แต่อัลกอริทึมปลายทางยังเลือกผู้รับชมโฆษณาไม่เป็นธรรม Meta จึงต้องพัฒนาระบบ VRS"},
-      {"id": "B", "text": "หากตัดตัวแปรเชื้อชาติออกจากโมเดลแล้ว รับประกันได้ว่าจะไม่มีการเลือกปฏิบัติเกิดขึ้น 100%", "isCorrect": False, "explanation": "ผิด: Proxy features ยังคงส่งผ่านความลำเอียงได้"},
-      {"id": "C", "text": "อัลกอริทึมโฆษณาไม่จำเป็นต้องปฏิบัติตามกฎหมายความเท่าเทียมทางที่อยู่อาศัย", "isCorrect": False, "explanation": "ผิด: ต้องปฏิบัติตาม Fair Housing Act อย่างเคร่งครัด"},
-      {"id": "D", "text": "การให้ AI ตัดสินใจส่งโฆษณาอัตโนมัติมีความปลอดภัยเสมอ", "isCorrect": False, "explanation": "ผิด: ต้องมี Human checkpoint และ Audit สม่ำเสมอ"}
+      {
+        "id": "A",
+        "text": "การตรวจสอบความเป็นธรรมต้องวัดที่สัดส่วนผู้รับโฆษณาจริงปลายทาง ไม่ใช่ดูเพียงการตั้งค่าตัวแปรนำเข้า",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 09 p21: แม้ผู้ลงโฆษณาไม่ได้เลือกกรองเชื้อชาติ แต่ระบบจัดส่งโฆษณากลับเลือกกลุ่มผู้ชมปลายทางอย่างไม่เป็นธรรม (Eligible vs Actual Audience)"
+      },
+      {
+        "id": "B",
+        "text": "การตัดตัวแปรเพศและเชื้อชาติออกจากหน้าจอตั้งค่าของผู้ลงโฆษณาเพียงพอที่จะรับประกันความเป็นธรรมได้สมบูรณ์",
+        "isCorrect": False,
+        "explanation": "ผิด: คดีนี้พิสูจน์แล้วว่าการปิดกั้นแค่ตอนตั้งค่าต้นทางไม่เพียงพอ เพราะอัลกอริทึมจัดส่งยังสร้างความลำเอียงที่ปลายทางได้"
+      },
+      {
+        "id": "C",
+        "text": "ระบบแนะนำโฆษณาเชิงพาณิชย์ได้รับการยกเว้นไม่ต้องตรวจสอบความลำเอียงตามกฎหมายที่อยู่อาศัย",
+        "isCorrect": False,
+        "explanation": "ผิด: กระทรวงยุติธรรมสหรัฐฯ บังคับใช้กฎหมาย Fair Housing Act กับอัลกอริทึมโฆษณาอย่างเคร่งครัด"
+      },
+      {
+        "id": "D",
+        "text": "การเปลี่ยนไปใช้อัลกอริทึมแบบ Unsupervised Clustering จะช่วยขจัดปัญหาการเลือกปฏิบัติทางเชื้อชาติได้อัตโนมัติ",
+        "isCorrect": False,
+        "explanation": "ผิด: Unsupervised Clustering ก็สามารถจัดกลุ่มตาม Proxy Features ที่สะท้อนเชื้อชาติและเพศได้เช่นกัน"
+      }
     ],
     "difficulty": "direct"
   },
-
-  # --- Module 10: CRISP-DS in Action & Handoff (Lect 10) ---
   {
     "id": "q60-decision-contract-vs-memo",
     "questionNumber": 66,
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p8, p14",
     "title": "ความแตกต่างระหว่าง Decision Contract กับ Decision Memo",
-    "scenario": "ในการทำงานจริงตามแนวทาง CRISP-DS in Action เอกสาร 'Decision Contract' และ 'Decision Memo' แตกต่างกันที่ช่วงเวลาและเนื้อหาอย่างไร?",
+    "scenario": "ตามแนวทาง CRISP-DS in Action (Lect 10) เอกสาร 'Decision Contract' และ 'Decision Memo' มีบทบาทและช่วงเวลาจัดทำแตกต่างกันอย่างไร?",
     "options": [
-      {"id": "A", "text": "Contract ทำตอนสิ้นสุดโครงการ ส่วน Memo ทำตอนเริ่มต้นโครงการ", "isCorrect": False, "explanation": "ผิด: สลับช่วงเวลากันอย่างสิ้นเชิง"},
-      {"id": "B", "text": "Contract ทำช่วงเริ่มต้นโครงการ (Business Understanding) เพื่อตกลงผู้ตัดสินใจและขอบเขตทางเลือก | ส่วน Memo ทำช่วง Evaluation เพื่อบันทึกคำตัดสินจริง เหตุผล และเงื่อนไข Pilot", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 10: Decision Contract = ต้นโครงการตกลงร่วมกัน, Decision Memo = ช่วง Evaluation บันทึกผลตัดสินและเงื่อนไขกำกับ"},
-      {"id": "C", "text": "Contract จัดทำโดยฝ่ายกฎหมายเท่านั้น ส่วน Memo จัดทำโดย AI Assistant", "isCorrect": False, "explanation": "ผิด: Contract ทำโดย BA + BU, Memo ทำโดย BA + DS + Privacy"},
-      {"id": "D", "text": "ทั้งสองเอกสารเป็นเอกสารชนิดเดียวกัน สามารถใช้แทนกันได้", "isCorrect": False, "explanation": "ผิด: มีหน้าที่และช่วงเวลาต่างกันชัดเจน"}
+      {
+        "id": "A",
+        "text": "Contract จัดทำหลังจบการทดลองเพื่อสรุปความแม่นยำ ส่วน Memo จัดทำก่อนเริ่มงานเพื่อขออนุมัติงบประมาณ",
+        "isCorrect": False,
+        "explanation": "ผิด: สลับลำดับเวลากัน เพราะ Decision Contract ต้องตกลงกันตั้งแต่เริ่มต้นโครงการ"
+      },
+      {
+        "id": "B",
+        "text": "Contract ทำช่วงเริ่มต้นเพื่อตกลงกรอบการตัดสินใจ ส่วน Memo ทำช่วงประเมินผลเพื่อบันทึกคำตัดสินและเงื่อนไขใช้งาน",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 10 p8, p14: Decision Contract ทำในขั้น Business Understanding ส่วน Decision Memo ทำในขั้น Evaluation ก่อนเริ่ม Pilot"
+      },
+      {
+        "id": "C",
+        "text": "Contract ใช้สำหรับบันทึกโค้ดการทำความสะอาดข้อมูล ส่วน Memo ใช้สำหรับบันทึกพารามิเตอร์ของโมเดล",
+        "isCorrect": False,
+        "explanation": "ผิด: เอกสารทั้งสองใช้สำหรับการตัดสินใจทางธุรกิจและธรรมาภิบาล ไม่ใช่เอกสารเก็บโค้ดเทคนิค"
+      },
+      {
+        "id": "D",
+        "text": "Contract จัดทำโดยวิศวกรระบบเพื่อตั้งค่าเซิร์ฟเวอร์ ส่วน Memo จัดทำโดยระบบอัตโนมัติเพื่อแจ้งเตือนเมื่อโมเดลพัง",
+        "isCorrect": False,
+        "explanation": "ผิด: เอกสารแจ้งเตือนและแผนรับมือเมื่อระบบมีปัญหาในขั้นใช้งานจริงคือ Monitoring Contract & Runbook"
+      }
     ],
     "difficulty": "direct"
   },
@@ -1018,12 +2328,32 @@ questions = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p3-5",
     "title": "บทบาทหน้าที่ของ Analytics Engineer",
-    "scenario": "ในห่วงโซ่การทำงานของทีมข้อมูลยุคใหม่ (Modern Data Roles) บทบาทใดมีหน้าที่รับผิดชอบ 'Customer Table & Feature Contract' แปลงข้อมูลดิบให้พร้อมสำหรับวิเคราะห์ และป้องกันไม่ให้ข้อมูลอนาคตรั่วไหลเข้ามา?",
+    "scenario": "ในการแบ่งบทบาทหน้าที่ของทีมข้อมูลยุคใหม่ตามสไลด์ Lect 10 p3-5 ตำแหน่งใดมีหน้าที่รับผิดชอบการสร้าง 'Customer Table & Feature Contract' และควบคุมไม่ให้เกิดการรั่วไหลของข้อมูลตามเวลา?",
     "options": [
-      {"id": "A", "text": "Data Engineer (ดูแล Pipeline และโครงสร้างพื้นฐาน)", "isCorrect": False, "explanation": "ผิด: Data Engineer เน้นโครงสร้างพื้นฐานและ Data Intake"},
-      {"id": "B", "text": "Analytics Engineer (รับผิดชอบ Data Model, Customer Table และ Feature Contract)", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 10 p3-5: Analytics Engineer แปลงข้อมูลดิบเป็นตารางพร้อมวิเคราะห์และคุม Feature Contract"},
-      {"id": "C", "text": "Business Unit (อนุมัติการดำเนินงาน)", "isCorrect": False, "explanation": "ผิด: BU เป็นผู้ตัดสินใจทางธุรกิจ"},
-      {"id": "D", "text": "AI Engineer (สร้าง LLM Chatbot)", "isCorrect": False, "explanation": "ผิด: AI Engineer มุ่งเน้นการสร้างแอปพลิเคชัน AI"}
+      {
+        "id": "A",
+        "text": "Data Engineer (วิศวกรโครงสร้างพื้นฐานและระบบท่อลำเลียงข้อมูลดิบ)",
+        "isCorrect": False,
+        "explanation": "ผิด: Data Engineer รับผิดชอบการดึงข้อมูลดิบ (Data Intake) และดูแลโครงสร้างพื้นฐานต้นน้ำ"
+      },
+      {
+        "id": "B",
+        "text": "Business Analyst (นักวิเคราะห์ธุรกิจและผู้กำหนดกรอบสัญญาการตัดสินใจ)",
+        "isCorrect": False,
+        "explanation": "ผิด: Business Analyst รับผิดชอบการเชื่อมโยงโจทย์ธุรกิจและจัดทำ Decision Contract"
+      },
+      {
+        "id": "C",
+        "text": "Analytics Engineer (วิศวกรวิเคราะห์ข้อมูลผู้จัดทำตารางวิเคราะห์และสัญญาฟีเจอร์)",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 10 p3-5: Analytics Engineer ทำหน้าที่แปลงข้อมูลดิบเป็นตารางที่สะอาดและกำหนด Feature Contract ที่ปลอด Leakage"
+      },
+      {
+        "id": "D",
+        "text": "MLOps Engineer (วิศวกรดูแลระบบปฏิบัติการโมเดลและการติดตามผลหลังใช้งานจริง)ตามหลักการประเมินผลมาตรฐาน",
+        "isCorrect": False,
+        "explanation": "ผิด: MLOps Engineer รับผิดชอบการนำโมเดลขึ้นระบบและการตรวจสอบ Monitoring Trigger"
+      }
     ],
     "difficulty": "direct"
   },
@@ -1033,12 +2363,32 @@ questions = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p12-14",
     "title": "การอนุมัติการกระทำทางธุรกิจ (Human Approval Gate)",
-    "scenario": "ก่อนที่จะนำผลการทำนายลูกค้าเสี่ยง Churn ไปส่งโปรโมชันหาลูกค้าจริงใน Pilot Runbook บุคคลหรือระบบใดที่มีสิทธิ์ในการอนุมัติการกระทำนี้?",
+    "scenario": "ก่อนนำผลการทำนายของโมเดลไปเริ่มส่งแคมเปญหาลูกค้าจริงในระยะทดลอง (Pilot Runbook) ข้อกำหนดธรรมาภิบาลในสไลด์ Lect 10 กำหนดให้ใครเป็นผู้มีอำนาจลงนามอนุมัติ?",
     "options": [
-      {"id": "A", "text": "AI Assistant สามารถอนุมัติและสั่งส่งโปรโมชันหาลูกค้าได้ทันทีหากโมเดลมี Accuracy เกิน 80%", "isCorrect": False, "explanation": "ผิดอย่างยิ่ง! สไลด์ Lect 10 เน้นย้ำว่า AI Assistant ไม่มีสิทธิ์อนุมัติแทนคนเด็ดขาด"},
-      {"id": "B", "text": "Business Unit (มนุษย์ผู้มีอำนาจตัดสินใจทางธุรกิจ) ตรวจสอบ Decision Memo, ผล Privacy และลงนามใน Human Approval Record", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 10 p12-14: ทุกการกระทำที่มีผลกระทบต่อคนจริงต้องมี Human Checkpoint & Human Approval"},
-      {"id": "C", "text": "ระบบ MLOps อัตโนมัติ", "isCorrect": False, "explanation": "ผิด: MLOps ทำหน้าที่มอนิเตอร์ ไม่ใช่ผู้อนุมัติแคมเปญธุรกิจ"},
-      {"id": "D", "text": "ไม่ต้องรออนุมัติ สามารถส่งหาลูกค้าได้ทันที", "isCorrect": False, "explanation": "ผิด: ละเมิดหลัก Responsible AI และ CRISP-DS Handoff"}
+      {
+        "id": "A",
+        "text": "นักวิทยาศาสตร์ข้อมูลผู้เขียนโมเดลสามารถอนุมัติและสั่งส่งข้อความหาลูกค้าได้เองโดยไม่ต้องผ่านฝ่ายอื่น",
+        "isCorrect": False,
+        "explanation": "ผิด: การส่งแคมเปญจริงต้องผ่านการเห็นชอบร่วมกับเจ้าของโจทย์ธุรกิจ (BU) และการตรวจสอบด้าน Privacy"
+      },
+      {
+        "id": "B",
+        "text": "ระบบผู้ช่วยปัญญาประดิษฐ์ (AI Assistant) สามารถอนุมัติได้อัตโนมัติหากค่า F1-Score สูงผ่านเกณฑ์ที่ตั้งไว้",
+        "isCorrect": False,
+        "explanation": "ผิด: สไลด์ Lect 10 ย้ำชัดเจนว่า AI Assistant ช่วยร่างเอกสารได้ แต่ห้ามมีอำนาจอนุมัติแทนมนุษย์เด็ดขาด"
+      },
+      {
+        "id": "C",
+        "text": "ระบบท่อลำเลียงข้อมูลอัตโนมัติ (Automated CI/CD Pipeline) เมื่อตรวจพบว่าโค้ดไม่มีข้อผิดพลาดทางไวยากรณ์",
+        "isCorrect": False,
+        "explanation": "ผิด: การผ่านการทดสอบโค้ดทางเทคนิคไม่สามารถใช้แทนการอนุมัติความเสี่ยงทางธุรกิจและจริยธรรมได้"
+      },
+      {
+        "id": "D",
+        "text": "ผู้มีอำนาจตัดสินใจของหน่วยธุรกิจ (Business Unit) หลังตรวจสอบ Decision Memo และผลการตรวจความเป็นส่วนตัว",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 10 p12-14: ต้องมี Human Approval Record จากฝั่งธุรกิจและผู้เกี่ยวข้องก่อนเริ่มกระทำการต่อลูกค้าจริงเสมอ"
+      }
     ],
     "difficulty": "direct"
   },
@@ -1048,12 +2398,32 @@ questions = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p16-18",
     "title": "การตรวจจับความผิดปกติและ Backtrack Task",
-    "scenario": "ระหว่างการรัน Pilot ระบบ MLOps แจ้งเตือน Trigger ว่าค่า Recall ของลูกค้ารุ่นใหม่ (New Cohort) ลดลงฮวบเหลือ 42% (ต่ำกว่าเกณฑ์ตกลงที่ 70%) ขั้นตอนที่ถูกต้องในการจัดการตาม Runbook คือข้อใด?",
+    "scenario": "ระหว่างการรันระบบจริง ระบบ MLOps แจ้งเตือนว่าค่า Recall ของกลุ่มลูกค้าใหม่ลดลงเหลือ 42% (ต่ำกว่าเกณฑ์ขั้นต่ำที่ตกลงไว้ที่ 70%) ขั้นตอนการปฏิบัติตาม Runbook ในสไลด์ Lect 10 คือข้อใด?",
     "options": [
-      {"id": "A", "text": "ลดเกณฑ์ Recall ใน Monitoring Contract ลงเหลือ 40% เพื่อให้สถานะระบบกลับมาเป็นสีเขียว", "isCorrect": False, "explanation": "ผิดมหันต์: ห้ามลดเกณฑ์ความปลอดภัยเพื่อกลบเกลื่อนปัญหา"},
-      {"id": "B", "text": "สั่งพักการใช้งาน (Pause Pilot) ตาม Runbook ทันที แล้วสร้าง 'Backtrack Task' ส่งย้อนกลับไปตรวจสอบ Data Understanding หรือ Feature Engineering", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 10 p16-18: ต้องหยุดระบบเมื่อพบ trigger แล้วย้อนกลับ (Backtrack) ไปแก้ที่ต้นเหตุ"},
-      {"id": "C", "text": "ปิดระบบ Monitoring Log เพื่อไม่ให้ทีมการตลาดกังวล", "isCorrect": False, "explanation": "ผิด: การซ่อนปัญหาจะสร้างความเสียหายทางธุรกิจอย่างร้ายแรง"},
-      {"id": "D", "text": "ปล่อยให้โมเดลทำงานต่อไปเพราะค่า Accuracy รวมของทั้งระบบยังดีอยู่", "isCorrect": False, "explanation": "ผิด: ความเสียหายเกิดขึ้นกับกลุ่มย่อยแล้ว ต้องแก้ไขทันที"}
+      {
+        "id": "A",
+        "text": "ระงับการใช้งานชั่วคราวตามแผนรับมือ แล้วเปิดงานย้อนกลับ (Backtrack Task) ไปตรวจสอบข้อมูลและฟีเจอร์ที่ต้นเหตุ",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 10 p16-18: เมื่อเกิด Trigger ต้องทำตามแผน (เช่น Pause Pilot) และสร้าง Backtrack Task ย้อนกลับไปแก้ที่ขั้นต้นน้ำ"
+      },
+      {
+        "id": "B",
+        "text": "ปล่อยให้ระบบทำงานต่อไปตามปกติหากค่าความแม่นยำรวม (Overall Accuracy) ของลูกค้าทั้งหมดยังสูงอยู่",
+        "isCorrect": False,
+        "explanation": "ผิด: การเสื่อมสภาพในกลุ่มย่อย (Cohort Degradation) เป็นสัญญาณเตือนสำคัญที่ต้องจัดการทันที"
+      },
+      {
+        "id": "C",
+        "text": "ปรับลดเกณฑ์แจ้งเตือนใน Monitoring Contract ลงเหลือ 40% เพื่อให้ระบบสามารถทำงานต่อเนื่องได้โดยไม่หยุดชะงัก",
+        "isCorrect": False,
+        "explanation": "ผิด: ห้ามปรับลดเกณฑ์ความปลอดภัยเพื่อปิดบังสัญญาณความเสื่อมสภาพของโมเดล"
+      },
+      {
+        "id": "D",
+        "text": "ลบข้อมูลของกลุ่มลูกค้าใหม่ที่มีปัญหาออกจากฐานข้อมูลการประเมินผล เพื่อรักษาค่าเฉลี่ยของรายงานประจำเดือน",
+        "isCorrect": False,
+        "explanation": "ผิด: การตัดข้อมูลกลุ่มที่มีปัญหาออกจากการรายงานเป็นการบิดเบือนหลักฐานและสร้าง Selection Bias"
+      }
     ],
     "difficulty": "direct"
   },
@@ -1063,22 +2433,52 @@ questions = [
     "moduleRef": "module-10-crisp-action",
     "slideRef": "Lect 10 p7",
     "title": "ข้อกำหนดในการส่งต่อ EDA Finding",
-    "scenario": "ในห่วงโซ่การส่งต่องาน Data Analyst ส่งมอบ 'EDA Finding' ไปยังทีม Modeling ข้อใดระบุเนื้อหาที่จำเป็นต้องมีใน EDA Finding ได้ถูกต้อง?",
+    "scenario": "ในการส่งมอบงานจากนักวิเคราะห์ข้อมูล (Data Analyst) ไปยังทีมสร้างโมเดล เอกสาร 'EDA Finding' ที่ได้มาตรฐานตามสไลด์ Lect 10 p7 ต้องประกอบด้วยข้อมูลใด?",
     "options": [
-      {"id": "A", "text": "ส่งเฉพาะไฟล์รูปภาพกราฟสวยๆ โดยไม่ต้องมีข้อความอธิบายใดๆ", "isCorrect": False, "explanation": "ผิด: กราฟอย่างเดียวไม่ถือเป็นหลักฐานที่พร้อมส่งต่อ"},
-      {"id": "B", "text": "ระบุคำถามวิเคราะห์, หลักฐานเชิงประจักษ์ (การกระจายตัว, ค่าขาดหาย, ช่วงเวลา), ข้อค้นพบทางสถิติที่ยังไม่ด่วนสรุปสาเหตุ และระบุข้อจำกัดของข้อมูลให้ชัดเจน", "isCorrect": True, "explanation": "ถูกต้องตามสไลด์ Lect 10 p7: EDA Finding ต้องบอกทั้งสิ่งที่พบ ข้อจำกัด และคำถามที่ต้องนำไปตรวจต่อในขั้นถัดไป"},
-      {"id": "C", "text": "ระบุชื่ออัลกอริทึม Deep Learning ที่โมเดลต้องเลือกใช้บังคับไว้ล่วงหน้า", "isCorrect": False, "explanation": "ผิด: EDA ไม่ได้เป็นตัวเลือกอัลกอริทึมอัตโนมัติ"},
-      {"id": "D", "text": "ยืนยันผลกำไรที่จะได้ล่วงหน้า 100%", "isCorrect": False, "explanation": "ผิด: เป็นไปไม่ได้ในขั้นตอนสำรวจข้อมูล"}
+      {
+        "id": "A",
+        "text": "สรุปการยืนยันความสัมพันธ์เชิงสาเหตุที่แท้จริง พร้อมรับรองผลกำไรที่จะเกิดขึ้นหลังนำโมเดลไปใช้งาน",
+        "isCorrect": False,
+        "explanation": "ผิด: ขั้นตอน EDA ไม่สามารถพิสูจน์ความเป็นเหตุและผล (Causation) หรือรับรองผลกำไรล่วงหน้าได้"
+      },
+      {
+        "id": "B",
+        "text": "ระบุคำถามวิเคราะห์ หลักฐานการกระจายตัวและค่าว่าง ข้อค้นพบที่ยังไม่ด่วนสรุปสาเหตุ รวมถึงข้อจำกัดของข้อมูล",
+        "isCorrect": True,
+        "explanation": "ถูกต้องตามสไลด์ Lect 10 p7: EDA Finding ต้องส่งต่อทั้งคำถาม หลักฐานทางสถิติ ข้อจำกัด และประเด็นที่ต้องระวังให้ทีมถัดไป"
+      },
+      {
+        "id": "C",
+        "text": "แนบเฉพาะแผนภูมิที่ผ่านการจัดแต่งสีสันสวยงามโดยไม่ต้องระบุเงื่อนไขการคัดกรองหรือข้อจำกัดของข้อมูล",
+        "isCorrect": False,
+        "explanation": "ผิด: การส่งเฉพาะกราฟโดยไม่ระบุบริบทและข้อจำกัดทำให้ทีมสร้างโมเดลเสี่ยงตีความข้อมูลผิดพลาด"
+      },
+      {
+        "id": "D",
+        "text": "กำหนดค่าพารามิเตอร์สุดท้ายของโมเดลและผลการประเมินบนชุดข้อมูล Test Set ให้เสร็จสิ้นตั้งแต่ขั้นสำรวจตามเกณฑ์การวัดผลทางสถิติ",
+        "isCorrect": False,
+        "explanation": "ผิด: การจูนพารามิเตอร์และประเมินผลเป็นหน้าที่ของขั้น Modeling และ Evaluation ไม่ใช่ขั้น EDA"
+      }
     ],
     "difficulty": "direct"
   }
 ]
 
-output_path = os.path.join(os.path.dirname(__file__), "..", "src", "data", "exam-questions.ts")
-with open(output_path, "w", encoding="utf-8") as f:
-    f.write("import type { ExamQuestion } from '../types/study';\n\n")
-    f.write("export const examQuestions: ExamQuestion[] = ")
-    json.dump(questions, f, ensure_ascii=False, indent=2)
-    f.write(";\n")
+output_path = os.path.join(os.path.dirname(__file__), '..', 'src', 'data', 'exam-questions.ts')
+
+ts_content = f"""import type {{ ExamQuestion }} from '../types/study';
+
+/**
+ * Complete 70-Question Bilingual Exam Bank (Lectures 01 - 09 + Module 10 CRISP-DM)
+ * Strictly aligned with slide examples, HW#2 solutions, and real-world case studies.
+ * Options are balanced in length, parallel in structure, and free of self-revealing spoilers.
+ */
+export const examQuestions: ExamQuestion[] = {json.dumps(questions, ensure_ascii=False, indent=2)};
+
+export const EXAM_QUESTIONS = examQuestions;
+"""
+
+with open(output_path, 'w', encoding='utf-8') as f:
+    f.write(ts_content)
 
 print(f"Successfully generated {len(questions)} exam questions at {output_path}")

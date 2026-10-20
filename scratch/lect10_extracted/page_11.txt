@@ -1,0 +1,12 @@
+**Slide 11: Evaluation Evidence: ภาพลวงตาของค่าเฉลี่ยรวม (Subgroup Metric Disparity)**
+
+*   **Phase:** Stage 6: Evaluation
+*   **Owner:** Data Scientist (DS)
+*   **The Subgroup Disparity Paradox:**
+    *   ผลประเมินในภาพรวมทั้งระบบ: **Overall Accuracy = 84%**, **Overall Recall = 78%** ตัวเลขดูสูงและน่าพึงพอใจ
+    *   เมื่อเจาะลึกรายกลุ่มย่อย (Cohort Analysis):
+        *   กลุ่มลูกค้าประจำ (Existing Customers): Accuracy = 88%, Recall = 85%
+        *   **กลุ่มลูกค้าใหม่ (New Customers): Recall ตกฮวบเหลือเพียง 54%!**
+*   **Business Danger:**
+    *   Recall 54% แปลว่าในกลุ่มลูกค้าใหม่ที่กำลังจะหนีหายจริง โมเดลตามจับได้เพียงครึ่งเดียว อีก 46% หลุดรอดสายตาไปโดยไม่ได้รับการดูแล
+*   **Takeaway:** ห้ามเชื่อใจและตัดสินใจบน Aggregate Accuracy เพียงอย่างเดียว ต้องตรวจวัด Disparity รายกลุ่มเสมอ

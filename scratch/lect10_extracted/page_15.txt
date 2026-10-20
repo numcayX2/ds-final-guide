@@ -1,0 +1,10 @@
+**Slide 15: ML Engineer: Controlled Handoff & Pilot Runbook**
+
+*   **Phase:** Stage 7: Deployment & Communication
+*   **Owner:** Machine Learning Engineer (MLE)
+*   **4 Essential Operational Controls in Pilot Runbook:**
+    1.  **Model Artifact Versioning:** บันทึกเวอร์ชันของโมเดล ชุดโค้ด และข้อมูลอย่างเคร่งครัด (เช่น v1.0.0, Docker Image)
+    2.  **Human Review Gate:** มีจุดตรวจสอบโดยเจ้าหน้าที่ก่อนการยิงแคมเปญจริง
+    3.  **Audit Logging:** บันทึกประวัติการทำนาย ค่า Score และคำอธิบายเหตุผล (SHAP) รายบุคคลเพื่อการตรวจสอบย้อนหลัง
+    4.  **Circuit Breaker (Kill-Switch):** กลไกหยุดการทำงานฉุกเฉินเมื่อระบบตรวจพบสัญญาณผิดปกติ
+*   **Takeaway:** การนำโมเดลขึ้นใช้งานไม่ใช่แค่การต่อ API แต่เป็นการวางระบบควบคุมความเสี่ยงอย่างรอบด้าน

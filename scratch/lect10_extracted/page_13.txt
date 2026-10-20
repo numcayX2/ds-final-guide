@@ -1,0 +1,12 @@
+**Slide 13: ขอบเขตความรับผิดชอบและการกำกับดูแลโดยมนุษย์ (Human-in-the-Loop & Accountability)**
+
+*   **Core Principle:** AI เป็นเพียงผู้ช่วยปฏิบัติการ มนุษย์คือเจ้าของความรับผิดชอบ
+*   **AI Assistant / Agent Boundary:**
+    *   ร่างข้อเสนอและคำแนะนำ (Draft recommendations)
+    *   สรุปบันทึกการทำงาน (Summarize Logs)
+    *   ส่งสัญญาณแจ้งเตือนเมื่อพบสิ่งผิดปกติ (Send Trigger Alerts)
+*   **Authorized Human (Business Unit) Ownership:**
+    *   ตรวจสอบความสมเหตุสมผลและผลกระทบ
+    *   อนุมัติการดำเนินกิจกรรมและการใช้งบประมาณ (Sign-off & Budget Approval)
+    *   ถือปุ่มตัดไฟฉุกเฉิน (**Kill-Switch / Circuit Breaker**) เพื่อหยุดระบบทันทีที่เกิดปัญหา
+*   **Takeaway:** ห้ามอนุญาตให้ AI ตัดสินใจส่งผลกระทบต่อสิทธิ เสรีภาพ หรือเงินทุนขององค์กรโดยอัตโนมัติเด็ดขาด

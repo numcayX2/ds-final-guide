@@ -1,0 +1,20 @@
+**Slide 18: สัญญาณผิดปกติเปิดงานย้อนกลับถึงเจ้าของสาเหตุ (Backtracking Loops in CRISP-DS)**
+
+The slide illustrates how a production anomaly triggers a disciplined backtracking procedure in CRISP-DS.
+
+---
+
+### Step-by-Step Backtrack Procedure:
+1.  **สถานการณ์สมมติ:** Recall กลุ่มลูกค้าใหม่ต่ำกว่าเกณฑ์ที่ตกลงกันไว้
+2.  **MLOps:** แจ้งเตือนและบันทึก Trigger ในระบบ Monitoring Log
+3.  **Business Unit:** สั่งพักการใช้ผลโมเดลตามที่ระบุใน Pilot Runbook (Pause Trigger) ในขอบเขตที่ได้รับผลกระทบ
+4.  **ทีมข้อมูล/โมเดล:** ร่วมกันตรวจหาสาเหตุรากเหง้า (วิเคราะห์ Cohort, Features, Data Drift)
+5.  **Backtrack Task:** มอบหมายงานแก้ไขย้อนกลับตามสาเหตุที่พบ:
+    *   *หากเกิดจากนิยามกลุ่มหรือการคัดเลือกข้อมูล:* ย้อนกลับไป **Data Understanding**
+    *   *หากเกิดจากการคำนวณหรือสเกลฟีเจอร์:* ย้อนกลับไป **Data Preparation**
+    *   *หากเกิดจากเกณฑ์การตัด Threshold:* ย้อนกลับไป **Evaluation**
+
+---
+
+**Takeaway:**
+*   การย้อนกลับของ CRISP-DS ต้องมีสัญญาณเตือนชัดเจน, มีผู้สั่งพักที่ได้รับมอบหมาย, และมีงานแก้ไขที่มีเจ้าของรับผิดชอบ

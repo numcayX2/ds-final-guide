@@ -1,0 +1,22 @@
+**Slide 5: ห่วงโซ่การส่งมอบ Artifacts ข้ามสายงาน (The 9-Stage Artifact Handoff Chain)**
+
+The slide details how a single business problem moves across roles through 9 discrete, verifiable artifacts.
+
+---
+
+### The Artifact Handoff Chain:
+1.  **Question Ticket** (Business Unit): บันทึกโจทย์ปัญหาธุรกิจเบื้องต้น
+2.  **Decision Contract** (Business Analyst + Business Unit): สัญญากรอบการตัดสินใจ ผู้มีอำนาจ ทางเลือก และเกณฑ์วัด
+3.  **Data Intake & Lineage Check** (Data Engineer): รายงานการดึงข้อมูล ตรวจ Key Linkage, ประวัติเวลา และสิทธิ์ Consent
+4.  **Customer Table & Feature Contract** (Analytics Engineer): ตาราง Features ที่ล็อกกรอบเวลา Point-in-time ป้องกัน Data Leakage
+5.  **EDA Finding** (Data Analyst): ข้อค้นพบทางสถิติ การกระจายตัว และข้อจำกัดข้อมูล (ไม่ใช่แค่ภาพกราฟ)
+6.  **Model Note & Evaluation Evidence** (Data Scientist): รายละเอียดการเทรนโมเดล ผลลัพธ์ และหลักฐานการวัดผลแยกกลุ่ม
+7.  **Decision Memo: ปรับก่อนใช้** (BA + DS + Privacy Officer): บันทึกคำตัดสินใจส่งมอบ เลือกระหว่าง Accept / Revise / Reject
+8.  **Controlled Handoff & Pilot Runbook** (ML Engineer): คู่มือปฏิบัติการ Pilot ระบบตัดไฟฉุกเฉิน และบันทึก Audit Log
+9.  **Human Approval Record** (Business Unit): หลักฐานการลงนามอนุมัติโดยมนุษย์ก่อนดำเนินกิจกรรมจริง
+10. **Monitoring Log & Trigger Alert** (MLOps + Data Team): บันทึกการเฝ้าระวังและการส่งสัญญาณแจ้งเตือน
+
+---
+
+**Takeaway:**
+*   ทุกขั้นตอนของ CRISP-DS ต้องมี Artifact ที่จับต้องได้และมีบุคคลรับผิดชอบชัดเจน

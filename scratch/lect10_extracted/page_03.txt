@@ -1,0 +1,20 @@
+**Slide 3: วงจรการทำงาน CRISP-DS 8 ขั้นตอน (8-Stage CRISP-DS Workflow)**
+
+The slide illustrates the complete iterative lifecycle of a Data Science project according to modern CRISP-DS standards.
+
+---
+
+### The 8 Stages of CRISP-DS:
+1.  **ทำความเข้าใจเป้าหมายทางธุรกิจ (Business Understanding):** แปลงโจทย์ปัญหาธุรกิจเป็นโจทย์ Data Science, กำหนดทางเลือกและเกณฑ์วัดผล
+2.  **ทำความเข้าใจข้อมูล (Data Understanding):** สำรวจแหล่งข้อมูล ตรวจสอบ Lineage, สิทธิ์การใช้ข้อมูล (Consent/PDPA) และความสมบูรณ์เชิงเวลา
+3.  **เตรียมข้อมูล (Data Preparation):** ทำความสะอาดข้อมูล จัดทำ Feature Table คุม Point-in-time ป้องกัน Data Leakage
+4.  **วิเคราะห์ข้อมูลเบื้องต้น (Exploratory Data Analysis - EDA):** สำรวจการกระจายตัว หาความสัมพันธ์ ตรวจสอบสมมติฐานและข้อจำกัดข้อมูล
+5.  **สร้างแบบจำลอง (Modeling):** ฝึกสอนและเปรียบเทียบ Candidate Models ทั้งเชิงทำนาย (Predictive) และเชิงอธิบาย (Explanatory)
+6.  **ประเมินผล (Evaluation):** ประเมินประสิทธิภาพเชิงสถิติควบคู่กับความเป็นธรรมรายกลุ่มย่อย (Subgroup Disparity) สรุปความคุ้มค่าและความเสี่ยง
+7.  **นำไปใช้งานและสื่อสารผล (Deployment & Communication):** นำโมเดลขึ้นทดสอบจริงใน Pilot มี Controlled Handoff, Runbook และการอนุมัติโดยมนุษย์
+8.  **ปรับปรุงอย่างต่อเนื่องด้วย AI ช่วย (AI-assisted Improvement):** ติดตามประสิทธิภาพผ่าน Monitoring Contract และมีกลไก Backtrack ย้อนกลับเมื่อข้อมูลเปลี่ยน
+
+---
+
+**Takeaway:**
+*   CRISP-DS ไม่ใช่เส้นตรงทางเดียว (Non-linear) มีการวนลูปย้อนกลับ (Loopback & Backtrack) เมื่อพบหลักฐานหรือบริบทที่เปลี่ยนไป

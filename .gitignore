@@ -5,3 +5,4 @@ dist/
 *.log
 .agents/
 skills-lock.json
+scratch/*images*/

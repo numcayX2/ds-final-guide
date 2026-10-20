@@ -1,0 +1,20 @@
+**Slide 20: จาก Problem ถึง Value: ใช้วงจรนี้อธิบาย Final Project**
+
+The concluding slide synthesizes the entire journey from business problem to measurable value.
+
+---
+
+### The Final Project Value Chain:
+$$\text{Problem} \longrightarrow \text{Data} \longrightarrow \text{Insight} \longrightarrow \text{Decision} \longrightarrow \text{Value}$$
+
+---
+
+### 3 เสาหลักในการนำเสนอ Final Project:
+1.  **อธิบายทุกจุดตัดสินใจ:** ต้องมีครบทั้ง **หลักฐาน (Artifact)** | **ข้อจำกัด (Limitations)** | **ผู้รับผิดชอบ (Owner)**
+2.  **หลังเริ่มใช้ (Post-launch):** ตรวจสอบคุณค่าทางธุรกิจ และพร้อมย้อนกลับ (Backtrack) เมื่อหลักฐานหรือบริบทเปลี่ยน
+3.  **เล่าโครงการให้ครบวงจร:** ถ่ายทอดตั้งแต่ Problem ถึง Value และแสดงให้เห็นว่าทีมรู้จุดที่ต้องกลับไปแก้ไขเมื่อข้อมูลเปลี่ยนแปลง
+
+---
+
+**Final Exam Mindset:**
+*   Data Science ที่แท้จริงไม่ได้จบลงที่ค่า Accuracy บนหน้าจอคอมพิวเตอร์ แต่จบลงที่การสร้างคุณค่าทางธุรกิจและการกำกับดูแลอย่างมีความรับผิดชอบ

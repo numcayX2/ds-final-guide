@@ -1,0 +1,11 @@
+**Slide 6: Business Analyst & BU: การจัดทำ Decision Contract**
+
+*   **Phase:** Stage 1: Business Understanding
+*   **Co-Owners:** Business Analyst (BA) ร่วมกับ Business Unit (BU)
+*   **4 Essential Elements of Decision Contract:**
+    1.  **Decision Maker:** ผู้มีอำนาจตัดสินใจสุดท้ายเป็นใคร (เช่น Head of Marketing, Sales Director)
+    2.  **Available Options:** ทางเลือกที่มีให้ตัดสินใจมีอะไรบ้าง (เช่น ส่งข้อเสนอพิเศษ A, ส่งข้อเสนอ B, ไม่ทำอะไรเลย)
+    3.  **Scope & Cutoff:** ขอบเขตกลุ่มลูกค้าที่จะพิจารณาและกรอบเวลาตัดข้อมูล
+    4.  **Evaluation Threshold:** เกณฑ์ตัวชี้วัดความสำเร็จ (เช่น Recall ขั้นต่ำ 75%, ROI เพิ่มขึ้น 15%)
+*   **Role of AI Assistant:** AI สามารถช่วยร่างแบบร่าง (Draft) สัญญาได้ แต่ BA ต้องตรวจทาน และ BU ต้องเป็นผู้ลงนามอนุมัติเป็นลายลักษณ์อักษร (Sign-off)
+*   **Takeaway:** สัญญาการตัดสินใจต้องทำตั้งแต่เริ่มต้นโครงการ ก่อนเริ่มดึงข้อมูลหรือเลือกโมเดล

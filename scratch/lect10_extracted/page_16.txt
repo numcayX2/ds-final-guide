@@ -1,0 +1,9 @@
+**Slide 16: Business Unit Governance: Human Approval Record**
+
+*   **Phase:** Stage 7: Deployment & Communication
+*   **Owner:** Business Unit (BU)
+*   **Purpose:** หลักฐานการอนุมัติเป็นลายลักษณ์อักษรโดยผู้มีอำนาจก่อนเริ่มส่งข้อเสนอหาลูกค้าจริง
+*   **Key Insight:**
+    *   ระบบโมเดลและ AI เป็นเพียงซอฟต์แวร์ ไม่สามารถรับผิดชอบทางแพ่ง อาญา หรือความเสียหายทางธุรกิจได้
+    *   ดังนั้น ก่อนการยิงแคมเปญจริง ต้องมี **Human Approval Record** กำกับทุกครั้ง
+*   **Takeaway:** ความรับผิดชอบอยู่ที่คนอนุมัติ ไม่ใช่อยู่ที่โมเดล AI

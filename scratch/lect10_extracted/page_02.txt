@@ -1,0 +1,37 @@
+**Slide 2: บทบาทในทีมข้อมูลยุคใหม่ (Modern Data Team Roles) — Different Roles, One Goal**
+
+The slide defines the 6 specialized roles in a modern data team and their core responsibilities, technology stacks, and primary deliverables.
+
+---
+
+### The 6 Modern Data Team Roles:
+
+1.  **Data Engineer (DE) — Build the Foundation**
+    *   **หน้าที่:** ออกแบบและวางระบบ Data Pipeline, Data Platform, จัดการ Ingestion, Lineage, ความปลอดภัย และคุณภาพข้อมูลระดับ Infrastructure
+    *   **Tech Stack:** Apache Airflow, dbt, Apache Spark, Kafka, AWS S3 / GCP Cloud Storage
+    *   **Deliverable:** `Data Intake & Lineage Check`
+2.  **Analytics Engineer (AE) — Prepare for Analysis**
+    *   **หน้าที่:** จัดการ Data Modeling, Data Mart, ออกแบบตาราง Feature ให้พร้อมใช้งาน, กำหนด Feature Contract และควบคุม Point-in-time correctness
+    *   **Tech Stack:** SQL, Snowflake, Google BigQuery, dbt, Databricks
+    *   **Deliverable:** `Customer Table & Feature Contract`
+3.  **Data Analyst (DA) — Understand the Business**
+    *   **หน้าที่:** สำรวจข้อมูลเชิงลึก (EDA Finding), วิเคราะห์หาสาเหตุ (Diagnostic Analytics), สร้าง Dashboard และติดตาม Business KPIs
+    *   **Tech Stack:** Tableau, Power BI, SQL, Python (Pandas), Metabase
+    *   **Deliverable:** `EDA Finding` (ไม่ใช่แค่การพล็อตกราฟ)
+4.  **Data Scientist (DS) — Discover & Predict**
+    *   **หน้าที่:** ทดสอบสมมติฐานทางสถิติ, สร้างแบบจำลอง ML (Decision Tree, K-Means), วิเคราะห์ความสัมพันธ์เชิงทำนายและอธิบาย, ประเมินผลแยกกลุ่มย่อย (Cohort Evaluation)
+    *   **Tech Stack:** Python, scikit-learn, XGBoost, PyTorch, Jupyter Notebooks
+    *   **Deliverable:** `Model Note & Evaluation Evidence`
+5.  **Machine Learning Engineer (MLE / MLOps) — Build & Deploy**
+    *   **หน้าที่:** บรรจุโมเดลเข้าสู่ระบบใช้งานจริง (Containerization, API), จัดทำ Controlled Handoff, Pilot Runbook, ระบบเฝ้าระวัง (Monitoring) และปุ่มตัดไฟฉุกเฉิน (Kill-Switch)
+    *   **Tech Stack:** Docker, Kubernetes, FastAPI, MLflow, Prometheus, Grafana
+    *   **Deliverable:** `Controlled Handoff, Pilot Runbook & Monitoring Log`
+6.  **AI Engineer — Scale GenAI & Copilots**
+    *   **หน้าที่:** พัฒนาระบบประยุกต์ใช้ AI ขั้นสูง, LLMs, RAG, AI Agents และระบบช่วยปฏิบัติงานอัตโนมัติ
+    *   **Tech Stack:** LangChain, LlamaIndex, vLLM, Vector Databases, Hugging Face
+    *   **Deliverable:** `AI Assistant Drafts & Trigger Alerts`
+
+---
+
+**Takeaway:**
+*   "Different Roles, One Goal: เปลี่ยนข้อมูลดิบให้กลายเป็นคุณค่าทางธุรกิจและการตัดสินใจที่มีความรับผิดชอบ"

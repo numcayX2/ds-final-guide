@@ -1,0 +1,11 @@
+**Slide 9: Data Analyst: EDA Finding (ไม่ใช่แค่การพล็อตกราฟ)**
+
+*   **Phase:** Stage 4: Exploratory Data Analysis (EDA)
+*   **Owner:** Data Analyst (DA)
+*   **Descriptive vs. Diagnostic Analytics:**
+    *   EDA ไม่ใช่แค่การทำชาร์ตสวยงาม แต่เป็นการค้นหาสาเหตุและชี้แนะแนวทาง (Informs modeling)
+*   **Core Components of EDA Finding:**
+    *   **Distributions & Segments:** การกระจายตัวของตัวแปรและพฤติกรรมลูกค้าแต่ละกลุ่ม
+    *   **Missingness & Data Quality Limitations:** รายงานข้อมูลสูญหาย จุดบกพร่อง และข้อจำกัดที่ค้นพบ
+    *   **Hypotheses & Anomalies:** ข้อสมมติฐานและพฤติกรรมผิดปกติที่ต้องแจ้งให้ทีมโมเดลระวัง
+*   **Takeaway:** EDA ทำหน้าที่ชี้แนะแนวทางโมเดล ไม่ใช่เลือกอัลกอริทึมอัตโนมัติ

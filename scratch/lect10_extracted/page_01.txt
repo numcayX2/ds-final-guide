@@ -1,0 +1,5 @@
+**Slide 1: บูรณาการโครงงานและกระบวนการทำงานของทีมข้อมูล (Project Integration & Modern Data Team Workflows)**
+
+*   **Course:** 10301351 Data Science - คาบบรรยายที่ 10
+*   **Theme:** CRISP-DS in Action — From Problem to Responsible Action
+*   **Core Focus:** การบูรณาการโครงงานวิทยาศาสตร์ข้อมูล การส่งมอบงานระหว่างบทบาทต่างๆ ในทีมข้อมูลยุคใหม่ และการบริหารจัดการคุณค่าและความเสี่ยงของโครงการ
