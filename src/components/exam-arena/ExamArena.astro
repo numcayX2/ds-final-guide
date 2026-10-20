@@ -1,6 +1,7 @@
 ---
 import { allModules } from '../../data/modules';
 import { examQuestions } from '../../data/exam-questions';
+import { inClassQuestions } from '../../data/in-class-questions';
 
 const moduleSummaries = allModules.map((m) => ({
   id: m.id,
@@ -13,6 +14,7 @@ const moduleSummaries = allModules.map((m) => ({
 <div
   class="exam-arena-wrapper select-none w-full"
   data-questions={JSON.stringify(examQuestions)}
+  data-inclass-questions={JSON.stringify(inClassQuestions)}
   data-modules={JSON.stringify(moduleSummaries)}
 >
 
@@ -37,6 +39,76 @@ const moduleSummaries = allModules.map((m) => ({
         </p>
       </div>
 
+      <!-- QUESTION BANK MODE SELECTOR -->
+      <div class="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50/70 via-slate-50 to-indigo-50/60 border border-blue-200/80 shadow-2xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3.5">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-blue-700 uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+              <span>เลือกโหมดคลังข้อสอบ (Select Question Bank Mode)</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-0.5">
+              เลือกระหว่างข้อสอบควิซในห้องเรียนจริง 60 ข้อ (W4–W9) หรือคลังข้อสอบจำลอง Final Exam รวมทุกบท
+            </p>
+          </div>
+          <span id="active-mode-badge-tag" class="px-2.5 py-1 rounded-full bg-blue-600 text-white font-mono text-xs font-bold shrink-0 self-start sm:self-auto shadow-2xs">
+            🎓 โหมด In-Class Quizzes
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Button A: In-Class Quizzes Mode -->
+          <button
+            type="button"
+            id="mode-btn-inclass"
+            class="mode-switch-btn p-4 rounded-xl border-2 text-left transition-all cursor-pointer relative bg-white border-blue-600 shadow-xs ring-2 ring-blue-500/20"
+            data-bank-mode="inclass"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🎓</span>
+                <span class="font-bold text-sm text-slate-900 font-['Space_Grotesk',_sans-serif]">In-Class Questions</span>
+              </div>
+              <span class="mode-pill-status px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 text-blue-800 border border-blue-200 uppercase">
+                60 ข้อจริง (W4–W9)
+              </span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              ข้อสอบ Short Quiz ในห้องเรียน สัปดาห์ที่ 4–9 ตรงตามรหัส [W4-Q2] ถึง [W9-Q11] ใน Cheatsheet พร้อมวิเคราะห์ตัวลวง
+            </p>
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-blue-700 font-semibold">
+              <span>ครอบคลุม W4 ถึง W9</span>
+              <span class="flex items-center gap-1">✓ โหมดแนะนำ</span>
+            </div>
+          </button>
+
+          <!-- Button B: Curated Exam Bank Mode -->
+          <button
+            type="button"
+            id="mode-btn-curated"
+            class="mode-switch-btn p-4 rounded-xl border border-slate-200 text-left transition-all cursor-pointer relative bg-white hover:border-slate-300 hover:bg-slate-50/60 opacity-70 hover:opacity-100"
+            data-bank-mode="curated"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">📚</span>
+                <span class="font-bold text-sm text-slate-900 font-['Space_Grotesk',_sans-serif]">Curated Exam Bank</span>
+              </div>
+              <span class="mode-pill-status px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200 uppercase">
+                70 ข้อจำลอง (L01–L10)
+              </span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              คลังข้อสอบจำลองประมวลภาพรวม ครอบคลุมตั้งแต่พื้นฐาน L01 ถึงเนื้อหาสำคัญ L10 เน้นจุดออกสอบคำนวณและกรณีศึกษา
+            </p>
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <span>ครอบคลุม L01 ถึง L10</span>
+              <span>70 ข้อจำลอง</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
       <!-- STEP 1: Custom Chapter Selector -->
       <div class="space-y-3.5 mb-8">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -52,7 +124,7 @@ const moduleSummaries = allModules.map((m) => ({
               id="scope-final-btn"
               class="px-2.5 py-1 rounded-lg border text-[11px] font-bold cursor-pointer transition-colors bg-slate-900 text-white border-slate-900 shadow-2xs"
             >
-              ⭐ เฉพาะ Final Core (L05–10)
+              ⭐ สัปดาห์ W4–W9 (60 ข้อ)
             </button>
             <button
               type="button"
@@ -160,7 +232,7 @@ const moduleSummaries = allModules.map((m) => ({
             </div>
           </button>
 
-          <!-- Level 4: Ultra (60) -->
+          <!-- Level 4: Ultra / Full In-Class (60) -->
           <button
             type="button"
             class="lobby-level-card p-4 sm:p-5 rounded-xl border border-slate-200 text-left transition-all cursor-pointer relative bg-white hover:border-slate-300 hover:bg-slate-50/50 opacity-60 hover:opacity-100"
@@ -168,13 +240,13 @@ const moduleSummaries = allModules.map((m) => ({
           >
             <div class="flex justify-between items-start mb-2">
               <div>
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-bold uppercase">FULL SIMULATION</span>
-                <h3 class="font-bold text-base text-slate-900 mt-1 font-['Space_Grotesk',_sans-serif]">Ultra (60 ข้อ)</h3>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-bold uppercase" id="level-60-badge">FULL IN-CLASS QUIZ</span>
+                <h3 class="font-bold text-base text-slate-900 mt-1 font-['Space_Grotesk',_sans-serif]" id="level-60-title">Full In-Class (ครบ 60 ข้อ)</h3>
               </div>
               <span class="w-5 h-5 rounded-full border border-slate-300 bg-white flex items-center justify-center text-xs level-radio-check"></span>
             </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              คลังข้อสอบเต็มรูปแบบครบ 60 ข้อ ละเอียดทุกมิติในบทที่เลือก เสมือนสอบจริงในห้องสอบ
+            <p class="text-xs text-slate-600 leading-relaxed" id="level-60-desc">
+              ทำครบทุกข้อ 60 ข้อจากแบบทดสอบจริงในห้องเรียน สัปดาห์ที่ 4–9 ตรงตาม Cheatsheet สุ่มลำดับข้อ
             </p>
             <div class="mt-3 pt-2.5 border-t border-slate-200/70 flex items-center justify-between text-[11px] font-mono text-slate-500">
               <span class="level-duration-text">เวลาแนะนำ: 80:00 น.</span>
@@ -560,22 +632,54 @@ const moduleSummaries = allModules.map((m) => ({
 
   const wrapper = document.querySelector<HTMLElement>('.exam-arena-wrapper');
   if (wrapper) {
-    const rawQuestions = wrapper.getAttribute('data-questions');
-    const allQuestions: ExamQuestion[] = rawQuestions ? JSON.parse(rawQuestions) : [];
+    const rawCurated = wrapper.getAttribute('data-questions');
+    const curatedQuestionsList: ExamQuestion[] = rawCurated ? JSON.parse(rawCurated) : [];
+
+    const rawInClass = wrapper.getAttribute('data-inclass-questions');
+    const inClassQuestionsList: ExamQuestion[] = rawInClass ? JSON.parse(rawInClass) : [];
 
     const rawModules = wrapper.getAttribute('data-modules');
     const modules: ModuleMeta[] = rawModules ? JSON.parse(rawModules) : [];
 
-    // Calculate question counts per module
-    const moduleQuestionCounts: Record<string, number> = {};
-    allQuestions.forEach((q) => {
-      moduleQuestionCounts[q.moduleRef] = (moduleQuestionCounts[q.moduleRef] || 0) + 1;
-    });
+    // Bank Mode State ('inclass' | 'curated')
+    // Check URL parameter (?mode=inclass or ?mode=curated) then localStorage, default to 'inclass'
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramMode = urlParams.get('mode');
+    let currentBankMode: 'inclass' | 'curated' = (paramMode === 'inclass' || paramMode === 'curated')
+      ? paramMode
+      : ((localStorage.getItem('ds_exam_bank_mode') as 'inclass' | 'curated') || 'inclass');
 
-    // Chapter Selection State (Default: Final Focus modules)
-    const selectedModuleIds = new Set<string>(
-      modules.filter((m) => m.isFinalFocus).map((m) => m.id)
-    );
+    function getActiveBank(): ExamQuestion[] {
+      return currentBankMode === 'inclass' ? inClassQuestionsList : curatedQuestionsList;
+    }
+
+    // In-class 6 Core Weeks Module IDs
+    const inClassModuleIds = new Set<string>([
+      'module-04-eda-outliers',
+      'module-05-modeling-framework',
+      'module-06-decision-tree',
+      'module-08-kmeans',
+      'module-09-responsible-ai',
+      'module-10-crisp-action',
+    ]);
+
+    // Question counts per module for currently active bank
+    function getModuleQuestionCounts(): Record<string, number> {
+      const bank = getActiveBank();
+      const counts: Record<string, number> = {};
+      bank.forEach((q) => {
+        counts[q.moduleRef] = (counts[q.moduleRef] || 0) + 1;
+      });
+      return counts;
+    }
+
+    // Chapter Selection State
+    const selectedModuleIds = new Set<string>();
+    if (currentBankMode === 'inclass') {
+      inClassModuleIds.forEach((id) => selectedModuleIds.add(id));
+    } else {
+      modules.filter((m) => m.isFinalFocus).forEach((m) => selectedModuleIds.add(m.id));
+    }
 
     // State Variables
     let selectedModeCount = 10; // Desired questions count
@@ -599,6 +703,9 @@ const moduleSummaries = allModules.map((m) => ({
     const arenaScreen = document.getElementById('exam-arena-screen');
 
     // Lobby Elements
+    const modeBtnInclass = document.getElementById('mode-btn-inclass');
+    const modeBtnCurated = document.getElementById('mode-btn-curated');
+    const activeModeBadgeTag = document.getElementById('active-mode-badge-tag');
     const chaptersToggleGrid = document.getElementById('chapters-toggle-grid');
     const lobbyScopeSummary = document.getElementById('lobby-scope-summary');
     const scopeFinalBtn = document.getElementById('scope-final-btn');
@@ -632,9 +739,77 @@ const moduleSummaries = allModules.map((m) => ({
     const omrSheetContainer = document.getElementById('omr-sheet-container');
     const resultCard = document.getElementById('exam-result-card');
 
+    // 0. Switch Question Bank Mode
+    function setBankMode(newMode: 'inclass' | 'curated') {
+      currentBankMode = newMode;
+      localStorage.setItem('ds_exam_bank_mode', newMode);
+
+      selectedModuleIds.clear();
+      if (currentBankMode === 'inclass') {
+        inClassModuleIds.forEach((id) => selectedModuleIds.add(id));
+      } else {
+        modules.filter((m) => m.isFinalFocus).forEach((m) => selectedModuleIds.add(m.id));
+      }
+
+      updateModeButtonsUI();
+
+      if (scopeFinalBtn) {
+        scopeFinalBtn.textContent = currentBankMode === 'inclass' ? '⭐ สัปดาห์ W4–W9 (60 ข้อ)' : '⭐ เฉพาะ Final Core (L05–10)';
+      }
+
+      const lvl60Badge = document.getElementById('level-60-badge');
+      const lvl60Title = document.getElementById('level-60-title');
+      const lvl60Desc = document.getElementById('level-60-desc');
+      if (lvl60Badge && lvl60Title && lvl60Desc) {
+        if (currentBankMode === 'inclass') {
+          lvl60Badge.textContent = 'FULL IN-CLASS QUIZ';
+          lvl60Title.textContent = 'Full In-Class (ครบ 60 ข้อ)';
+          lvl60Desc.textContent = 'ทำครบทุกข้อ 60 ข้อจากแบบทดสอบจริงในห้องเรียน สัปดาห์ที่ 4–9 ตรงตาม Cheatsheet สุ่มลำดับข้อ';
+        } else {
+          lvl60Badge.textContent = 'FULL SIMULATION';
+          lvl60Title.textContent = 'Ultra (60 ข้อ)';
+          lvl60Desc.textContent = 'คลังข้อสอบเต็มรูปแบบครบ 60 ข้อ ละเอียดทุกมิติในบทที่เลือก เสมือนสอบจริงในห้องสอบ';
+        }
+      }
+
+      createChapterToggles();
+      updateLobbyUI();
+    }
+
+    function updateModeButtonsUI() {
+      if (activeModeBadgeTag) {
+        activeModeBadgeTag.textContent = currentBankMode === 'inclass' ? '🎓 โหมด In-Class Quizzes (60 ข้อ)' : '📚 โหมด Curated Exam Bank (70 ข้อ)';
+      }
+
+      if (modeBtnInclass) {
+        if (currentBankMode === 'inclass') {
+          modeBtnInclass.className = 'mode-switch-btn p-4 rounded-xl border-2 text-left transition-all cursor-pointer relative bg-white border-blue-600 shadow-xs ring-2 ring-blue-500/20';
+        } else {
+          modeBtnInclass.className = 'mode-switch-btn p-4 rounded-xl border border-slate-200 text-left transition-all cursor-pointer relative bg-white hover:border-slate-300 hover:bg-slate-50/60 opacity-70 hover:opacity-100';
+        }
+      }
+
+      if (modeBtnCurated) {
+        if (currentBankMode === 'curated') {
+          modeBtnCurated.className = 'mode-switch-btn p-4 rounded-xl border-2 text-left transition-all cursor-pointer relative bg-white border-blue-600 shadow-xs ring-2 ring-blue-500/20';
+        } else {
+          modeBtnCurated.className = 'mode-switch-btn p-4 rounded-xl border border-slate-200 text-left transition-all cursor-pointer relative bg-white hover:border-slate-300 hover:bg-slate-50/60 opacity-70 hover:opacity-100';
+        }
+      }
+    }
+
+    modeBtnInclass?.addEventListener('click', () => {
+      if (currentBankMode !== 'inclass') setBankMode('inclass');
+    });
+
+    modeBtnCurated?.addEventListener('click', () => {
+      if (currentBankMode !== 'curated') setBankMode('curated');
+    });
+
     // 1. Get filtered available questions based on selected chapters
     function getAvailableQuestions(): ExamQuestion[] {
-      return allQuestions.filter((q) => selectedModuleIds.has(q.moduleRef));
+      const bank = getActiveBank();
+      return bank.filter((q) => selectedModuleIds.has(q.moduleRef));
     }
 
     // 1b. Fisher-Yates Shuffle Helper (สลับลำดับข้อสอบแบบสุ่มทุกครั้งที่เริ่มสอบ)
@@ -662,16 +837,41 @@ const moduleSummaries = allModules.map((m) => ({
       return Math.min(count * 80, 80 * 60); // ~1.3 min/q
     }
 
+    const inClassWeekLabels: Record<string, string> = {
+      'module-04-eda-outliers': 'Week 4 Quiz',
+      'module-05-modeling-framework': 'Week 5 Quiz',
+      'module-06-decision-tree': 'Week 6 Quiz',
+      'module-08-kmeans': 'Week 7 Quiz',
+      'module-09-responsible-ai': 'Week 8 Quiz',
+      'module-10-crisp-action': 'Week 9 Quiz',
+    };
+
     // 4. Create and Update Chapter Toggle Grid (Persistent DOM, zero flicker)
     function createChapterToggles() {
       if (!chaptersToggleGrid) return;
       chaptersToggleGrid.innerHTML = '';
+      const counts = getModuleQuestionCounts();
 
       modules.forEach((mod) => {
-        const count = moduleQuestionCounts[mod.id] || 0;
+        const count = counts[mod.id] || 0;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.setAttribute('data-module-id', mod.id);
+
+        const isZeroInClass = currentBankMode === 'inclass' && count === 0;
+
+        let badgeSub = '';
+        if (currentBankMode === 'inclass') {
+          if (count > 0) {
+            badgeSub = `<span class="text-slate-300">·</span><span class="text-blue-600 font-bold">${inClassWeekLabels[mod.id] || 'In-Class'}</span>`;
+          } else {
+            badgeSub = `<span class="text-slate-300">·</span><span class="text-slate-400 font-normal">ไม่มีในควิซ</span>`;
+          }
+        } else {
+          if (mod.isFinalFocus) {
+            badgeSub = `<span class="text-slate-300">·</span><span class="text-blue-600 font-semibold">Final Core</span>`;
+          }
+        }
 
         btn.innerHTML = `
           <div class="flex items-center gap-2.5 min-w-0">
@@ -681,7 +881,7 @@ const moduleSummaries = allModules.map((m) => ({
             <div class="truncate">
               <div class="text-[10px] font-mono text-slate-500 flex items-center gap-1.5">
                 <span>${mod.lectureRef}</span>
-                ${mod.isFinalFocus ? `<span class="text-slate-300">·</span><span class="text-blue-600 font-semibold">Final Core</span>` : ''}
+                ${badgeSub}
               </div>
               <div class="text-xs font-bold text-slate-900 truncate">
                 ${mod.title}
@@ -693,15 +893,21 @@ const moduleSummaries = allModules.map((m) => ({
           </span>
         `;
 
-        btn.addEventListener('click', () => {
-          if (selectedModuleIds.has(mod.id)) {
-            selectedModuleIds.delete(mod.id);
-          } else {
-            selectedModuleIds.add(mod.id);
-          }
-          updateChapterToggles(mod.id);
-          updateLobbyUI();
-        });
+        if (isZeroInClass) {
+          btn.addEventListener('click', () => {
+            alert(`บทเรียน ${mod.title} (${mod.lectureRef}) ไม่มีแบบทดสอบ In-Class ในคาบเรียน (แบบทดสอบ In-Class มีเฉพาะสัปดาห์ 4–9)`);
+          });
+        } else {
+          btn.addEventListener('click', () => {
+            if (selectedModuleIds.has(mod.id)) {
+              selectedModuleIds.delete(mod.id);
+            } else {
+              selectedModuleIds.add(mod.id);
+            }
+            updateChapterToggles(mod.id);
+            updateLobbyUI();
+          });
+        }
 
         chaptersToggleGrid.appendChild(btn);
       });
@@ -711,30 +917,45 @@ const moduleSummaries = allModules.map((m) => ({
 
     function updateChapterToggles(animatedModuleId?: string) {
       if (!chaptersToggleGrid) return;
+      const counts = getModuleQuestionCounts();
       const btns = chaptersToggleGrid.querySelectorAll<HTMLButtonElement>('button[data-module-id]');
       btns.forEach((btn) => {
         const modId = btn.getAttribute('data-module-id');
         if (!modId) return;
+        const count = counts[modId] || 0;
+        const isZeroInClass = currentBankMode === 'inclass' && count === 0;
         const isChecked = selectedModuleIds.has(modId);
-        btn.className = `p-3 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between gap-3 ${
-          isChecked
-            ? 'bg-slate-50 border-slate-900 ring-1 ring-slate-900/10 text-slate-900 shadow-2xs'
-            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 text-slate-600 opacity-70'
-        }`;
+
+        if (isZeroInClass) {
+          btn.className = 'p-3 rounded-xl border border-dashed border-slate-200 text-left transition-colors cursor-pointer flex items-center justify-between gap-3 bg-slate-50/70 text-slate-400 opacity-60';
+        } else {
+          btn.className = `p-3 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between gap-3 ${
+            isChecked
+              ? 'bg-slate-50 border-slate-900 ring-1 ring-slate-900/10 text-slate-900 shadow-2xs'
+              : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 text-slate-600 opacity-70'
+          }`;
+        }
+
         const checkSpan = btn.querySelector('.chapter-check-icon');
         if (checkSpan) {
-          checkSpan.className = `chapter-check-icon w-4 h-4 rounded border flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
-            isChecked
-              ? 'bg-slate-900 border-slate-900 text-white'
-              : 'bg-white border-slate-300 text-transparent'
-          }`;
-          if (modId === animatedModuleId && !prefersReducedMotion) {
-            gsap.killTweensOf(checkSpan);
-            gsap.fromTo(
-              checkSpan,
-              { scale: 0.5, rotate: -20 },
-              { scale: 1, rotate: 0, duration: 0.28, ease: 'back.out(2.5)', clearProps: 'transform' }
-            );
+          if (isZeroInClass) {
+            checkSpan.className = 'chapter-check-icon w-4 h-4 rounded border border-slate-200 bg-slate-100 flex items-center justify-center text-[10px] text-slate-300';
+            checkSpan.textContent = '–';
+          } else {
+            checkSpan.textContent = '✓';
+            checkSpan.className = `chapter-check-icon w-4 h-4 rounded border flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
+              isChecked
+                ? 'bg-slate-900 border-slate-900 text-white'
+                : 'bg-white border-slate-300 text-transparent'
+            }`;
+            if (modId === animatedModuleId && !prefersReducedMotion) {
+              gsap.killTweensOf(checkSpan);
+              gsap.fromTo(
+                checkSpan,
+                { scale: 0.5, rotate: -20 },
+                { scale: 1, rotate: 0, duration: 0.28, ease: 'back.out(2.5)', clearProps: 'transform' }
+              );
+            }
           }
         }
       });
@@ -753,14 +974,20 @@ const moduleSummaries = allModules.map((m) => ({
           lobbyScopeSummary.textContent = 'ยังไม่ได้เลือกบทเรียน (กรุณาเลือกอย่างน้อย 1 บท)';
         } else {
           lobbyScopeSummary.className = 'font-semibold text-blue-700';
-          lobbyScopeSummary.textContent = `เลือกแล้ว ${selectedChCount} บทเรียน · รวม ${availableCount} ข้อพร้อมสอบ`;
+          const modeLabel = currentBankMode === 'inclass' ? 'In-Class Quizzes (W4–W9)' : 'Curated Exam Bank';
+          lobbyScopeSummary.textContent = `[${modeLabel}] เลือกแล้ว ${selectedChCount} บทเรียน · รวม ${availableCount} ข้อพร้อมสอบ`;
         }
       }
 
       // Update Quick Scope button styles
-      const finalCount = modules.filter((m) => m.isFinalFocus).length;
       const isAllSelected = selectedChCount === modules.length;
-      const isFinalOnly = selectedChCount === finalCount && modules.filter((m) => m.isFinalFocus).every((m) => selectedModuleIds.has(m.id));
+      let isFinalOnly = false;
+      if (currentBankMode === 'inclass') {
+        isFinalOnly = selectedChCount === inClassModuleIds.size && Array.from(inClassModuleIds).every((id) => selectedModuleIds.has(id));
+      } else {
+        const finalCount = modules.filter((m) => m.isFinalFocus).length;
+        isFinalOnly = selectedChCount === finalCount && modules.filter((m) => m.isFinalFocus).every((m) => selectedModuleIds.has(m.id));
+      }
 
       if (scopeFinalBtn) {
         scopeFinalBtn.className = `px-2.5 py-1 rounded-lg border text-[11px] font-bold cursor-pointer transition-colors ${
@@ -857,14 +1084,22 @@ const moduleSummaries = allModules.map((m) => ({
     // 6. Bind Quick Scope Filters
     scopeFinalBtn?.addEventListener('click', () => {
       selectedModuleIds.clear();
-      modules.filter((m) => m.isFinalFocus).forEach((m) => selectedModuleIds.add(m.id));
+      if (currentBankMode === 'inclass') {
+        inClassModuleIds.forEach((id) => selectedModuleIds.add(id));
+      } else {
+        modules.filter((m) => m.isFinalFocus).forEach((m) => selectedModuleIds.add(m.id));
+      }
       updateChapterToggles();
       updateLobbyUI();
     });
 
     scopeAllBtn?.addEventListener('click', () => {
       selectedModuleIds.clear();
-      modules.forEach((m) => selectedModuleIds.add(m.id));
+      if (currentBankMode === 'inclass') {
+        inClassModuleIds.forEach((id) => selectedModuleIds.add(id));
+      } else {
+        modules.forEach((m) => selectedModuleIds.add(m.id));
+      }
       updateChapterToggles();
       updateLobbyUI();
     });
@@ -932,7 +1167,11 @@ const moduleSummaries = allModules.map((m) => ({
 
       // Update Arena badges
       if (arenaModeBadgeEl) {
-        arenaModeBadgeEl.textContent = `${activeQuestions.length} MCQS`;
+        if (currentBankMode === 'inclass') {
+          arenaModeBadgeEl.innerHTML = `<span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">🎓 IN-CLASS · ${activeQuestions.length} MCQS</span>`;
+        } else {
+          arenaModeBadgeEl.innerHTML = `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 font-bold">📚 CURATED · ${activeQuestions.length} MCQS</span>`;
+        }
       }
       if (arenaScopeBadgeEl) {
         arenaScopeBadgeEl.textContent = `${selectedModuleIds.size} บทเรียน`;
@@ -1039,6 +1278,8 @@ const moduleSummaries = allModules.map((m) => ({
       arenaScreen?.classList.add('hidden');
       lobbyScreen?.classList.remove('hidden');
 
+      updateModeButtonsUI();
+      createChapterToggles();
       updateLobbyUI();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1112,19 +1353,23 @@ const moduleSummaries = allModules.map((m) => ({
         row.className = 'flex items-center justify-between p-1.5 sm:p-2 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors shrink-0';
         row.setAttribute('data-bubble-row', String(displayNum));
 
+        const codeBadge = q.inClassCode ? `[${q.inClassCode}]` : `ข้อ ${displayNum}`;
+
         row.innerHTML = `
           <button
             type="button"
-            class="font-mono text-xs font-bold text-slate-700 hover:text-blue-600 cursor-pointer flex items-center gap-1.5"
+            class="font-mono text-xs font-bold text-slate-700 hover:text-blue-600 cursor-pointer flex items-center gap-1.5 min-w-0"
             data-jump-q="${idx}"
           >
-            <span class="w-5 h-5 rounded bg-slate-100 text-slate-700 flex items-center justify-center text-[10px] font-bold">
+            <span class="w-5 h-5 rounded bg-slate-100 text-slate-700 flex items-center justify-center text-[10px] font-bold shrink-0">
               ${displayNum}
             </span>
-            <span class="truncate max-w-[85px] text-[11px] text-slate-500 font-medium">ข้อ ${displayNum}</span>
+            <span class="truncate max-w-[85px] text-[11px] text-slate-500 font-medium">
+              ${codeBadge}
+            </span>
           </button>
 
-          <div class="flex items-center gap-1 font-mono text-xs font-bold">
+          <div class="flex items-center gap-1 font-mono text-xs font-bold shrink-0">
             ${(['A', 'B', 'C', 'D'] as const).map((opt) => `
               <button
                 type="button"
@@ -1185,21 +1430,29 @@ const moduleSummaries = allModules.map((m) => ({
       const displayNum = idx + 1;
 
       if (qNumEl) qNumEl.textContent = String(displayNum).padStart(2, '0');
-      if (qTitleEl) qTitleEl.textContent = q.title;
+      if (qTitleEl) {
+        if (q.inClassCode) {
+          const cleanTitle = q.title.replace(/^\[[^\]]+\]\s*/, '');
+          qTitleEl.innerHTML = `<span class="px-1.5 py-0.5 mr-1.5 rounded bg-blue-100 text-blue-800 border border-blue-200 font-mono text-xs font-bold shrink-0">[${q.inClassCode}]</span><span>${escapeHtml(cleanTitle)}</span>`;
+        } else {
+          qTitleEl.textContent = q.title;
+        }
+      }
       if (qSlideEl) {
         const moduleNames: Record<string, string> = {
           'module-01-crisp-ds': 'CRISP-DS Process',
           'module-02-data-cleaning': 'Data Cleaning',
           'module-03-feature-engineering': 'Feature Engineering',
-          'module-04-eda-outliers': 'EDA & Outliers',
-          'module-05-modeling-framework': 'Modeling Framework',
-          'module-06-decision-tree': 'Decision Tree & Models',
-          'module-07-evaluation-metrics': 'Model Evaluation',
-          'module-08-kmeans': 'K-Means Clustering',
-          'module-09-responsible-ai': 'XAI & Responsible AI',
-          'module-10-crisp-action': 'CRISP-DS in Action'
+          'module-04-eda-outliers': 'EDA & Outliers (L05)',
+          'module-05-modeling-framework': 'Modeling Framework (L06)',
+          'module-06-decision-tree': 'Decision Tree (L07)',
+          'module-07-evaluation-metrics': 'Model Evaluation (L07)',
+          'module-08-kmeans': 'K-Means Clustering (L08)',
+          'module-09-responsible-ai': 'XAI & Responsible AI (L09)',
+          'module-10-crisp-action': 'CRISP-DS in Action (L10)'
         };
-        qSlideEl.textContent = `หมวด: ${moduleNames[q.moduleRef] || 'Data Science'}`;
+        const weekTag = q.week ? ` · ${q.week}` : '';
+        qSlideEl.textContent = `หมวด: ${moduleNames[q.moduleRef] || 'Data Science'}${weekTag}`;
       }
       if (qProgressEl) qProgressEl.textContent = `${String(displayNum).padStart(2, '0')} / ${String(activeQuestions.length).padStart(2, '0')}`;
 
@@ -1296,13 +1549,15 @@ const moduleSummaries = allModules.map((m) => ({
           const correctOpt = q.options.find((o) => o.isCorrect);
           const explBox = document.createElement('div');
           explBox.className = 'mt-4 p-4 rounded-xl border border-blue-200/90 bg-blue-50/50 text-xs sm:text-sm text-slate-800 space-y-2.5 font-sans';
+          const inClassBadge = q.inClassCode ? `<span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 font-mono font-bold text-xs">[${q.inClassCode}] In-Class Quiz</span>` : '';
           explBox.innerHTML = `
-            <div class="flex items-center justify-between gap-2 border-b border-blue-200/60 pb-2.5">
+            <div class="flex items-center justify-between gap-2 border-b border-blue-200/60 pb-2.5 flex-wrap">
               <div class="flex items-center gap-2">
                 <span class="px-2 py-0.5 rounded bg-blue-600 text-white font-mono font-bold text-xs">เฉลยข้อ ${correctOpt?.id}</span>
+                ${inClassBadge}
                 <span class="font-bold text-blue-950 font-sans text-xs sm:text-sm">คำอธิบายและแนวคิดหลัก</span>
               </div>
-              <span class="text-xs text-blue-700 font-mono font-semibold">จุดทบทวนในสไลด์: ${q.slideRef}</span>
+              <span class="text-xs text-blue-700 font-mono font-semibold">จุดทบทวน: ${escapeHtml(q.slideRef)}</span>
             </div>
             <div class="text-slate-800 leading-relaxed font-sans text-xs sm:text-sm pt-0.5">${escapeHtml(correctOpt?.explanation || '')}</div>
             ${correctOpt?.distractorTrap ? `
@@ -1537,11 +1792,17 @@ const moduleSummaries = allModules.map((m) => ({
         if (breakdownEl && !isCorrect) {
           const item = document.createElement('div');
           item.className = 'p-3 rounded-xl bg-slate-800 border border-rose-500/40 text-[11px] text-slate-200 space-y-1 font-mono';
+          const codeTag = q.inClassCode ? `<span class="px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-400/40 font-bold text-[10px] mr-1">[${q.inClassCode}]</span>` : '';
           item.innerHTML = `
-            <div class="font-bold text-rose-400">ข้อ ${displayNum}: ${q.title} <span class="text-slate-400 font-normal text-[10px]">(จุดทบทวน: ${q.slideRef})</span></div>
+            <div class="font-bold text-rose-400 flex items-center flex-wrap gap-1">
+              <span>ข้อ ${displayNum}:</span>
+              ${codeTag}
+              <span>${escapeHtml(q.title)}</span>
+              <span class="text-slate-400 font-normal text-[10px]">(จุดทบทวน: ${escapeHtml(q.slideRef)})</span>
+            </div>
             <div>คุณตอบ: <span class="text-rose-300 font-bold">${userChoice || 'ไม่ได้ตอบ'}</span> | คำตอบที่ถูก: <span class="text-emerald-400 font-bold">${correctOpt?.id}</span></div>
-            <div class="text-[10px] text-slate-300 leading-relaxed font-sans mt-0.5">${correctOpt?.explanation}</div>
-            ${correctOpt?.distractorTrap ? `<div class="text-[10px] text-amber-300 font-sans mt-0.5">⚠️ กับดัก: ${correctOpt.distractorTrap}</div>` : ''}
+            <div class="text-[10px] text-slate-300 leading-relaxed font-sans mt-0.5">${escapeHtml(correctOpt?.explanation || '')}</div>
+            ${correctOpt?.distractorTrap ? `<div class="text-[10px] text-amber-300 font-sans mt-0.5">⚠️ กับดัก: ${escapeHtml(correctOpt.distractorTrap)}</div>` : ''}
           `;
           breakdownEl.appendChild(item);
         }
@@ -1647,7 +1908,8 @@ const moduleSummaries = allModules.map((m) => ({
       });
     });
 
-    // Initialize Chapter Grid & Lobby UI on page load
+    // Initialize Bank Mode & Chapter Grid & Lobby UI on page load
+    updateModeButtonsUI();
     createChapterToggles();
     updateLobbyUI();
   }

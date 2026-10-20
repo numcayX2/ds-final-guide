@@ -113,6 +113,9 @@ export interface ExamQuestion {
   };
   options: MCQOption[];
   difficulty: 'direct' | 'calculated' | 'business_trap';
+  inClassCode?: string; // e.g. 'W4-Q2', 'W7-Q6'
+  week?: string; // e.g. 'W4', 'W7'
+  sourceType?: 'in-class' | 'curated';
 }
 
 export interface UserProgressState {
